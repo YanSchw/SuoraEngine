@@ -1,6 +1,6 @@
 
 <p align="center">
-  <a href="https://github.com/YanSchw/SuoraEnginePrivate">
+  <a href="https://github.com/YanSchw/SuoraEngine">
     <img src="Content/EngineContent/SuoraLogo.png" width="400" alt="Suora Engine logo">
   </a>
 </p>
@@ -8,7 +8,7 @@
 ![Screenshot of the Suora Engine editor](Docs/Images/SuoraInEditorScreenshot.png)
 ***
 ## Setup the Engine Project
-- Clone the repository: git clone --recursive https://github.com/YanSchw/SuoraEnginePrivate
+- Clone the repository: git clone --recursive https://github.com/YanSchw/SuoraEngine
 - Execute the Buildscript in /Binaries/Scripts/{...}
 - Generate the Solution using /GenerateSolution.bat
 - Open the Solution using Visual Studio 2019
