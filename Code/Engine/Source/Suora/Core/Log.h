@@ -124,7 +124,6 @@ namespace Suora
 #define SUORA_LOG(_Category, _LogLevel, ...)    ::Suora::Log::LogMessage(_Category, _LogLevel, __VA_ARGS__)
 
 #define SUORA_TRACE(_Category, ...)         ::Suora::Log::LogMessage(_Category, ::Suora::LogLevel::Trace, __VA_ARGS__)
-#define SUORA_DEBUG(_Category, ...)         ::Suora::Log::LogMessage(_Category, ::Suora::LogLevel::Debug, __VA_ARGS__)
 #define SUORA_INFO(_Category, ...)          ::Suora::Log::LogMessage(_Category, ::Suora::LogLevel::Info, __VA_ARGS__)
 #define SUORA_WARN(_Category, ...)          ::Suora::Log::LogMessage(_Category, ::Suora::LogLevel::Warn, __VA_ARGS__)
 #define SUORA_ERROR(_Category, ...)         ::Suora::Log::LogMessage(_Category, ::Suora::LogLevel::Error, __VA_ARGS__)
