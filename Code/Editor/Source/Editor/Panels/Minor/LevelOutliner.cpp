@@ -48,11 +48,10 @@ namespace Suora
 				if (It.m_Member.m_MemberName == "mesh")
 				{
 					It.m_ValueChanged = true;
-					It.m_ValueAssetPtr = AssetManager::GetAsset<Mesh>(SuoraID("8578475837583"));
+					It.m_ValueAssetPtr = AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8"));
 				}
 			}
-			cube->mesh = AssetManager::GetAsset<Mesh>(SuoraID("8578475837583"));
-			cube->materials = AssetManager::GetAsset<Material>(SuoraID("49785g48345839"));
+			cube->mesh = AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8"));
 		}, "Cube", nullptr });
 		out.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
 		{
@@ -65,11 +64,10 @@ namespace Suora
 				if (It.m_Member.m_MemberName == "mesh")
 				{
 					It.m_ValueChanged = true;
-					It.m_ValueAssetPtr = AssetManager::GetAsset<Mesh>(SuoraID("905279037902"));
+					It.m_ValueAssetPtr = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
 				}
 			}
-			sphere->mesh = AssetManager::GetAsset<Mesh>(SuoraID("905279037902"));
-			sphere->materials = AssetManager::GetAsset<Material>(SuoraID("49785g48345839"));
+			sphere->mesh = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
 		}, "Sphere", nullptr });
 
 		return out;
