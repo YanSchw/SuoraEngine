@@ -197,6 +197,16 @@ namespace Suora
 	{
 		std::filesystem::create_directories(folderPath);
 	}
+
+	void Platform::CopyDirectory(const std::filesystem::path& src, const std::filesystem::path& dest)
+	{
+		if (std::filesystem::exists(src))
+		{
+			CreateDirectory(dest);
+			std::filesystem::copy(src, dest, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+		}
+	}
+
 	void Platform::RemoveFile(const std::filesystem::path& filePath)
 	{
 		if (std::filesystem::exists(filePath))

@@ -129,6 +129,59 @@ namespace Suora
 		}
 	}
 
+	void Launcher::CreateProject(const std::string& projectName, std::filesystem::path projectPath, Ref<TemplateProject> templateProject)
+	{
+		if (projectName == "")
+		{
+			SUORA_LOG(LogCategory::Editor, LogLevel::Error, "Cannot create new Project; ProjectName is empty!");
+			return;
+		}
+		Platform::CreateDirectory(projectPath.append(projectName));
+		// projectPath now points into the newly created ProjectDirectory
+
+		std::filesystem::path contentPath = std::filesystem::path(templateProject->m_TemplateProjectPath).append("Content");
+		if (std::filesystem::exists(contentPath))
+		{
+			Platform::CopyDirectory(contentPath, std::filesystem::path(projectPath).append("Content"));
+		}
+		std::filesystem::path codePath = std::filesystem::path(templateProject->m_TemplateProjectPath).append("Code");
+		if (std::filesystem::exists(codePath))
+		{
+			Platform::CopyDirectory(codePath, std::filesystem::path(projectPath).append("Code"));
+		}
+		std::filesystem::path scriptsPath = std::filesystem::path(Engine::Get()->GetRootPath()).append("Binaries").append("Scripts");
+		if (std::filesystem::exists(scriptsPath))
+		{
+			Platform::CopyDirectory(scriptsPath, std::filesystem::path(projectPath).append("Scripts"));
+		}
+
+		std::filesystem::path projectSettingsPath;
+		std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(projectPath);
+		for (auto file : entries)
+		{
+			const std::string ext = File::GetFileExtension(file);
+			if (ext == ".suora")
+			{
+				projectSettingsPath = std::filesystem::path(file.path()).parent_path().append(projectName + ".suora");
+				std::filesystem::rename(file.path(), projectSettingsPath);
+				break;
+			}
+		}
+		/*** Finished Project Creation ***/
+
+		{
+			EditorPreferences::Get()->m_AllCachedProjectPaths.Add(projectSettingsPath.string());
+
+			Yaml::Node out;
+			std::string str;
+			AssetManager::GetFirstAssetOfType<EditorPreferences>()->Serialize(out);
+			Yaml::Serialize(out, str);
+			Platform::WriteToFile(AssetManager::GetFirstAssetOfType<EditorPreferences>()->m_Path.string(), str);
+		}
+		
+		OpenProject(projectSettingsPath.string(), templateProject->m_IsNative);
+	}
+
 	static bool EndsWith(std::string_view str, std::string_view suffix)
 	{
 		return str.size() >= suffix.size() && 0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
@@ -256,7 +309,10 @@ namespace Suora
 
 			_y -= 60.0f;
 			EditorUI::Text("Project Location", Font::Instance, x + (GetWindow()->GetWidth() - x) * 0.6f + 20.0f, _y + 3.0f, (GetWindow()->GetWidth() - x) * 0.4f - 20.0f, 10.0f, 16.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-			if (EditorUI::Button(m_ProjectPath.string(), x + (GetWindow()->GetWidth() - x) * 0.6f + 20.0f, _y - 40.0f, (GetWindow()->GetWidth() - x) * 0.4f - 40.0f, 40.0f))
+			EditorUI::ButtonParams ProjectPathButtonParams;
+			ProjectPathButtonParams.TextOffsetLeft = 5.0f;
+			ProjectPathButtonParams.TextOrientation = Vec2(-1.0f, 0.0f);
+			if (EditorUI::Button(m_ProjectPath.string(), x + (GetWindow()->GetWidth() - x) * 0.6f + 20.0f, _y - 40.0f, (GetWindow()->GetWidth() - x) * 0.4f - 40.0f, 40.0f, ProjectPathButtonParams))
 			{
 				std::optional<std::string> path = Platform::ChoosePathDialog();
 				if (path.has_value()) m_ProjectPath = path.value();
@@ -267,7 +323,7 @@ namespace Suora
 			CreateParams.ButtonDropShadow = true;
 			if (EditorUI::Button("Create Project", x + (GetWindow()->GetWidth() - x) * 0.8f - 125.0f, 100.0f, 250.0f, 30.0f, CreateParams))
 			{
-				// ...
+				CreateProject(m_ProjectName, m_ProjectPath, m_SelectedProject);
 			}
 		}
 

@@ -25,6 +25,7 @@ namespace Suora
 
 		static void ShowInExplorer(const std::filesystem::path& folderPath);
 		static void CreateDirectory(const std::filesystem::path& folderPath);
+		static void CopyDirectory(const std::filesystem::path& src, const std::filesystem::path& dest);
 		static void RemoveFile(const std::filesystem::path& filePath);
 	};
 

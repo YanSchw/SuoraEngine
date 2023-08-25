@@ -107,8 +107,9 @@ namespace Suora
 			if (SelectedMajorTab < 0)
 			{
 				EditorUI::Text("Use Ctrl + Space to open the ContentDrawer", Font::Instance, 0.0f, 0.0f, m_Window->GetWidth(), m_Window->GetHeight(), 28.0f, Vec2(0.0f), Color(1.0f));
-				EditorUI::RenderOverlays(deltaTime);
 				RenderBottomBarAndHeroTool(deltaTime);
+				EditorUI::PushInput(NativeInput::GetMousePosition().x, m_Window->GetHeight() - NativeInput::GetMousePosition().y, 0, 0);
+				EditorUI::RenderOverlays(deltaTime);
 				return;
 			}
 
@@ -119,6 +120,7 @@ namespace Suora
 		/// Draw the actual Launcher, if needed...
 		if (IsLauncher())
 		{
+			EditorUI::PushInput(NativeInput::GetMouseX(), GetWindow()->GetHeight() - NativeInput::GetMouseY(), 0.0f, 0.0f);
 			m_Launcher->Render(deltaTime);
 		}
 		else
@@ -138,7 +140,7 @@ namespace Suora
 		}
 
 		// Toolbar
-		if (!IsLauncher())
+		if (!IsLauncher() && SelectedMajorTab >= 0)
 		{
 			EditorUI::DrawRect(0, m_Window->GetHeight() - (73 * ui), m_Window->GetWidth(), 40 * ui, 0, EditorPreferences::Get()->UiBackgroundColor);
 			EditorUI::PushInput(NativeInput::GetMousePosition().x, m_Window->GetHeight() - NativeInput::GetMousePosition().y, 0, 0);
@@ -149,6 +151,7 @@ namespace Suora
 		EditorUI::DrawRectOutline(0, 0, m_Window->GetWidth(), m_Window->GetHeight(), 1, Color(0, 0, 0, 1));
 
 		// Render Overlays
+		EditorUI::PushInput(NativeInput::GetMousePosition().x, m_Window->GetHeight() - NativeInput::GetMousePosition().y, 0, 0);
 		EditorUI::RenderOverlays(deltaTime);
 
 		// Tooltip

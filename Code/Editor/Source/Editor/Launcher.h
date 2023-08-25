@@ -28,6 +28,7 @@ namespace Suora
 		Window* GetWindow();
 
 		void OpenProject(const std::string& path, bool isNativeProject);
+		void CreateProject(const std::string& projectName, std::filesystem::path projectPath, Ref<TemplateProject> templateProject);
 
 	private:
 		void RenderProjects();
