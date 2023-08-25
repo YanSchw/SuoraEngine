@@ -1,0 +1,19 @@
+# Binaries
+**/bin/
+!vendor/premake/bin/
+bin-int/
+**/Build/
+
+
+# Suora files
+*.log
+
+# Visual Studio files and folder
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+
+# Generated Headers
+**.generated.h

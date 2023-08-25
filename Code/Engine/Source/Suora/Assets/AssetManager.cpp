@@ -1,0 +1,278 @@
+#include "Precompiled.h"
+#include "AssetManager.h"
+#include <unordered_map>
+#include <future>
+#include "Suora/NodeScript/Scripting/ScriptVM.h"
+#include "Suora/Assets/SuoraProject.h"
+#include "Suora/Core/Engine.h"
+#include "Platform/Platform.h"
+
+#include "Mesh.h"
+#include "Material.h"
+#include "Font.h"
+#include "Texture2D.h"
+#include "ShaderGraph.h"
+
+namespace Suora
+{
+
+	static std::unordered_map<std::string, Class> AssetClasses;
+
+	static void PreInitializeAsset(Asset* asset)
+	{
+		const std::string str = Platform::ReadFromFile(asset->m_Path.string());
+		asset->PreInitializeAsset(str);
+	}
+
+	static std::string GetCorrespondingAssetExtension(const Class& cls)
+	{
+		return Asset::GetAssetExtensionByClass(cls.GetNativeClassID());
+	}
+	static Class GetCorrespondingAssetClass(const std::string& fileExt)
+	{
+		if (fileExt == ".png" || fileExt == ".jpg")
+			return Texture2D::StaticClass();
+
+		if (fileExt == ".obj" || fileExt == ".fbx")
+			return Mesh::StaticClass();
+
+		return Class::None;
+	}
+
+	Asset* AssetManager::CreateMissingAsset(const Class& cls, const SuoraID& id)
+	{
+		Asset* asset = Cast<Asset>(New(cls));
+		asset->m_UUID = id;
+		s_Assets.Add(asset);
+		asset->SetFlag(AssetFlags::Missing);
+		return asset;
+	}
+
+	void AssetManager::Initialize(const FilePath& contentPath)
+	{
+		ProjectSettings::s_SeekingProjectSettings = true;
+		HotReload(contentPath, ProjectSettings::StaticClass());
+		ProjectSettings::s_SeekingProjectSettings = false;
+
+		if (ProjectSettings* project = GetFirstAssetOfType<ProjectSettings>())
+		{
+			s_ProjectAssetPath = contentPath.string();
+			if (project->GetEnginePath() == "")
+			{
+				s_AssetRootPath = s_ProjectAssetPath;
+			}
+			else
+			{
+				s_AssetRootPath = project->GetEnginePath() + "/Content";
+			}
+		}
+		else
+		{
+			s_ProjectAssetPath = "";
+			s_AssetRootPath = contentPath.string();
+		}
+
+		// Now, actually load all Assets...
+		HotReload(s_AssetRootPath);
+		if (s_ProjectAssetPath != "" && s_ProjectAssetPath != s_AssetRootPath)
+		{
+			HotReload(s_ProjectAssetPath);
+		}
+
+	}
+
+	AssetManager::~AssetManager()
+	{
+		for (Asset* asset : s_Assets.GetData())
+		{
+			delete asset;
+		}
+	}
+
+	Array<UnresolvedAsset> AssetManager::HotReload(const std::filesystem::path& contentPath, const Class& baseClass)
+	{
+		Array<UnresolvedAsset> UnresolvedAssets;
+
+		std::vector<DirectoryEntry> Entries = File::GetAllAbsoluteEntriesOfPath(contentPath);
+		
+		for (auto& file : Entries)
+		{
+			if (GetAssetByPath(file)) continue;
+
+			Asset* asset = nullptr;
+
+			const std::string ext = File::GetFileExtension(file);
+			const Class cls = Asset::GetAssetClassByExtension(ext);
+			if (!cls.Inherits(baseClass)) continue;
+			if (cls != Asset::StaticClass()) asset = Cast<Asset>(New(cls));
+
+			if (asset)
+			{
+				const FilePath path = file;
+				asset->m_Path = path;
+				asset->m_Name = path.filename().string();
+				s_Assets.Add(asset);
+			}
+
+			// Unresolved Assets
+			if (!asset)
+			{
+				const Class otherClass = GetCorrespondingAssetClass(ext);
+				if (otherClass != Class::None)
+				{
+					std::filesystem::path otherPath = file.path().parent_path() / (file.path().stem().string() + GetCorrespondingAssetExtension(otherClass));
+					if (!std::filesystem::exists(otherPath))
+					{
+						UnresolvedAssets.Add(UnresolvedAsset(otherClass, file));
+					}
+				}
+			}
+		}
+
+		InitializeAllAssets();
+
+		if (UnresolvedAssets.Size() > 0)
+		{
+			SUORA_WARN(LogCategory::AssetManagement, "There are unresolved Assets:");
+			for (auto& It : UnresolvedAssets)
+			{
+				SUORA_WARN(LogCategory::AssetManagement, " - {0}", It.m_Path.string());
+			}
+		}
+
+		ScriptEngine::CompileAllScriptClasses();
+
+		return UnresolvedAssets;
+	}
+
+	void AssetManager::InitializeAllAssets()
+	{
+		for (int i = 0; i < s_Assets.Size(); i++)
+		{
+			if (!s_Assets[i]->IsFlagSet(AssetFlags::WasPreInitialized) && !s_Assets[i]->IsFlagSet(AssetFlags::Missing))
+			{
+				const std::string str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
+				s_Assets[i]->PreInitializeAsset(str);
+			}
+		}
+		std::unordered_map<std::string, Asset*> UsedUUIDs;
+		for (int i = 0; i < s_Assets.Size(); i++)
+		{
+			if (s_Assets[i]->IsFlagSet(AssetFlags::Missing))
+			{
+				for (int j = i + 1; j < s_Assets.Size(); j++)
+				{
+					if (s_Assets[i]->m_UUID == s_Assets[j]->m_UUID && s_Assets[i]->GetClass() == s_Assets[j]->GetClass() && !s_Assets[j]->IsFlagSet(AssetFlags::Missing))
+					{
+						s_Assets[i]->ClearFlag(AssetFlags::Missing);
+						s_Assets[i]->m_Path = s_Assets[j]->m_Path;
+						s_Assets[i]->m_Name = s_Assets[j]->m_Name;
+						const std::string str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
+						s_Assets[i]->PreInitializeAsset(str);
+
+						delete s_Assets[j];
+						s_Assets.RemoveAt(j);
+						break;
+					}
+				}
+			}
+			
+			if (s_Assets[i]->IsFlagSet(AssetFlags::Missing))
+			{
+				// In this case, the Missing Asset was not resolved! -> skip
+				continue;
+			}
+
+			if (UsedUUIDs.find(s_Assets[i]->m_UUID.GetString()) != UsedUUIDs.end())
+			{
+				SuoraError("Colliding Asset UUIDs: {0}", s_Assets[i]->m_UUID.GetString());
+				SuoraError("   -> {0}", s_Assets[i]->m_Name);
+				SuoraError("   -> {0}", UsedUUIDs[s_Assets[i]->m_UUID.GetString()]->m_Name);
+				SuoraAssert(false);
+			}
+			else
+			{
+				UsedUUIDs[s_Assets[i]->m_UUID.GetString()] = s_Assets[i];
+			}
+		}
+		for (int i = 0; i < s_Assets.Size(); i++)
+		{
+			if (!s_Assets[i]->IsFlagSet(AssetFlags::WasInitialized) && !s_Assets[i]->IsFlagSet(AssetFlags::Missing))
+			{
+				const std::string str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
+				s_Assets[i]->InitializeAsset(str);
+			}
+		}
+	}
+
+	void AssetManager::Update(float deltaTime)
+	{
+		for (int i = s_AssetStreamPool.Size() - 1; i >= 0; i--)
+		{
+			if (Mesh* mesh = s_AssetStreamPool[i]->As<Mesh>())
+			{
+				//mesh->GetVertexArray();
+			}
+			else if (Texture2D* texture = s_AssetStreamPool[i]->As<Texture2D>())
+			{
+				//texture->GetTexture();
+			}
+			else
+			{
+				SuoraError("AssetManager::Update(float): Missing 'StreamAssetClass' implementation. Cannot resolve possible stream blockage!");
+			}
+		}
+	}
+	
+	void AssetManager::RemoveAsset(Asset* asset)
+	{
+		if (!asset) return;
+
+		asset->SetFlag(AssetFlags::Missing);
+		asset->RemoveAsset();
+	}
+	void AssetManager::RenameAsset(Asset* asset, const std::string& name)
+	{
+		Platform::RenameFile(asset->m_Path, name);
+
+		asset->m_Name = name;
+		const std::string ext = asset->m_Path.extension().string();
+		asset->m_Path = asset->m_Path.parent_path() / (name + ext);
+	}
+
+	void AssetManager::LoadAsset(const std::string& path)
+	{
+		if (GetAssetByPath(path)) return;
+
+		DirectoryEntry file = DirectoryEntry(path);
+		Asset* asset = nullptr;
+
+		const std::string ext = File::GetFileExtension(file);
+		const Class cls = Asset::GetAssetClassByExtension(ext);
+		if (cls != Asset::StaticClass()) asset = Cast<Asset>(New(cls));
+
+		if (asset)
+		{
+			const FilePath path = file;
+			asset->m_Path = path;
+			asset->m_Name = path.filename().string();
+			s_Assets.Add(asset);
+
+			asset->PreInitializeAsset(Platform::ReadFromFile(asset->m_Path.string()));
+			asset->InitializeAsset(Platform::ReadFromFile(asset->m_Path.string()));
+		}
+	}
+
+	Asset* AssetManager::CreateAsset(const Class& assetClass, const std::string& name, const std::string& dir)
+	{
+		Asset* asset = New(assetClass)->As<Asset>();
+		std::vector<std::string> exts = asset->GetAssetExtensions();
+		s_Assets.Add(asset);
+		asset->m_Name = name;
+		asset->m_Path = dir + "/" + name + (exts.size() > 0 ? exts[0] : ".asset");
+		asset->m_UUID = SuoraID::Generate();
+
+		return asset;
+	}
+
+}

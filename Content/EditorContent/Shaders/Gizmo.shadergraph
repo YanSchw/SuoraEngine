@@ -1,0 +1,213 @@
+Material: 
+  ShaderGraph: "9bc003a3-7ceb-4433-b39d-81537ecdd5c5"
+  Uniform_0: 
+    m_Float: 0.000000
+    m_Label: BaseColor
+    m_Texture2D: "60b698ff-23ce-43b8-b280-a9d987039b1a"
+    m_Type: 5
+    m_Vec3: 0.000000/0.000000/0.000000
+  m_BackfaceCulling: true
+NodeGraph: 
+  Node_0: 
+    Color: 
+      a: 1.000000
+      b: 0.570000
+      g: 0.640000
+      r: 0.800000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: World Position Offset
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 0.0
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.480000
+        g: 0.590000
+        r: 0.520000
+      IsReceivingPin: true
+      Label: Base Color
+      PinHeight: 25.000000
+      PinID: 4
+      Target: 2/Output/0
+      m_AdditionalData: 0.0
+    NodeID: 1
+    Position: 
+      x: 260.000000
+      y: 5.000000
+    Size: 
+      x: 300.000000
+      y: 100.000000
+    Title: Master
+  Node_1: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.490000
+      r: 0.900000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Name
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: BaseColor
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Type
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 5
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Default
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 0.0
+    NodeID: 2
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.900000
+      IsReceivingPin: false
+      Label: Uniform
+      PinHeight: 25.000000
+      PinID: 5
+      Target: NULL
+      m_AdditionalData: 0.0
+    Position: 
+      x: "-525.000000"
+      y: 125.000000
+    Size: 
+      x: 225.000000
+      y: 185.000000
+    Title: Uniform
+  Node_2: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.440000
+      r: 0.600000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.900000
+      IsReceivingPin: true
+      Label: Texture2D
+      PinHeight: 25.000000
+      PinID: 5
+      Target: 1/Output/0
+      m_AdditionalData: 0.0
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.200000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: UV
+      PinHeight: 25.000000
+      PinID: 2
+      Target: 3/Output/0
+      m_AdditionalData: 0.0
+    NodeID: 102
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.480000
+        g: 0.590000
+        r: 0.520000
+      IsReceivingPin: false
+      Label: RGBA
+      PinHeight: 25.000000
+      PinID: 4
+      Target: NULL
+      m_AdditionalData: 0.0
+    Output_1: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: false
+      Label: RGB
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 0.0
+    Position: 
+      x: "-195.000000"
+      y: 65.000000
+    Size: 
+      x: 215.000000
+      y: 100.000000
+    Title: Sample Texture2D
+  Node_3: 
+    Color: 
+      a: 1.000000
+      b: 0.360000
+      g: 0.870000
+      r: 0.520000
+    NodeID: 103
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.200000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: Vec2
+      PinHeight: 25.000000
+      PinID: 2
+      Target: NULL
+      m_AdditionalData: 0.0
+    Position: 
+      x: "-525.000000"
+      y: "-70.000000"
+    Size: 
+      x: 215.000000
+      y: 75.000000
+    Title: UV
+UUID: "9bc003a3-7ceb-4433-b39d-81537ecdd5c5"
+m_BaseShader: ForwardUnlit.glsl
+m_ShaderSource: >-
+  \ctype vertex\n\cversion 330 core\n\n\n\nlayout(location = 0) in
+  vec3 a_Position;\nlayout(location = 1) in vec4 a_Color;\nlayout(location
+  = 2) in vec2 a_TexCoord;\nout vec2 UV;\nout vec4 frag_Color;\n\nuniform
+  mat4 u_Transform;\nuniform mat4 u_ViewProjection;\n\n\nuniform sampler2D
+  BaseColor;\n\n\nvoid main(void)\n{\n    vec3 worldPositionOffset
+  =  vec3(0.0);\n\tgl_Position = u_ViewProjection * u_Transform * vec4(a_Position
+  + worldPositionOffset, 1.0);\n\t\n\tfrag_Color = a_Color;\n\tUV =
+  a_TexCoord;\n}\n\n\ctype fragment\n\cversion 330 core\n\nin vec4
+  frag_Color;\nin vec2 UV;\nout vec4 out_Color;\n\n\nuniform sampler2D
+  BaseColor;\n\n\nvoid main(void)\n{\n\tout_Color = texture((BaseColor),
+  UV);\n\tif (out_Color.a == 0.0) discard;\n}
+m_SourceFileTime: "-5159999094144154916"

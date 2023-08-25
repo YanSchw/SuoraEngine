@@ -1,0 +1,8 @@
+Mesh: 
+  Materials: 
+    0: "a86e5b42-a411-408a-9b06-3462940253c7"
+    Overwrite: false
+  m_BoundingSphereRadius: 1.000000
+  m_IsDecimaMesh: false
+  m_NegativeY_Bounds: "-1.000000"
+UUID: "98d79d9c-fae3-49bd-bba8-7a0d638a741d"
