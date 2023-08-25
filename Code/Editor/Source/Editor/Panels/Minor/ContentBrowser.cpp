@@ -206,30 +206,9 @@ namespace Suora
 		// Header
 		EditorUI::DrawRect(0, GetHeight() - 40, GetWidth(), 40, 0, Color(Vec3(EditorPreferences::Get()->UiColor) * 0.9f, 1.0f));
 
-		EditorUI::ButtonParams _HdrParams;
-		_HdrParams.ButtonRoundness = 15.0f;
+		DrawContentPaths();
 
-		if (EditorUI::Button("", 15, GetHeight() - 35, 30, 30, _HdrParams)) m_CurrentPath = AssetManager::GetAssetRootPath();
-		EditorUI::DrawTexturedRect(m_ArrowRight, 20 - 3, GetHeight() - 30, 20, 20, 0, Color(1.0f));
-		EditorUI::DrawTexturedRect(m_ArrowRight, 20 + 3, GetHeight() - 30, 20, 20, 0, Color(1.0f));
-		std::vector<std::filesystem::path> paths;
-		paths.push_back(m_CurrentPath);
-		while (paths[0] != AssetManager::GetAssetRootPath())
-		{
-			paths.insert(paths.begin(), paths[0].parent_path());
-		}
-		int x_ = 15 + 35;
-		for (std::filesystem::path& path : paths)
-		{
-			const std::string label = path.stem().string();
-			const float strWidth = Font::Instance->GetStringWidth(label, 32.0f) * 0.8f;
-			if (EditorUI::Button(label, x_, GetHeight() - 35, strWidth, 30, _HdrParams)) m_CurrentPath = path.string();
-			x_ += strWidth + 5;
-			if (EditorUI::Button("", x_, GetHeight() - 35, 30, 30, _HdrParams)) { }
-			EditorUI::DrawTexturedRect(m_ArrowRight, x_ + 5, GetHeight() - 30, 20, 20, 0, Color(1.0f));
-			x_ += 35;
-		}
-
+		// Draw the Asset Importer Button
 		if (EditorUI::Button("Asset Importer", GetWidth() - 175.0f, GetHeight() - 25.0f, 150.0f, 20.0f, EditorUI::ButtonParams::Highlight()))
 		{
 			EditorUI::CreateOverlay<AssetImporter>(GetMajorTab()->GetEditorWindow()->GetWindow()->GetWidth() / 6.0f, GetMajorTab()->GetEditorWindow()->GetWindow()->GetHeight() / 6.0f, GetMajorTab()->GetEditorWindow()->GetWindow()->GetWidth() * 2.0f / 3.0f, GetMajorTab()->GetEditorWindow()->GetWindow()->GetHeight() * 2.0f / 3.0f, AssetManager::HotReload());
@@ -357,6 +336,68 @@ namespace Suora
 		}
 	}
 
+	void ContentBrowser::DrawContentPaths()
+	{
+		// Reset, if needed...
+		if (m_CurrentMode == PathMode::ProjectPath && m_CurrentPath == AssetManager::GetAssetRootPath())
+		{
+			m_CurrentPath = GetRootPath();
+		}
+
+		// Draw all the Paths...
+		EditorUI::ButtonParams _HdrParams;
+		_HdrParams.ButtonRoundness = 15.0f;
+
+		/*** >> ***/
+		if (EditorUI::Button("", 15, GetHeight() - 35, 30, 30, _HdrParams))
+		{
+			m_CurrentPath = GetRootPath();
+		}
+		EditorUI::DrawTexturedRect(m_ArrowRight, 20 - 3, GetHeight() - 30, 20, 20, 0, Color(1.0f));
+		EditorUI::DrawTexturedRect(m_ArrowRight, 20 + 3, GetHeight() - 30, 20, 20, 0, Color(1.0f));
+
+		std::vector<std::filesystem::path> paths;
+		paths.push_back(m_CurrentPath);
+		int x_ = 15 + 35;
+		if (EditorUI::Button(m_CurrentMode == PathMode::ProjectPath ? "ProjectPath" : "EnginePath", x_, GetHeight() - 35, 145.0f, 30, _HdrParams))
+		{
+			EditorUI::CreateContextMenu({ EditorUI::ContextMenuElement{{}, [&]() { m_CurrentMode = PathMode::EnginePath; m_CurrentPath = GetRootPath(); }, "EnginePath", nullptr},
+										  EditorUI::ContextMenuElement{{}, [&]() { m_CurrentMode = PathMode::ProjectPath; m_CurrentPath = GetRootPath(); }, "ProjectPath", nullptr} }, x_, GetHeight() - 35);
+		}
+		EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("8742cec8-9ee5-4645-b036-577146904b41"))->GetTexture(), x_ + 125.0f, GetHeight() - 27.5f, 15.0f, 15.0f, 0.0f, Color(0.8f));
+		x_ += 150.0f;
+		if (EditorUI::Button("", x_, GetHeight() - 35, 30, 30, _HdrParams));
+		EditorUI::DrawTexturedRect(m_ArrowRight, x_ + 5, GetHeight() - 30, 20, 20, 0, Color(1.0f));
+		x_ += 35.0f;
+
+		// Now, render the rest
+		while (paths[0] != GetRootPath())
+		{
+			paths.insert(paths.begin(), paths[0].parent_path());
+		}
+		bool skipFirst = false;
+		for (std::filesystem::path& path : paths)
+		{
+			if (!skipFirst)
+			{
+				skipFirst = true;
+				continue;
+			}
+
+			const std::string label = path.stem().string();
+			const float strWidth = Font::Instance->GetStringWidth(label, 32.0f) * 0.8f;
+
+			if (EditorUI::Button(label, x_, GetHeight() - 35, strWidth, 30, _HdrParams))
+			{
+				m_CurrentPath = path.string();
+			}
+			x_ += strWidth + 5;
+			if (EditorUI::Button("", x_, GetHeight() - 35, 30, 30, _HdrParams));
+			EditorUI::DrawTexturedRect(m_ArrowRight, x_ + 5, GetHeight() - 30, 20, 20, 0, Color(1.0f));
+			x_ += 35;
+		}
+	}
+
 	void ContentBrowser::OpenAsset(Asset* asset)
 	{
 		GetMajorTab()->GetEditorWindow()->OpenAsset(asset);
@@ -422,6 +463,11 @@ namespace Suora
 		}
 
 		return false;
+	}
+
+	std::string ContentBrowser::GetRootPath()
+	{
+		return m_CurrentMode == PathMode::ProjectPath ? AssetManager::GetProjectAssetPath() : AssetManager::GetAssetRootPath();
 	}
 
 }
