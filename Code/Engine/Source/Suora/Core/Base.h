@@ -1,8 +1,8 @@
 #pragma once
 
 #define SUORA_VERSION_MAJOR 0
-#define SUORA_VERSION_MINOR 5
-#define SUORA_VERSION_PATCH 1
+#define SUORA_VERSION_MINOR 6
+#define SUORA_VERSION_PATCH 0
 
 #include <memory>
 #include "Suora/Core/PlatformDetection.h"
