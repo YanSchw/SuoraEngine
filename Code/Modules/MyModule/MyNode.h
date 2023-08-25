@@ -17,7 +17,7 @@ using namespace Suora;
 namespace MyModule
 {
 
-	class MyTrigger : public Suora::BoxCollisionNode
+	class MyTrigger : public BoxCollisionNode
 	{
 		SUORA_CLASS(5784933434);
 	public:
@@ -30,7 +30,7 @@ namespace MyModule
 		}
 	};
 
-	class ProjectileBase : public Suora::RigidbodyNode
+	class ProjectileBase : public RigidbodyNode
 	{
 		SUORA_CLASS(435867476);
 	public:
@@ -55,7 +55,7 @@ namespace MyModule
 		void WorldUpdate(float deltaTime) override;
 	};
 	
-	class MyCharacterController : public Suora::CharacterNode
+	class MyCharacterController : public CharacterNode
 	{
 		SUORA_CLASS(869722254);
 	public:
@@ -65,9 +65,9 @@ namespace MyModule
 		const Suora::Class BP_Projectile = Suora::Class::FromString("Node$bwaf6a58-d932-4c5d-b591-9b818d5b97c9");
 
 		MEMBER()
-		Suora::Class m_Class = Suora::Class::None;
+		Class m_Class = Class::None;
 		MEMBER()
-		Suora::SubclassOf<ProjectileBase> m_Subclass;
+		SubclassOf<ProjectileBase> m_Subclass;
 
 	public:
 
@@ -157,7 +157,7 @@ namespace MyModule
 
 	};
 
-	class DamagableNodeComponent : public Suora::Component
+	class DamagableNodeComponent : public Component
 	{
 		SUORA_CLASS(7582439);
 	public:
@@ -168,7 +168,7 @@ namespace MyModule
 		void Damage(float amount);
 
 		MEMBER()
-		Suora::Delegate<Suora::DelegateNoParams> OnDeath;
+		Delegate<DelegateNoParams> OnDeath;
 	};
 	
 }
