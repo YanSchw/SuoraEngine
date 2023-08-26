@@ -28,7 +28,7 @@ namespace Suora
 		virtual ~Object();
 
 		static Class StaticClass() { return (Class) 1; }
-		virtual Class GetNativeClass() { return (Class) 1; };
+		virtual Class GetNativeClass() { return (Class) 1; }
 		Class GetClass();
 		
 		virtual bool CastImpl(const Class& cls) const
