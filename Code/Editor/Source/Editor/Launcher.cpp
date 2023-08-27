@@ -113,6 +113,21 @@ namespace Suora
 
 	void Launcher::OpenProject(const std::string& path, bool isNativeProject)
 	{
+		/*** Always Update the EnginePath of the ProjectSettings ***/
+		{
+			const std::string str = Platform::ReadFromFile(path);
+			Yaml::Node root;
+			Yaml::Parse(root, str);
+			Yaml::Node& settings = root["Settings"];
+			{
+				settings["Engine"]["Path"] = std::filesystem::path(AssetManager::GetAssetRootPath()).parent_path().string();
+			}
+			std::string out;
+			Yaml::Serialize(root, out);
+			Platform::WriteToFile(path, out);
+		}
+		/**/
+
 		if (isNativeProject)
 		{
 
