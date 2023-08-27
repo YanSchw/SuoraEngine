@@ -254,7 +254,14 @@ namespace Suora
 
 			if (EditorUI::Button("", x + (GetWindow()->GetWidth() - x) * 0.1f, y, (GetWindow()->GetWidth() - x) * 0.75f, 60.0f * ui - 1))
 			{
-				OpenProject(It, false);
+				// Now check, if Project isNative
+				const std::string str = Platform::ReadFromFile(It);
+				Yaml::Node root;
+				Yaml::Parse(root, str);
+				Yaml::Node& settings = root["Settings"];
+				bool isNative = settings["Engine"]["m_IsNativeProject"].As<std::string>() == "true";
+
+				OpenProject(It, isNative);
 			}
 			
 			EditorUI::Text(projectPath.stem().string(), Font::Instance, x + (GetWindow()->GetWidth() - x) * 0.1f + 20, y, (GetWindow()->GetWidth() - x) * 0.25f - 20, 60.0f * ui - 1, 28, Vec2(-1, 0), Color(1));
