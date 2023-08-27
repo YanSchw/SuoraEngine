@@ -53,6 +53,9 @@ namespace Suora
 				}
 			}
 		}
+
+		// If there is no Project, the "Create new Project" Tab is shown by default
+		m_SelectedTab = EditorPreferences::Get()->m_AllCachedProjectPaths.Size() >= 1 ? 0 : 1;
 	}
 
 	void Launcher::Render(float deltaTime)
