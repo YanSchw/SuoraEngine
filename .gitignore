@@ -17,3 +17,6 @@ bin-int/
 
 # Generated Headers
 **.generated.h
+
+# Generated Modules
+**.module.h
