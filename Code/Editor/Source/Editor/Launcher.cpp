@@ -26,7 +26,8 @@ namespace Suora
 					m_TemplateProjects.Add(ref);
 					ref->m_TemplateProjectPath = project;
 					ref->m_Name = project.path().filename().string();
-					// TODO: set isNative...
+					
+					ref->m_IsNative = std::filesystem::exists(std::filesystem::path(project).append("Code"));
 
 					std::filesystem::path info = project.path();
 					info.append("LauncherInfo");
@@ -282,12 +283,26 @@ namespace Suora
 
 		float x = 250 * ui;
 
-
 		float y = GetWindow()->GetHeight() - (36.0f * ui);
-		
-		y -= 20.0f * ui;
+		y -= 25.0f * ui;
+		if (EditorUI::Button("C++", x + (GetWindow()->GetWidth() - x) * 0.3f - 225.0f, y, 200.0f, 30.0f, m_SelectedContentOnlyTab ? EditorUI::ButtonParams() : EditorUI::ButtonParams::Outlined()))
+		{
+			m_SelectedContentOnlyTab = false;
+			m_SelectedProject = nullptr;
+		}
+		if (EditorUI::Button("Content only", x + (GetWindow()->GetWidth() - x) * 0.3f + 025.0f, y, 200.0f, 30.0f, !m_SelectedContentOnlyTab ? EditorUI::ButtonParams() : EditorUI::ButtonParams::Outlined()))
+		{
+			m_SelectedContentOnlyTab = true;
+			m_SelectedProject = nullptr;
+		}
+
+		y -= 45.0f * ui;
 		for (auto& It : m_TemplateProjects)
 		{
+			if (It->m_IsNative == m_SelectedContentOnlyTab)
+			{
+				continue;
+			}
 			y -= 75.0f * ui;
 
 			EditorUI::ButtonParams ProjectParams = (It == m_SelectedProject) ? EditorUI::ButtonParams::Outlined() : EditorUI::ButtonParams();

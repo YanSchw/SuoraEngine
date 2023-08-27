@@ -39,7 +39,7 @@ namespace Suora
 		Array<Ref<TemplateProject>> m_TemplateProjects;
 		Ref<TemplateProject> m_SelectedProject;
 
-
+		bool m_SelectedContentOnlyTab = false;
 		std::string m_ProjectName = "MyProject";
 		std::filesystem::path m_ProjectPath = std::filesystem::current_path();
 
