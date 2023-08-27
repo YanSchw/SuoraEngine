@@ -359,13 +359,13 @@ namespace Suora
 		std::vector<std::filesystem::path> paths;
 		paths.push_back(m_CurrentPath);
 		int x_ = 15 + 35;
-		if (EditorUI::Button(m_CurrentMode == PathMode::ProjectPath ? "ProjectPath" : "EnginePath", x_, GetHeight() - 35, 145.0f, 30, _HdrParams))
+		if (EditorUI::Button(m_CurrentMode == PathMode::ProjectPath ? "ProjectPath" : "EnginePath", x_, GetHeight() - 35, 165.0f, 30, _HdrParams))
 		{
 			EditorUI::CreateContextMenu({ EditorUI::ContextMenuElement{{}, [&]() { m_CurrentMode = PathMode::EnginePath; m_CurrentPath = GetRootPath(); }, "EnginePath", nullptr},
 										  EditorUI::ContextMenuElement{{}, [&]() { m_CurrentMode = PathMode::ProjectPath; m_CurrentPath = GetRootPath(); }, "ProjectPath", nullptr} }, x_, GetHeight() - 35);
 		}
-		EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("8742cec8-9ee5-4645-b036-577146904b41"))->GetTexture(), x_ + 125.0f, GetHeight() - 27.5f, 15.0f, 15.0f, 0.0f, Color(0.8f));
-		x_ += 150.0f;
+		EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("8742cec8-9ee5-4645-b036-577146904b41"))->GetTexture(), x_ + 140.0f, GetHeight() - 27.5f, 15.0f, 15.0f, 0.0f, Color(0.9f));
+		x_ += 170.0f;
 		if (EditorUI::Button("", x_, GetHeight() - 35, 30, 30, _HdrParams));
 		EditorUI::DrawTexturedRect(m_ArrowRight, x_ + 5, GetHeight() - 30, 20, 20, 0, Color(1.0f));
 		x_ += 35.0f;
