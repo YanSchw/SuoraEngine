@@ -188,6 +188,7 @@ namespace Suora::Tools
 		}
 	}
 
+	// TODO: Remove
 	void HeaderTool::ParseAllHeadersParentData()
 	{
 		for (Ref<Header> header : m_Headers)
@@ -500,9 +501,9 @@ private:\n\
 						}
 
 						while (str[0] == ' ') str.erase(0, 1);
-						while (str[str.size() - 1] == ' ') str.erase(str.size() - 1, 1);
+						while (str.size() > 0 && str[str.size() - 1] == ' ') str.erase(str.size() - 1, 1);
 
-						if (str[str.size() - 1] == '*' || str[str.size() - 1] == '&')
+						if (str.size() > 0 && (str[str.size() - 1] == '*' || str[str.size() - 1] == '&'))
 						{
 							for (int i = str.size() - 2; i >= 0; i--)
 							{

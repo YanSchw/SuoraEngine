@@ -5,41 +5,9 @@
 #include "Suora/Common/Common.h"
 #include "Suora/Serialization/Yaml.h"
 
-static std::mutex PrintMutex;
-static std::mutex AccessHeaderMutex;
-static std::mutex GenerateClassMutex;
-
-#define PRINT(...) \
-{\
-std::lock_guard<std::mutex> lock(PrintMutex);\
-std::cout << __VA_ARGS__ << std::endl;\
-}
-
-struct Platform
-{
-	static float GetTime()
-	{
-		auto currentTime = std::chrono::steady_clock::now();
-		return currentTime.time_since_epoch().count() / 1000000000.0f;
-	}
-	static void WriteToFile(const std::string& filePath, const std::string& content)
-	{
-		std::ofstream writer;
-		writer.open(filePath);
-
-		writer << content;
-
-		writer.close();
-	}
-	static std::string ReadFromFile(const std::string& filePath)
-	{
-		std::ifstream reader(filePath);
-		std::string str((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
-		reader.close();
-
-		return str;
-	}
-};
+#ifndef BUILDTOOL_IMPL
+#include "Platform/Platform.h"
+#endif
 
 namespace Suora::Tools
 {
@@ -72,8 +40,11 @@ namespace Suora::Tools
 		{
 			for (auto& module_ : std::filesystem::directory_iterator(modulePath))
 			{
-				collection.collectedModules.push_back(std::filesystem::canonical(module_.path()));
-				GenerateModule(std::filesystem::canonical(module_.path()), collection);
+				if (module_.is_directory())
+				{
+					collection.collectedModules.push_back(std::filesystem::canonical(module_.path()));
+					GenerateModule(std::filesystem::canonical(module_.path()), collection);
+				}
 			}
 		}
 
@@ -142,8 +113,9 @@ namespace Suora::Tools
 
 		if (writeAllModules)
 		{
-			Platform::WriteToFile(projectRootPath.string() + "Build/AllModules/premake5.lua", premake5);
-			Platform::WriteToFile(projectRootPath.string() + "Build/AllModules/Modules.cpp", modulesCPP);
+			std::filesystem::create_directories(std::filesystem::path(projectRootPath).append("Build").append("AllModules"));
+			Platform::WriteToFile(projectRootPath.string() + "/Build/AllModules/premake5.lua", premake5);
+			Platform::WriteToFile(projectRootPath.string() + "/Build/AllModules/Modules.cpp", modulesCPP);
 		}
 	}
 
