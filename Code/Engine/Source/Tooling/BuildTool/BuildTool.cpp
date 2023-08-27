@@ -17,20 +17,26 @@ namespace Suora::Tools
 		std::string engineRootPath = projectRootPath.string();
 
 		// Go through Enginepath...
-		std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(std::filesystem::path(projectRootPath).append("Content"));
-		for (auto file : entries)
+		if (writeAllModules)
 		{
-			const std::string ext = File::GetFileExtension(file);
-			if (ext == ".suora")
+			std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(std::filesystem::path(projectRootPath).append("Content"));
+			for (auto file : entries)
 			{
-				const std::string str = Platform::ReadFromFile(file.path().string());
-				Yaml::Node root;
-				Yaml::Parse(root, str);
-				Yaml::Node& settings = root["Settings"];
+				const std::string ext = File::GetFileExtension(file);
+				if (ext == ".suora")
+				{
+					const std::string str = Platform::ReadFromFile(file.path().string());
+					Yaml::Node root;
+					Yaml::Parse(root, str);
+					Yaml::Node& settings = root["Settings"];
 
-				engineRootPath = settings["Engine"]["Path"].As<std::string>();
-				GenerateModules(std::filesystem::path(engineRootPath), collection, false);
-				break;
+					if (!settings["Engine"]["Path"].IsNone())
+					{
+						engineRootPath = settings["Engine"]["Path"].As<std::string>();
+					}
+					GenerateModules(std::filesystem::path(engineRootPath), collection, false);
+					break;
+				}
 			}
 		}
 
