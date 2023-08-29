@@ -11,6 +11,19 @@
 
 namespace Suora::Tools
 {
+	/** Premake5 does not seem to like Backslashes.
+	*   So this function will replace all \ with a / */
+	static std::string FixPathForPremake5(std::string str)
+	{
+		for (int32_t i = 0; i < str.size(); i++)
+		{
+			if (str[i] == '\\')
+			{
+				str[i] = '/';
+			}
+		}
+		return str;
+	}
 
 	void BuildTool::GenerateModules(const std::filesystem::path& projectRootPath, BuildCollection& collection, bool writeAllModules)
 	{
@@ -53,6 +66,8 @@ namespace Suora::Tools
 			}
 		}
 
+		/** Fix EngineRootPath for Premake5 */
+		engineRootPath = FixPathForPremake5(engineRootPath);
 
 		std::string premake5 = "project \"AllModules\"\n\
 		kind \"StaticLib\"\n\
@@ -138,7 +153,7 @@ namespace Suora::Tools
 		}
 
 		collection.links += "\"" + moduleName + "\",\n";
-		collection.includes += "include \"" + modulePath.string() + "\",\n";
+		collection.includes += "include \"" + FixPathForPremake5(modulePath.string()) + "\"\n";
 		collection.inits += "extern void " + moduleName + "_Init(); " + moduleName + "_Init();\n";
 
 		std::string headerIncludes = "";
