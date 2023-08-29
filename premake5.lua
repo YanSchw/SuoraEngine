@@ -41,7 +41,7 @@ group "Dependencies"
 	include "Code/Dependencies/assimp"
 group ""
 
-include "Code/Modules"
+include "Build/AllModules"
 
 
 include "Code/Engine"
