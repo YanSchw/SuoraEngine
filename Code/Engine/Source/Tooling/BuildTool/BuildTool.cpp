@@ -139,6 +139,80 @@ namespace Suora::Tools
 		}
 	}
 
+	void BuildTool::GenerateProjectPremake5(const std::filesystem::path& projectRootPath, const std::filesystem::path& engineRootPath)
+	{
+		std::string projectName = "";
+		std::string temp = projectRootPath.string();
+		for (int32_t i = temp.size() - 1; i >= 0; i--)
+		{
+			if (temp[i] == '\\' || temp[i] == '/')
+			{
+				break;
+			}
+			projectName.insert(0, 1, (char)temp[i]);
+		}
+		std::string enginePathStr = FixPathForPremake5(engineRootPath.string());
+
+		std::string premake5 = "include \"" + enginePathStr + "/Code/Dependencies/premake/premake_customization/solution_items.lua\"\n\
+\n\
+			workspace \"" + projectName + "\"\n\
+			architecture \"x86_64\"\n\
+			startproject \"Editor\"\n\
+\n\
+			configurations\n\
+			{\n\
+				\"Debug\",\n\
+				\"Release\",\n\
+				\"Dist\"\n\
+			}\n\
+\n\
+			flags\n\
+			{\n\
+				\"MultiProcessorCompile\"\n\
+			}\n\
+\n\
+			outputdir = \"%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}\"\n\
+\n\
+			--Include directories relative to root folder(solution directory)\n\
+			IncludeDir = {}\n\
+			IncludeDir[\"GLFW\"] = \"" + enginePathStr + "/Code/Dependencies/GLFW/include\"\n\
+			IncludeDir[\"Glad\"] = \"" + enginePathStr + "/Code/Dependencies/Glad/include\"\n\
+			IncludeDir[\"glm\"] = \"" + enginePathStr + "/Code/Dependencies/glm\"\n\
+			IncludeDir[\"stb_image\"] = \"" + enginePathStr + "/Code/Dependencies/stb_image\"\n\
+			IncludeDir[\"stb_truetype\"] = \"" + enginePathStr + "/Code/Dependencies/stb_truetype\"\n\
+			IncludeDir[\"entt\"] = \"" + enginePathStr + "/Code/Dependencies/entt/include\"\n\
+			IncludeDir[\"assimp\"] = \"" + enginePathStr + "/Code/Dependencies/assimp/include\"\n\
+			IncludeDir[\"Reflection\"] = \"" + enginePathStr + "/Code/Engine/src/Suora/Reflection\"\n\
+\n\
+			group \"Dependencies\"\n\
+				include \"" + enginePathStr + "/Code/Dependencies/premake\"\n\
+				include \"" + enginePathStr + "/Code/Dependencies/GLFW\"\n\
+				include \"" + enginePathStr + "/Code/Dependencies/Glad\"\n\
+				include \"" + enginePathStr + "/Code/Dependencies/assimp\"\n\
+			group \"\"\n\
+\n\
+			include \"Build/AllModules\"\n\
+\n\
+			include \"" + enginePathStr + "/Code/Engine\"\n\
+			include \"" + enginePathStr + "/Code/Editor\"\n\
+			include \"" + enginePathStr + "/Code/Runtime\"\n\
+			include \"" + enginePathStr + "/Code/SuoraBuildTool\"\n\
+			";
+
+		Platform::WriteToFile(projectRootPath.string() + "/premake5.lua", premake5);
+	}
+
+	void BuildTool::GenerateBatchScriptForPremake5Solution(const std::filesystem::path& projectRootPath, const std::filesystem::path& engineRootPath)
+	{
+		std::string batchScript = "@echo off\n\
+			pushd %~dp0\\..\\\n\
+			call " + FixPathForPremake5(engineRootPath.string()) + "/Code/Dependencies/premake/PremakeBinaries/premake5.exe vs2019\n\
+			popd\n\
+			PAUSE\n\
+			";
+		Platform::WriteToFile(projectRootPath.string() + "/Scripts/GenerateSolution.bat", batchScript);
+	}
+
 	void BuildTool::GenerateModule(const std::filesystem::path& modulePath, BuildCollection& collection)
 	{
 		std::string moduleName = "";

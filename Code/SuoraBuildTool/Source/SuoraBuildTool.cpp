@@ -64,6 +64,12 @@ public:
 		Tools::BuildTool buildTool;
 		buildTool.GenerateModules(std::filesystem::path(projectCodePath).parent_path());
 		std::cout << "Generated AllModules!" << std::endl;
+
+		if (enginePath != "")
+		{
+			buildTool.GenerateProjectPremake5(projectCodePath.parent_path(), enginePath);
+			buildTool.GenerateBatchScriptForPremake5Solution(projectCodePath.parent_path(), enginePath);
+		}
 	}
 
 };
