@@ -1,4 +1,4 @@
-project "MyModule"
+project "DefaultEngineModule"
 		kind "StaticLib"
 		language "C++"
 		cppdialect "C++17"

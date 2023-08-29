@@ -24,11 +24,11 @@ project "AllModules"
 	links 
 	{
 		"Engine",
-		"MyModule"
+		"DefaultEngineModule"
 	}
 
 	group "Modules"
-		include "MyModule"
+		include "DefaultEngineModule"
 	group ""
 	
 	filter "system:windows"
