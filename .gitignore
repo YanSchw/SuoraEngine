@@ -20,3 +20,4 @@ bin-int/
 
 # Generated Modules
 **.module.cpp
+**.generated.lua
