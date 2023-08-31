@@ -196,7 +196,7 @@ namespace Suora::Tools
 			include \"" + enginePathStr + "/Code/Engine\"\n\
 			include \"" + enginePathStr + "/Code/Editor\"\n\
 			include \"" + enginePathStr + "/Code/Runtime\"\n\
-			--include \"" + enginePathStr + "/Code/SuoraBuildTool\"\n\
+			--include \"" + enginePathStr + "/Code/SuoraBuildTool/project.lua\"\n\
 			";
 
 		Platform::WriteToFile(projectRootPath.string() + "/premake5.lua", premake5);

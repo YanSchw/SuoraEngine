@@ -1,43 +1,17 @@
-project "SuoraBuildTool"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
+include "../Dependencies/premake/premake_customization/solution_items.lua"
 
-	targetdir ("%{wks.location}/Build/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{wks.location}/Build/Intermediate/" .. outputdir .. "/%{prj.name}")
+ENGINE_PATH = "%{wks.location}/../.."
 
-	files
+workspace "SuoraBuildToolStandaloneCompilation"
+	architecture "x86_64"
+	startproject "SuoraBuildTool"
+
+	configurations
 	{
-		"Source/SuoraBuildTool.cpp"
+		"Debug",
+		"Release",
+		"Dist"
 	}
 
-	includedirs
-	{
-		"%{wks.location}/Code/Dependencies/spdlog/include",
-		"%{wks.location}/Code/Engine/Source",
-		"%{wks.location}/Code/Dependencies"
-	}
-
-	links
-	{
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-
-	filter "configurations:Debug"
-		defines "SUORA_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "SUORA_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "SUORA_DIST"
-		runtime "Release"
-		optimize "on"
-		
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+include "project.lua"

@@ -1,5 +1,7 @@
 include "./Code/Dependencies/premake/premake_customization/solution_items.lua"
 
+ENGINE_PATH = "%{wks.location}"
+
 workspace "Suora"
 	architecture "x86_64"
 	startproject "Editor"
@@ -47,4 +49,4 @@ include "Build/AllModules"
 include "Code/Engine"
 include "Code/Editor"
 include "Code/Runtime"
-include "Code/SuoraBuildTool"
+include "Code/SuoraBuildTool/project.lua"
