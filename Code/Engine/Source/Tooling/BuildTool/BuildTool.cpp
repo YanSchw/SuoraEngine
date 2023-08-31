@@ -61,7 +61,7 @@ namespace Suora::Tools
 				if (module_.is_directory())
 				{
 					collection.collectedModules.push_back(std::filesystem::canonical(module_.path()));
-					GenerateModule(std::filesystem::canonical(module_.path()), collection);
+					GenerateModule(std::filesystem::canonical(module_.path()), engineRootPath, collection);
 				}
 			}
 		}
@@ -80,7 +80,7 @@ namespace Suora::Tools
 \n\
 		files\n\
 		{\n\
-			\"Modules.cpp\"\n\
+			\"Modules.generated.cpp\"\n\
 		}\n\
 \n\
 		includedirs\n\
@@ -135,7 +135,7 @@ namespace Suora::Tools
 		{
 			std::filesystem::create_directories(std::filesystem::path(projectRootPath).append("Build").append("AllModules"));
 			Platform::WriteToFile(projectRootPath.string() + "/Build/AllModules/premake5.lua", premake5);
-			Platform::WriteToFile(projectRootPath.string() + "/Build/AllModules/Modules.cpp", modulesCPP);
+			Platform::WriteToFile(projectRootPath.string() + "/Build/AllModules/Modules.generated.cpp", modulesCPP);
 		}
 	}
 
@@ -196,7 +196,7 @@ namespace Suora::Tools
 			include \"" + enginePathStr + "/Code/Engine\"\n\
 			include \"" + enginePathStr + "/Code/Editor\"\n\
 			include \"" + enginePathStr + "/Code/Runtime\"\n\
-			include \"" + enginePathStr + "/Code/SuoraBuildTool\"\n\
+			--include \"" + enginePathStr + "/Code/SuoraBuildTool\"\n\
 			";
 
 		Platform::WriteToFile(projectRootPath.string() + "/premake5.lua", premake5);
@@ -213,7 +213,7 @@ namespace Suora::Tools
 		Platform::WriteToFile(projectRootPath.string() + "/Scripts/GenerateSolution.bat", batchScript);
 	}
 
-	void BuildTool::GenerateModule(const std::filesystem::path& modulePath, BuildCollection& collection)
+	void BuildTool::GenerateModule(const std::filesystem::path& modulePath, const std::filesystem::path& enginePath, BuildCollection& collection)
 	{
 		std::string moduleName = "";
 		std::string temp = modulePath.string();
@@ -227,7 +227,7 @@ namespace Suora::Tools
 		}
 
 		collection.links += "\"" + moduleName + "\",\n";
-		collection.includes += "include \"" + FixPathForPremake5(modulePath.string()) + "\"\n";
+		collection.includes += "include \"" + FixPathForPremake5(modulePath.string()) + "/premake5.generated.lua" + "\"\n";
 		collection.inits += "extern void " + moduleName + "_Init(); " + moduleName + "_Init();\n";
 
 		std::string headerIncludes = "";
@@ -260,10 +260,10 @@ namespace Suora::Tools
 \n\
 		includedirs\n\
 		{\n\
-			\"%{wks.location}/Code/Engine/Source\",\n\
-			\"%{wks.location}/Code/Dependencies\",\n\
-			\"%{wks.location}/Code/Dependencies/spdlog/include\",\n\
-			\"%{wks.location}/Code/Dependencies/glm\",\n\
+			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Engine/Source\",\n\
+			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Dependencies\",\n\
+			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Dependencies/spdlog/include\",\n\
+			\"" + FixPathForPremake5(enginePath.string()) +"/Code/Dependencies/glm\",\n\
 		}\n\
 \n\
 		links\n\
@@ -300,7 +300,7 @@ namespace Suora::Tools
 				SUORA_LOG(Suora::LogCategory::Module, Suora::LogLevel::Info, \" - " + moduleName + "\");\n\
 			}";
 
-		Platform::WriteToFile(modulePath.string() + "/premake5.lua", premake5Module);
+		Platform::WriteToFile(modulePath.string() + "/premake5.generated.lua", premake5Module);
 		Platform::WriteToFile(modulePath.string() + "/" + moduleName + ".module.cpp", moduleCPP);
 	}
 

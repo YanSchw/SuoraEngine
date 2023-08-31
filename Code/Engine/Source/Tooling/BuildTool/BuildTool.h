@@ -30,7 +30,7 @@ namespace Suora::Tools
 
 		void GenerateBatchScriptForPremake5Solution(const std::filesystem::path& projectRootPath, const std::filesystem::path& engineRootPath);
 	private:
-		void GenerateModule(const std::filesystem::path& modulePath, BuildCollection& collection);
+		void GenerateModule(const std::filesystem::path& modulePath, const std::filesystem::path& enginePath, BuildCollection& collection);
 	};
 
 }
