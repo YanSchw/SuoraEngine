@@ -7,20 +7,23 @@ project "Runtime"
 	targetdir ("%{wks.location}/Build/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/Build/Intermediate/" .. outputdir .. "/%{prj.name}")
 
-	files {
+	files 
+	{
 		"Source/**.h",
 		"Source/**.cpp"
 	}
 
-	includedirs {
-		"%{wks.location}/Code/Dependencies/spdlog/include",
-		"%{wks.location}/Code/Engine/Source",
-		"%{wks.location}/Code/Dependencies",
+	includedirs 
+	{
+		"../Dependencies/spdlog/include",
+		"../Engine/Source",
+		"../Dependencies",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}"
 	}
 
-	links {
+	links 
+	{
 		"Engine",
 		"AllModules"
 	}
