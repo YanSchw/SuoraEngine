@@ -371,7 +371,7 @@ namespace Suora
 		x_ += 35.0f;
 
 		// Now, render the rest
-		while (paths[0] != GetRootPath())
+		while (paths[0] != AssetManager::GetAssetRootPath() && paths[0] != AssetManager::GetProjectAssetPath())
 		{
 			paths.insert(paths.begin(), paths[0].parent_path());
 		}
