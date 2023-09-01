@@ -134,7 +134,29 @@ namespace Suora
 
 		if (isNativeProject)
 		{
+			// 0. Locate ProjectRootPath
+			std::filesystem::path projectRootPath = path;
+			while (!std::filesystem::is_directory(projectRootPath.append("Content")))
+			{
+				projectRootPath = projectRootPath.parent_path().parent_path();
+			}
+			projectRootPath = projectRootPath.parent_path();
+			// 1. Remove and recopy the Scripts folder...
+			if (std::filesystem::exists(std::filesystem::path(projectRootPath).append("Scripts")))
+			{
+				std::filesystem::remove_all(std::filesystem::path(projectRootPath).append("Scripts"));
+			}
+			std::filesystem::path scriptsPath = std::filesystem::path(Engine::Get()->GetRootPath()).append("Binaries").append("Scripts");
+			if (std::filesystem::exists(scriptsPath))
+			{
+				Platform::CopyDirectory(scriptsPath, std::filesystem::path(projectRootPath).append("Scripts"));
+			}
 
+			// 2. Open FileExplorer
+			Platform::ShowInExplorer(projectRootPath);
+
+			// 3. Close the Launcher
+			std::exit(0);
 		}
 		else
 		{
