@@ -34,7 +34,6 @@ IncludeDir["stb_image"] = "%{wks.location}/Code/Dependencies/stb_image"
 IncludeDir["stb_truetype"] = "%{wks.location}/Code/Dependencies/stb_truetype"
 IncludeDir["entt"] = "%{wks.location}/Code/Dependencies/entt/include"
 IncludeDir["assimp"] = "%{wks.location}/Code/Dependencies/assimp/include"
-IncludeDir["Reflection"] = "%{wks.location}/Code/Engine/src/Suora/Reflection"
 
 group "Dependencies"
 	include "Code/Dependencies/premake"

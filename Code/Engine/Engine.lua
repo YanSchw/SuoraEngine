@@ -39,8 +39,7 @@ project "Engine"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.stb_truetype}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.assimp}",
-		"%{IncludeDir.Reflection}"
+		"%{IncludeDir.assimp}"
 	}
 
 	links

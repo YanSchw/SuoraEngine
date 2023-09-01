@@ -197,7 +197,6 @@ namespace Suora::Tools
 			IncludeDir[\"stb_truetype\"] = \"" + enginePathStr + "/Code/Dependencies/stb_truetype\"\n\
 			IncludeDir[\"entt\"] = \"" + enginePathStr + "/Code/Dependencies/entt/include\"\n\
 			IncludeDir[\"assimp\"] = \"" + enginePathStr + "/Code/Dependencies/assimp/include\"\n\
-			IncludeDir[\"Reflection\"] = \"" + enginePathStr + "/Code/Engine/src/Suora/Reflection\"\n\
 \n\
 			group \"Dependencies\"\n\
 				include \"Build/Premake5Projects/GLFW.lua\"\n\
