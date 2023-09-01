@@ -27,6 +27,11 @@ namespace Suora::Tools
 
 	void BuildTool::GenerateModules(const std::filesystem::path& projectRootPath, BuildCollection& collection, bool writeAllModules)
 	{
+		if (collection.allModulesPath == "")
+		{
+			collection.allModulesPath = projectRootPath.string() + "/Build/AllModules";
+			std::filesystem::create_directories(std::filesystem::path(projectRootPath).append("Build").append("AllModules"));
+		}
 		std::string engineRootPath = projectRootPath.string();
 
 		// Go through Enginepath...
@@ -133,7 +138,6 @@ namespace Suora::Tools
 
 		if (writeAllModules)
 		{
-			std::filesystem::create_directories(std::filesystem::path(projectRootPath).append("Build").append("AllModules"));
 			Platform::WriteToFile(projectRootPath.string() + "/Build/AllModules/premake5.lua", premake5);
 			Platform::WriteToFile(projectRootPath.string() + "/Build/AllModules/Modules.generated.cpp", modulesCPP);
 		}
@@ -154,6 +158,8 @@ namespace Suora::Tools
 		std::string enginePathStr = FixPathForPremake5(engineRootPath.string());
 
 		std::string premake5 = "include \"" + enginePathStr + "/Code/Dependencies/premake/premake_customization/solution_items.lua\"\n\
+\n\
+			ENGINE_PATH = \"" + enginePathStr + "\"\n\
 \n\
 			workspace \"" + projectName + "\"\n\
 			architecture \"x86_64\"\n\
@@ -227,7 +233,7 @@ namespace Suora::Tools
 		}
 
 		collection.links += "\"" + moduleName + "\",\n";
-		collection.includes += "include \"" + FixPathForPremake5(modulePath.string()) + "/premake5.generated.lua" + "\"\n";
+		collection.includes += "include \"" + moduleName + ".generated.lua" + "\"\n";
 		collection.inits += "extern void " + moduleName + "_Init(); " + moduleName + "_Init();\n";
 
 		std::string headerIncludes = "";
@@ -252,10 +258,10 @@ namespace Suora::Tools
 \n\
 		files\n\
 		{\n\
-			\"**.cpp\",\n\
-			\"**.h\",\n\
-			\"***.cpp\",\n\
-			\"***.h\",\n\
+			\"" + FixPathForPremake5(modulePath.string()) + "/**.cpp\",\n\
+			\"" + FixPathForPremake5(modulePath.string()) + "/**.h\",\n\
+			\"" + FixPathForPremake5(modulePath.string()) + "/***.cpp\",\n\
+			\"" + FixPathForPremake5(modulePath.string()) + "/***.h\",\n\
 		}\n\
 \n\
 		includedirs\n\
@@ -300,7 +306,7 @@ namespace Suora::Tools
 				SUORA_LOG(Suora::LogCategory::Module, Suora::LogLevel::Info, \" - " + moduleName + "\");\n\
 			}";
 
-		Platform::WriteToFile(modulePath.string() + "/premake5.generated.lua", premake5Module);
+		Platform::WriteToFile(collection.allModulesPath + "/" + moduleName + ".generated.lua", premake5Module);
 		Platform::WriteToFile(modulePath.string() + "/" + moduleName + ".module.cpp", moduleCPP);
 	}
 

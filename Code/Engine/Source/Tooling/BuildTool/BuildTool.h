@@ -16,6 +16,7 @@ namespace Suora::Tools
 	{
 		struct BuildCollection
 		{
+			std::string allModulesPath = "";
 			std::vector<std::filesystem::path> collectedModules;
 			std::string links;
 			std::string includes;
