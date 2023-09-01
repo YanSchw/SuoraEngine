@@ -37,3 +37,4 @@ namespace Suora
 	class AssetManager;
 	class Blueprint;
 }
+using namespace Suora;
