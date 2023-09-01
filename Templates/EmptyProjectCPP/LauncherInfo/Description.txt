@@ -1,1 +1,1 @@
-A clean empty project with no code.
+A clean empty C++ project with no code.
