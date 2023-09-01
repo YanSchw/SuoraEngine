@@ -8,7 +8,8 @@ project "assimp"
   targetdir ("%{wks.location}/Build/" .. outputdir .. "/Dependencies/%{prj.name}")
   objdir ("%{wks.location}/Build/Intermediate/" .. outputdir .. "/Dependencies/%{prj.name}")
 
-  defines {
+  defines 
+  {
       -- "SWIG",
       "ASSIMP_BUILD_NO_OWN_ZLIB",
 
@@ -92,54 +93,56 @@ project "assimp"
       "ASSIMP_BUILD_NO_GLOBALSCALE_PROCESS",
   }
 
-  files {
-      "include/**",
-      "code/Assimp.cpp",
-      "code/BaseImporter.cpp",
-      "code/ColladaLoader.cpp",
-      "code/ColladaParser.cpp",
-      "code/CreateAnimMesh.cpp",
-      "code/PlyParser.cpp",
-      "code/PlyLoader.cpp",
-      "code/BaseProcess.cpp",
-      "code/EmbedTexturesProcess.cpp",
-      "code/ConvertToLHProcess.cpp",
-      "code/DefaultIOStream.cpp",
-      "code/DefaultIOSystem.cpp",
-      "code/DefaultLogger.cpp",
-      "code/GenVertexNormalsProcess.cpp",
-      "code/Importer.cpp",
-      "code/ImporterRegistry.cpp",
-      "code/MaterialSystem.cpp",
-      "code/PostStepRegistry.cpp",
-      "code/ProcessHelper.cpp",
-      "code/scene.cpp",
-      "code/ScenePreprocessor.cpp",
-      "code/ScaleProcess.cpp",
-      "code/SGSpatialSort.cpp",
-      "code/SkeletonMeshBuilder.cpp",
-      "code/SpatialSort.cpp",
-      "code/TriangulateProcess.cpp",
-      "code/ValidateDataStructure.cpp",
-      "code/Version.cpp",
-      "code/VertexTriangleAdjacency.cpp",
-      "code/ObjFileImporter.cpp",
-      "code/ObjFileMtlImporter.cpp",
-      "code/ObjFileParser.cpp",
-      "code/glTFImporter.cpp",
-      "code/glTF2Importer.cpp",
-      "code/MakeVerboseFormat.cpp",
-      "code/CalcTangentsProcess.cpp",
-      "code/ScaleProcess.cpp",
-      "code/EmbedTexturesProcess.cpp",
-      "contrib/irrXML/*",
+  files 
+  {
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/include/**",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/Assimp.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/BaseImporter.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ColladaLoader.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ColladaParser.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/CreateAnimMesh.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/PlyParser.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/PlyLoader.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/BaseProcess.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/EmbedTexturesProcess.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ConvertToLHProcess.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/DefaultIOStream.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/DefaultIOSystem.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/DefaultLogger.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/GenVertexNormalsProcess.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/Importer.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ImporterRegistry.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/MaterialSystem.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/PostStepRegistry.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ProcessHelper.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/scene.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ScenePreprocessor.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ScaleProcess.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/SGSpatialSort.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/SkeletonMeshBuilder.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/SpatialSort.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/TriangulateProcess.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ValidateDataStructure.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/Version.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/VertexTriangleAdjacency.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ObjFileImporter.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ObjFileMtlImporter.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ObjFileParser.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/glTFImporter.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/glTF2Importer.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/MakeVerboseFormat.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/CalcTangentsProcess.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ScaleProcess.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/EmbedTexturesProcess.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/irrXML/*",
   }
 
-  includedirs {
-      "include",
-      "contrib/irrXML",
-      "contrib/zlib",
-      "contrib/rapidjson/include",
+  includedirs 
+  {
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/include",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/irrXML",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/zlib",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/rapidjson/include",
   }
 
 

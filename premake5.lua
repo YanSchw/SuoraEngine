@@ -38,15 +38,15 @@ IncludeDir["Reflection"] = "%{wks.location}/Code/Engine/src/Suora/Reflection"
 
 group "Dependencies"
 	include "Code/Dependencies/premake"
-	include "Code/Dependencies/GLFW"
-	include "Code/Dependencies/Glad"
-	include "Code/Dependencies/assimp"
+	include "Code/Dependencies/GLFW/GLFW.lua"
+	include "Code/Dependencies/Glad/Glad.lua"
+	include "Code/Dependencies/assimp/assimp.lua"
 group ""
 
 include "Build/AllModules"
 
 
-include "Code/Engine"
-include "Code/Editor"
-include "Code/Runtime"
+include "Code/Engine/Engine.lua"
+include "Code/Editor/Editor.lua"
+include "Code/Runtime/Runtime.lua"
 include "Code/SuoraBuildTool/project.lua"

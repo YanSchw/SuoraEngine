@@ -8,14 +8,14 @@ project "Glad"
 
     files
     {
-        "include/glad/glad.h",
-        "include/KHR/khrplatform.h",
-        "src/glad.c"
+        "%{ENGINE_PATH}/Code/Dependencies/Glad/include/glad/glad.h",
+        "%{ENGINE_PATH}/Code/Dependencies/Glad/include/KHR/khrplatform.h",
+        "%{ENGINE_PATH}/Code/Dependencies/Glad/src/glad.c"
     }
 
     includedirs
     {
-        "include"
+        "%{ENGINE_PATH}/Code/Dependencies/Glad/include"
     }
     
     filter "system:windows"

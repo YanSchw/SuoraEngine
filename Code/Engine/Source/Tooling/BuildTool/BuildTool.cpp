@@ -31,6 +31,7 @@ namespace Suora::Tools
 		{
 			collection.allModulesPath = projectRootPath.string() + "/Build/AllModules";
 			std::filesystem::create_directories(std::filesystem::path(projectRootPath).append("Build").append("AllModules"));
+			std::filesystem::create_directories(std::filesystem::path(projectRootPath).append("Build").append("Premake5Projects"));
 		}
 		std::string engineRootPath = projectRootPath.string();
 
@@ -157,6 +158,14 @@ namespace Suora::Tools
 		}
 		std::string enginePathStr = FixPathForPremake5(engineRootPath.string());
 
+		std::filesystem::copy_file(std::filesystem::path(engineRootPath).append("Code").append("Engine").append("Engine.lua"), std::filesystem::path(projectRootPath).append("Build").append("Premake5Projects").append("Engine.lua"), std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file(std::filesystem::path(engineRootPath).append("Code").append("Editor").append("Editor.lua"), std::filesystem::path(projectRootPath).append("Build").append("Premake5Projects").append("Editor.lua"), std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file(std::filesystem::path(engineRootPath).append("Code").append("Runtime").append("Runtime.lua"), std::filesystem::path(projectRootPath).append("Build").append("Premake5Projects").append("Runtime.lua"), std::filesystem::copy_options::overwrite_existing);
+
+		std::filesystem::copy_file(std::filesystem::path(engineRootPath).append("Code").append("Dependencies").append("assimp").append("assimp.lua"), std::filesystem::path(projectRootPath).append("Build").append("Premake5Projects").append("assimp.lua"), std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file(std::filesystem::path(engineRootPath).append("Code").append("Dependencies").append("Glad").append("Glad.lua"), std::filesystem::path(projectRootPath).append("Build").append("Premake5Projects").append("Glad.lua"), std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file(std::filesystem::path(engineRootPath).append("Code").append("Dependencies").append("GLFW").append("GLFW.lua"), std::filesystem::path(projectRootPath).append("Build").append("Premake5Projects").append("GLFW.lua"), std::filesystem::copy_options::overwrite_existing);
+
 		std::string premake5 = "include \"" + enginePathStr + "/Code/Dependencies/premake/premake_customization/solution_items.lua\"\n\
 \n\
 			ENGINE_PATH = \"" + enginePathStr + "\"\n\
@@ -191,18 +200,16 @@ namespace Suora::Tools
 			IncludeDir[\"Reflection\"] = \"" + enginePathStr + "/Code/Engine/src/Suora/Reflection\"\n\
 \n\
 			group \"Dependencies\"\n\
-				include \"" + enginePathStr + "/Code/Dependencies/premake\"\n\
-				include \"" + enginePathStr + "/Code/Dependencies/GLFW\"\n\
-				include \"" + enginePathStr + "/Code/Dependencies/Glad\"\n\
-				include \"" + enginePathStr + "/Code/Dependencies/assimp\"\n\
+				include \"Build/Premake5Projects/GLFW.lua\"\n\
+				include \"Build/Premake5Projects/Glad.lua\"\n\
+				include \"Build/Premake5Projects/assimp.lua\"\n\
 			group \"\"\n\
 \n\
 			include \"Build/AllModules\"\n\
 \n\
-			include \"" + enginePathStr + "/Code/Engine\"\n\
-			include \"" + enginePathStr + "/Code/Editor\"\n\
-			include \"" + enginePathStr + "/Code/Runtime\"\n\
-			--include \"" + enginePathStr + "/Code/SuoraBuildTool/project.lua\"\n\
+			include \"Build/Premake5Projects/Engine.lua\"\n\
+			include \"Build/Premake5Projects/Editor.lua\"\n\
+			include \"Build/Premake5Projects/Runtime.lua\"\n\
 			";
 
 		Platform::WriteToFile(projectRootPath.string() + "/premake5.lua", premake5);
@@ -269,7 +276,8 @@ namespace Suora::Tools
 			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Engine/Source\",\n\
 			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Dependencies\",\n\
 			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Dependencies/spdlog/include\",\n\
-			\"" + FixPathForPremake5(enginePath.string()) +"/Code/Dependencies/glm\",\n\
+			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Dependencies/glm\",\n\
+			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Dependencies/entt/include\",\n\
 		}\n\
 \n\
 		links\n\

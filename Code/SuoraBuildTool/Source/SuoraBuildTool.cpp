@@ -70,6 +70,8 @@ public:
 			buildTool.GenerateProjectPremake5(projectCodePath.parent_path(), enginePath);
 			buildTool.GenerateBatchScriptForPremake5Solution(projectCodePath.parent_path(), enginePath);
 		}
+
+		std::cout << "Done!" << std::endl;
 	}
 
 };

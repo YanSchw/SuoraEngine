@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <Suora/../../Dependencies/entt/include/entt.hpp>
+#include <entt.hpp>
 #include "Suora/GameFramework/Node.h"
 #include "Suora/Common/Delegate.h"
 #include "Suora/Common/Array.h"

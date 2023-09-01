@@ -8,18 +8,18 @@ project "Engine"
 	objdir ("%{wks.location}/Build/Intermediate/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "Precompiled.h"
-	pchsource "Source/Precompiled.cpp"
+	pchsource "%{ENGINE_PATH}/Code/Engine/Source/Precompiled.cpp"
 
 	files
 	{
-		"Source/**.h",
-		"Source/**.cpp",
-		"../Dependencies/stb_image/**.h",
-		"../Dependencies/stb_image/**.cpp",
-		"../Dependencies/stb_truetype/**.h",
-		"../Dependencies/stb_truetype/**.cpp",
-		"../Dependencies/glm/glm/**.hpp",
-		"../Dependencies/glm/glm/**.inl",
+		"%{ENGINE_PATH}/Code/Engine/Source/**.h",
+		"%{ENGINE_PATH}/Code/Engine/Source/**.cpp",
+		"%{ENGINE_PATH}/Code/Dependencies/stb_image/**.h",
+		"%{ENGINE_PATH}/Code/Dependencies/stb_image/**.cpp",
+		"%{ENGINE_PATH}/Code/Dependencies/stb_truetype/**.h",
+		"%{ENGINE_PATH}/Code/Dependencies/stb_truetype/**.cpp",
+		"%{ENGINE_PATH}/Code/Dependencies/glm/glm/**.hpp",
+		"%{ENGINE_PATH}/Code/Dependencies/glm/glm/**.inl",
 	}
 
 	defines
@@ -30,8 +30,8 @@ project "Engine"
 
 	includedirs
 	{
-		"Source",
-		"../Dependencies/spdlog/include",
+		"%{ENGINE_PATH}/Code/Engine/Source",
+		"%{ENGINE_PATH}/Code/Dependencies/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",

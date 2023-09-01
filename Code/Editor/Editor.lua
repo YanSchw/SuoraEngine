@@ -1,5 +1,5 @@
-project "Runtime"
-	kind "WindowedApp"
+project "Editor"
+	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -7,22 +7,22 @@ project "Runtime"
 	targetdir ("%{wks.location}/Build/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/Build/Intermediate/" .. outputdir .. "/%{prj.name}")
 
-	files 
+	files
 	{
-		"Source/**.h",
-		"Source/**.cpp"
+		"%{ENGINE_PATH}/Code/Editor/Source/**.h",
+		"%{ENGINE_PATH}/Code/Editor/Source/**.cpp"
 	}
 
-	includedirs 
+	includedirs
 	{
-		"../Dependencies/spdlog/include",
-		"../Engine/Source",
-		"../Dependencies",
+		"%{ENGINE_PATH}/Code/Dependencies/spdlog/include",
+		"%{ENGINE_PATH}/Code/Engine/Source",
+		"%{ENGINE_PATH}/Code/Dependencies",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}"
 	}
 
-	links 
+	links
 	{
 		"Engine",
 		"AllModules"
@@ -45,4 +45,3 @@ project "Runtime"
 		defines "SUORA_DIST"
 		runtime "Release"
 		optimize "on"
-		
