@@ -100,6 +100,7 @@ namespace Suora
 		float const ui = EditorPreferences::Get()->UiScale;
 		RenderCommand::SetClearColor(EditorPreferences::Get()->UiBackgroundColor);
 		RenderCommand::Clear();
+		RenderCommand::SetAlphaBlending(true);
 		EditorUI::DrawRect(0, 0, m_Window->GetWidth(), 0, 0, Color(1, 0, 0, 1));
 
 		if (!IsLauncher())
