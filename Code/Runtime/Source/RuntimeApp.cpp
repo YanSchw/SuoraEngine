@@ -68,7 +68,9 @@ public:
 				{
 					camera->SetAspectRatio((float)m_StandaloneWindow->GetWidth() / (float)m_StandaloneWindow->GetHeight());
 					camera->SetPerspectiveFarClip(camera->GetPerspectiveFarClip());
-					Engine::Get()->GetRenderPipeline()->Render(*m_Framebuffer.get(), *world, *camera);
+
+					RenderingParams RParams;
+					Engine::Get()->GetRenderPipeline()->Render(*m_Framebuffer.get(), *world, *camera, RParams);
 				}
 			}
 		}

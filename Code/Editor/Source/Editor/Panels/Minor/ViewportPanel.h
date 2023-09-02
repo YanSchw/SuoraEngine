@@ -60,6 +60,7 @@ namespace Suora
 
 		bool m_DrawDebugGizmos = false;
 		bool m_DrawDebugGizmosDuringPlay = false;
+		bool m_DrawWireframe = false;
 
 		EditorCamera* GetEditorCamera() const { return m_EditorCamera.get(); }
 

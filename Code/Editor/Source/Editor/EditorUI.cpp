@@ -148,19 +148,20 @@ namespace Suora
 			if (!m_Preview) return;
 			m_Preview->Bind();
 
+			RenderingParams RParams;
 			if (asset->IsA<Material>())
 			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer);
+				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer, RParams);
 				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
 			}
 			if (asset->IsA<Mesh>())
 			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer);
+				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer, RParams);
 				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
 			}
 			if (asset->IsA<Blueprint>())
 			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer);
+				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer, RParams);
 				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
 			}
 			m_Done = true;

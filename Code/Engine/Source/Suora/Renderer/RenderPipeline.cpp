@@ -122,7 +122,7 @@ namespace Suora
 		return pipeline ? pipeline->GetFullscreenPassShader() : nullptr;
 	}
 
-	void RenderPipeline::Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer)
+	void RenderPipeline::Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
 		SUORA_PROFILE_SCOPE("RenderPipeline::Render()");
 		SUORA_ASSERT(buffer.GetSpecification().Attachments.Attachments[0].TextureFormat == FramebufferTextureFormat::RGB32F);
@@ -144,15 +144,15 @@ namespace Suora
 		}
 		SetFullscreenViewport(gbuffer);
 
-		DeferredPass(world, camera, gbuffer);
+		DeferredPass(world, camera, gbuffer, params);
 
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Blend);
 
-		ForwardPass(world, camera, gbuffer);
+		ForwardPass(world, camera, gbuffer, params);
 
 		if (!Ilum::IsInIlumPass())
 		{
-			PostProcessPass(world, camera, gbuffer);
+			PostProcessPass(world, camera, gbuffer, params);
 		}
 
 		// Output Final Buffer
@@ -259,9 +259,9 @@ namespace Suora
 		}
 	}
 
-	void RenderPipeline::DeferredPass(World& world, CameraNode& camera, Framebuffer& gbuffer)
+	void RenderPipeline::DeferredPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
-		RenderGBuffer(world, camera, gbuffer);
+		RenderGBuffer(world, camera, gbuffer, params);
 
 		DecalPass(world, camera, gbuffer);
 
@@ -273,14 +273,13 @@ namespace Suora
 
 	}
 
-	void RenderPipeline::RenderGBuffer(World& world, CameraNode& camera, Framebuffer& gbuffer)
+	void RenderPipeline::RenderGBuffer(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
 		gbuffer.Bind();
 		RenderCommand::Clear();
 		RenderCommand::SetAlphaBlending(false);
-		RenderCommand::SetWireframeMode(s_DrawWireframe);
 		SetFullscreenViewport(gbuffer);
-		if (NativeInput::GetKey(Key::F3)) RenderCommand::SetWireframeMode(true);
+		RenderCommand::SetWireframeMode(params.DrawWireframe);
 
 		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
 		int32_t meshID = 0;
@@ -542,7 +541,7 @@ namespace Suora
 		RenderFramebufferIntoFramebuffer(gbuffer, *GetForwardReadyBuffer(gbuffer.GetSize()), *m_DeferredComposite, BufferToRect(gbuffer), "u_BaseColor", (int)GBuffer::BaseColor, false);
 	}
 
-	void RenderPipeline::ForwardPass(World& world, CameraNode& camera, Framebuffer& gbuffer)
+	void RenderPipeline::ForwardPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
 		SetFullscreenViewport(gbuffer);
 
@@ -561,7 +560,8 @@ namespace Suora
 			}*/
 		}
 
-		if (NativeInput::GetKey(Key::F3)) RenderCommand::SetWireframeMode(true);
+		RenderCommand::SetWireframeMode(params.DrawWireframe);
+
 		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
 		for (MeshNode* meshNode : meshes)
 		{
@@ -577,7 +577,7 @@ namespace Suora
 		RenderFramebufferIntoFramebuffer(*GetForwardReadyBuffer(gbuffer.GetSize()), *GetFinalFramebuffer(gbuffer.GetSize()), *m_FullscreenPassShader, BufferToRect(gbuffer));
 	}
 
-	void RenderPipeline::PostProcessPass(World& world, CameraNode& camera, Framebuffer& gbuffer)
+	void RenderPipeline::PostProcessPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
 		SetFullscreenViewport(gbuffer);
 		// FXAA

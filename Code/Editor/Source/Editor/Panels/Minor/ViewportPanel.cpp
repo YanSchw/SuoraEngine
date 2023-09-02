@@ -302,7 +302,9 @@ namespace Suora
 				Params.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
 				Params.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 				Ref<Framebuffer> TempView = Framebuffer::Create(Params);
-				Engine::Get()->GetRenderPipeline()->Render(*TempView, *m_World, *camera);
+				RenderingParams RParams;
+				RParams.DrawWireframe = m_DrawWireframe;
+				Engine::Get()->GetRenderPipeline()->Render(*TempView, *m_World, *camera, RParams);
 
 				m_Framebuffer->Bind();
 				EditorUI::DrawRect(GetWidth() - 20.0f - (float)Params.Width - 2.0f, 20.0f - 2.0f, (float)Params.Width + 4.0f, (float)Params.Height + 4.0f, 4.0f, Math::Lerp<Color>(EditorPreferences::Get()->UiHighlightColor, Color(0, 0, 0, 1), 0.25f));
@@ -351,7 +353,8 @@ namespace Suora
 			{
 				mousePickReady = false;
 				EditorUI::CreateContextMenu({ EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmos = !m_DrawDebugGizmos; }, "Show Gizmos", m_DrawDebugGizmos ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmosDuringPlay = !m_DrawDebugGizmosDuringPlay; }, "Show Gizmos during Play", m_DrawDebugGizmosDuringPlay ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr) }, 140.0f, GetHeight() - 35.0f);
+											  EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmosDuringPlay = !m_DrawDebugGizmosDuringPlay; }, "Show Gizmos during Play", m_DrawDebugGizmosDuringPlay ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr),
+											  EditorUI::ContextMenuElement({}, [&]() { m_DrawWireframe = !m_DrawWireframe; }, "Draw Wireframe", m_DrawWireframe ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr) }, 140.0f, GetHeight() - 35.0f);
 			}
 			if (HoverOverTools) EditorUI::SetCursor(Cursor::Hand);
 

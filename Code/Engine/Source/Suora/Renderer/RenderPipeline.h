@@ -42,6 +42,11 @@ namespace Suora
 		GBufferSlotCount
 	};
 
+	struct RenderingParams
+	{
+		bool DrawWireframe = false;
+	};
+
 	/** All Rendering is maintained here */
 	class RenderPipeline : public EngineSubSystem
 	{
@@ -53,10 +58,10 @@ namespace Suora
 		~RenderPipeline();
 		virtual void Initialize();
 
-		void Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer);
-		virtual void Render(Framebuffer& buffer, World& world, CameraNode& camera)
+		void Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
+		virtual void Render(Framebuffer& buffer, World& world, CameraNode& camera, RenderingParams& params)
 		{
-			Render(buffer, world, camera, *GetGBuffer());
+			Render(buffer, world, camera, *GetGBuffer(), params);
 		}
 		inline static Ref<VertexArray> __GetFullscreenQuad() { return GetFullscreenQuad(); }
 		inline Ref<Shader> GetFullscreenPassShader() const { return m_FullscreenPassShader; }
@@ -73,16 +78,16 @@ namespace Suora
 	protected:
 		void ShadowPass(World& world, CameraNode& camera);
 
-		void DeferredPass(World& world, CameraNode& camera, Framebuffer& gbuffer);
-		void RenderGBuffer(World& world, CameraNode& camera, Framebuffer& gbuffer);
+		void DeferredPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
+		void RenderGBuffer(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
 		void DecalPass(World& world, CameraNode& camera, Framebuffer& gbuffer);
 		void DeferredSkyPass(World& world, CameraNode& camera, Framebuffer& gbuffer);
 		void DeferredLightPass(Ref<Framebuffer> target, Framebuffer& gBuffer, World& world, CameraNode* camera, bool lowQuality = false, int quadTick = 0, bool volumetric = false);
 		void DeferredCompositePass(World& world, CameraNode& camera, Framebuffer& gbuffer);
 
-		void ForwardPass(World& world, CameraNode& camera, Framebuffer& gbuffer);
+		void ForwardPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
 
-		void PostProcessPass(World& world, CameraNode& camera, Framebuffer& gbuffer);
+		void PostProcessPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
 
 	private:
 		static Ref<VertexArray> GetFullscreenQuad();
@@ -118,7 +123,6 @@ namespace Suora
 
 		std::unordered_map<glm::ivec2, Ref<Framebuffer>, IVec2Hasher> m_FinalFramebuffer;
 		Ref<Framebuffer> GetFinalFramebuffer(const glm::ivec2& size);
-		inline static bool s_DrawWireframe = false;
 
 		inline static Ptr<RenderPipeline> s_Instance;
 

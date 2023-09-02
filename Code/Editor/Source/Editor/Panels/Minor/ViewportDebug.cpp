@@ -147,7 +147,9 @@ namespace Suora
 	void ViewportPanel::DrawDebugView(Framebuffer& buffer, World& world, CameraNode& camera)
 	{
 		// Default Render Final Scene
-		Engine::Get()->GetRenderPipeline()->Render(buffer, world, camera);
+		RenderingParams RParams;
+		RParams.DrawWireframe = m_DrawWireframe;
+		Engine::Get()->GetRenderPipeline()->Render(buffer, world, camera, RParams);
 
 #define _GBUFFER_RENDER(GBufferSlot, _shader) RenderPipeline::RenderFramebufferIntoFramebuffer(	*Engine::Get()->GetRenderPipeline()->GetGBuffer(), \
 			buffer,\

@@ -155,10 +155,11 @@ namespace Suora
 		{
 			PosReadbackBufferStruct readBack; m_PosReadbackSSBO->Read(sizeof(PosReadbackBufferStruct), &readBack);
 			CameraNode View;
+			RenderingParams RParams;
 			View.SetPosition(readBack.WorldPosition);
 			View.SetEulerRotation(Vec3(Math::RandomFloat() * 360.0f, Math::RandomFloat() * 360.0f, Math::RandomFloat() * 360.0f));
 			View.SetPerspectiveVerticalFOV(Math::Remap(Math::RandomFloat(), 0.0f, 1.0f, 90.0f, 145.0f));
-			Engine::Get()->GetRenderPipeline()->As<RenderPipeline>()->RenderGBuffer(world, View, *m_SecondaryView);
+			Engine::Get()->GetRenderPipeline()->As<RenderPipeline>()->RenderGBuffer(world, View, *m_SecondaryView, RParams);
 
 			if (m_EmptyViewport2->GetSize() != m_SecondaryView->GetSize()) m_EmptyViewport2->Resize(m_SecondaryView->GetSize());
 			m_EmptyViewport2->Bind();
