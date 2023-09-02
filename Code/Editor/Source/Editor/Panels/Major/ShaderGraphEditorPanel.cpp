@@ -188,15 +188,10 @@ namespace Suora
 	{
 		Super::SaveAsset();
 
-		for (Ref<VisualNode> node : m_NodeEditor->m_Graph->m_Nodes)
-		{
-			// TODO: Remove.
-			//SuoraWarn(node->m_NodeID);
-		}
 		GenerateShaderGraphSource();
 		Yaml::Node root;
-		m_NodeEditor->m_Graph->SerializeNodeGraph(root);
 		m_ShaderGraph->Serialize(root);
+		m_NodeEditor->m_Graph->SerializeNodeGraph(root);
 		std::string out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(m_ShaderGraph->m_Path.string(), out);

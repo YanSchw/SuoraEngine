@@ -26,7 +26,7 @@ namespace Suora
 		m_Material = m_Asset->As<Material>();
 
 		m_ViewportPanel = CreateRef<ViewportPanel>(this, &m_World);
-		Ref<DetailsPanel> t2 = CreateRef<DetailsPanel>(this);
+		Ref<DetailsPanel> t2 = CreateRef<DetailsPanel>(this); t2->m_Data = m_Asset;
 
 		Ref<DockingSpace> ds1 = CreateRef<DockingSpace>(0, 0, 0.5f, 1, this);					m_DockspacePanel.m_DockingSpaces.Add(ds1); ds1->m_MinorTabs.Add(m_ViewportPanel);
 		Ref<DockingSpace> ds2 = CreateRef<DockingSpace>(0.5f, 0.0f, 1.0f, 1.0f, this);			m_DockspacePanel.m_DockingSpaces.Add(ds2); ds2->m_MinorTabs.Add(t2);

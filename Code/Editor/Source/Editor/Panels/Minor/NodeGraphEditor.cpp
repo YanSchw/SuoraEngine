@@ -81,6 +81,8 @@ namespace Suora
 		FramebufferSpecification spec;
 		spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
 		spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
+		spec.Width = 16;
+		spec.Height = 16;
 		m_NodeBuffer = Framebuffer::Create(spec);
 
 		Name = "Node Graph";

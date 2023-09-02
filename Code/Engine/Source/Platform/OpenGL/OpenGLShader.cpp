@@ -199,7 +199,7 @@ namespace Suora
 			for (auto id : glShaderIDs)
 				glDeleteShader(id);
 
-			SUORA_ERROR(LogCategory::Rendering, "{0}", infoLog.data());
+			//SUORA_ERROR(LogCategory::Rendering, "{0}", infoLog.data());
 			SUORA_ASSERT(false, "Shader link failure!");
 			return;
 		}

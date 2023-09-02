@@ -26,6 +26,7 @@ NodeGraph:
       PinID: 3
       Target: NULL
       m_AdditionalData: 
+
     Input_1: 
       Color: 
         a: 1.000000
@@ -38,6 +39,7 @@ NodeGraph:
       PinID: 3
       Target: 5/Output/0
       m_AdditionalData: 
+
     Input_2: 
       Color: 
         a: 1.000000
@@ -50,6 +52,7 @@ NodeGraph:
       PinID: 1
       Target: NULL
       m_AdditionalData: 
+
     Input_3: 
       Color: 
         a: 1.000000
@@ -62,6 +65,7 @@ NodeGraph:
       PinID: 1
       Target: NULL
       m_AdditionalData: 
+
     Input_4: 
       Color: 
         a: 1.000000
@@ -74,6 +78,7 @@ NodeGraph:
       PinID: 1
       Target: NULL
       m_AdditionalData: 
+
     Input_5: 
       Color: 
         a: 1.000000
@@ -86,6 +91,7 @@ NodeGraph:
       PinID: 3
       Target: NULL
       m_AdditionalData: 
+
     Input_6: 
       Color: 
         a: 1.000000
@@ -98,13 +104,14 @@ NodeGraph:
       PinID: 3
       Target: NULL
       m_AdditionalData: 
+
     NodeID: 1
     Position: 
-      x: 20.000000
-      y: 0.000000
+      x: 110.000000
+      y: "-10.000000"
     Size: 
       x: 300.000000
-      y: 225.000000
+      y: 259.999878
     Title: Master
   Node_1: 
     Color: 
@@ -148,6 +155,7 @@ NodeGraph:
       PinID: 0
       Target: NULL
       m_AdditionalData: 
+
     NodeID: 2
     Output_0: 
       Color: 
@@ -161,12 +169,13 @@ NodeGraph:
       PinID: 5
       Target: NULL
       m_AdditionalData: 
+
     Position: 
-      x: "-910.000000"
-      y: 160.000000
+      x: "-765.892822"
+      y: 82.905472
     Size: 
       x: 225.000000
-      y: 185.000061
+      y: 199.999969
     Title: Uniform
   Node_2: 
     Color: 
@@ -186,6 +195,7 @@ NodeGraph:
       PinID: 5
       Target: 1/Output/0
       m_AdditionalData: 
+
     Input_1: 
       Color: 
         a: 1.000000
@@ -198,6 +208,7 @@ NodeGraph:
       PinID: 2
       Target: 4/Output/0
       m_AdditionalData: 
+
     NodeID: 102
     Output_0: 
       Color: 
@@ -211,6 +222,7 @@ NodeGraph:
       PinID: 4
       Target: NULL
       m_AdditionalData: 
+
     Output_1: 
       Color: 
         a: 1.000000
@@ -223,6 +235,7 @@ NodeGraph:
       PinID: 3
       Target: NULL
       m_AdditionalData: 
+
     Output_2: 
       Color: 
         a: 1.000000
@@ -235,6 +248,7 @@ NodeGraph:
       PinID: 1
       Target: NULL
       m_AdditionalData: 
+
     Output_3: 
       Color: 
         a: 1.000000
@@ -247,6 +261,7 @@ NodeGraph:
       PinID: 1
       Target: NULL
       m_AdditionalData: 
+
     Output_4: 
       Color: 
         a: 1.000000
@@ -259,6 +274,7 @@ NodeGraph:
       PinID: 1
       Target: NULL
       m_AdditionalData: 
+
     Output_5: 
       Color: 
         a: 1.000000
@@ -271,12 +287,13 @@ NodeGraph:
       PinID: 1
       Target: NULL
       m_AdditionalData: 
+
     Position: 
-      x: "-627.000000"
-      y: 115.000000
+      x: "-473.000000"
+      y: 28.000004
     Size: 
       x: 215.000000
-      y: 200.000000
+      y: 229.999908
     Title: Sample Texture2D
   Node_3: 
     Color: 
@@ -297,12 +314,13 @@ NodeGraph:
       PinID: 2
       Target: NULL
       m_AdditionalData: 
+
     Position: 
-      x: "-1167.000000"
-      y: "-5.000000"
+      x: "-944.806885"
+      y: "-106.999985"
     Size: 
       x: 215.000000
-      y: 75.000000
+      y: 79.999985
     Title: UV
   Node_4: 
     Color: 
@@ -322,6 +340,7 @@ NodeGraph:
       PinID: 2
       Target: 3/Output/0
       m_AdditionalData: 
+
     Input_1: 
       Color: 
         a: 1.000000
@@ -347,12 +366,13 @@ NodeGraph:
       PinID: 2
       Target: NULL
       m_AdditionalData: 
+
     Position: 
-      x: "-905.000000"
-      y: "-1.000000"
+      x: "-705.000000"
+      y: "-106.999985"
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 109.999969
     Title: "Vec2 * Float"
   Node_5: 
     Color: 
@@ -372,6 +392,7 @@ NodeGraph:
       PinID: 3
       Target: 2/Output/1
       m_AdditionalData: 
+
     Input_1: 
       Color: 
         a: 1.000000
@@ -383,7 +404,7 @@ NodeGraph:
       PinHeight: 25.000000
       PinID: 1
       Target: NULL
-      m_AdditionalData: .25
+      m_AdditionalData: 0.25
     NodeID: 1002
     Output_0: 
       Color: 
@@ -397,12 +418,13 @@ NodeGraph:
       PinID: 3
       Target: NULL
       m_AdditionalData: 
+
     Position: 
-      x: "-295.000000"
-      y: 82.000008
+      x: "-213.000000"
+      y: 21.000000
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 109.999969
     Title: "Vec3 * Float"
 UUID: "d83842b6-ee90-4329-a4cc-7c01977107b6"
 m_BaseShader: DeferredLit.glsl
@@ -442,16 +464,16 @@ m_ShaderSource: >-
   \n\tn = normalize(TBN * n); \n\tif (flip == 1.0) n.g = 1.0 - n.g;\n\treturn
   n;\n}\n\nvoid main(void)\n{\n\tvec3 baseColor = (((texture((Checkerboard),
   ((UV) * (vec2(5.000000)))).xyz)) * (vec3(0.250000)));\n\tfloat opacity
-  =  1.0;\n\n\tif (opacity <= 0.05) \n\t{\n\t\tdiscard;\n\t}\n\n\t\n\tmat4
+  =  1.0;\n\t\n\tif (opacity <= 0.05) \n\t{\n\t\tdiscard;\n\t\treturn;\n\t}\n\n\t\n\tmat4
   threshold = mat4\n    (\n\t\t1.0 / 17.0,   9.0 / 17.0,   3.0 / 17.0,
     11.0 / 17.0,\n\t\t13.0 / 17.0,  5.0 / 17.0,   15.0 / 17.0,  7.0
   / 17.0,\n\t\t4.0 / 17.0,   12.0 / 17.0,  2.0 / 17.0,   10.0 / 17.0,\n\t\t16.0
   / 17.0,  8.0 / 17.0,   14.0 / 17.0,  6.0 / 17.0\n    );\n    int
   x = int(gl_FragCoord.x - 0.5);\n    int y = int(gl_FragCoord.y -
-  0.5);\n    if (opacity < threshold[x % 4][y % 4])\n\t\tdiscard;\n\n\tfloat
+  0.5);\n    if (opacity < threshold[x % 4][y % 4])\n\t{\n\t\tdiscard;\n\t\treturn;\n\t}\n\n\tfloat
   metallic =  0.0;\n\tfloat roughness =  0.5;\n\n\tvec3 emissive =
-   vec3(0.0);\n\n\tvec3 normal =  vec3(0.0);\n\n\tout_BaseColor = baseColor;\n\tout_Metallic
-  = metallic;\n\tout_Roughness = roughness;\n\tout_WorldPos = worldPos;\n\tout_WorldNormal
-  = normalize(worldNormal * 2.0 + normal);\n\tout_Emissive = emissive;\n\tout_MeshID
-  = u_MeshID;\n\tout_Cluster = v_Cluster;\n}
-m_SourceFileTime: "-5121463566043817416"
+   vec3(0.0);\n\n\tvec3 normal =  vec3(0.0);\n\t\n\tout_BaseColor =
+  baseColor;\n\tout_Metallic = metallic;\n\tout_Roughness = roughness;\n\tout_WorldPos
+  = worldPos;\n\tout_WorldNormal = normalize(worldNormal * 2.0 + normal);\n\tout_Emissive
+  = emissive;\n\tout_MeshID = u_MeshID;\n\tout_Cluster = v_Cluster;\n}
+m_SourceFileTime: "-5109889272800469116"
