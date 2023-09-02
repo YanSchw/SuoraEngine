@@ -329,7 +329,7 @@ namespace Suora
 				Ref<VisualNode> event = CreateRef<VisualNode>();
 				event->m_Title = "Events/" + ExtractFunctionName(func->m_Label);
 				event->m_NodeID = NODE_ID_EVENT;
-				event->m_Color = glm::vec4(0.82f, 0.25f, 0.18f, 1.0f);
+				event->m_Color = Color(100 / 255.0f, 19 / 255.0f, 13 / 255.0f, 1.0f); // glm::vec4(0.82f, 0.25f, 0.18f, 1.0f);
 				event->m_Size = { 215, 105 };
 				event->AddInputPin("Hash", Color(1.0f), 0, false, 0.0f); event->m_InputPins[0].m_AdditionalData = std::to_string(func->m_Hash);
 				event->AddOutputPin("Exec", Color(1.0f), 1, true, 30.0f);
@@ -346,7 +346,7 @@ namespace Suora
 				Ref<VisualNode> function = CreateRef<VisualNode>();
 				function->m_Title = Class(func->m_ClassID).GetClassName() + "/" + ExtractFunctionName(func->m_Label);
 				function->m_NodeID = isPure ? NODE_ID_NATIVE_PURE : NODE_ID_NATIVE_FUNC;
-				function->m_Color = isPure ? glm::vec4(0.18f, 0.62f, 0.23f, 1.0f) : glm::vec4(0.18f, 0.22f, 0.63f, 1.0f);
+				function->m_Color = isPure ? /*glm::vec4(0.18f, 0.62f, 0.23f, 1.0f)*/Color(51.0f / 255.0f, 73.0f / 255.0f, 55.0f / 255.0f, 1.0f) : /*glm::vec4(0.18f, 0.22f, 0.63f, 1.0f)*/Color(38 / 255.0f, 61 / 255.0f, 76 / 255.0f, 1.0f);
 				function->m_Size = { 275, 165 };
 				function->AddInputPin("Hash", Color(1.0f), 0, false, 0.0f); function->m_InputPins[0].m_AdditionalData = std::to_string(func->m_Hash);
 				function->AddInputPin("Flags", Color(1.0f), 0, false, 0.0f); function->m_InputPins[1].m_AdditionalData = std::to_string((int32_t)func->m_Flags);
@@ -387,7 +387,7 @@ namespace Suora
 					Ref<VisualNode> inputEvent = CreateRef<VisualNode>();
 					inputEvent->m_Title = "Input Actions/" + Category->m_CategoryName + "/" + Action->m_ActionName;
 					inputEvent->m_NodeID = NODE_ID_INPUT_EVENT;
-					inputEvent->m_Color = glm::vec4(0.82f, 0.25f, 0.18f, 1.0f);
+					inputEvent->m_Color = Color(100 / 255.0f, 19 / 255.0f, 13 / 255.0f, 1.0f);
 					inputEvent->m_Size = { 185, 105 };
 					inputEvent->AddInputPin("CategoryName", Color(1.0f), 0, false, 0.0f); inputEvent->m_InputPins[0].m_AdditionalData = Category->m_CategoryName;
 					inputEvent->AddInputPin("ActionName", Color(1.0f), 0, false, 0.0f); inputEvent->m_InputPins[1].m_AdditionalData = Action->m_ActionName;
@@ -523,7 +523,7 @@ namespace Suora
 				event->m_Title += It->m_MemberName;
 
 				event->m_NodeID = NODE_ID_DELEGATE;
-				event->m_Color = glm::vec4(0.82f, 0.25f, 0.18f, 1.0f);
+				event->m_Color = Color(100 / 255.0f, 19 / 255.0f, 13 / 255.0f, 1.0f);
 				event->m_Size = { 215, 105 };
 				event->AddInputPin("ChildNode", Color(1.0f), 0, false, 20.0f); if (isChild) event->m_InputPins[0].m_AdditionalData = node->GetName();
 				event->AddInputPin("DelegateName", Color(1.0f), 0, false, 20.0f); event->m_InputPins[1].m_AdditionalData = It->m_MemberName;

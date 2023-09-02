@@ -43,7 +43,7 @@ namespace Suora
 			editor.m_Graph->m_Nodes.Add(node);
 			for (VisualNodePin& pin : node->m_InputPins) { pin.m_Node = node.get(); }
 			for (VisualNodePin& pin : node->m_OutputPins) { pin.m_Node = node.get(); }
-			node->m_Position = editor.m_CameraPos;
+			node->m_Position = editor.m_MouseCursorPosInGraph;
 			std::vector<std::string> strs = Util::SplitString(node->m_Title, '/');
 			node->m_Title = strs[strs.size() - 1];
 		}
@@ -78,11 +78,17 @@ namespace Suora
 	{
 		m_Graph = graph;
 
+		FramebufferSpecification spec;
+		spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
+		spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
+		m_NodeBuffer = Framebuffer::Create(spec);
+
 		Name = "Node Graph";
 		m_Checkerboard = Texture::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Textures/Checkerboard.png");
 		m_PinConnectionTexture = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/VisualNodePin.png");
 		m_PinConnectionTexture2 = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/VisualNodePin2.png");
-		m_PinConnectionExecTexture = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/ArrowRight.png");
+		m_PinConnectionExecTexture = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/VisualNodeExecPin.png");
+		m_PinConnectionExecTexture2 = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/VisualNodeExecPin2.png");
 		m_LineShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/Line.glsl");
 		NodeLabelTexture = AssetManager::GetAssetByName<Texture2D>("NodeLabel.texture");
 
@@ -108,26 +114,38 @@ namespace Suora
 
 		// Hover Selection
 		Color hoverColor = m_SelectedNodes.Contains(&node) ? EditorPreferences::Get()->UiHighlightColor : Color(1.0f, 1.0f, 1.0f, 0.45f);
+		
+		EditorUI::ButtonParams MainNodeParams = EditorUI::ButtonParams::DarkerButton();
+		MainNodeParams.HoverCursor = Cursor::Default;
 		if (Hovering || m_SelectedNodes.Contains(&node))
-			EditorUI::DrawRect(node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 - 2 * m_Zoom,
-				node.m_Position.y * m_Zoom - node.m_Size.y / 2.0f * m_Zoom - m_CameraPos.y * m_Zoom + GetHeight() / 2 - 2 * m_Zoom,
-				node.m_Size.x * m_Zoom + 4 * m_Zoom, node.m_Size.y * m_Zoom + 4 * m_Zoom, 4, hoverColor);
-		// Shadow
-		EditorUI::DrawRect(node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2,
-			node.m_Position.y * m_Zoom - node.m_Size.y / 2.0f * m_Zoom - m_CameraPos.y * m_Zoom + GetHeight() / 2 - 4,
-			node.m_Size.x * m_Zoom + 4, node.m_Size.y * m_Zoom + 4, 4, Color(0, 0, 0, 0.1f));
-		EditorUI::DrawRect(node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2,
+		{
+			MainNodeParams.ButtonOutlineColor = hoverColor;
+			MainNodeParams.ButtonOutlineHoverColor = hoverColor;
+			MainNodeParams.useButtonOutlineHoverColor = true;
+		}
+		EditorUI::Button("", node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2,
 			node.m_Position.y * m_Zoom - node.m_Size.y / 2.0f * m_Zoom - m_CameraPos.y * m_Zoom + GetHeight() / 2,
-			node.m_Size.x * m_Zoom, node.m_Size.y * m_Zoom, 4, node.m_BackgroundColor);
-		EditorUI::DrawTexturedRect(NodeLabelTexture->GetTexture(), node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2,
+			node.m_Size.x * m_Zoom, node.m_Size.y * m_Zoom, MainNodeParams);
+		EditorUI::ButtonParams NodeLabelParams = EditorUI::ButtonParams::DarkerButton();
+		NodeLabelParams.ButtonRoundness = -4;
+		NodeLabelParams.ButtonColor = Math::Lerp(node.m_Color, Color(0.0f, 0.0f, 0.0f, 1.0f), 0.0f); NodeLabelParams.ButtonColor.a = 1.0f;
+		NodeLabelParams.ButtonColorHover = Math::Lerp(NodeLabelParams.ButtonColor, Color(1.0f), 0.15f); NodeLabelParams.ButtonColorHover.a = 1.0f;
+		if (Hovering || m_SelectedNodes.Contains(&node))
+		{
+			NodeLabelParams.ButtonOutlineColor = hoverColor;
+			NodeLabelParams.ButtonOutlineHoverColor = hoverColor;
+			NodeLabelParams.useButtonOutlineHoverColor = true;
+		}
+		EditorUI::Button("", node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2,
 			node.m_Position.y * m_Zoom + node.m_Size.y / 2.0f * m_Zoom - m_CameraPos.y * m_Zoom + GetHeight() / 2 - 25 * m_Zoom,
-			node.m_Size.x * m_Zoom, 25 * m_Zoom + 1, -4, node.m_Color * Color(1.0f, 1.0f, 1.0f, 0.5f));
-		/*EditorUI::Text(node.m_Title, font, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 3 * m_Zoom,
-			node.m_Position.y * m_Zoom + node.m_Size.y / 2.0f * m_Zoom - m_CameraPos.y * m_Zoom + GetHeight() / 2 - 25 * m_Zoom - 3 * m_Zoom,
-			node.m_Size.x * m_Zoom, 25 * m_Zoom + 1, 26 * m_Zoom, Vec2(-0.8f, 0), Color(0.1f, 0.1f, 0.1f, 0.35f));*/
+			node.m_Size.x * m_Zoom, 25 * m_Zoom + 1, NodeLabelParams);
+		/*EditorUI::DrawTexturedRect(NodeLabelTexture->GetTexture(), node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2,
+			node.m_Position.y * m_Zoom + node.m_Size.y / 2.0f * m_Zoom - m_CameraPos.y * m_Zoom + GetHeight() / 2 - 25 * m_Zoom,
+			node.m_Size.x * m_Zoom, 25 * m_Zoom + 1, -4, node.m_Color * Color(1.0f, 1.0f, 1.0f, 0.5f));*/
+		
 		EditorUI::Text(node.m_Title, font, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2,
 			node.m_Position.y * m_Zoom + node.m_Size.y / 2.0f * m_Zoom - m_CameraPos.y * m_Zoom + GetHeight() / 2 - 25 * m_Zoom,
-			node.m_Size.x * m_Zoom, 25 * m_Zoom + 1, 24 * m_Zoom, Vec2(-0.8f, 0), Color(0.9f));
+			node.m_Size.x * m_Zoom, 25 * m_Zoom + 1, 22 * m_Zoom, Vec2(-0.8f, 0), Color(1.0f));
 
 		if (Hovering && (NativeInput::GetMouseButtonDown(Mouse::ButtonLeft) || NativeInput::GetMouseButtonUp(Mouse::ButtonRight)) && IsInputValid() && IsInputMode(EditorInputEvent::None))
 		{
@@ -146,15 +164,15 @@ namespace Suora
 	{
 		if (pin.PinHeight <= 0.0f) return;
 
-		EditorUI::ButtonParams Params;
-		Params.TextSize = 24.0f * m_Zoom;
+		EditorUI::ButtonParams Params = EditorUI::ButtonParams::DarkerButton();
+		Params.TextSize = 18.0f * m_Zoom;
 		Params.TextOrientation = Vec2(inputPin ? 1.0f : -1.0f, 0.0f);
 		Params.Font = font;
-		Params.ButtonColor = Color(0.0f);
+		/*Params.ButtonColor = Color(0.0f);
 		Params.ButtonOutlineColor = Color(0.0f);
-		Params.ButtonColorClicked = Color(0.0f);
-		Params.ButtonColorHover = Color(pin.Color.r, pin.Color.g, pin.Color.b, 0.25f);
-		Params.ButtonRoundness = pin.PinHeight / 2.0f;
+		Params.ButtonColorClicked = Color(0.0f);*/
+		Params.ButtonColorHover = Math::Lerp(Params.ButtonColorHover, pin.Color, 0.25f); // Color(pin.Color.r, pin.Color.g, pin.Color.b, 1.0f);
+		//Params.ButtonRoundness = pin.PinHeight / 2.0f;
 		Params.TooltipText = pin.PinID == (int64_t)ScriptDataType::ObjectPtr ? pin.m_AdditionalData : pin.Tooltip;
 		if (m_DragPin)
 		{
@@ -170,7 +188,7 @@ namespace Suora
 		}
 		if (inputPin)
 		{
-			if (EditorUI::Button("", node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2.0f, y, font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom), pin.PinHeight * m_Zoom, Params))
+			if (EditorUI::Button("", node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2.0f + 10.0f, y, font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom), pin.PinHeight * m_Zoom, Params))
 			{
 				if (NativeInput::GetMouseButtonDown(Mouse::ButtonMiddle))
 				{
@@ -186,14 +204,15 @@ namespace Suora
 			}
 			EditorUI::ButtonParams _LabelParams = EditorUI::ButtonParams::Invisible();
 			_LabelParams.TextOrientation = Vec2(-1.0f, 0.0f);
-			_LabelParams.TextSize = 24.0f * m_Zoom;
+			_LabelParams.TextSize = 18.0f * m_Zoom;
 			EditorUI::Button(pin.Label, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2.0f + 32.0f * m_Zoom, y, font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (25.0f * m_Zoom), pin.PinHeight * m_Zoom, _LabelParams);
-			EditorUI::DrawTexturedRect(pin.PinID == 1 ? m_PinConnectionExecTexture : (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionTexture2 : m_PinConnectionTexture), node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2.0f, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f), 25.0f * m_Zoom, 25.0f * m_Zoom, 0.0f, pin.Color);
+			Ref<Texture> texture = pin.PinID == 1 ? (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionExecTexture2 : m_PinConnectionExecTexture) : (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionTexture2 : m_PinConnectionTexture);
+			EditorUI::DrawTexturedRect(texture, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2.0f, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f), 25.0f * m_Zoom, 25.0f * m_Zoom, 0.0f, pin.Color);
 			pin.PinConnectionPoint = Vec2(node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2.0f + 12.5f * m_Zoom, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f) + 12.5f * m_Zoom);
 		}
 		else
 		{
-			if (EditorUI::Button("", node.m_Position.x * m_Zoom + node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom - (font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom)) + GetWidth() / 2.0f, y, font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom), pin.PinHeight * m_Zoom, Params))
+			if (EditorUI::Button("", node.m_Position.x * m_Zoom + node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom - (font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom)) + GetWidth() / 2.0f - 10.0f, y, font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom), pin.PinHeight * m_Zoom, Params))
 			{
 				if (NativeInput::GetMouseButtonDown(Mouse::ButtonMiddle))
 				{
@@ -209,15 +228,25 @@ namespace Suora
 			}
 			EditorUI::ButtonParams _LabelParams = EditorUI::ButtonParams::Invisible();
 			_LabelParams.TextOrientation = Vec2(1.0f, 0.0f);
-			_LabelParams.TextSize = 24.0f * m_Zoom;
+			_LabelParams.TextSize = 18.0f * m_Zoom;
 			EditorUI::Button(pin.Label, node.m_Position.x * m_Zoom + node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom - (font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (25.0f * m_Zoom)) + GetWidth() / 2.0f - 32.0f * m_Zoom, y, font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (25.0f * m_Zoom), pin.PinHeight * m_Zoom, _LabelParams);
-			EditorUI::DrawTexturedRect(pin.PinID == 1 ? m_PinConnectionExecTexture : (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionTexture2 : m_PinConnectionTexture), node.m_Position.x * m_Zoom + node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom - 25.0f * m_Zoom + GetWidth() / 2.0f, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f), 25.0f * m_Zoom, 25.0f * m_Zoom, 0.0f, pin.Color);
+			Ref<Texture> texture = pin.PinID == 1 ? (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionExecTexture2 : m_PinConnectionExecTexture) : (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionTexture2 : m_PinConnectionTexture);
+			EditorUI::DrawTexturedRect(texture, node.m_Position.x * m_Zoom + node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom - 25.0f * m_Zoom + GetWidth() / 2.0f, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f), 25.0f * m_Zoom, 25.0f * m_Zoom, 0.0f, pin.Color);
 			pin.PinConnectionPoint = Vec2(node.m_Position.x * m_Zoom + node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom - 25.0f * m_Zoom + GetWidth() / 2.0f + 12.5f * m_Zoom, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f) + 12.5f * m_Zoom);
 		}
 	}
 
 	void NodeGraphEditor::Render(float deltaTime)
 	{
+		if (m_Framebuffer->GetSize() != m_NodeBuffer->GetSize())
+		{
+			m_NodeBuffer->Resize(m_Framebuffer->GetSize());
+		}
+		m_NodeBuffer->Bind();
+		RenderCommand::SetClearColor(Color(0.0f));
+		RenderCommand::Clear();
+		m_Framebuffer->Bind();
+
 		m_Zoom = Math::Lerp(m_Zoom, m_ZoomTarget, deltaTime * 25.0f);
 		m_CameraPos = Math::Lerp(m_CameraPos, m_CameraPosTarget, deltaTime * 50.0f);
 		m_Graph->FixNodePins();
@@ -238,22 +267,34 @@ namespace Suora
 			for (int y = -TilesY; y <= TilesY; y++)
 			{
 				const float size = 150 * m_Zoom;
-				EditorUI::DrawTexturedRect(m_Checkerboard, x* size - size/2 - offset.x * m_Zoom + GetWidth() / 2, y * size - size/2 - offset.y * m_Zoom + GetHeight() / 2, size, size, 0, Color(0.28f, 0.28f, 0.3f, 1));
+				EditorUI::DrawTexturedRect(m_Checkerboard, x * size - size/2 - offset.x * m_Zoom + GetWidth() / 2, y * size - size/2 - offset.y * m_Zoom + GetHeight() / 2, size, size, 0, Color(0.28f, 0.28f, 0.3f, 1));
 				EditorUI::DrawRectOutline(x * size - size/2 - offset.x * m_Zoom + GetWidth() / 2, y * size - size/2 - offset.y * m_Zoom + GetHeight() / 2, size, size, 1, Color(0.1f, 0.1f, 0.1f, 1));
 			}
 		}
 		const Color backGrd = EditorPreferences::Get()->UiBackgroundColor;
 		EditorUI::DrawRect(0, 0, GetWidth(), GetHeight(), 0, Color(backGrd.r, backGrd.g, backGrd.b, 0.25f));
 
+		UpdateMouseCursorInGraph();
 		if (m_DragPin)
 		{
-			DrawWireLine(GetMinorMousePos().x, GetMinorMousePos().y, m_DragPin->PinConnectionPoint.x, m_DragPin->PinConnectionPoint.y, m_DragPin->Color);
+			bool b = m_DragPin->IsReceivingPin;
+			if (m_DragPin->PinID == 1) b = !b;
+			if (b)
+			{
+				DrawWires(EditorUI::GetInput(), m_DragPin->PinConnectionPoint, m_DragPin->Color);
+			}
+			else
+			{
+				DrawWires(m_DragPin->PinConnectionPoint, EditorUI::GetInput(), m_DragPin->Color);
+			}
 		}
 
+		m_NodeBuffer->Bind();
 		for (Ref<VisualNode> node : m_Graph->m_Nodes)
 		{
 			DrawVisualNode(*node.get());
 		}
+		m_Framebuffer->Bind();
 		// Wires
 		for (Ref<VisualNode> node : m_Graph->m_Nodes)
 		{
@@ -266,6 +307,7 @@ namespace Suora
 				if (pin.IsReceivingPin && pin.Target) DrawWires(pin, *pin.Target);
 			}
 		}
+		RenderPipeline::RenderFramebufferIntoFramebuffer(*m_NodeBuffer, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), Vec4(0, 0, m_Framebuffer->GetSize()), "u_Texture", 0, false);
 
 		
 		// Cancel DragPin
@@ -386,6 +428,10 @@ namespace Suora
 			for (VisualNodePin& pin : node.m_InputPins)
 			{
 				y -= pin.PinHeight * m_Zoom;
+				if (pin.PinHeight > 0.0f)
+				{
+					y -= 5.0f * m_Zoom;
+				}
 				y -= DrawVisualNodePin(node, pin, true, y);
 			}
 			out1 += Math::Abs((y - begin));
@@ -396,6 +442,10 @@ namespace Suora
 			for (VisualNodePin& pin : node.m_OutputPins)
 			{
 				y -= pin.PinHeight * m_Zoom;
+				if (pin.PinHeight > 0.0f)
+				{
+					y -= 5.0f * m_Zoom;
+				}
 				y -= DrawVisualNodePin(node, pin, false, y);
 			}
 			out2 += Math::Abs((y - begin));
@@ -483,6 +533,15 @@ namespace Suora
 		{
 			ProccessNodePinIDConversion(a.IsReceivingPin ? a : b, a.IsReceivingPin ? b : a);
 		}
+	}
+
+	void NodeGraphEditor::UpdateMouseCursorInGraph()
+	{
+		if (EditorUI::_GetOverlays().Size() > 0)
+		{
+			return;
+		}
+		m_MouseCursorPosInGraph = m_CameraPos;
 	}
 
 	

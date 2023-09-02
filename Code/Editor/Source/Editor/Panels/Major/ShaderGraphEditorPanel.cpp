@@ -335,6 +335,12 @@ namespace Suora
 	{
 		DefaultDrawVisualNodePin(node, pin, inputPin, y);
 
+		// Skip Master Node
+		if (node.m_NodeID == 1)
+		{
+			return 0.0f;
+		}
+
 		if (pin.PinID == (int64_t)ShaderGraphDataType::Float && pin.IsReceivingPin && !pin.Target)
 		{
 			while (m_TempDragFloatFields.Size() <= PinIndex) m_TempDragFloatFields.Add(0.0f);

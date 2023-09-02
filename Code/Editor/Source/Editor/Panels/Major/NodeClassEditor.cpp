@@ -89,7 +89,8 @@ namespace Suora
 				return pin.PinHeight * m_Zoom;
 			}
 
-			return 5.0f * m_Zoom;
+			return 0.0f;
+			//return 5.0f * m_Zoom;
 		}
 		void ProccessNodePinIDConversion(VisualNodePin& receivingPin, VisualNodePin& targetPin) override
 		{

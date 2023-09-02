@@ -12,9 +12,12 @@ namespace Suora
 
 	class NodeGraphEditor : public MinorTab
 	{
+	private:
+		Ref<Framebuffer> m_NodeBuffer;
 	public:
 		Ref<VisualNodeGraph> m_Graph;
 		Vec2 m_CameraPos = Vec2(0), m_CameraPosTarget = Vec2(0);
+		Vec2 m_MouseCursorPosInGraph;
 		float m_Zoom = 1.0f, m_ZoomTarget = 1.0f;
 		Array<VisualNode*> m_SelectedNodes;
 		VisualNodePin* m_DragPin = nullptr;
@@ -23,6 +26,7 @@ namespace Suora
 		Ref<Texture> m_PinConnectionTexture;
 		Ref<Texture> m_PinConnectionTexture2;
 		Ref<Texture> m_PinConnectionExecTexture;
+		Ref<Texture> m_PinConnectionExecTexture2;
 		Ref<Shader> m_LineShader;
 
 		NodeGraphEditor(MajorTab* majorTab, const Ref<VisualNodeGraph>& graph);
@@ -45,5 +49,6 @@ namespace Suora
 		void DrawWireLine(float x1, float y1, float x2, float y2, const Color& color);
 		void ConnectNodePins(VisualNodePin& a, VisualNodePin& b);
 
+		void UpdateMouseCursorInGraph();
 	};
 }

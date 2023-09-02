@@ -352,6 +352,19 @@ namespace Suora
 
 				return Params;
 			}
+			inline static ButtonParams DarkerButton()
+			{
+				ButtonParams Params;
+
+				Params.ButtonColor = Math::Lerp(Params.ButtonColor, Color(0.0f, 0.0f, 0.0f, 1.0f), 0.5f);
+				Params.ButtonColorHover = Math::Lerp(Params.ButtonColorHover, Color(0.0f, 0.0f, 0.0f, 1.0f), 0.5f);
+				Params.ButtonColorClicked = Math::Lerp(Params.ButtonColorClicked, Color(0.0f, 0.0f, 0.0f, 1.0f), 0.5f);
+				Params.ButtonOutlineColor = Math::Lerp(Params.ButtonOutlineColor, Color(0.0f, 0.0f, 0.0f, 1.0f), 0.5f);
+				Params.ButtonOutlineHoverColor = Math::Lerp(Params.ButtonOutlineHoverColor, Color(0.0f, 0.0f, 0.0f, 1.0f), 0.5f);
+				Params.useButtonOutlineHoverColor = true;
+
+				return Params;
+			}
 		};
 
 	private:
