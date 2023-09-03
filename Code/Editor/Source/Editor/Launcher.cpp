@@ -117,6 +117,11 @@ namespace Suora
 
 	void Launcher::OpenProject(const std::string& path, bool isNativeProject)
 	{
+		if (!std::filesystem::exists(path))
+		{
+			return;
+		}
+
 		/*** Always Update the EnginePath of the ProjectSettings ***/
 		{
 			const std::string str = Platform::ReadFromFile(path);
