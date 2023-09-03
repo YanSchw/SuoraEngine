@@ -191,7 +191,10 @@ namespace Suora::Physics
 
 	void PhysicsWorld::DestroyCollider(CollisionNode* node)
 	{
-		m_Entities->destroy(node->m_Index);
+		if (m_Entities->valid(node->m_Index))
+		{
+			m_Entities->destroy(node->m_Index);
+		}
 	}
 
 	void PhysicsWorld::TickCollider(CollisionNode* node)

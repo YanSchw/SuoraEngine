@@ -25,20 +25,13 @@ namespace Suora
 	}
 	Node::~Node()
 	{
-		if (m_WasBeginCalled)
-		{
-			OnNodeDestroy();
-		}
-
-		// Destroy Children - Before actually destroying the Parent?
+		// Unparent Children - Before actually destroying the Parent
 		while (HasChildren())
 		{
-			delete GetChild(0);
+			GetChild(0)->ForceSetParent(GetParent(), true, false);
 		}
 
-		SetParent(nullptr);
-
-		// TODO: Destroy Children,     see above
+		ForceSetParent(nullptr, true, false);
 
 		if (GetWorld())
 		{
@@ -70,6 +63,16 @@ namespace Suora
 	bool Node::IsUpdateFlagSet(UpdateFlag flag) const
 	{
 		return 0 != ((int32_t)m_UpdateFlags & (int32_t)flag);
+	}
+
+	bool Node::ShouldUpdateInCurrentContext() const
+	{
+		return IsEnabled() && m_WasBeginCalled && !m_IsPendingKill;
+	}
+
+	bool Node::IsPendingKill() const
+	{
+		return m_IsPendingKill;
 	}
 
 	World* Node::GetWorld() const
@@ -177,7 +180,28 @@ namespace Suora
 
 	void Node::Destroy()
 	{
-		delete this;
+		if (m_IsPendingKill)
+		{
+			// The Node will already die at the end of the frame!
+			return;
+		}
+		m_IsPendingKill = true;
+
+		if (m_WasBeginCalled)
+		{
+			OnNodeDestroy();
+		}
+
+		Array<Node*> ChildrenToKill = m_Children;
+		for (Node* child : ChildrenToKill)
+		{
+			SuoraAssert(child);
+			child->Destroy();
+		}
+
+		SuoraAssert(GetWorld());
+		SuoraAssert(GetWorld()->m_PendingKills.Contains(this) == false);
+		GetWorld()->m_PendingKills.Add(this);
 	}
 
 	void Node::Possess()
@@ -415,10 +439,16 @@ namespace Suora
 	{
 	}
 
-	void Node::SetParent(Node* parent, bool keepWorldTransform)
+	void Node::ForceSetParent(Node* parent, bool keepWorldTransform, bool inGameplayContext)
 	{
-		if (parent && parent->IsChildOf(this)) return;
-		OnParentChange(GetParent(), parent);
+		if (parent && parent->IsChildOf(this))
+		{
+			return;
+		}
+		if (inGameplayContext)
+		{
+			OnParentChange(GetParent(), parent);
+		}
 
 		if (GetParent())
 		{
@@ -444,7 +474,7 @@ namespace Suora
 		{
 			m_EnabledInHierarchy = m_Enabled;
 		}
-		
+
 
 		if (Node3D* transform = GetTransform())
 		{
@@ -457,6 +487,10 @@ namespace Suora
 				transform->TickTransform();
 			}*/
 		}
+	}
+	void Node::SetParent(Node* parent, bool keepWorldTransform)
+	{
+		ForceSetParent(parent, keepWorldTransform, true);
 	}
 
 	void Node::Serialize(Yaml::Node& root)

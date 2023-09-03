@@ -13,7 +13,10 @@ namespace Suora
 	{
 		if (GetWorld())
 		{
-			GetWorld()->GetPhysicsWorld()->m_PhysicsNodes.Remove(this);
+			if (GetWorld()->GetPhysicsWorld()->m_PhysicsNodes.Contains(this))
+			{
+				GetWorld()->GetPhysicsWorld()->m_PhysicsNodes.Remove(this);
+			}
 		}
 	}
 

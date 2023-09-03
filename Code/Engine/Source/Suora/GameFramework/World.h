@@ -51,6 +51,10 @@ namespace Suora
 		/** Array of all nodes, that need to have Begin() called. */
 		Array<Ptr<Node>> m_BeginPlayIssues;
 
+		/** Array of all nodes, that will be killed at the end of the frame. 
+		*   Kill happens outside of Gameplay Context.                        */
+		Array<Node*> m_PendingKills;
+
 		Ptr<Node> m_Pawn = nullptr;
 		Ptr<CameraNode> m_MainCamera;
 		Level* m_SourceLevel = nullptr;

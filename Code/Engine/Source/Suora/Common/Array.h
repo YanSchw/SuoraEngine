@@ -78,6 +78,7 @@ public:
 
 	void RemoveAt(int index)
 	{
+		SuoraAssert(index >= 0);
 		m_Data.erase(m_Data.begin() + index);
 	}
 	void Remove(const T& item)

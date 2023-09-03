@@ -35,6 +35,7 @@ namespace Suora
 		std::string m_Name = "New Node";
 		bool m_Enabled = true, m_EnabledInHierarchy = true;
 		bool m_WasBeginCalled = false;
+		bool m_IsPendingKill = false;
 	public:
 		Node();
 		virtual ~Node();
@@ -47,6 +48,12 @@ namespace Suora
 
 		void SetUpdateFlag(UpdateFlag flag);
 		bool IsUpdateFlagSet(UpdateFlag flag) const;
+		/** Returns 'true', if the World is allowed to Update this Node in current Context
+		*   Context: IsEnabled? WasBeginPlayCalled? IsNotPendingKill? etc. */
+		bool ShouldUpdateInCurrentContext() const;
+
+		FUNCTION(Callable, Pure)
+		bool IsPendingKill() const;
 
 		FUNCTION(Callable, Pure, TypeAccessor)
 		World* GetWorld() const;
@@ -162,8 +169,11 @@ namespace Suora
 	protected:
 		virtual void TickTransform(bool inWorldSpace = true);
 		virtual void OnParentChange(Node* prev, Node* next);
-	public:
 
+		/** Always sets the Parent of the node, even for Components
+		*   If inGameplayContext is set to 'true', Events will fire and Gameplay code might execute.... */
+		void ForceSetParent(Node* parent, bool keepWorldTransform, bool inGameplayContext);
+	public:
 		FUNCTION(Callable)
 		virtual void SetParent(Node* parent, bool keepWorldTransform = true);
 

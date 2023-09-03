@@ -20,7 +20,7 @@ namespace Suora
 	{
 		while (m_WorldNodes.Size() > 0)
 		{
-			m_WorldNodes[0]->Destroy();
+			delete m_WorldNodes[0];
 		}
 	}
 
@@ -139,6 +139,14 @@ namespace Suora
 			chunk.m_Thread.join();
 		}
 		UpdateRules::s_LocalUpdate = false;
+
+
+		// Kill all Nods in m_PendingKills
+		for (Node* node : m_PendingKills)
+		{
+			delete node;
+		}
+		m_PendingKills.Clear();
 	}
 
 	Array<Node*> World::FindNodesByClass(const Class& cls)
@@ -191,7 +199,10 @@ namespace Suora
 		{
 			if (m_WorldUpdateNodes[i])
 			{
-				m_WorldUpdateNodes[i]->WorldUpdate(deltaTime);
+				if (m_WorldUpdateNodes[i]->ShouldUpdateInCurrentContext())
+				{
+					m_WorldUpdateNodes[i]->WorldUpdate(deltaTime);
+				}
 			}
 			else
 			{
@@ -205,7 +216,10 @@ namespace Suora
 
 		for (Node* node : chunk->m_Nodes)
 		{
-			node->LocalUpdate(deltaTime);
+			if (node->ShouldUpdateInCurrentContext())
+			{
+				node->LocalUpdate(deltaTime);
+			}
 		}
 	}
 	void World::PrepareLocalUpdate()
