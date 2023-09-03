@@ -14,6 +14,7 @@
 #include "Suora/GameFramework/GameInstance.h"
 #include "Suora/GameFramework/InputModule.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
+#include "Suora/Core/Object/Pointer.h"
 
 namespace Suora
 {
@@ -166,14 +167,28 @@ namespace Suora
 		}
 
 		Node* duplicate = Deserialize(Serialized, true, nullptr, true);
-		if (IsInitialized()) duplicate->InitializeNode(*GetWorld());
+		if (IsInitialized())
+		{
+			duplicate->InitializeNode(*GetWorld());
+		}
 		duplicate->SetParent(GetParent());
-		if (duplicate->IsA<Node3D>()) duplicate->As<Node3D>()->TickTransform();
+		if (duplicate->IsA<Node3D>())
+		{
+			duplicate->As<Node3D>()->TickTransform();
+		}
 
 		// Still bad....
 		// TODO: Fix -> Some ChildNodes dont get properly deserialized
 		duplicate->Implement<IObjectCompositionData>();
 		duplicate->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
+
+		if (!m_WasBeginCalled)
+		{
+			while (DoesNameExistInHierarchy(duplicate->GetName(), duplicate->GetRootNode(), duplicate))
+			{
+				duplicate->SetName(duplicate->GetName());
+			}
+		}
 
 		return duplicate;
 	}
