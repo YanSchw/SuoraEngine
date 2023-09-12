@@ -195,6 +195,13 @@ namespace Suora::Physics
 		{
 			m_Entities->destroy(node->m_Index);
 		}
+		for (int32_t i = m_PostPhysicsTicksRequired.Last(); i >= 0; i--)
+		{
+			if (m_PostPhysicsTicksRequired[i] == node)
+			{
+				m_PostPhysicsTicksRequired.RemoveAt(i);
+			}
+		}
 	}
 
 	void PhysicsWorld::TickCollider(CollisionNode* node)

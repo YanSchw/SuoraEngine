@@ -31,9 +31,9 @@ namespace Suora
 	GameInstance::~GameInstance()
 	{
 		m_CurrentWorld = nullptr;
-		for (World* world : m_Worlds)
+		for (int32_t i = 0; i < m_Worlds.Size(); i++)
 		{
-			delete world;
+			delete m_Worlds[i];
 		}
 	}
 

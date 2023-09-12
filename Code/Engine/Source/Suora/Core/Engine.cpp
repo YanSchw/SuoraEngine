@@ -51,7 +51,7 @@ namespace Suora
 	}
 	void Engine::CreateGameInstance(const Class& cls)
 	{
-		m_GameInstance = Ref<GameInstance>(Cast<GameInstance>(New(cls)));
+		m_GameInstance = (Ref<GameInstance>)(Cast<GameInstance>(New(cls)));
 		m_GameInstance->m_Engine = this;
 		m_GameInstance->Initialize();
 	}
