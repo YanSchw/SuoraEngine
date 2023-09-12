@@ -20,7 +20,7 @@ namespace Suora
 		//MemoryManager::s_MemoryFootprint -= (uint32_t)sizeof(this);
 		MemoryManager::Instance()->NullifyPtrTo((Object*)this);
 		UnimplementAllInterfaces();
-		PtrTable::Nullify(this);
+		InternalPtr::Nullify(this);
 
 	}
 

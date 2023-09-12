@@ -7,99 +7,116 @@
 
 namespace Suora
 {
-	template<class T> struct Ptr;
+	template<class T, bool R> struct TemplatePtr;
+	class Object;
 
-	struct PtrTable
+	struct InternalPtr
 	{
+		static void Nullify(Object* obj);
+
+		InternalPtr();
+		~InternalPtr();
+
+		Object* GetAddress() const;
+		void Asign(Object* obj);
+
+		Object* operator=(Object* obj);
+		bool operator==(InternalPtr& other) const;
+
 	private:
-		inline static std::unordered_map<void*, Array<Ptr<void*>*>> s_PtrTable;
+		inline static std::unordered_map<Object*, Array<InternalPtr*>> s_PtrTable;
+		inline static std::unordered_map<Object*, uint32_t> s_RefCounts;
 
-		static void Nullify(void* obj);
+		Object* m_Value = nullptr;
+		bool m_RefCounting;
 
-		template<class T> friend struct Ptr;
+		template<class T, bool R> friend struct TemplatePtr;
 		friend class Object;
+		friend class Node;
 	};
 
-	/** Runtime-Safe WeakObjectPtr implementation; automatically nullifies, if Object is deleted! */
-	template<class T>
-	struct Ptr
+	/** Runtime-Safe ObjectPtr implementation; automatically nullifies, if Object is deleted! */
+	template<class T, bool REF_COUNTED>
+	struct TemplatePtr
 	{
-		Ptr()
+		TemplatePtr()
 		{
+			m_InternalPtr.m_RefCounting = REF_COUNTED;
 		}
-		Ptr(T& obj)
+		TemplatePtr(T& obj)
 		{
-			ptr = &obj;
+			m_InternalPtr.m_RefCounting = REF_COUNTED;
+			m_InternalPtr = (Object*) &obj;
 		}
-		Ptr(T* obj)
+		TemplatePtr(T* obj)
 		{
-			ptr = obj;
+			m_InternalPtr.m_RefCounting = REF_COUNTED;
+			m_InternalPtr = (Object*) obj;
 		}
-		Ptr(const std::shared_ptr<T>& obj)
+		TemplatePtr(const std::shared_ptr<T>& obj)
 		{
-			ptr = obj.get();
+			m_InternalPtr.m_RefCounting = REF_COUNTED;
+			m_InternalPtr = (Object*) obj.get();
 		}
-		~Ptr()
+		~TemplatePtr()
 		{
-			if (!ptr) return;
-			if (PtrTable::s_PtrTable[ptr].Contains((Ptr<void*>*)this)) PtrTable::s_PtrTable[ptr].Remove((Ptr<void*>*)this);
+			m_InternalPtr.Asign(nullptr);
 		}
 
 		inline T* Get() const
 		{
-			return ptr;
+			return (T*)m_InternalPtr.GetAddress();
 		}
 		inline T* operator->() const
 		{
-			return ptr;
+			return (T*)m_InternalPtr.GetAddress();
 		}
 		//Dereference operator
 		inline T& operator*() const
 		{
-			return *ptr;
+			return *(T*)m_InternalPtr.GetAddress();
 		}
 
 
-		template<class U>
-		bool operator==(Ptr<U>& other) const
+		template<class U, bool R>
+		bool operator==(TemplatePtr<U, R>& other) const
 		{
-			return ptr == other.ptr;
+			return m_InternalPtr == other.m_InternalPtr;
 		}
-		Ptr<T>& operator=(T& obj)
+		TemplatePtr<T, REF_COUNTED>& operator=(T& obj)
 		{
-			ptr = &obj;
+			m_InternalPtr = &obj;
 			return *this;
 		}
-		Ptr<T>& operator=(T* obj)
+		TemplatePtr<T, REF_COUNTED>& operator=(T* obj)
 		{
-			ptr = obj;
+			m_InternalPtr = obj;
 			return *this;
 		}
-		Ptr<T>& operator=(const std::shared_ptr<T>& obj)
+		TemplatePtr<T, REF_COUNTED>& operator=(const std::shared_ptr<T>& obj)
 		{
-			ptr = obj.get();
+			m_InternalPtr = obj.get();
 			return *this;
 		}
 
 		// Cast operator
 		operator T* () const
 		{
-			return ptr;
+			return (T*)m_InternalPtr.GetAddress();
 		}
 		operator bool() const
 		{
-			return ptr;
+			return m_InternalPtr.GetAddress();
 		}
 
-		/*inline Class GetTemplateClass()
-		{
-			return T::StaticClass();
-		}*/
+	protected:
+		InternalPtr m_InternalPtr;
 
-	private:
-		T* ptr = nullptr;
-		template<class U> friend struct Ptr;
-		friend struct PtrTable;
+		template<class U, bool R> friend struct TemplatePtr;
+		friend struct InternalPtr;
 	};
+
+	template<class T> using Ptr			= TemplatePtr<T, false>;
+	template<class T> using SharedPtr	= TemplatePtr<T, true>;
 
 }
