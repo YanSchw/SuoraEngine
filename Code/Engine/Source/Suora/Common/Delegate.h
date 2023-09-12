@@ -155,7 +155,7 @@ namespace Suora
 			return &m_Delegate;
 		}
 
-		friend struct Blueprint;
+		friend class Blueprint;
 		friend struct ClassReflector;
 	};
 
