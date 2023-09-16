@@ -38,6 +38,7 @@ namespace Suora
 		props.isDecorated = true;
 		m_Window = Application::Get().CreateAppWindow(props);
 		m_Window->SetVSync(false);
+		m_Window->m_WindowIconOverride = AssetManager::GetAsset<Texture2D>(SuoraID("059f71bb-7ad3-47a0-be84-6dfc910f7ca3"));
 		
 		if (!TextureInit)
 		{

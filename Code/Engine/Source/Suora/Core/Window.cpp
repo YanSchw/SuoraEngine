@@ -12,7 +12,7 @@ namespace Suora
 	#ifdef SUORA_PLATFORM_WINDOWS
 		return CreateScope<WindowsWindow>(props);
 	#else
-		SUORA_CORE_ASSERT(false, "Unknown platform!");
+		SUORA_ASSERT(false, "Unknown platform!");
 		return nullptr;
 	#endif
 	}
@@ -22,17 +22,9 @@ namespace Suora
 #ifdef SUORA_PLATFORM_WINDOWS
 		return new WindowsWindow(props);
 #else
-		SUORA_CORE_ASSERT(false, "Unknown platform!");
+		SUORA_ASSERT(false, "Unknown platform!");
 		return nullptr;
 #endif
 	}
-
-//	const bool Window::IsEditor() const
-//	{
-//#ifdef SUORA_EDITOR
-//		return true;
-//#endif // SUORA_EDITOR
-//		return false;
-//	}
 
 }

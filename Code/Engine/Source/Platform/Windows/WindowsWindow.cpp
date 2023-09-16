@@ -95,15 +95,15 @@ namespace Suora
 		glfwSetWindowPos(m_Window, mode->width / 2.0f - width / 2.0f, mode->height / 2.0f - height / 2.0f);
 	}
 
-	void WindowsWindow::SetFullscreen(bool b)
+	void WindowsWindow::SetFullscreen(bool fullscreen)
 	{
-		if (IsFullscreen() == b)
+		if (IsFullscreen() == fullscreen)
 			return;
 
 		static int _wndPos[2];
 		static int _wndSize[2];
 
-		if (b)
+		if (fullscreen)
 		{
 			// backup window position and window size
 			glfwGetWindowPos(m_Window, &_wndPos[0], &_wndPos[1]);
@@ -296,6 +296,25 @@ namespace Suora
 		}
 	}
 
+	void WindowsWindow::LoadIconTexture(Texture2D* icon)
+	{
+		Texture* texture = icon->GetTexture();
+		if (texture && texture != Texture::GetOrCreateDefaultTexture())
+		{
+			m_CurrentIconTexture = icon;
+			m_CurrentIconTexture->m_Path = icon->m_Path;
+			GLFWimage images[1];
+			int channels = 4;
+			stbi_set_flip_vertically_on_load(0);
+			images[0].pixels = stbi_load(m_CurrentIconTexture->GetTexturePath().c_str(), &images[0].width, &images[0].height, &channels, channels); //rgba channels 
+			stbi_set_flip_vertically_on_load(1);
+			images->width = texture->GetWidth();
+			images->height = texture->GetHeight();
+			glfwSetWindowIcon(m_Window, 1, images);
+			stbi_image_free(images[0].pixels);
+		}
+	}
+
 	void WindowsWindow::OnUpdate()
 	{
 		SUORA_PROFILE_SCOPE("WindowsWindow::OnUpdate()");
@@ -332,25 +351,18 @@ namespace Suora
 
 
 		// Updating the WindowIcon
-		if (ProjectSettings::Get() && ProjectSettings::Get()->m_ProjectIconTexture != m_CurrentIconTexture)
+		if (m_WindowIconOverride)
+		{
+			if (m_WindowIconOverride != m_CurrentIconTexture)
+			{
+				LoadIconTexture(m_WindowIconOverride);
+			}
+		}
+		else if (ProjectSettings::Get() && ProjectSettings::Get()->m_ProjectIconTexture != m_CurrentIconTexture)
 		{
 			if (ProjectSettings::Get()->m_ProjectIconTexture)
 			{
-				Texture* texture = ProjectSettings::Get()->m_ProjectIconTexture->GetTexture();
-				if (texture && texture != Texture::GetOrCreateDefaultTexture())
-				{
-					m_CurrentIconTexture = ProjectSettings::Get()->m_ProjectIconTexture;
-					m_CurrentIconTexture->m_Path = ProjectSettings::Get()->m_ProjectIconTexture->m_Path;
-					GLFWimage images[1];
-					int channels = 4;
-					stbi_set_flip_vertically_on_load(0);
-					images[0].pixels = stbi_load(m_CurrentIconTexture->GetTexturePath().c_str(), &images[0].width, &images[0].height, &channels, channels); //rgba channels 
-					stbi_set_flip_vertically_on_load(1);
-					images->width = texture->GetWidth();
-					images->height = texture->GetHeight();
-					glfwSetWindowIcon(m_Window, 1, images);
-					stbi_image_free(images[0].pixels);
-				}
+				LoadIconTexture(ProjectSettings::Get()->m_ProjectIconTexture);
 			}
 			else
 			{

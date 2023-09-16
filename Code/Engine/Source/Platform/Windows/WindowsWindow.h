@@ -40,7 +40,7 @@ namespace Suora
 		virtual void Iconify() override;
 		virtual void CenterWindow() override;
 
-		virtual void SetFullscreen(bool b) override;
+		virtual void SetFullscreen(bool fullscreen) override;
 		virtual bool IsFullscreen() override;
 	private:
 		virtual void Init(const WindowProps& props);
@@ -50,7 +50,9 @@ namespace Suora
 		GLFWcursor* m_Cursor = nullptr;
 		Ref<GraphicsContext> m_Context;
 		WindowProps m_Props;
+
 		class Texture2D* m_CurrentIconTexture = nullptr;
+		void LoadIconTexture(Texture2D* icon);
 
 		struct WindowData
 		{

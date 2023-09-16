@@ -7,6 +7,7 @@
 
 namespace Suora 
 {
+	class Texture2D;
 
 	enum class Cursor
 	{
@@ -63,7 +64,7 @@ namespace Suora
 		virtual void Iconify() = 0;
 		virtual void CenterWindow() = 0;
 
-		virtual void SetFullscreen(bool b) = 0;
+		virtual void SetFullscreen(bool fullscreen) = 0;
 		virtual bool IsFullscreen() = 0;
 
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
@@ -73,6 +74,8 @@ namespace Suora
 
 		float WindowScale = 1;
 		Cursor currentCursorType = Cursor::Default;
+
+		Texture2D* m_WindowIconOverride = nullptr;
 	};
 
 
