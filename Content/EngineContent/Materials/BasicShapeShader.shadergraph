@@ -13,6 +13,291 @@ Material:
     m_Type: 1
     m_Vec3: 0.000000/0.000000/0.000000
   m_BackfaceCulling: true
+NodeGraph: 
+  Node_0: 
+    Color: 
+      a: 1.000000
+      b: 0.570000
+      g: 0.640000
+      r: 0.800000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: World Position Offset
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: Base Color
+      PinHeight: 25.000000
+      PinID: 3
+      Target: 3/Output/0
+      m_AdditionalData: 
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Opacity
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+    Input_3: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Metallic
+      PinHeight: 25.000000
+      PinID: 1
+      Target: 1/Output/0
+      m_AdditionalData: 
+    Input_4: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Roughness
+      PinHeight: 25.000000
+      PinID: 1
+      Target: 2/Output/0
+      m_AdditionalData: 
+    Input_5: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: Emissive Color
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+    Input_6: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: Normal
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+    NodeID: 1
+    Position: 
+      x: 0.994434
+      y: 0.000000
+    Size: 
+      x: 300.000000
+      y: 260.000000
+    Title: Master
+  Node_1: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.490000
+      r: 0.400000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Name
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: Metallic
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Type
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 1
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Default
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 
+    NodeID: 2
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: Uniform
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+    Position: 
+      x: "-426.000000"
+      y: "-8.000000"
+    Size: 
+      x: 225.000000
+      y: 200.000000
+    Title: Uniform
+  Node_2: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.490000
+      r: 0.400000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Name
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: Roughness
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Type
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 1
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Default
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 
+    NodeID: 2
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: Uniform
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+    Position: 
+      x: "-421.000000"
+      y: "-216.000000"
+    Size: 
+      x: 225.000000
+      y: 200.000000
+    Title: Uniform
+  Node_3: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.490000
+      r: 0.400000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: X
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 0.9
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Y
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 0.9
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Z
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 0.9
+    NodeID: 100
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: false
+      Label: Vec3
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+    Position: 
+      x: "-431.000000"
+      y: 185.000000
+    Size: 
+      x: 215.000000
+      y: 140.000000
+    Title: Vector 3
 UUID: "a86e5b42-a411-408a-9b06-3462940253c7"
 m_BaseShader: DeferredLit.glsl
 m_ShaderSource: >-
@@ -49,8 +334,8 @@ m_ShaderSource: >-
   dot(B,B) ) );\n    return mat3( T * invmax, B * invmax, N );\n}\n\nvec3
   SampleNormal(vec3 n, float flip)\n{\n\tn = normalize(n * 2.0 - vec3(1.0));
   \n\tn = normalize(TBN * n); \n\tif (flip == 1.0) n.g = 1.0 - n.g;\n\treturn
-  n;\n}\n\nvoid main(void)\n{\n\tvec3 baseColor = vec3(2.000000, 2.000000,
-  2.000000);\n\tfloat opacity =  1.0;\n\t\n\tif (opacity <= 0.05) \n\t{\n\t\tdiscard;\n\t\treturn;\n\t}\n\n\t\n\tmat4
+  n;\n}\n\nvoid main(void)\n{\n\tvec3 baseColor = vec3(0.900000, 0.900000,
+  0.900000);\n\tfloat opacity =  1.0;\n\t\n\tif (opacity <= 0.05) \n\t{\n\t\tdiscard;\n\t\treturn;\n\t}\n\n\t\n\tmat4
   threshold = mat4\n    (\n\t\t1.0 / 17.0,   9.0 / 17.0,   3.0 / 17.0,
     11.0 / 17.0,\n\t\t13.0 / 17.0,  5.0 / 17.0,   15.0 / 17.0,  7.0
   / 17.0,\n\t\t4.0 / 17.0,   12.0 / 17.0,  2.0 / 17.0,   10.0 / 17.0,\n\t\t16.0
