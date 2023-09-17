@@ -26,10 +26,24 @@ namespace Suora
 	}
 	Node::~Node()
 	{
-		// Unparent Children - Before actually destroying the Parent
-		while (HasChildren())
+		// Unparent Children - Before actually destroying the Parent --- if the World exits
+		if (GetWorld())
 		{
-			GetChild(0)->ForceSetParent(GetParent(), true, false);
+			while (HasChildren())
+			{
+				GetChild(0)->ForceSetParent(GetParent(), true, false);
+			}
+		}
+		else
+		{
+			// There is no World, the Node likely exits on the Stack and not the Heap.
+			// Manually delete this Nodes children...
+			while (HasChildren())
+			{
+				Node* child = GetChild(0);
+				child->ForceSetParent(GetParent(), true, false);
+				delete child;
+			}
 		}
 
 		ForceSetParent(nullptr, true, false);
