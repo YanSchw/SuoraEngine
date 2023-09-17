@@ -199,6 +199,11 @@ namespace Suora
 
 	/*** ShaderGraphNodeEditor ***/
 
+	Ref<Texture> ShaderGraphNodeEditor::GetPinIconTexture(int64_t pinID, bool hasOtherPin)
+	{
+		return (hasOtherPin ? m_PinConnectionTexture2 : m_PinConnectionTexture);
+	}
+
 	void ShaderGraphNodeEditor::LoadBaseShaderInput(BaseShaderInput& input, int64_t& begin, int64_t& end, const std::string& str)
 	{
 		while (str[begin++] != '"');

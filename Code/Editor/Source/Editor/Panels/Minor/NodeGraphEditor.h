@@ -21,6 +21,7 @@ namespace Suora
 		float m_Zoom = 1.0f, m_ZoomTarget = 1.0f;
 		Array<VisualNode*> m_SelectedNodes;
 		VisualNodePin* m_DragPin = nullptr;
+		Array<int64_t> m_InvertDragPinForIDs;
 
 		Ref<Texture> m_Checkerboard;
 		Ref<Texture> m_PinConnectionTexture;
@@ -38,6 +39,8 @@ namespace Suora
 		virtual void DrawVisualNode(VisualNode& node) = 0;
 		virtual float DrawVisualNodePin(VisualNode& node, VisualNodePin& pin, bool inputPin, float y) = 0;
 		virtual void ProccessNodePinIDConversion(VisualNodePin& receivingPin, VisualNodePin& targetPin) = 0;
+
+		virtual Ref<Texture> GetPinIconTexture(int64_t pinID, bool hasOtherPin);
 
 		void DefaultDrawVisualNode(VisualNode& node);
 		void DefaultDrawVisualNodePin(VisualNode& node, VisualNodePin& pin, bool inputPin, float y);

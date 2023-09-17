@@ -30,6 +30,7 @@ namespace Suora
 		NodeClassNodeGraph(MajorTab* majorTab, Blueprint* blueprint, int index)
 			: NodeGraphEditor(majorTab, CreateRef<BlueprintNodeGraph>(blueprint)), m_BlueprintClass(blueprint), m_GraphIndex(index)
 		{
+			m_InvertDragPinForIDs.Add(1);
 			m_Graph->DeserializeNodeGraph(m_BlueprintClass->m_YamlNode_EditorOnly["Node"]["Graphs"][std::to_string(m_GraphIndex)]);
 		}
 		void OnNodeGraphRender(float deltaTime) override

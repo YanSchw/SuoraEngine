@@ -32,6 +32,9 @@ namespace Suora
 		~ShaderGraphNodeEditor()
 		{
 		}
+
+		virtual Ref<Texture> GetPinIconTexture(int64_t pinID, bool hasOtherPin) override;
+
 		void LoadBaseShaderInput(BaseShaderInput& input, int64_t& begin, int64_t& end, const std::string& str);
 		void LoadBaseShaderInputs(const std::string& path);
 		void GenerateShaderInput(std::string& str, int64_t begin, VisualNode* master, bool vertex, bool& error);

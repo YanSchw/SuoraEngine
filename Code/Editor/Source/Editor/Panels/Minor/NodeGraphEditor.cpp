@@ -107,6 +107,11 @@ namespace Suora
 		return font;
 	}
 
+	Ref<Texture> NodeGraphEditor::GetPinIconTexture(int64_t pinID, bool hasOtherPin)
+	{
+		return pinID == 1 ? (hasOtherPin ? m_PinConnectionExecTexture2 : m_PinConnectionExecTexture) : (hasOtherPin ? m_PinConnectionTexture2 : m_PinConnectionTexture);
+	}
+
 	void NodeGraphEditor::DefaultDrawVisualNode(VisualNode& node)
 	{
 		bool Hovering = EditorUI::GetInput().x > (node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2)
@@ -208,7 +213,7 @@ namespace Suora
 			_LabelParams.TextOrientation = Vec2(-1.0f, 0.0f);
 			_LabelParams.TextSize = 18.0f * m_Zoom;
 			EditorUI::Button(pin.Label, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2.0f + 32.0f * m_Zoom, y, font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (25.0f * m_Zoom), pin.PinHeight * m_Zoom, _LabelParams);
-			Ref<Texture> texture = pin.PinID == 1 ? (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionExecTexture2 : m_PinConnectionExecTexture) : (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionTexture2 : m_PinConnectionTexture);
+			Ref<Texture> texture = GetPinIconTexture(pin.PinID, pin.HasOtherPin(m_Graph->m_Nodes));
 			EditorUI::DrawTexturedRect(texture, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2.0f, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f), 25.0f * m_Zoom, 25.0f * m_Zoom, 0.0f, pin.Color);
 			pin.PinConnectionPoint = Vec2(node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2.0f + 12.5f * m_Zoom, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f) + 12.5f * m_Zoom);
 		}
@@ -232,7 +237,7 @@ namespace Suora
 			_LabelParams.TextOrientation = Vec2(1.0f, 0.0f);
 			_LabelParams.TextSize = 18.0f * m_Zoom;
 			EditorUI::Button(pin.Label, node.m_Position.x * m_Zoom + node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom - (font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (25.0f * m_Zoom)) + GetWidth() / 2.0f - 32.0f * m_Zoom, y, font->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (25.0f * m_Zoom), pin.PinHeight * m_Zoom, _LabelParams);
-			Ref<Texture> texture = pin.PinID == 1 ? (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionExecTexture2 : m_PinConnectionExecTexture) : (pin.HasOtherPin(m_Graph->m_Nodes) ? m_PinConnectionTexture2 : m_PinConnectionTexture);
+			Ref<Texture> texture = GetPinIconTexture(pin.PinID, pin.HasOtherPin(m_Graph->m_Nodes));
 			EditorUI::DrawTexturedRect(texture, node.m_Position.x * m_Zoom + node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom - 25.0f * m_Zoom + GetWidth() / 2.0f, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f), 25.0f * m_Zoom, 25.0f * m_Zoom, 0.0f, pin.Color);
 			pin.PinConnectionPoint = Vec2(node.m_Position.x * m_Zoom + node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom - 25.0f * m_Zoom + GetWidth() / 2.0f + 12.5f * m_Zoom, y + (((pin.PinHeight * m_Zoom) - (25.0f * m_Zoom)) / 2.0f) + 12.5f * m_Zoom);
 		}
@@ -280,7 +285,7 @@ namespace Suora
 		if (m_DragPin)
 		{
 			bool b = m_DragPin->IsReceivingPin;
-			if (m_DragPin->PinID == 1) b = !b;
+			if (m_InvertDragPinForIDs.Contains(m_DragPin->PinID)) b = !b;
 			if (b)
 			{
 				DrawWires(EditorUI::GetInput(), m_DragPin->PinConnectionPoint, m_DragPin->Color);
