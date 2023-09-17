@@ -4,6 +4,7 @@
 
 namespace Suora
 {
+	class ShaderGraph;
 
 	struct ShaderGraphCompiler
 	{
@@ -16,6 +17,9 @@ namespace Suora
 		ShaderNodeGraph();
 
 		void UpdateSupportedNodes() override;
+
+		virtual void TickAllVisualNodes() override;
+		void TickAllVisualNodesInShaderGraphContext(ShaderGraph* shaderGraph);
 
 		static ShaderGraphDataType StringToShaderGraphDataType(std::string str);
 		static std::string ShaderGraphDataTypeToLabel(ShaderGraphDataType type);

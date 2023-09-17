@@ -34,8 +34,7 @@ namespace Suora
 		m_NodeEditor = CreateRef<ShaderGraphNodeEditor>(this);
 
 		m_LastBaseShader = m_ShaderGraph->m_BaseShader;
-		m_NodeEditor->LoadBaseShaderInputs(m_ShaderGraph->GetBaseShaderPath());
-		//m_NodeEditor->m_PreviewMaterial.SetShader(shader->GetShader());
+		m_ShaderGraph->LoadBaseShaderInputs(m_ShaderGraph->GetBaseShaderPath());
 
 		Yaml::Node root;
 		Yaml::Parse(root, Platform::ReadFromFile(m_ShaderGraph->m_Path.string()));
@@ -65,101 +64,6 @@ namespace Suora
 
 	}
 
-	void ShaderGraphEditorPanel::GenerateShaderGraphSource()
-	{
-		bool error = false;
-		m_ShaderGraph->m_Shader = nullptr;
-		VisualNode* master = nullptr;
-		for (Ref<VisualNode> node : m_NodeEditor->m_Graph->m_Nodes)
-		{
-			if (node->m_Title == "Master" && node->m_NodeID == 1)
-			{
-				master = node.get();
-			}
-		}
-		SUORA_ASSERT(master, "no Master node found!");
-
-		std::string src = Platform::ReadFromFile(m_ShaderGraph->GetBaseShaderPath());
-		Util::RemoveCommentsFromString(src);
-
-		// Uniforms
-		Array<UniformSlot> oldSlots = m_ShaderGraph->m_UniformSlots;
-		m_ShaderGraph->m_UniformSlots.Clear();
-		std::string uniforms;
-		for (Ref<VisualNode> node : m_NodeEditor->m_Graph->m_Nodes)
-		{
-			if (node->m_NodeID == 2)
-			{
-				const ShaderGraphDataType type = (ShaderGraphDataType)std::stoi(node->m_InputPins[1].m_AdditionalData);
-				uniforms += "uniform " + ShaderNodeGraph::ShaderGraphDataTypeToString(type) + " " + node->m_InputPins[0].m_AdditionalData + ";\n";
-
-				switch (type)
-				{
-				case ShaderGraphDataType::Float:
-					m_ShaderGraph->m_UniformSlots.Add(UniformSlot(type, node->m_InputPins[0].m_AdditionalData, 0.0f));
-					break;
-				case ShaderGraphDataType::Vec2:
-					m_ShaderGraph->m_UniformSlots.Add(UniformSlot(type, node->m_InputPins[0].m_AdditionalData, 0.0f));
-					break;
-				case ShaderGraphDataType::Vec3:
-					m_ShaderGraph->m_UniformSlots.Add(UniformSlot(type, node->m_InputPins[0].m_AdditionalData, 0.0f));
-					break;
-				case ShaderGraphDataType::Vec4:
-					m_ShaderGraph->m_UniformSlots.Add(UniformSlot(type, node->m_InputPins[0].m_AdditionalData, 0.0f));
-					break;
-				case ShaderGraphDataType::Texture2D:
-					m_ShaderGraph->m_UniformSlots.Add(UniformSlot(type, node->m_InputPins[0].m_AdditionalData, nullptr));
-					break;
-				case ShaderGraphDataType::None:
-				default:
-					SuoraError("Unkown Type!");
-				}
-			}
-		}
-		for (UniformSlot& old : oldSlots)
-		{
-			for (UniformSlot& newer : m_ShaderGraph->m_UniformSlots)
-			{
-				if (old.m_Label == newer.m_Label && old.m_Type == newer.m_Type)
-				{
-					newer = old;
-				}
-			}
-		}
-
-		// Proccess BaseShader
-		while (src.find("$VERT_INPUTS") != std::string::npos) Util::ReplaceSequence(src, "$VERT_INPUTS", "" + uniforms);
-		while (src.find("$FRAG_INPUTS") != std::string::npos) Util::ReplaceSequence(src, "$FRAG_INPUTS", "" + uniforms);
-
-		int64_t begin = 0;
-		while (true)
-		{
-			begin = src.find("$VERT_INPUT", begin);
-			if (begin == std::string::npos) break;
-			m_NodeEditor->GenerateShaderInput(src, begin, master, true, error);
-		}
-		begin = 0;
-		while (true)
-		{
-			begin = src.find("$FRAG_INPUT", begin);
-			if (begin == std::string::npos) break;
-			m_NodeEditor->GenerateShaderInput(src, begin, master, false, error);
-		}
-
-		if (!error)
-		{
-			m_ShaderGraph->m_ShaderSource = src;
-			m_ShaderGraph->m_SourceFileTime = std::chrono::time_point<std::chrono::steady_clock>(std::filesystem::last_write_time(m_ShaderGraph->GetBaseShaderPath()).time_since_epoch());
-		}
-		else
-		{
-			SuoraError("ShaderGraph compilation failed!");
-		}
-
-		// Preview Material
-		//m_NodeEditor->m_PreviewMaterial.SetShader(m_ShaderGraph->GetShader());
-	}
-
 	void ShaderGraphEditorPanel::Update(float deltaTime)
 	{
 		Super::Update(deltaTime);
@@ -167,7 +71,7 @@ namespace Suora
 		if (m_LastBaseShader != m_ShaderGraph->m_BaseShader)
 		{
 			m_LastBaseShader = m_ShaderGraph->m_BaseShader;
-			m_NodeEditor->LoadBaseShaderInputs(m_ShaderGraph->GetBaseShaderPath());
+			m_ShaderGraph->LoadBaseShaderInputs(m_ShaderGraph->GetBaseShaderPath());
 		}
 
 		if (!m_InitResetCamera && m_ViewportPanel->GetEditorCamera())
@@ -176,7 +80,7 @@ namespace Suora
 			m_ViewportPanel->GetEditorCamera()->SetPosition(Vec3(0.0f, 1.0f, -5.0f));
 		}
 
-
+		m_NodeEditor->GetShaderNodeGraph()->TickAllVisualNodesInShaderGraphContext(m_ShaderGraph);
 	}
 
 	Texture* ShaderGraphEditorPanel::GetIconTexture()
@@ -188,7 +92,7 @@ namespace Suora
 	{
 		Super::SaveAsset();
 
-		GenerateShaderGraphSource();
+		m_ShaderGraph->GenerateShaderGraphSource(*m_NodeEditor->GetShaderNodeGraph());
 		Yaml::Node root;
 		m_ShaderGraph->Serialize(root);
 		m_NodeEditor->m_Graph->SerializeNodeGraph(root);
@@ -204,96 +108,6 @@ namespace Suora
 		return (hasOtherPin ? m_PinConnectionTexture2 : m_PinConnectionTexture);
 	}
 
-	void ShaderGraphNodeEditor::LoadBaseShaderInput(BaseShaderInput& input, int64_t& begin, int64_t& end, const std::string& str)
-	{
-		while (str[begin++] != '"');
-		end = begin + 1;
-		while (str[end++] != '"');
-		input.m_Label = str.substr(begin, end - begin - 1);
-
-		begin = end;
-		while (str[begin++] != ',');
-		end = begin;
-		while (str[end++] != ',');
-		input.m_Type = ShaderNodeGraph::StringToShaderGraphDataType(str.substr(begin, end - begin - 1));
-
-		begin = end;
-		while (str[begin++] != '{');
-		end = begin;
-		while (str[end++] != '}');
-		input.m_DefaultSource = str.substr(begin, end - begin - 2);
-	}
-
-	void ShaderGraphNodeEditor::LoadBaseShaderInputs(const std::string& path)
-	{
-		std::string str = Platform::ReadFromFile(path);
-		Util::RemoveCommentsFromString(str);
-		int64_t begin = 0, end = 0;
-		m_BaseShaderInputs.Clear();
-		while (true)
-		{
-			begin = str.find("$VERT_INPUT", begin);
-			if (begin == std::string::npos) break;
-			BaseShaderInput input;
-			input.m_InVertexShader = true;
-			LoadBaseShaderInput(input, begin, end, str);
-			m_BaseShaderInputs.Add(input);
-		}
-		begin = 0;
-		while (true)
-		{
-			begin = str.find("$FRAG_INPUT", begin);
-			if (begin == std::string::npos) break;
-			BaseShaderInput input;
-			input.m_InVertexShader = false;
-			LoadBaseShaderInput(input, begin, end, str);
-			m_BaseShaderInputs.Add(input);
-		}
-	}
-
-	void ShaderGraphNodeEditor::GenerateShaderInput(std::string& str, int64_t begin, VisualNode* master, bool vertex, bool& error)
-	{
-		int64_t labelBegin = begin;
-		int64_t end = begin;
-		while (str[labelBegin++] != '"');
-		end = labelBegin + 1;
-		while (str[end++] != '"');
-		std::string label = str.substr(labelBegin, end - labelBegin - 1);
-		int brackets = 1;
-		while (brackets > 0)
-		{
-			if (str[end] == '(') brackets++;
-			if (str[end] == ')') brackets--;
-			end++;
-		}
-		str.erase(begin, end - begin);
-
-		for (VisualNodePin& pin : master->m_InputPins)
-		{
-			if (pin.Label == label)
-			{
-				for (BaseShaderInput& input : m_BaseShaderInputs)
-				{
-					if (pin.PinID == (int64_t)input.m_Type && pin.Label == input.m_Label && input.m_InVertexShader == vertex)
-					{
-						if (pin.Target)
-						{
-							std::string src = ShaderGraphCompiler::CompileShaderNode(*(pin.Target->GetNode()), *(pin.Target), vertex, error);
-							str.insert(begin, src);
-							return;
-						}
-						else
-						{
-							str.insert(begin, input.m_DefaultSource);
-							return;
-						}
-					}
-				}
-				return;
-			}
-		}
-	}
-
 	void ShaderGraphNodeEditor::OnNodeGraphRender(float deltaTime)
 	{
 		PinIndex = 0;
@@ -302,33 +116,7 @@ namespace Suora
 	void ShaderGraphNodeEditor::DrawVisualNode(VisualNode& node)
 	{
 		DefaultDrawVisualNode(node);
-		// MasterNode
-		if (node.m_NodeID == 1)
-		{
-			for (int i = node.m_InputPins.Size() - 1; i >= 0; i--)
-			{
-				bool hasInput = false;
-				for (BaseShaderInput& input : m_BaseShaderInputs)
-				{
-					if (node.m_InputPins[i].PinID == (int64_t)input.m_Type && node.m_InputPins[i].Label == input.m_Label) hasInput = true;
-				}
-				if (!hasInput) node.m_InputPins.RemoveAt(i);
-			}
-			for (BaseShaderInput& input : m_BaseShaderInputs)
-			{
-				bool hasPin = false;
-				for (VisualNodePin& pin : node.m_InputPins)
-				{
-					if (pin.PinID == (int64_t)input.m_Type && pin.Label == input.m_Label) hasPin = true;
-				}
-				if (!hasPin) node.AddInputPin(input.m_Label, ShaderNodeGraph::GetShaderDataTypeColor(input.m_Type), (int64_t)input.m_Type, true);
-			}
-		}
-		// Uniform
-		if (node.m_NodeID == 2)
-		{
-			node.m_Color = ShaderNodeGraph::GetShaderDataTypeColor((ShaderGraphDataType)(int64_t)std::stoi(node.m_InputPins[1].m_AdditionalData));
-		}
+		
 	}
 
 	float ShaderGraphNodeEditor::DrawVisualNodePin(VisualNode& node, VisualNodePin& pin, bool inputPin, float y)

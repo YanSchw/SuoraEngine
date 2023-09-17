@@ -1,5 +1,6 @@
 #include "Precompiled.h"
 #include "ShaderNodeGraph.h"
+#include "Suora/Assets/ShaderGraph.h"
 
 namespace Suora
 {
@@ -206,6 +207,54 @@ namespace Suora
 			max->AddOutputPin("C", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, false);
 			AddSupportedNode(max);
 		}
+	}
+
+	void ShaderNodeGraph::TickAllVisualNodes()
+	{
+		VisualNodeGraph::TickAllVisualNodes();
+
+		for (auto noderef : m_Nodes)
+		{
+			VisualNode& node = *noderef;
+			
+			// Uniform
+			if (node.m_NodeID == 2)
+			{
+				node.m_Color = ShaderNodeGraph::GetShaderDataTypeColor((ShaderGraphDataType)(int64_t)std::stoi(node.m_InputPins[1].m_AdditionalData));
+			}
+		}
+	}
+
+	void ShaderNodeGraph::TickAllVisualNodesInShaderGraphContext(ShaderGraph* shaderGraph)
+	{
+		for (auto noderef : m_Nodes)
+		{
+			VisualNode& node = *noderef;
+
+			// MasterNode
+			if (node.m_NodeID == 1)
+			{
+				for (int i = node.m_InputPins.Size() - 1; i >= 0; i--)
+				{
+					bool hasInput = false;
+					for (BaseShaderInput& input : shaderGraph->m_BaseShaderInputs)
+					{
+						if (node.m_InputPins[i].PinID == (int64_t)input.m_Type && node.m_InputPins[i].Label == input.m_Label) hasInput = true;
+					}
+					if (!hasInput) node.m_InputPins.RemoveAt(i);
+				}
+				for (BaseShaderInput& input : shaderGraph->m_BaseShaderInputs)
+				{
+					bool hasPin = false;
+					for (VisualNodePin& pin : node.m_InputPins)
+					{
+						if (pin.PinID == (int64_t)input.m_Type && pin.Label == input.m_Label) hasPin = true;
+					}
+					if (!hasPin) node.AddInputPin(input.m_Label, ShaderNodeGraph::GetShaderDataTypeColor(input.m_Type), (int64_t)input.m_Type, true);
+				}
+			}
+		}
+
 	}
 
 	ShaderGraphDataType ShaderNodeGraph::StringToShaderGraphDataType(std::string str)

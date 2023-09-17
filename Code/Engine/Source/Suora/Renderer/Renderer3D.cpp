@@ -62,6 +62,7 @@ namespace Suora
 
 		if (!material) return;
 		if (!material->GetShaderGraph()) return;
+		if (!material->GetShaderGraph()->GetShaderViaType(type)) return;
 
 		VertexArray* vao = mesh.GetVertexArray();
 		if (!vao) return;

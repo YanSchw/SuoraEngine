@@ -52,7 +52,7 @@ NodeGraph:
       y: 240.000000
     Size: 
       x: 300.000000
-      y: 100.000000
+      y: 110.000000
     Title: Master
   Node_1: 
     Color: 
@@ -79,7 +79,7 @@ NodeGraph:
       y: 175.000000
     Size: 
       x: 215.000000
-      y: 75.000000
+      y: 80.000000
     Title: FragDepth
   Node_10: 
     Color: 
@@ -197,7 +197,7 @@ NodeGraph:
       y: 825.258301
     Size: 
       x: 215.000000
-      y: 200.000000
+      y: 230.000000
     Title: Sample Texture2D
   Node_11: 
     Color: 
@@ -224,7 +224,7 @@ NodeGraph:
       y: 980.258301
     Size: 
       x: 215.000000
-      y: 75.000000
+      y: 80.000000
     Title: UV
   Node_12: 
     Color: 
@@ -277,7 +277,7 @@ NodeGraph:
       y: 279.117615
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 110.000000
     Title: Cast Vec3 to Vec4
   Node_13: 
     Color: 
@@ -330,7 +330,7 @@ NodeGraph:
       y: 111.096130
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 110.000000
     Title: "Float * Float"
   Node_14: 
     Color: 
@@ -382,7 +382,7 @@ NodeGraph:
       y: 43.833778
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 110.000000
     Title: "Float * Float"
   Node_15: 
     Color: 
@@ -472,7 +472,7 @@ NodeGraph:
       y: 13.833778
     Size: 
       x: 415.000000
-      y: 175.000000
+      y: 200.000000
     Title: Remap Float
   Node_16: 
     Color: 
@@ -524,7 +524,7 @@ NodeGraph:
       y: 18.398996
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 110.000000
     Title: Max Float
   Node_2: 
     Color: 
@@ -577,7 +577,7 @@ NodeGraph:
       y: 336.473663
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 110.000000
     Title: "Vec3 * Float"
   Node_3: 
     Color: 
@@ -640,7 +640,7 @@ NodeGraph:
       y: 533.842163
     Size: 
       x: 215.000000
-      y: 125.000000
+      y: 140.000000
     Title: Vector 3
   Node_4: 
     Color: 
@@ -692,7 +692,7 @@ NodeGraph:
       y: 196.999939
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 110.000000
     Title: "Float * Float"
   Node_5: 
     Color: 
@@ -781,7 +781,7 @@ NodeGraph:
       y: 249.411743
     Size: 
       x: 215.000000
-      y: 175.000000
+      y: 200.000000
     Title: Remap Float
   Node_6: 
     Color: 
@@ -833,7 +833,7 @@ NodeGraph:
       y: 249.617340
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 110.000000
     Title: Max Float
   Node_7: 
     Color: 
@@ -897,7 +897,7 @@ NodeGraph:
       y: 828.000000
     Size: 
       x: 225.000000
-      y: 185.000122
+      y: 200.000000
     Title: Uniform
   Node_8: 
     Color: 
@@ -961,7 +961,7 @@ NodeGraph:
       y: 548.684326
     Size: 
       x: 225.000000
-      y: 184.999969
+      y: 200.000000
     Title: Uniform
   Node_9: 
     Color: 
@@ -1014,25 +1014,7 @@ NodeGraph:
       y: 653.333252
     Size: 
       x: 215.000000
-      y: 100.000000
+      y: 110.000000
     Title: "Vec3 * Vec3"
 UUID: "72b2a0e4-6541-4907-9527-47aa742ede45"
 m_BaseShader: ForwardUnlit.glsl
-m_ShaderSource: >-
-  \ctype vertex\n\cversion 330 core\n\n\n\nlayout(location = 0) in
-  vec3 a_Position;\nlayout(location = 1) in vec4 a_Color;\nlayout(location
-  = 2) in vec2 a_TexCoord;\nout vec2 UV;\nout vec4 frag_Color;\n\nuniform
-  mat4 u_Transform;\nuniform mat4 u_ViewProjection;\n\n\nuniform sampler2D
-  Texture;\nuniform vec3 Color;\n\n\nvoid main(void)\n{\n    vec3 worldPositionOffset
-  =  vec3(0.0);\n\tgl_Position = u_ViewProjection * u_Transform * vec4(a_Position
-  + worldPositionOffset, 1.0);\n\t\n\tfrag_Color = a_Color;\n\tUV =
-  a_TexCoord;\n}\n\n\ctype fragment\n\cversion 330 core\n\nin vec4
-  frag_Color;\nin vec2 UV;\nout vec4 out_Color;\n\n\nuniform sampler2D
-  Texture;\nuniform vec3 Color;\n\n\nvoid main(void)\n{\n\tout_Color
-  = vec4((((((texture((Texture), UV).xyz)) * ((Color)))) * (vec3(max((0.000000
-  + ((((gl_FragCoord.z / gl_FragCoord.w)) * (0.050000)) - 1.000000)
-  * (1.000000 - 0.000000) / (0.000000 - 1.000000)), 0.750000)))), (((texture((Texture),
-  UV).w)) * (max((0.000000 + ((((gl_FragCoord.z / gl_FragCoord.w))
-  * (0.080000)) - 3.000000) * (3.000000 - 0.000000) / (0.000000 - 3.000000)),
-  0.075000))));\n\tif (out_Color.a == 0.0) discard;\n}
-m_SourceFileTime: "-5159999094144154916"
