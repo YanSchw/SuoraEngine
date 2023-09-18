@@ -18,8 +18,13 @@ namespace Suora
 
 	World::~World()
 	{
+		for (Node* node : m_WorldNodes)
+		{
+			node->ForceSetParent(nullptr, true, false);
+		}
 		while (m_WorldNodes.Size() > 0)
 		{
+			SuoraError(m_WorldNodes[0]->GetName());
 			delete m_WorldNodes[0];
 		}
 	}
@@ -140,13 +145,7 @@ namespace Suora
 		}
 		UpdateRules::s_LocalUpdate = false;
 
-
-		// Kill all Nods in m_PendingKills
-		for (Node* node : m_PendingKills)
-		{
-			delete node;
-		}
-		m_PendingKills.Clear();
+		ResolvePendingKills();
 	}
 
 	Array<Node*> World::FindNodesByClass(const Class& cls)
@@ -191,6 +190,16 @@ namespace Suora
 			}
 			m_BeginPlayIssues.RemoveAt(0);
 		}
+	}
+
+	void World::ResolvePendingKills()
+	{
+		// Kill all Nodes in m_PendingKills
+		for (Node* node : m_PendingKills)
+		{
+			delete node;
+		}
+		m_PendingKills.Clear();
 	}
 
 	void World::WorldUpdate(float deltaTime)

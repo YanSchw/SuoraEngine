@@ -170,6 +170,7 @@ namespace Suora
 			Node* temp = m_World->GetAllNodes()[m_NodeNameUpdateIndex++];
 			temp->SetName(temp->GetName());
 		}
+		m_World->ResolvePendingKills();
 
 		m_DetailsPanel->m_Data = m_SelectedObject;
 
@@ -202,7 +203,7 @@ namespace Suora
 
 	Texture* NodeClassEditor::GetIconTexture()
 	{
-		return EditorPreferences::Get()->GetNodeIconTexture(m_BlueprintClass->m_ParentClass);
+		return EditorUI::GetClassIcon(m_BlueprintClass->m_ParentClass)->GetTexture();
 	}
 
 	void NodeClassEditor::SaveAsset()

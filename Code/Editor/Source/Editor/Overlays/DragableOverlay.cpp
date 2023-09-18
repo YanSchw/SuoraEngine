@@ -44,6 +44,11 @@ namespace Suora
 		}
 	}
 
+	void DragableOverlay::OnDispose()
+	{
+		EditorUI::ConsumeInput();
+	}
+
 	void DragableOverlay::CenterOverlay()
 	{
 		x = EditorUI::CurrentWindow->GetWindow()->GetWidth() / 2 - width / 2;

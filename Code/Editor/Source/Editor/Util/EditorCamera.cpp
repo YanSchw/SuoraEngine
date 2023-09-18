@@ -101,7 +101,7 @@ namespace Suora
 
 	void EditorCamera::UpdatePerspective(float deltaTime, bool inputPossible)
 	{
-		if (NativeInput::IsMouseButtonPressed(Mouse::Button0) && inputPossible && !IsOverlayOnTop())
+		if (NativeInput::IsMouseButtonPressed(Mouse::Button0) && inputPossible && !IsOverlayOnTop() && !EditorUI::WasInputConsumed())
 		{
 			m_Window->GetWindow()->SetCursorLocked(true);
 			m_Window->m_InputEvent = EditorInputEvent::Viewport_EditorCamera;
@@ -124,7 +124,7 @@ namespace Suora
 				m_Position -= forward * 0.1f * m_DeltaY;
 			}
 		}
-		else if (NativeInput::IsMouseButtonPressed(Mouse::Button1) && inputPossible && !IsOverlayOnTop())
+		else if (NativeInput::IsMouseButtonPressed(Mouse::Button1) && inputPossible && !IsOverlayOnTop() && !EditorUI::WasInputConsumed())
 		{
 			m_Window->GetWindow()->SetCursorLocked(true);
 			m_Window->m_InputEvent = EditorInputEvent::Viewport_EditorCamera;
@@ -146,7 +146,7 @@ namespace Suora
 
 
 		}
-		else if (NativeInput::IsMouseButtonPressed(Mouse::ButtonMiddle) && inputPossible && !IsOverlayOnTop())
+		else if (NativeInput::IsMouseButtonPressed(Mouse::ButtonMiddle) && inputPossible && !IsOverlayOnTop() && !EditorUI::WasInputConsumed())
 		{
 			m_Window->GetWindow()->SetCursorLocked(true);
 			m_Window->m_InputEvent = EditorInputEvent::Viewport_EditorCamera;
@@ -172,7 +172,7 @@ namespace Suora
 
 	void EditorCamera::UpdateOrthographic(float deltaTime, bool inputPossible)
 	{
-		if (NativeInput::IsMouseButtonPressed(Mouse::Button1) && inputPossible)
+		if (NativeInput::IsMouseButtonPressed(Mouse::Button1) && inputPossible && !IsOverlayOnTop() && !EditorUI::WasInputConsumed())
 		{
 			//m_Window->GetWindow()->SetCursorLocked(true);
 			m_Window->m_InputEvent = EditorInputEvent::Viewport_EditorCamera;

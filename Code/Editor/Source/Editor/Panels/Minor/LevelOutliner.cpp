@@ -9,6 +9,7 @@
 #include "Suora/GameFramework/Nodes/PostProcess/PostProcessNode.h"
 #include "Suora/GameFramework/Nodes/DecalNode.h"
 #include "Suora/GameFramework/Nodes/OrganizationNodes.h"
+#include "../../Overlays/SelectClassOverlay.h"
 
 namespace Suora
 {
@@ -22,7 +23,13 @@ namespace Suora
 
 		out.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
 		{
-			EditorUI::SubclassSelectionMenu(Node::StaticClass(), [world, node](const Class& cls)
+			/*EditorUI::SubclassSelectionMenu(Node::StaticClass(), [world, node](const Class& cls)
+			{
+				Node* n = world ? world->Spawn(cls) : node->CreateChild(cls);
+				n->Implement<IObjectCompositionData>();
+				n->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
+			});*/
+			EditorUI::CreateOverlay<SelectAnyClassOverlay>(EditorUI::CurrentWindow->GetWindow()->GetWidth() / 2 - 300, EditorUI::CurrentWindow->GetWindow()->GetHeight() / 2 - 400, 600, 800, "Select a Class", Node::StaticClass(), [world, node](const Class& cls)
 			{
 				Node* n = world ? world->Spawn(cls) : node->CreateChild(cls);
 				n->Implement<IObjectCompositionData>();
@@ -299,7 +306,7 @@ namespace Suora
 				EditorUI::DrawTexturedRect(DropDown ? TexArrowDown->GetTexture() : TexArrowRight->GetTexture(), x + 5, y + 3, EntryHeight - 6, EntryHeight - 6, 0, DropDownHovering ? EditorPreferences::Get()->UiHighlightColor : Color(1));
 			}
 
-			Texture* NodeIcon = EditorPreferences::Get()->GetNodeIconTexture(node->GetClass());
+			Texture* NodeIcon = EditorUI::GetClassIcon(node->GetClass())->GetTexture();
 			const Color Node3dIconColor = Math::Lerp(EditorPreferences::Get()->UiHighlightColor, Color(1.0f), 0.45f);
 			const Color NodeUiIconColor = Math::Lerp(Color(0.4f, 0.64f, 0.2f, 1.0f), Color(1.0f), 0.45f);
 			const Color NodeIconColor = node->IsA<Node3D>() ? Node3dIconColor : (node->IsA<UINode>() ? NodeUiIconColor : Color(1)); // Node3D - Color(0.40392f, 0.45490f, 0.6078f, 1) - Color(0.30588f, 0.149019f, 0.184313f, 1) ~ NodeUI - Color(0.40392f, 0.6078f, 0.45490f, 1)

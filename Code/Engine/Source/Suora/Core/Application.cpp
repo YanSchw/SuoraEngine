@@ -73,7 +73,7 @@ namespace Suora
 
 		while (m_Running)
 		{
-			Instrumentor::Get().EndFrame();
+			//Instrumentor::Get().EndFrame();
 			SUORA_PROFILE_SCOPE("RunLoop");
 
 			m_Engine->Tick();

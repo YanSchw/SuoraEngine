@@ -14,7 +14,6 @@ namespace Suora
 		enum class ProjectionType { Perspective = 0, Orthographic = 1 };
 	public:
 		CameraNode();
-		~CameraNode() = default;
 
 		void Begin() override;
 

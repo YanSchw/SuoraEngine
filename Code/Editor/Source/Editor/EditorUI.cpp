@@ -14,6 +14,9 @@
 #include "Panels/Minor/ContentBrowser.h"
 #include "Suora/GameFramework/World.h"
 #include "Suora/GameFramework/Nodes/MeshNode.h"
+#include "Suora/GameFramework/Nodes/DecalNode.h"
+#include "Suora/GameFramework/Nodes/PhysicsNodes.h"
+#include "Suora/GameFramework/Nodes/PostProcess/PostProcessNode.h"
 #include "Suora/GameFramework/Nodes/Light/SkyLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/PointLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
@@ -232,6 +235,21 @@ namespace Suora
 			specs.Attachments.Attachments.push_back(FramebufferTextureParams(FramebufferTextureFormat::RGB8, FramebufferTextureFilter::Linear));
 			GlassBuffer = Framebuffer::Create(specs);
 		}
+
+		s_ClassIcons[Node::StaticClass()]					= AssetManager::GetAsset<Texture2D>(SuoraID("ad168979-55cd-408e-afd2-a24cabf26922"));
+		s_ClassIcons[MeshNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("b14b065c-a2c0-4dc9-9272-ab0415ada141"));
+		s_ClassIcons[DecalNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("9d81a066-2336-42f5-bf35-7bb1c4c65d66"));
+		s_ClassIcons[PointLightNode::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("f789d2bf-dcda-4e30-b2d9-3db979b7c6da"));
+		s_ClassIcons[DirectionalLightNode::StaticClass()]	= AssetManager::GetAsset<Texture2D>(SuoraID("64738d74-08a9-4383-8659-620808d5269a"));
+		s_ClassIcons[CameraNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("8952ef88-cbd0-41ab-9d3c-d4c4b39a30f9"));
+		s_ClassIcons[BoxCollisionNode::StaticClass()]		= AssetManager::GetAsset<Texture2D>(SuoraID("269931d5-7e60-4934-a89a-26b7993ae0f3"));
+		s_ClassIcons[SphereCollisionNode::StaticClass()]	= AssetManager::GetAsset<Texture2D>(SuoraID("7e43f48b-3dc8-4eab-b91a-b4e2e7999190"));
+		s_ClassIcons[CapsuleCollisionNode::StaticClass()]	= AssetManager::GetAsset<Texture2D>(SuoraID("b7221496-4fc6-4e08-9f23-655d5edfe820"));
+		s_ClassIcons[PostProcessEffect::StaticClass()]		= AssetManager::GetAsset<Texture2D>(SuoraID("9bdeac52-f671-4e0a-9167-aeaa30c47711"));
+		s_ClassIcons[LevelNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("3578494c-3c74-4aa5-8d34-4d28959a21f5"));
+		s_ClassIcons[Component::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("3e254a4e-cc83-4254-a462-73739fce6d61"));
+		s_ClassIcons[FolderNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("99898caa-a2b2-4fc4-9db7-5baacaed03e5"));
+		s_ClassIcons[FolderNode3D::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("99898caa-a2b2-4fc4-9db7-5baacaed03e5"));
 	}
 
 	// DrawRect
@@ -244,6 +262,11 @@ namespace Suora
 	{
 		if (Window::CurrentFocusedWindow->GetCursor() != s_CurrentCursor) Window::CurrentFocusedWindow->SetCursor(s_CurrentCursor);
 		s_CurrentCursor = Cursor::Default;
+
+		if (s_WasInputConsumed > 0)
+		{
+			s_WasInputConsumed--;
+		}
 
 		for (int i = 0; i < s_Overlays.Size(); i++)
 		{
@@ -285,6 +308,17 @@ namespace Suora
 	const Vec2& EditorUI::GetInputOffset()
 	{
 		return mouseOffset;
+	}
+
+	void EditorUI::ConsumeInput()
+	{
+		NativeInput::ConsumeInput();
+		s_WasInputConsumed = 2;
+	}
+
+	bool EditorUI::WasInputConsumed()
+	{
+		return s_WasInputConsumed;
 	}
 	
 	void EditorUI::InitDrawRectVAO()
@@ -466,7 +500,7 @@ namespace Suora
 	bool EditorUI::Button(const std::string& text, float x, float y, float width, float height, ButtonParams params)
 	{
 		bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height && (GetHoveredOverlay() == s_CurrentProcessedOverlay);
-		const bool ButtonClicked = Hovering && (params.OverrideActivationEvent ? params.OverrittenActivationEvent() : NativeInput::GetMouseButtonDown(Mouse::ButtonLeft)) && CurrentWindow->m_InputEvent == params.InputMode;
+		const bool ButtonClicked = Hovering && (params.OverrideActivationEvent ? params.OverrittenActivationEvent() : NativeInput::GetMouseButtonDown(Mouse::ButtonLeft)) && CurrentWindow->m_InputEvent == params.InputMode && !WasInputConsumed();
 
 		if (params.OutHover) 
 			*params.OutHover = Hovering;
@@ -964,6 +998,25 @@ namespace Suora
 		}
 	}
 
+	Texture2D* EditorUI::GetClassIcon(const Class& cls)
+	{
+		Class It = cls;
+
+		while (It != Class::None)
+		{
+			if (s_ClassIcons.find(It) != s_ClassIcons.end())
+			{
+				return s_ClassIcons[It];
+			}
+			else
+			{
+				It = It.GetParentClass();
+			}
+		}
+
+		return nullptr;
+	}
+
 	bool EditorUI::CategoryShutter(int64_t id, const std::string& category, float x, float& y, float width, float height, ButtonParams params)
 	{
 		y += 1.0f;
@@ -1253,7 +1306,7 @@ namespace Suora
 			}
 
 			ButtonParams IconParams;
-			IconParams.CenteredIcon = AssetManager::GetAsset<Texture2D>(SuoraID("bsv3no9876"));
+			IconParams.CenteredIcon = EditorUI::GetClassIcon(cls);
 			EditorUI::Button("", x + SubclassHierarchyEntryHeight, CurrentLevelY, SubclassHierarchyEntryHeight, SubclassHierarchyEntryHeight, IconParams);
 		}
 

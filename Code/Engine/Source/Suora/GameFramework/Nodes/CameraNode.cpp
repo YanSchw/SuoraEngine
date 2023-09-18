@@ -18,6 +18,8 @@ namespace Suora
 
 	void CameraNode::Begin()
 	{
+		Super::Begin();
+
 		if (m_AutoPossess && GetWorld()->GetMainCamera() == nullptr)
 		{
 			GetWorld()->SetMainCamera(this);

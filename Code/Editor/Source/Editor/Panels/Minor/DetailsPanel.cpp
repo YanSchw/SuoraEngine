@@ -515,7 +515,7 @@ namespace Suora
 
 		y -= 40;
 		EditorUI::Button("", 0.0f, y, 40.0f, 40.0f, ShutterPanelParams());
-		EditorUI::DrawTexturedRect(EditorPreferences::Get()->GetNodeIconTexture(node->GetClass()), 5.0f, y + 5.0f, 30.0f, 30.0f, 0.0f, Color(1));
+		EditorUI::DrawTexturedRect(EditorUI::GetClassIcon(node->GetClass())->GetTexture(), 5.0f, y + 5.0f, 30.0f, 30.0f, 0.0f, Color(1));
 		EditorUI::Button("", 40.0f, y, GetDetailWidth() - 80.0f, 40.0f, ShutterPanelParams());
 		EditorUI::TextField(&node->m_Name, 45.0f, y + 7.5f, (GetDetailWidth() - 40.0f) / 2.0f, 25.0f);
 		node->SetName(node->GetName());

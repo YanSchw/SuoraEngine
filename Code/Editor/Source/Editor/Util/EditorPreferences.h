@@ -18,7 +18,6 @@ namespace Suora
 	public:
 
 		static Color GetAssetClassColor(NativeClassID AssetClassID);
-		static Texture* GetNodeIconTexture(const Class& cls);
 
 		static EditorPreferences* Get();
 

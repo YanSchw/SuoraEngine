@@ -10,9 +10,11 @@ namespace Suora
 		DragableOverlay(const std::string& title) 
 			: m_Title(title)
 		{
+			EditorUI::CurrentWindow->m_InputEvent = EditorInputEvent::EditorUI_Overlay;
 		}
 
 		void Render(float deltaTime) override;
+		void OnDispose() override;
 		void CenterOverlay();
 
 	private:

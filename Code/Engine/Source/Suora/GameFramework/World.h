@@ -114,6 +114,7 @@ namespace Suora
 		Array<Node*> m_LocalUpdateNodes;
 
 		void ResolveAllBeginPlayIssues();
+		void ResolvePendingKills();
 
 		void WorldUpdate(float deltaTime);
 		void LocalUpdate(float deltaTime, LocalUpdateChunk* chunk);
@@ -130,7 +131,7 @@ namespace Suora
 		friend class Node;
 		friend class GameInstance;
 		friend class ViewportPanel;
-		friend class LevelEditorMajorTab;
+		friend class NodeClassEditor;
 		friend class CameraNode;
 		friend class RenderPipeline;
 	};

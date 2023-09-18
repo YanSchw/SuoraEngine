@@ -400,6 +400,12 @@ namespace Suora
 		static const Vec2& GetInput();
 		static const Vec2& GetInputOffset();
 
+	private:
+		inline static uint32_t s_WasInputConsumed = 0;
+	public:
+		static void ConsumeInput();
+		static bool WasInputConsumed();
+
 		inline static EditorWindow* CurrentWindow = nullptr;
 		inline static void SetCurrentWindow(EditorWindow* window)
 		{
@@ -580,6 +586,9 @@ namespace Suora
 		static Overlay* GetHoveredOverlay();
 		static bool IsNotHoveringOverlays();
 		static void RenderOverlays(float deltaTime);
+
+		inline static std::unordered_map<Class, Texture2D*> s_ClassIcons;
+		static Texture2D* GetClassIcon(const Class& cls);
 
 	private:
 		inline static std::unordered_map<int64_t, bool> CategoryShutterStates;

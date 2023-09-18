@@ -28,7 +28,7 @@ namespace Suora
 		EntryHeight = BaseEntryHeight * EditorPreferences::Get()->UiScale;
 
 		_EntryCount = 0;
-		for (auto& it : Instrumentor::Get().m_LastFrameResults)
+		/*for (auto& it : Instrumentor::Get().m_LastFrameResults)
 		{
 			float y = GetHeight() - EntryHeight;
 			if (EditorUI::CategoryShutter(476893 + _EntryCount, "Thread " + std::to_string(*(unsigned int*)&it.first), 0.0f, y, GetWidth(), EntryHeight))
@@ -39,7 +39,7 @@ namespace Suora
 					DrawResult(20.0f, y, result);
 				}
 			}
-		}
+		}*/
 
 		float scrollDown = GetHeight() - EntryHeight - EntryHeight - 5.0f - EntryHeight * _EntryCount - EntryHeight;
 		EditorUI::ScrollbarVertical(GetWidth()-10, 0, 10, GetHeight(), 0, 0, GetWidth(), GetHeight(), 0, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &scrollY);

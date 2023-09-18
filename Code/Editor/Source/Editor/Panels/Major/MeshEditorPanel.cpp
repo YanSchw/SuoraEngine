@@ -109,7 +109,7 @@ namespace Suora
 	}
 	Texture* MeshEditorPanel::GetIconTexture()
 	{
-		return EditorPreferences::Get()->GetNodeIconTexture(MeshNode::StaticClass());
+		return EditorUI::GetClassIcon(MeshNode::StaticClass())->GetTexture();
 	}
 	void MeshEditorPanel::DrawToolbar(float& x, float y, float height)
 	{

@@ -313,7 +313,7 @@ namespace Suora
 		}
 
 		// Only allow mouse Input if the Users does not interact with any Overlays
-		bool mousePickReady = EditorUI::IsNotHoveringOverlays();
+		bool mousePickReady = EditorUI::IsNotHoveringOverlays() && !EditorUI::WasInputConsumed();
 		if (IsInputValid() && EditorUI::IsNotHoveringOverlays())
 		{
 			EditorUI::SetCursor(Cursor::Crosshair);

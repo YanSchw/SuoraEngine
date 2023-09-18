@@ -136,11 +136,11 @@ namespace Suora
 			m_CurrentProfile.clear();
 		}
 
-		static Instrumentor& Get()
+		/*static Instrumentor& Get()
 		{
 			static Instrumentor instance;
 			return instance;
-		}
+		}*/
 	private:
 		Instrumentor()
 			: m_CurrentSession(nullptr)
@@ -194,7 +194,7 @@ namespace Suora
 			: m_Name(name), m_Line(line), m_Stopped(false)
 		{
 			m_StartTimepoint = std::chrono::steady_clock::now();
-			Instrumentor::Get().BeginProfile(std::this_thread::get_id());
+			//Instrumentor::Get().BeginProfile(std::this_thread::get_id());
 		}
 
 		~InstrumentationTimer()
@@ -209,7 +209,7 @@ namespace Suora
 			auto highResStart = FloatingPointMicroseconds{ m_StartTimepoint.time_since_epoch() };
 			auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch();
 
-			Instrumentor::Get().WriteProfile({ m_Name, highResStart, elapsedTime, std::this_thread::get_id() }, true);
+			//Instrumentor::Get().WriteProfile({ m_Name, highResStart, elapsedTime, std::this_thread::get_id() }, true);
 
 			m_Stopped = true;
 		}
