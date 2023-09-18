@@ -1,7 +1,6 @@
 #pragma once
 #include <functional>
 
-#include "Suora/Debug/Instrumentor.h"
 #include "Suora/Core/Base.h"
 
 namespace Suora 

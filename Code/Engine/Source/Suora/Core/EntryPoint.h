@@ -14,21 +14,15 @@ namespace Suora
 			args.Args.push_back({ std::string(argv[i]) });
 		}
 
-		SUORA_PROFILE_BEGIN_SESSION("Startup", "SuoraProfile-Startup.json");
 		auto app = Suora::CreateApplication();
-		SUORA_PROFILE_END_SESSION();
 
 		if (app)
 		{
 			app->m_CommandLineArgs = args;
 
-			SUORA_PROFILE_BEGIN_SESSION("Runtime", "SuoraProfile-Runtime.json");
 			app->Run();
-			SUORA_PROFILE_END_SESSION();
 
-			SUORA_PROFILE_BEGIN_SESSION("Shutdown", "SuoraProfile-Shutdown.json");
 			delete app;
-			SUORA_PROFILE_END_SESSION();
 		}
 		return 0;
 	}

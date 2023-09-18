@@ -58,8 +58,6 @@ namespace Suora
 
 	void Renderer3D::DrawMesh(CameraNode* camera, const glm::mat4& transform, Mesh& mesh, Material* material, MaterialType type)
 	{
-		SUORA_PROFILE_FUNCTION();
-
 		if (!material) return;
 		if (!material->GetShaderGraph()) return;
 		if (!material->GetShaderGraph()->GetShaderViaType(type)) return;

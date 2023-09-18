@@ -17,7 +17,6 @@ namespace Suora
 
 	Application::Application()
 	{
-		SUORA_PROFILE_FUNCTION();
 		m_Engine = Engine::Create();
 
 		SUORA_ASSERT(!s_Instance, "Application already exists!");
@@ -29,7 +28,6 @@ namespace Suora
 
 	Application::~Application()
 	{
-		SUORA_PROFILE_FUNCTION();
 
 	}
 
@@ -54,7 +52,6 @@ namespace Suora
 
 	void Application::OnEvent(Event& e)
 	{
-		SUORA_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(SUORA_BIND_EVENT_FN(Application::OnWindowClose));
@@ -69,13 +66,8 @@ namespace Suora
 
 	void Application::Run()
 	{
-		SUORA_PROFILE_FUNCTION();
-
 		while (m_Running)
 		{
-			//Instrumentor::Get().EndFrame();
-			SUORA_PROFILE_SCOPE("RunLoop");
-
 			m_Engine->Tick();
 
 			Update(m_Engine->GetDeltaTime());
@@ -95,7 +87,6 @@ namespace Suora
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
-		SUORA_PROFILE_FUNCTION();
 
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{

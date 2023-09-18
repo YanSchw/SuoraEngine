@@ -26,8 +26,6 @@
 
 #include "Suora/Core/Log.h"
 
-#include "Suora/Debug/Instrumentor.h"
-
 #ifdef SUORA_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif

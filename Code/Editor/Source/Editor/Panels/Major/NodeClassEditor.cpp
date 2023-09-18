@@ -7,7 +7,6 @@
 #include "../../Util/EditorCamera.h"
 #include "../Minor/NodeGraphEditor.h"
 #include "../Minor/LevelOutliner.h"
-#include "../Minor/DebugPanels.h"
 #include "../Minor/EditorConsolePanel.h"
 #include "Suora/NodeScript/BlueprintNodeGraph.h"
 

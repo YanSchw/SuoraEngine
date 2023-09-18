@@ -124,7 +124,6 @@ namespace Suora
 
 	void RenderPipeline::Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
-		SUORA_PROFILE_SCOPE("RenderPipeline::Render()");
 		SUORA_ASSERT(buffer.GetSpecification().Attachments.Attachments[0].TextureFormat == FramebufferTextureFormat::RGB32F);
 
 		if (!Ilum::IsInIlumPass())
@@ -491,7 +490,6 @@ namespace Suora
 		/* ----- Indirect Ilumination ----- */
 		if (!lowQuality)
 		{
-			SUORA_PROFILE_SCOPE("RenderPipeline - Indirect Ilumination");
 			world.GetIlumContext()->ApplyIlumination(gBuffer, *camera, world, *target);
 			//AddFramebufferToFramebuffer(*m_DeferredTempLitBuffer, *target);
 		}

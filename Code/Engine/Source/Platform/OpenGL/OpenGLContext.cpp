@@ -15,7 +15,6 @@ namespace Suora
 
 	void OpenGLContext::Init()
 	{
-		SUORA_PROFILE_FUNCTION();
 		glfwMakeContextCurrent(m_WindowHandle);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		SUORA_ASSERT(status, "Failed to initialize Glad!");
@@ -30,8 +29,6 @@ namespace Suora
 
 	void OpenGLContext::SwapBuffers()
 	{
-		SUORA_PROFILE_FUNCTION();
-
 		glfwSwapBuffers(m_WindowHandle);
 	}
 

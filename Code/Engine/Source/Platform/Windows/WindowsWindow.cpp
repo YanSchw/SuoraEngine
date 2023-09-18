@@ -50,16 +50,12 @@ namespace Suora
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 		: m_Props(props)
 	{
-		SUORA_PROFILE_FUNCTION();
-
 		Window::CurrentFocusedWindow = this;
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
-		SUORA_PROFILE_FUNCTION();
-
 		Window::AllWindows.Remove(this);
 		Shutdown();
 	}
@@ -131,8 +127,6 @@ namespace Suora
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
-		SUORA_PROFILE_FUNCTION();
-
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -142,14 +136,12 @@ namespace Suora
 
 		if (s_GLFWWindowCount == 0)
 		{
-			SUORA_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
 			SUORA_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
 		{
-			SUORA_PROFILE_SCOPE("glfwCreateWindow");
 		#if defined(SUORA_DEBUG)
 			if (RendererAPI::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
@@ -284,8 +276,6 @@ namespace Suora
 
 	void WindowsWindow::Shutdown()
 	{
-		SUORA_PROFILE_FUNCTION();
-
 		glfwDestroyWindow(m_Window);
 		m_Window = nullptr;
 		--s_GLFWWindowCount;
@@ -317,22 +307,17 @@ namespace Suora
 
 	void WindowsWindow::OnUpdate()
 	{
-		SUORA_PROFILE_SCOPE("WindowsWindow::OnUpdate()");
 		WindowData& data = *(WindowData*)glfwGetWindowUserPointer(m_Window);
-		SUORA_PROFILE_FUNCTION();
 
 		{
-			SUORA_PROFILE_SCOPE("Events");
 			glfwPollEvents();
 		}
 		{
-			SUORA_PROFILE_SCOPE("Swap");
 			m_Context->SwapBuffers();
 		}
 
 		if (IsUndecorated())
 		{
-			SUORA_PROFILE_SCOPE("WindowsWindow::OnUpdate() - IsUndecorated()");
 			int xWin, yWin;
 			glfwGetWindowPos(m_Window, &xWin, &yWin);
 			double xPos, yPos;
@@ -373,8 +358,6 @@ namespace Suora
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
-		SUORA_PROFILE_FUNCTION();
-
 		glfwMakeContextCurrent(m_Window);
 
 		if (enabled)

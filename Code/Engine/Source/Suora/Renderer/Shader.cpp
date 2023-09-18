@@ -67,8 +67,6 @@ namespace Suora
 
 	std::unordered_map<std::string, std::string> Shader::PreProcess(const std::string& source)
 	{
-		SUORA_PROFILE_FUNCTION();
-
 		std::unordered_map<std::string, std::string> shaderSources;
 
 		const char* typeToken = "#type";

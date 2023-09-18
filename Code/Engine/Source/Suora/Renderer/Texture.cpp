@@ -14,7 +14,6 @@ namespace Suora
 	{
 		stbi_set_flip_vertically_on_load(1);
 		{
-			SUORA_PROFILE_SCOPE("stbi_load - TextureBuffer_stbi::TextureBuffer_stbi(const std::string&)");
 			m_Data = stbi_load(path.c_str(), &m_Width, &m_Height, &m_Channels, 0);
 		}
 		SUORA_ASSERT(m_Data, "Failed to load image!");

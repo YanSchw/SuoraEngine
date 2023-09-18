@@ -111,7 +111,6 @@ namespace Suora
 
 	void World::Update(float deltaTime)
 	{
-		SUORA_PROFILE_SCOPE("World::Update(float)");
 		m_DeltaTime = deltaTime;
 
 		ResolveAllBeginPlayIssues();

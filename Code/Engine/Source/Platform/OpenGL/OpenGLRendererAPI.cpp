@@ -36,8 +36,6 @@ namespace Suora
 
 	void OpenGLRendererAPI::Init()
 	{
-		SUORA_PROFILE_FUNCTION();
-
 	#ifdef SUORA_DEBUG
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);

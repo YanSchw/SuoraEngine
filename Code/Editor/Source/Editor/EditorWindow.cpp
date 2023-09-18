@@ -63,7 +63,6 @@ namespace Suora
 
 	void EditorWindow::Update(float deltaTime)
 	{
-		SUORA_PROFILE_SCOPE("EditorWindow::Update(float)");
 		GraphicsContext* context = (GraphicsContext*)(m_Window->GetGraphicsContext());
 		context->MakeCurrent();
 
@@ -97,7 +96,6 @@ namespace Suora
 
 	void EditorWindow::Render(float deltaTime)
 	{
-		SUORA_PROFILE_SCOPE("EditorWindow::Render(float)");
 		float const ui = EditorPreferences::Get()->UiScale;
 		RenderCommand::SetClearColor(EditorPreferences::Get()->UiBackgroundColor);
 		RenderCommand::Clear();
@@ -247,7 +245,6 @@ namespace Suora
 		Tabs[SelectedMajorTab]->Update(deltaTime);
 		for (int i = 0; i < Tabs[SelectedMajorTab]->m_DockspacePanel.m_DockingSpaces.Size(); i++)
 		{
-			SUORA_PROFILE_SCOPE("EditorWindow::Render(float): MinorTab");
 			DockspacePanel& tab = Tabs[SelectedMajorTab]->m_DockspacePanel;
 			DockingSpace& space = *Tabs[SelectedMajorTab]->m_DockspacePanel.m_DockingSpaces[i];
 			EditorUI::DrawRect(tab.m_PanelX + tab.m_PanelWidth * space.x + 2, tab.m_PanelY + tab.m_PanelHeight * space.y + 2, tab.m_PanelWidth * space.GetWidth() - 4, tab.m_PanelHeight * space.GetHeight() - 4, 0, Math::Lerp(EditorPreferences::Get()->UiBackgroundColor, EditorPreferences::Get()->UiColor, 0.45f));

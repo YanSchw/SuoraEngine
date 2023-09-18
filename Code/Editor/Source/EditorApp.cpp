@@ -43,8 +43,6 @@ namespace Suora
 
 		virtual void Update(float deltaTime) override
 		{
-			SUORA_PROFILE_SCOPE("Editor::Update(float)");
-
 			EditorUI::Tick(deltaTime);
 
 			if (m_StopPIE_Flag)

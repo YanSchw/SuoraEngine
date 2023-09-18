@@ -97,7 +97,6 @@ namespace Suora
 
 	void Ilum::Tick(float deltaTime, Framebuffer& gBuffer, CameraNode& camera, World& world)
 	{
-		SUORA_PROFILE_SCOPE("Ilum::Tick(float)");
 		if (!m_Initialized) Init();
 
 		if (NativeInput::GetKeyDown(Key::F10)) ENABLE = !ENABLE;
@@ -113,7 +112,6 @@ namespace Suora
 
 		
 		
-		SUORA_PROFILE_SCOPE("3.0 GatherFinalIlumination");
 		s_InIlumPass = false;
 	}
 
@@ -347,7 +345,6 @@ namespace Suora
 
 	void Ilum::Tick(float deltaTime, Framebuffer& gBuffer)
 	{
-		SUORA_PROFILE_SCOPE("Ilum::Tick(float)");
 		if (!m_Initialized) Init();
 
 		return;
@@ -367,7 +364,6 @@ namespace Suora
 		Capture(m_LightProbes[m_lightProbeIndex].TargetPosition);
 
 		// 3. GatherFinalIlumination
-		SUORA_PROFILE_SCOPE("3.0 GatherFinalIlumination");
 		GatherFinalIlumination();
 		s_InIlumPass = false;
 	}

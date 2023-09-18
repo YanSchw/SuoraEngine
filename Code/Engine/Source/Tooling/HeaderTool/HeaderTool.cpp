@@ -4,6 +4,8 @@
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Common/Common.h"
 
+#include <fstream>
+
 static std::mutex PrintMutex;
 static std::mutex AccessHeaderMutex;
 static std::mutex GenerateClassMutex;

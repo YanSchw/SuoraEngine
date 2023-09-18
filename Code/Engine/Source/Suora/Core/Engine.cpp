@@ -96,8 +96,6 @@ namespace Suora
 	}
 	void Engine::Update(float deltaTime)
 	{
-		SUORA_PROFILE_SCOPE("Engine::Update(float)");
-		
 		m_FramesThisSecond++;
 		m_FrameDeltaTimeAccumulator += deltaTime;
 		if (m_FrameDeltaTimeAccumulator >= 1.0f)

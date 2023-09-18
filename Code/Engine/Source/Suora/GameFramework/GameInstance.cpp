@@ -93,8 +93,6 @@ namespace Suora
 
 	void GameInstance::Update(float deltaTime)
 	{
-		SUORA_PROFILE_SCOPE("GameInstance::Update(float)");
-
 		m_InputModule->Tick();
 
 		for (auto& It : m_InputModule->m_BlueprintInstanceBindings)
