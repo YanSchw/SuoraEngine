@@ -13,7 +13,6 @@
 #include "Panels/Major/ShaderGraphEditorPanel.h"
 #include "Suora/Debug/VirtualConsole.h"
 #include "Util/EditorPreferences.h"
-#include "Overlays/ContentDrawer.h"
 #include "EditorUI.h"
 #include "Launcher.h"
 #include <Suora.h>

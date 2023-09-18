@@ -35,13 +35,6 @@ namespace Suora
 
 		m_BaseShader = root["m_BaseShader"].As<std::string>();
 
-		/*
-		std::string writtenSource = root["m_ShaderSource"].As<std::string>();
-		while (writtenSource.find("\\n") != std::string::npos) Util::ReplaceSequence(writtenSource, "\\n", "\n");
-		while (writtenSource.find("\\t") != std::string::npos) Util::ReplaceSequence(writtenSource, "\\t", "\t");
-		while (writtenSource.find("\\c") != std::string::npos) Util::ReplaceSequence(writtenSource, "\\c", "#");
-		m_ShaderSource = writtenSource;
-		*/
 		ShaderNodeGraph graph;
 		graph.DeserializeNodeGraph(root);
 		GenerateShaderGraphSource(graph);
@@ -52,15 +45,6 @@ namespace Suora
 		Super::Serialize(root);
 		root["m_BaseShader"] = m_BaseShader;
 
-		/*
-		std::string writtenSource = m_ShaderSource;
-		while (writtenSource.find("\n") != std::string::npos) Util::ReplaceSequence(writtenSource, "\n", "\\n");
-		while (writtenSource.find("\r") != std::string::npos) Util::ReplaceSequence(writtenSource, "\r", "");
-		while (writtenSource.find("\t") != std::string::npos) Util::ReplaceSequence(writtenSource, "\t", "\\t");
-		while (writtenSource.find("#") != std::string::npos) Util::ReplaceSequence(writtenSource, "#", "\\c");
-		if (writtenSource[writtenSource.size() - 1] == '\n') writtenSource.erase(writtenSource.size() - 1, 1);
-		root["m_ShaderSource"] = writtenSource;
-		*/
 	}
 
 	std::string ShaderGraph::GetBaseShaderPath() const
