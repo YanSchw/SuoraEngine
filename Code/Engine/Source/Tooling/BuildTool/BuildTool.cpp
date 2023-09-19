@@ -220,7 +220,6 @@ namespace Suora::Tools
 			pushd %~dp0\\..\\\n\
 			call " + FixPathForPremake5(engineRootPath.string()) + "/Code/Dependencies/premake/PremakeBinaries/premake5.exe vs2019\n\
 			popd\n\
-			PAUSE\n\
 			";
 		Platform::WriteToFile(projectRootPath.string() + "/Scripts/GenerateSolution.bat", batchScript);
 	}

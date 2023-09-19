@@ -1,11 +1,17 @@
 #include "Launcher.h"
 #include "Suora/Renderer/RenderCommand.h"
 #include "Suora/Assets/AssetManager.h"
+#include "Suora/Assets/SuoraProject.h"
 #include "EditorWindow.h"
 #include "EditorUI.h"
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+
+
+#ifdef SUORA_PLATFORM_WINDOWS
+#include <shellapi.h>
+#endif
 
 namespace Suora
 {
@@ -160,7 +166,28 @@ namespace Suora
 			// 2. Open FileExplorer
 			Platform::ShowInExplorer(projectRootPath);
 
-			// 3. Close the Launcher
+			// 3. Generate stuff...
+			{
+#ifdef SUORA_PLATFORM_WINDOWS
+				std::filesystem::current_path(projectRootPath);
+				std::string cmdRunSuoraBuildTool = "call " + projectRootPath.string() + "/Scripts/SuoraBuildTool.exe";
+				system(cmdRunSuoraBuildTool.c_str());
+				std::string cmdGenerateSolution = "call " + projectRootPath.string() + "/Scripts/GenerateSolution.bat";
+				system(cmdGenerateSolution.c_str());
+
+				// open the Solution in VisualStudio
+				{
+					std::string fullPath = projectRootPath.string();
+					while (fullPath.find("\\") != std::string::npos) Util::ReplaceSequence(fullPath, "\\", "/");
+					std::vector<std::string> splitPath = Util::SplitString(fullPath, '/');
+					std::string projectName = splitPath[splitPath.size() - 1];
+					std::string solutionPath = projectRootPath.string() + "/" + projectName + ".sln";
+					Platform::OpenFileExternally(solutionPath);
+				}
+#endif
+			}
+
+			// 4. Close the Launcher
 			std::exit(0);
 		}
 		else
@@ -277,6 +304,19 @@ namespace Suora
 		for (auto& It : EditorPreferences::Get()->m_AllCachedProjectPaths)
 		{
 			std::filesystem::path projectPath = It;
+
+			if (!std::filesystem::exists(projectPath))
+			{
+				// This Project does exits anymore. So remove it, lets try again next frame...
+				EditorPreferences::Get()->m_AllCachedProjectPaths.Remove((std::string)It);
+				return;
+			}
+			if (m_CachedProjects.find(It) == m_CachedProjects.end())
+			{
+				AnalyzeProjectOnDisk(It);
+			}
+			CachedProjectInfo& projectInfo = m_CachedProjects[It];
+
 			y -= 75.0f * ui;
 
 			if (EditorUI::Button("", x + (GetWindow()->GetWidth() - x) * 0.1f, y, (GetWindow()->GetWidth() - x) * 0.75f, 60.0f * ui - 1))
@@ -295,7 +335,7 @@ namespace Suora
 
 			EditorUI::Text(It, Font::Instance, x + (GetWindow()->GetWidth() - x) * 0.35f + 1 + 20, y, (GetWindow()->GetWidth() - x) * 0.40f - 1 - 20, 60.0f * ui - 1, 22, Vec2(-1, 0), Color(0.75f));
 
-			EditorUI::Text("1.0.0", Font::Instance, x + (GetWindow()->GetWidth() - x) * 0.75f + 1, y, (GetWindow()->GetWidth() - x) * 0.10f - 1, 60.0f * ui - 1, 28, Vec2(0, 0), Color(1));
+			EditorUI::Text(projectInfo.m_Version, Font::Instance, x + (GetWindow()->GetWidth() - x) * 0.75f + 1, y, (GetWindow()->GetWidth() - x) * 0.10f - 1, 60.0f * ui - 1, 28, Vec2(0, 0), Color(1));
 		}
 
 		EditorUI::DrawRect(x + (GetWindow()->GetWidth() - x) * 0.35f + 1, 0, 2, GetWindow()->GetHeight() - (72.0f * ui), 0, BackgroundColor);
@@ -396,6 +436,18 @@ namespace Suora
 
 		EditorUI::DrawRect(x + (GetWindow()->GetWidth() - x) * 0.6f, 0.0f, 2.0f, GetWindow()->GetHeight(), 0.0f, EditorPreferences::Get()->UiForgroundColor);
 
+	}
+
+	void Launcher::AnalyzeProjectOnDisk(const std::string& projectPath)
+	{
+		m_CachedProjects[projectPath] = CachedProjectInfo();
+		Yaml::Node root;
+		Yaml::Parse(root, Platform::ReadFromFile(projectPath));
+		Yaml::Node& settings = root["Settings"];
+
+		m_CachedProjects[projectPath].m_Version += settings["Engine"]["VersionMajor"].As<std::string>() + ".";
+		m_CachedProjects[projectPath].m_Version += settings["Engine"]["VersionMinor"].As<std::string>() + ".";
+		m_CachedProjects[projectPath].m_Version += settings["Engine"]["VersionPatch"].As<std::string>();
 	}
 
 }

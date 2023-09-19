@@ -215,4 +215,11 @@ namespace Suora
 		}
 	}
 
+	void Platform::OpenFileExternally(const std::string& filePath)
+	{
+		wchar_t wtext[512];
+		mbstowcs(wtext, filePath.c_str(), filePath.length());//includes null
+		LPWSTR ptr = wtext;
+		ShellExecute(0, 0, ptr, 0, 0, SW_SHOW);
+	}
 }

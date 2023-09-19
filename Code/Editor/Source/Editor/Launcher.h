@@ -22,6 +22,11 @@ namespace Suora
 			bool m_IsNative = false;
 		};
 
+		struct CachedProjectInfo
+		{
+			std::string m_Version;
+		};
+
 		Launcher(EditorWindow* editor);
 
 		void Render(float deltaTime);
@@ -34,8 +39,13 @@ namespace Suora
 		void RenderProjects();
 		void RenderCreateNewProjects();
 
+		void AnalyzeProjectOnDisk(const std::string& projectPath);
+
 	public:
 		uint32_t m_SelectedTab = 0;
+
+		std::unordered_map<std::string, CachedProjectInfo> m_CachedProjects;
+
 		Array<Ref<TemplateProject>> m_TemplateProjects;
 		Ref<TemplateProject> m_SelectedProject;
 
