@@ -1,5 +1,9 @@
 project "Editor"
 	kind "ConsoleApp"
+	filter "configurations:Dist"
+		kind "WindowedApp"
+	filter {}
+	
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
