@@ -89,10 +89,8 @@ namespace Suora
 		}
 	}
 
-	Array<UnresolvedAsset> AssetManager::HotReload(const std::filesystem::path& contentPath, const Class& baseClass)
+	void AssetManager::HotReload(const std::filesystem::path& contentPath, const Class& baseClass)
 	{
-		Array<UnresolvedAsset> UnresolvedAssets;
-
 		std::vector<DirectoryEntry> Entries = File::GetAllAbsoluteEntriesOfPath(contentPath);
 		
 		for (auto& file : Entries)
@@ -114,35 +112,12 @@ namespace Suora
 				s_Assets.Add(asset);
 			}
 
-			// Unresolved Assets
-			if (!asset)
-			{
-				const Class otherClass = GetCorrespondingAssetClass(ext);
-				if (otherClass != Class::None)
-				{
-					std::filesystem::path otherPath = file.path().parent_path() / (file.path().stem().string() + GetCorrespondingAssetExtension(otherClass));
-					if (!std::filesystem::exists(otherPath))
-					{
-						UnresolvedAssets.Add(UnresolvedAsset(otherClass, file));
-					}
-				}
-			}
 		}
 
 		InitializeAllAssets();
 
-		if (UnresolvedAssets.Size() > 0)
-		{
-			SUORA_WARN(LogCategory::AssetManagement, "There are unresolved Assets:");
-			for (auto& It : UnresolvedAssets)
-			{
-				SUORA_WARN(LogCategory::AssetManagement, " - {0}", It.m_Path.string());
-			}
-		}
-
 		ScriptEngine::CompileAllScriptClasses();
 
-		return UnresolvedAssets;
 	}
 
 	void AssetManager::InitializeAllAssets()

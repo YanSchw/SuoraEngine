@@ -17,103 +17,6 @@
 namespace Suora
 {
 
-	struct AssetImporter : EditorUI::Overlay
-	{
-		Array<UnresolvedAsset> m_UnresolvedAsset;
-		Array<int> m_AssetImported;
-		int Index = 0;
-		float m_ScrollY = 0.0f;
-		Texture2D* TickTexture = nullptr;
-		Ref<Texture> m_Texture; std::string texturePath = "";
-
-		AssetImporter(const Array<UnresolvedAsset>& assets)
-			: m_UnresolvedAsset(assets)
-		{
-			TickTexture = AssetManager::GetAssetByName<Texture2D>("CheckboxTick.texture");
-			for (int i = 0; i < m_UnresolvedAsset.Size(); i++) m_AssetImported.Add(false);
-		}
-		void Render(float deltaTime) override
-		{
-			if (m_UnresolvedAsset.Size() == 0)
-			{
-				Dispose();
-				return;
-			}
-
-			EditorUI::DrawRect(0, 0, EditorWindow::GetCurrent()->GetWindow()->GetWidth(), EditorWindow::GetCurrent()->GetWindow()->GetHeight(), 0.0f, Color(0, 0, 0, 0.2f));
-			EditorUI::DrawRect(x - 2, y + 2, width, height, 4.0f, Color(1, 1, 1, 0.2f));
-			EditorUI::DrawRect(x + 5, y - 5, width, height, 4.0f, Color(0, 0, 0, 0.5f));
-			EditorUI::DrawRect(x, y, width, height, 4.0f, EditorPreferences::Get()->UiForgroundColor);
-
-			if (EditorUI::Button("Finish", x + width - 175.0f, y + 10.0f, 150.0f, 25.0f))
-			{
-				Dispose();
-			}
-
-			EditorUI::DrawRect(x + width * 0.025f, y + height * 0.1f, width * 0.25f, height * 0.8f, 4.0f, EditorPreferences::Get()->UiBackgroundColor);
-			float ItY = y + height * 0.9f + m_ScrollY;
-			for (int i = 0; i < m_UnresolvedAsset.Size(); i++)
-			{
-				ItY -= 28.0f;
-				if (ItY + m_ScrollY >= y + height * 0.9f || ItY + m_ScrollY <= y + height * 0.1f) continue;
-				EditorUI::ButtonParams Params = EditorUI::ButtonParams::Invisible();
-				Params.TextOrientation = Vec2(-0.95f, 0);
-				Params.ButtonColorClicked = Params.ButtonColorHover = Params.ButtonColor = (Index == i) ? EditorPreferences::Get()->UiHighlightColor : Color(0);
-				Params.TextColor = (Index == i) ? EditorPreferences::Get()->UiBackgroundColor : Color(1);
-				if (EditorUI::Button(m_UnresolvedAsset[i].m_Path.stem().string(), x + width * 0.025f, ItY + m_ScrollY, width * 0.25f, 28.0f, Params))
-				{
-					Index = i;
-				}
-				EditorUI::Text(m_UnresolvedAsset[i].m_Class.GetNativeClassName(), Font::Instance, x + width * 0.025f, ItY + m_ScrollY, width * 0.25f, 28.0f, 24.0f, Vec2(0.75f, 0), Color(1));
-				if (m_AssetImported[i]) EditorUI::DrawTexturedRect(TickTexture->GetTexture(), x + width * 0.275f - 28.0f, ItY + m_ScrollY, 28.0f, 28.0f, 0, Color(1));
-			}
-			float scrollDown = (y + height * 0.1f) - ItY + 100.0f;
-			if (scrollDown <= 0.0f) scrollDown = 0.0f;
-			EditorUI::ScrollbarVertical(x + width * 0.275f, y + height * 0.1f, 10.0f, height * 0.8f, x + width * 0.025f, y + height * 0.1f, width * 0.25f, height * 0.8f, 0.0f, scrollDown, &m_ScrollY);
-
-			if (m_AssetImported[Index]) return;
-
-			EditorUI::DrawRect(x + width * 0.29f - 1.0f, y + height * 0.2f - 1.0f, height * 0.6f + 2.0f, height * 0.6f + 2.0f, 4.0f, EditorPreferences::Get()->UiTextColor);
-			EditorUI::DrawRect(x + width * 0.29f, y + height * 0.2f, height * 0.6f, height * 0.6f, 4.0f, EditorPreferences::Get()->UiBackgroundColor);
-
-			if (m_UnresolvedAsset[Index].m_Class == Texture2D::StaticClass())
-			{
-				if (texturePath != m_UnresolvedAsset[Index].m_Path.string())
-				{
-					texturePath = m_UnresolvedAsset[Index].m_Path.string();
-					m_Texture = Texture::Create(m_UnresolvedAsset[Index].m_Path.string());
-				}
-				EditorUI::DrawTexturedRect(m_Texture, x + width * 0.29f, y + height * 0.2f, height * 0.6f, height * 0.6f, 4.0f, Color(1));
-				if (EditorUI::Button("Import", x + width - 175.0f - 175.0f, y + 10.0f, 150.0f, 25.0f, EditorUI::ButtonParams::Highlight()))
-				{
-					m_AssetImported[Index] = true;
-					Texture2D* newAsset = AssetManager::CreateAsset<Texture2D>(m_UnresolvedAsset[Index].m_Path.stem().string(), m_UnresolvedAsset[Index].m_Path.parent_path().string());
-					Yaml::Node serialized;
-					newAsset->Serialize(serialized);
-					std::string str;
-					Yaml::Serialize(serialized, str);
-					SuoraLog("Imported {0}", newAsset->m_Path.string());
-					Platform::WriteToFile(newAsset->m_Path.string(), str);
-				}
-			}
-			else if (m_UnresolvedAsset[Index].m_Class == Mesh::StaticClass())
-			{
-				if (EditorUI::Button("Import", x + width - 175.0f - 175.0f, y + 10.0f, 150.0f, 25.0f, EditorUI::ButtonParams::Highlight()))
-				{
-					m_AssetImported[Index] = true;
-					Mesh* newAsset = AssetManager::CreateAsset<Mesh>(m_UnresolvedAsset[Index].m_Path.stem().string(), m_UnresolvedAsset[Index].m_Path.parent_path().string());
-					Yaml::Node serialized;
-					newAsset->Serialize(serialized);
-					std::string str;
-					Yaml::Serialize(serialized, str);
-					SuoraLog("Imported {0}", newAsset->m_Path.string());
-					Platform::WriteToFile(newAsset->m_Path.string(), str);
-				}
-			}
-			
-		}
-	};
-
 	static bool IsPathDirectSubpathOf(const std::string& directory, const FilePath& file)
 	{
 		return file.parent_path() == std::filesystem::path(directory);
@@ -207,12 +110,6 @@ namespace Suora
 		EditorUI::DrawRect(0, GetHeight() - 40, GetWidth(), 40, 0, Color(Vec3(EditorPreferences::Get()->UiColor) * 0.9f, 1.0f));
 
 		DrawContentPaths();
-
-		// Draw the Asset Importer Button
-		if (EditorUI::Button("Asset Importer", GetWidth() - 175.0f, GetHeight() - 25.0f, 150.0f, 20.0f, EditorUI::ButtonParams::Highlight()))
-		{
-			EditorUI::CreateOverlay<AssetImporter>(GetMajorTab()->GetEditorWindow()->GetWindow()->GetWidth() / 6.0f, GetMajorTab()->GetEditorWindow()->GetWindow()->GetHeight() / 6.0f, GetMajorTab()->GetEditorWindow()->GetWindow()->GetWidth() * 2.0f / 3.0f, GetMajorTab()->GetEditorWindow()->GetWindow()->GetHeight() * 2.0f / 3.0f, AssetManager::HotReload());
-		}
 
 		const float scrollDown = y - m_ScrollY;
 		EditorUI::ScrollbarVertical(GetWidth() - 10, 0, 10, GetHeight(), 0, 0, GetWidth(), GetHeight(), 0, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &m_ScrollY);

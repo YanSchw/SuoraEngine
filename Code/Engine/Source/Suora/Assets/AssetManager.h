@@ -17,14 +17,6 @@ namespace Suora
 	class Font;
 	class Texture2D;
 
-	struct UnresolvedAsset
-	{
-		Class m_Class = Class::None;
-		std::filesystem::path m_Path = "";
-		UnresolvedAsset(const Class& cls, const std::filesystem::path& path)
-			: m_Class(cls), m_Path(path) { }
-	};
-
 	class AssetManager : public EngineSubSystem
 	{
 	private:
@@ -39,7 +31,7 @@ namespace Suora
 		static void Initialize(const FilePath& contentPath);
 		~AssetManager();
 
-		static Array<UnresolvedAsset> HotReload(const std::filesystem::path& contentPath = s_AssetRootPath, const Class& baseClass = Asset::StaticClass());
+		static void HotReload(const std::filesystem::path& contentPath = s_AssetRootPath, const Class& baseClass = Asset::StaticClass());
 		static void InitializeAllAssets();
 
 		static void Update(float deltaTime);
