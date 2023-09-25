@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: MaterialSphere.png
+  m_StreamMode: 0
 UUID: "10db4794-ec22-46fc-8be9-6cd8e5245349"
-m_Texture2DFileFormat: .png

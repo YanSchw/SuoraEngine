@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: Red.png
+  m_StreamMode: 0
 UUID: "0ab83375-a7e4-4df1-b4b4-2d0b811e61b9"
-m_Texture2DFileFormat: .png

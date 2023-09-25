@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 1.414214
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: "-1.000000"
+StreamableAsset: 
+  m_SourceAssetName: Quad.obj
+  m_StreamMode: 0
 UUID: "75f466f7-baec-4c5a-a23b-a5e3dc3d22bc"

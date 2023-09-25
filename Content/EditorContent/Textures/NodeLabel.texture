@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: NodeLabel.png
+  m_StreamMode: 0
 UUID: "d446ecdc-6fd3-4a0c-8d10-79ad115eb700"
-m_Texture2DFileFormat: .png

@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 1.358308
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: "-1.000000"
+StreamableAsset: 
+  m_SourceAssetName: BeveledCube.obj
+  m_StreamMode: 0
 UUID: "7eacd8c5-71ec-4069-97a7-b98a3e23cdc0"

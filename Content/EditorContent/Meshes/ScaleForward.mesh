@@ -1,1 +1,10 @@
+Mesh: 
+  Materials: 
+    Overwrite: false
+  m_BoundingSphereRadius: 107166.875000
+  m_IsDecimaMesh: false
+  m_NegativeY_Bounds: 107166.875000
+StreamableAsset: 
+  m_SourceAssetName: ScaleForward.obj
+  m_StreamMode: 0
 UUID: 4283722923743

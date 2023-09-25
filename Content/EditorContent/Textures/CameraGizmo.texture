@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: CameraGizmo.png
+  m_StreamMode: 0
 UUID: "1023f9bc-915a-47d5-8a67-b8332e13c160"
-m_Texture2DFileFormat: .png

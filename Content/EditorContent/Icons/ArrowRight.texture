@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: ArrowRight.png
+  m_StreamMode: 0
 UUID: "970c3d0e-c5b0-4a2e-a548-661d9b00d977"
-m_Texture2DFileFormat: .png

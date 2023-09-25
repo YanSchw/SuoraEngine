@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 9.305347
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: "-0.700000"
+StreamableAsset: 
+  m_SourceAssetName: Arrow.obj
+  m_StreamMode: 0
 UUID: "29d7f100-5d30-4437-aa6b-00ec9a9ebf49"

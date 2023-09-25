@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 1.250000
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: "-0.250000"
+StreamableAsset: 
+  m_SourceAssetName: Torus.obj
+  m_StreamMode: 0
 UUID: "0edf7b1f-9a58-4240-8441-a66343de2ef4"

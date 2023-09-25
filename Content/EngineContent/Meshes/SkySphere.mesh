@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 480.000458
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: "-479.999939"
+StreamableAsset: 
+  m_SourceAssetName: SkySphere.obj
+  m_StreamMode: 0
 UUID: "7d609382-dd13-4f97-b325-7d7a04309f47"

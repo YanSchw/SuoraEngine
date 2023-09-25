@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 4.000000
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: 0.000000
+StreamableAsset: 
+  m_SourceAssetName: Capsule.obj
+  m_StreamMode: 0
 UUID: "77d60b2a-790a-42d6-9760-4b3cb3b853d5"

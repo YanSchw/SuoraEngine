@@ -1,5 +1,5 @@
 #pragma once
-#include "Asset.h"
+#include "StreamableAsset.h"
 #include <vector>
 #include <string>
 #include <future>
@@ -11,14 +11,7 @@ namespace Suora
 	struct TextureBuffer_stbi;
 	class Texture;
 
-	enum class ETexture2DFileFormat
-	{
-		None = 0,
-		PNG,
-		JPG
-	};
-
-	class Texture2D : public Asset
+	class Texture2D : public StreamableAsset
 	{
 		SUORA_CLASS(7546894832);
 		ASSET_EXTENSION(".texture");
@@ -37,7 +30,6 @@ namespace Suora
 			return m_Texture;
 		}
 
-		std::string GetTexturePath();
 		Texture* GetTexture();
 		Ref<TextureBuffer_stbi> Async_LoadTexture(const std::string& path);
 
@@ -46,7 +38,6 @@ namespace Suora
 		ETextureFilter m_TextureFilter;
 
 	private:
-		ETexture2DFileFormat m_Texture2DFileFormat = ETexture2DFileFormat::PNG;
 		Texture* m_Texture = nullptr;
 		inline static Texture2D* Default = nullptr;
 	};

@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 1.196647
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: "-0.311946"
+StreamableAsset: 
+  m_SourceAssetName: CameraGizmo.obj
+  m_StreamMode: 0
 UUID: "c37609b9-9067-4e3a-ac04-c493ed2d8009"

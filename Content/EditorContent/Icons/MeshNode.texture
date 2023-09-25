@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: MeshNode.png
+  m_StreamMode: 0
 UUID: "b14b065c-a2c0-4dc9-9272-ab0415ada141"
-m_Texture2DFileFormat: .png

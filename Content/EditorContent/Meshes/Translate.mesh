@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 9.338105
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: "-0.735458"
+StreamableAsset: 
+  m_SourceAssetName: Translate.obj
+  m_StreamMode: 0
 UUID: "3d618e01-4b40-4153-bbac-7695c2c11708"

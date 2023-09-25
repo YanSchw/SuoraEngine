@@ -1,5 +1,5 @@
 #pragma once
-#include "Asset.h"
+#include "StreamableAsset.h"
 #include <vector>
 #include <string>
 #include <future>
@@ -15,13 +15,6 @@ namespace Suora
 	class MeshNode;
 	class Decima;
 
-	enum class EMeshFileFormat
-	{
-		None = 0,
-		OBJ,
-		FBX
-	};
-
 	struct Cluster
 	{
 		Ref<Cluster> Child1;
@@ -36,7 +29,7 @@ namespace Suora
 		Ref<VertexArray> m_VertexArray;
 	};
 
-	class Mesh : public Asset
+	class Mesh : public StreamableAsset
 	{
 		SUORA_CLASS(7854672332);
 		ASSET_EXTENSION(".mesh");
@@ -72,7 +65,6 @@ namespace Suora
 		MeshBuffer m_MeshBuffer;
 		Ref<VertexArray> m_VertexArray = nullptr;
 		Ref<std::future<Ref<MeshBuffer>>> m_AsyncMeshBuffer;
-		EMeshFileFormat m_MeshFileFormat = EMeshFileFormat::OBJ;
 
 		inline bool IsMasterMesh() const { return m_IsMasterMesh; }
 		inline bool IsSubMesh() const { return m_ParentMesh; }

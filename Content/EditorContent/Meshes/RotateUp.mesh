@@ -1,1 +1,10 @@
+Mesh: 
+  Materials: 
+    Overwrite: false
+  m_BoundingSphereRadius: 107164.750000
+  m_IsDecimaMesh: false
+  m_NegativeY_Bounds: 107164.750000
+StreamableAsset: 
+  m_SourceAssetName: RotateUp.obj
+  m_StreamMode: 0
 UUID: "30703a8c-7de2-4724-ae7d-967755f480fd"

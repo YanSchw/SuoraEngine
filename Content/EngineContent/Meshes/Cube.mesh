@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 0.866025
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: "-0.500000"
+StreamableAsset: 
+  m_SourceAssetName: Cube.obj
+  m_StreamMode: 0
 UUID: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"

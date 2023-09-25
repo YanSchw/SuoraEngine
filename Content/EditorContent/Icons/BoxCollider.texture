@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: BoxCollider.png
+  m_StreamMode: 0
 UUID: "269931d5-7e60-4934-a89a-26b7993ae0f3"
-m_Texture2DFileFormat: .png

@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: Actor.png
+  m_StreamMode: 0
 UUID: "ad168979-55cd-408e-afd2-a24cabf26922"
-m_Texture2DFileFormat: .png

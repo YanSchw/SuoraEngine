@@ -296,7 +296,7 @@ namespace Suora
 			GLFWimage images[1];
 			int channels = 4;
 			stbi_set_flip_vertically_on_load(0);
-			images[0].pixels = stbi_load(m_CurrentIconTexture->GetTexturePath().c_str(), &images[0].width, &images[0].height, &channels, channels); //rgba channels 
+			images[0].pixels = stbi_load(m_CurrentIconTexture->GetSourceAssetPath().string().c_str(), &images[0].width, &images[0].height, &channels, channels); //rgba channels 
 			stbi_set_flip_vertically_on_load(1);
 			images->width = texture->GetWidth();
 			images->height = texture->GetHeight();

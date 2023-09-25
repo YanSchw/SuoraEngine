@@ -59,8 +59,6 @@ namespace Suora
 	void Mesh::InitializeAsset(const std::string& str)
 	{
 		Super::InitializeAsset(str);
-		// TODO: Remove.
-		//m_IsDecimaMesh = (m_Path.string().find("Monkey") != std::string::npos) || (m_Path.string().find("Dragon") != std::string::npos) || (m_Path.string().find("City") != std::string::npos);
 
 		Yaml::Node root;
 		Yaml::Parse(root, str);
@@ -88,16 +86,10 @@ namespace Suora
 		uint32_t baseSize = Super::GetAssetFileSize();
 		uint32_t meshSize = 0;
 
-		std::string filePath = m_Path.string();
-
-		switch (m_MeshFileFormat)
+		if (std::filesystem::exists(GetSourceAssetPath()))
 		{
-		case EMeshFileFormat::OBJ:
-			Util::ReplaceSequence(filePath, ".mesh", ".obj");  break;
-		default: SuoraError("MeshFileFormat is not supported!"); break;
+			meshSize = std::filesystem::file_size(GetSourceAssetPath());
 		}
-
-		meshSize = std::filesystem::file_size(filePath);
 
 		return baseSize + meshSize;
 	}
@@ -413,22 +405,18 @@ namespace Suora
 
 	VertexArray* Mesh::GetVertexArray()
 	{
-		if (IsMissing() || IsMasterMesh())
+		if (IsMissing() || !std::filesystem::exists(GetSourceAssetPath()) || IsMasterMesh())
 		{
 			return nullptr;
 		}
+
 		if (!m_VertexArray)
 		{
 			if (!m_AsyncMeshBuffer.get() && AssetManager::s_AssetStreamPool.Size() < ASSET_STREAM_COUNT_LIMIT)
 			{
 				AssetManager::s_AssetStreamPool.Add(this);
-				std::string filePath = m_Path.string();
-				switch (m_MeshFileFormat)
-				{
-				case EMeshFileFormat::OBJ: 
-					Util::ReplaceSequence(filePath, ".mesh", ".obj");  break;
-				default: SuoraError("MeshFileFormat is not supported!"); break;
-				}
+				std::string filePath = GetSourceAssetPath().string();
+				
 				m_AsyncMeshBuffer = CreateRef<std::future<Ref<MeshBuffer>>>(std::async(std::launch::async, &Mesh::Async_LoadMeshBuffer, this, filePath, m_MeshBuffer.Vertices, m_MeshBuffer.Indices));
 			}
 			else if (m_AsyncMeshBuffer.get() && IsFutureReady(*m_AsyncMeshBuffer.get()))

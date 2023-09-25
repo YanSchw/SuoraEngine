@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: CapsuleCollider.png
+  m_StreamMode: 0
 UUID: "b7221496-4fc6-4e08-9f23-655d5edfe820"
-m_Texture2DFileFormat: .png

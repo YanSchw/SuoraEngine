@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: DirectionalLight.png
+  m_StreamMode: 0
 UUID: "64738d74-08a9-4383-8659-620808d5269a"
-m_Texture2DFileFormat: .png

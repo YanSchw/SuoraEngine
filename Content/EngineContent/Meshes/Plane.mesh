@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 7.071068
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: 0.000000
+StreamableAsset: 
+  m_SourceAssetName: Plane.obj
+  m_StreamMode: 0
 UUID: "45d16e2b-822e-44bf-a686-abde5552f67a"

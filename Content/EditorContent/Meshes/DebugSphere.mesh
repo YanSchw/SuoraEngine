@@ -5,4 +5,7 @@ Mesh:
   m_BoundingSphereRadius: 2.000000
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: "-2.000000"
+StreamableAsset: 
+  m_SourceAssetName: DebugSphere.obj
+  m_StreamMode: 0
 UUID: "4c2516be-3b7d-4684-b292-096ec621a83c"

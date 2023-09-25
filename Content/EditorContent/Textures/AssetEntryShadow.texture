@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: AssetEntryShadow.png
+  m_StreamMode: 0
 UUID: "a7d9fdad-acc7-4e58-b4b8-cdf924648474"
-m_Texture2DFileFormat: .png

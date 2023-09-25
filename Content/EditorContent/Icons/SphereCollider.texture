@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: SphereCollider.png
+  m_StreamMode: 0
 UUID: "7e43f48b-3dc8-4eab-b91a-b4e2e7999190"
-m_Texture2DFileFormat: .png

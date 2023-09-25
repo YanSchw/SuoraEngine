@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: Play.png
+  m_StreamMode: 0
 UUID: "c503c57f-100f-4e0d-8f27-38259b174ba8"
-m_Texture2DFileFormat: .png

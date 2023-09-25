@@ -4,4 +4,7 @@ Mesh:
   m_BoundingSphereRadius: 1.000000
   m_IsDecimaMesh: false
   m_NegativeY_Bounds: 0.000000
+StreamableAsset: 
+  m_SourceAssetName: Rotator.obj
+  m_StreamMode: 0
 UUID: "f959df3f-16d8-44cc-a6da-5f1c5b8ecc71"

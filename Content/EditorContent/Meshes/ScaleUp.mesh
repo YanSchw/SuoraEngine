@@ -1,1 +1,10 @@
+Mesh: 
+  Materials: 
+    Overwrite: false
+  m_BoundingSphereRadius: 107164.625000
+  m_IsDecimaMesh: false
+  m_NegativeY_Bounds: 107164.625000
+StreamableAsset: 
+  m_SourceAssetName: ScaleUp.obj
+  m_StreamMode: 0
 UUID: 428793331984

@@ -1,2 +1,4 @@
+StreamableAsset: 
+  m_SourceAssetName: CheckerboardTinted.png
+  m_StreamMode: 0
 UUID: "ff63cc4b-b787-4171-a09d-2a9b5e14bb17"
-m_Texture2DFileFormat: .png
