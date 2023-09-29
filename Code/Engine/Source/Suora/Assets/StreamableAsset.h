@@ -15,7 +15,8 @@ namespace Suora
 	{
 		SUORA_CLASS(175815436);
 	public:
-		std::filesystem::path GetSourceAssetPath();
+		std::filesystem::path GetSourceAssetPath() const;
+		bool IsSourceAssetPathValid() const;
 
 		void PreInitializeAsset(const std::string& str) override;
 		void InitializeAsset(const std::string& str) override;

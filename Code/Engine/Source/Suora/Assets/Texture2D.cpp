@@ -41,7 +41,7 @@ namespace Suora
 		uint32_t baseSize = Super::GetAssetFileSize();
 		uint32_t textureSize = 0;
 
-		if (std::filesystem::exists(GetSourceAssetPath()))
+		if (IsSourceAssetPathValid())
 		{
 			textureSize = std::filesystem::file_size(GetSourceAssetPath());
 		}
@@ -57,7 +57,7 @@ namespace Suora
 
 	Texture* Texture2D::GetTexture()
 	{
-		if (IsMissing() || !std::filesystem::exists(GetSourceAssetPath()))
+		if (IsMissing() || !IsSourceAssetPathValid())
 		{
 			return Texture::GetOrCreateDefaultTexture();
 		}

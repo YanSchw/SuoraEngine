@@ -86,7 +86,7 @@ namespace Suora
 		uint32_t baseSize = Super::GetAssetFileSize();
 		uint32_t meshSize = 0;
 
-		if (std::filesystem::exists(GetSourceAssetPath()))
+		if (IsSourceAssetPathValid())
 		{
 			meshSize = std::filesystem::file_size(GetSourceAssetPath());
 		}
@@ -405,7 +405,7 @@ namespace Suora
 
 	VertexArray* Mesh::GetVertexArray()
 	{
-		if (IsMissing() || !std::filesystem::exists(GetSourceAssetPath()) || IsMasterMesh())
+		if (IsMissing() || !IsSourceAssetPathValid() || IsMasterMesh())
 		{
 			return nullptr;
 		}

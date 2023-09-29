@@ -3,10 +3,15 @@
 
 namespace Suora
 {
-	std::filesystem::path StreamableAsset::GetSourceAssetPath()
+	std::filesystem::path StreamableAsset::GetSourceAssetPath() const
 	{
 		std::filesystem::path p = m_Path;
 		return p.replace_filename(m_SourceAssetName);
+	}
+
+	bool StreamableAsset::IsSourceAssetPathValid() const
+	{
+		return std::filesystem::exists(GetSourceAssetPath());
 	}
 
 	void StreamableAsset::PreInitializeAsset(const std::string& str)
