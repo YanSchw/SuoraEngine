@@ -130,7 +130,7 @@ namespace Suora
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
-		m_Data.window = this;
+		m_Data.m_Window = this;
 
 		SUORA_INFO(LogCategory::Rendering, "Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
@@ -267,6 +267,17 @@ namespace Suora
 
 			MouseMovedEvent event((float)xPos, (float)yPos);
 			data.EventCallback(event);
+		});
+
+		glfwSetDropCallback(m_Window, [](GLFWwindow* window, int count, const char** paths)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			Array<std::string> args;
+			for (int i = 0; i < count; i++)
+			{
+				args.Add(paths[i]);
+			}
+			data.m_Window->m_OnDesktopFilesDropped(args);
 		});
 
 		SetCursor(Cursor::Default);

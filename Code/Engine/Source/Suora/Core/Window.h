@@ -4,6 +4,7 @@
 #include "Suora/Core/Base.h"
 #include "Suora/Events/Event.h"
 #include "Suora/Common/Array.h"
+#include "Suora/Common/Delegate.h"
 
 namespace Suora 
 {
@@ -76,6 +77,8 @@ namespace Suora
 		Cursor currentCursorType = Cursor::Default;
 
 		Texture2D* m_WindowIconOverride = nullptr;
+
+		Delegate<Array<std::string>> m_OnDesktopFilesDropped;
 	};
 
 

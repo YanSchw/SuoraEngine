@@ -59,7 +59,7 @@ namespace Suora
 			std::string Title;
 			unsigned int Width, Height;
 			bool VSync;
-			Window* window = nullptr;
+			Window* m_Window = nullptr;
 
 			EventCallbackFn EventCallback;
 		};

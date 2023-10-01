@@ -35,6 +35,7 @@ namespace Suora
 		inline static Ptr<Asset> s_BrowseToAsset = nullptr;
 
 		std::string GetRootPath();
+		std::string GetCurrentDirectory() const;
 
 	private:
 		Ref<Texture> m_Checkerboard = Texture::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Textures/Checkerboard.png");

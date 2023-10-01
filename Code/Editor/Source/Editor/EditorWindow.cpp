@@ -38,7 +38,8 @@ namespace Suora
 		m_Window = Application::Get().CreateAppWindow(props);
 		m_Window->SetVSync(false);
 		m_Window->m_WindowIconOverride = AssetManager::GetAsset<Texture2D>(SuoraID("059f71bb-7ad3-47a0-be84-6dfc910f7ca3"));
-		
+		m_Window->m_OnDesktopFilesDropped.Register([this](Array<std::string> paths) { this->HandleAssetFileDrop(paths); });
+
 		if (!TextureInit)
 		{
 			TextureInit = true;
@@ -414,6 +415,38 @@ namespace Suora
 	Window* EditorWindow::GetWindow()
 	{
 		return m_Window;
+	}
+
+	void EditorWindow::CopyAssetFilesToDirectory(const std::filesystem::path& directory, const std::filesystem::path& toBeCopied)
+	{
+		if (!std::filesystem::is_directory(toBeCopied))
+		{
+			Platform::CreateDirectory(directory);
+			std::filesystem::copy(toBeCopied, std::filesystem::path(directory).append(toBeCopied.filename().string()));
+		}
+		else
+		{
+			for (auto It : std::filesystem::directory_iterator(toBeCopied))
+			{
+				CopyAssetFilesToDirectory(std::filesystem::path(directory).append(toBeCopied.filename().string()), It);
+			}
+		}
+	}
+
+	void EditorWindow::HandleAssetFileDrop(Array<std::string> paths)
+	{
+		m_HeroToolOpened = true;
+		m_SelectedHeroTool = 0;
+
+		ContentBrowser* contentDrawer = (ContentBrowser*)m_HeroTools[0].get();
+
+		for (auto& It : paths)
+		{
+			CopyAssetFilesToDirectory(contentDrawer->GetCurrentDirectory(), It);
+		}
+
+		AssetManager::HotReload(contentDrawer->GetCurrentDirectory());
+
 	}
 
 	void EditorWindow::ForceOpenContentDrawer()

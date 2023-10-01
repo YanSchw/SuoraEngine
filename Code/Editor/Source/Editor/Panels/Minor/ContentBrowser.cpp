@@ -395,4 +395,9 @@ namespace Suora
 		return m_CurrentMode == PathMode::ProjectPath ? AssetManager::GetProjectAssetPath() : AssetManager::GetAssetRootPath();
 	}
 
+	std::string ContentBrowser::GetCurrentDirectory() const
+	{
+		return m_CurrentPath;
+	}
+
 }
