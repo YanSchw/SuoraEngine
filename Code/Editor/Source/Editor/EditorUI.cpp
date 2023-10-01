@@ -248,8 +248,8 @@ namespace Suora
 		s_ClassIcons[PostProcessEffect::StaticClass()]		= AssetManager::GetAsset<Texture2D>(SuoraID("9bdeac52-f671-4e0a-9167-aeaa30c47711"));
 		s_ClassIcons[LevelNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("3578494c-3c74-4aa5-8d34-4d28959a21f5"));
 		s_ClassIcons[Component::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("3e254a4e-cc83-4254-a462-73739fce6d61"));
-		s_ClassIcons[FolderNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("99898caa-a2b2-4fc4-9db7-5baacaed03e5"));
-		s_ClassIcons[FolderNode3D::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("99898caa-a2b2-4fc4-9db7-5baacaed03e5"));
+		s_ClassIcons[FolderNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
+		s_ClassIcons[FolderNode3D::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
 	}
 
 	// DrawRect
