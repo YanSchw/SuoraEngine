@@ -52,7 +52,7 @@ project "assimp"
       "ASSIMP_BUILD_NO_NDO_IMPORTER",
       "ASSIMP_BUILD_NO_IFC_IMPORTER",
       "ASSIMP_BUILD_NO_XGL_IMPORTER",
-      "ASSIMP_BUILD_NO_FBX_IMPORTER",
+      --"ASSIMP_BUILD_NO_FBX_IMPORTER",
       "ASSIMP_BUILD_NO_ASSBIN_IMPORTER",
       -- "ASSIMP_BUILD_NO_GLTF_IMPORTER",
       "ASSIMP_BUILD_NO_C4D_IMPORTER",
@@ -97,6 +97,7 @@ project "assimp"
   {
       "%{ENGINE_PATH}/Code/Dependencies/assimp/include/**",
       "%{ENGINE_PATH}/Code/Dependencies/assimp/code/Assimp.cpp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code/FBX/**.cpp",
       "%{ENGINE_PATH}/Code/Dependencies/assimp/code/BaseImporter.cpp",
       "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ColladaLoader.cpp",
       "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ColladaParser.cpp",
@@ -135,10 +136,18 @@ project "assimp"
       "%{ENGINE_PATH}/Code/Dependencies/assimp/code/ScaleProcess.cpp",
       "%{ENGINE_PATH}/Code/Dependencies/assimp/code/EmbedTexturesProcess.cpp",
       "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/irrXML/*",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/zlib/zutil.c",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/zlib/inffast.c",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/zlib/inflate.c",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/zlib/inftrees.c",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/zlib/adler32.c",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/zlib/crc32.c",
   }
 
   includedirs 
   {
+      "%{ENGINE_PATH}/Code/Dependencies/assimp",
+      "%{ENGINE_PATH}/Code/Dependencies/assimp/code",
       "%{ENGINE_PATH}/Code/Dependencies/assimp/include",
       "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/irrXML",
       "%{ENGINE_PATH}/Code/Dependencies/assimp/contrib/zlib",

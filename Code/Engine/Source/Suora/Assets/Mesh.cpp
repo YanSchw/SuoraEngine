@@ -876,7 +876,7 @@ namespace Suora
 
 	Array<std::string> Mesh::GetSupportedSourceAssetExtensions()
 	{
-		return {".obj"};
+		return {".obj", ".fbx", ".gltf"};
 	}
 
 	Ref<VertexArray> Cluster::GetVertexArray(MeshBuffer& buffer)
