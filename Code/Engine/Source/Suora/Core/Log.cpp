@@ -5,6 +5,7 @@
 #include <spdlog/sinks/basic_file_sink.h>
 
 #include "Suora/Debug/VirtualConsole.h"
+#include "Suora/Common/Common.h"
 
 namespace Suora 
 {
@@ -63,3 +64,12 @@ namespace Suora
 
 }
 
+std::string string_format(std::string format, const std::vector<std::stringstream>& streams)
+{
+	for (int i = 0; i < streams.size(); i++)
+	{
+		Suora::Util::ReplaceSequence(format, "{" + std::to_string(i) + "}", streams[i].str());
+	}
+
+	return format;
+}

@@ -14,35 +14,7 @@
 #include <sstream>
 #include <stdexcept>
 
-static std::string string_format(std::string format, const std::vector<std::stringstream>& streams)
-{
-	std::string index = "";
-
-	for (int i = 0; i < format.size(); i++)
-	{
-		if (format[i] == '{')
-		{
-			format.erase(i, 1);
-			while (format[i] != '}')
-			{
-				index += format[i];
-				format.erase(i, 1);
-			}
-			format.erase(i, 1);
-			int32_t INDEX = std::stoi(index);
-			index = "";
-			
-			if (streams.size() > INDEX)
-			{
-				/*std::stringstream ss;
-				ss << streams[INDEX].rdbuf();*/
-				format.insert(i, streams[INDEX].str());
-			}
-		}
-	}
-
-	return format;
-}
+extern std::string string_format(std::string format, const std::vector<std::stringstream>& streams);
 
 template <class T, class... Ts>
 static void string_format_all(std::vector<std::stringstream>& streams, T const& first, Ts const&... rest)
