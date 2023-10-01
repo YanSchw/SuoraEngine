@@ -27,7 +27,6 @@ namespace Suora
 		m_Params = params;
 		m_ReturnType = returnType;
 		NativeFunctionManager::RegisterNativeFunction(m_Hash, func);
-		std::cout << "Register Function: >> " << label << " <<  returns: " << m_ReturnType << "\n";
 		s_NativeFunctions.push_back(this);
 	}
 	NativeFunction::~NativeFunction()

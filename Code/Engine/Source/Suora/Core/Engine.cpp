@@ -12,8 +12,18 @@
 
 namespace Suora
 {
+	static void LogPreEngineCreateInfo()
+	{
+		for (int i = 0; i < NativeFunction::s_NativeFunctions.size(); i++)
+		{
+			NativeFunction* func = NativeFunction::s_NativeFunctions[i];
+			SUORA_LOG(LogCategory::Core, LogLevel::Info, "Registered NativeFunction: {0} {1}", func->m_ReturnType, func->m_Label);
+		}
+	}
+
 	Ref<Engine> Engine::Create()
 	{
+		LogPreEngineCreateInfo();
 		Ref<Engine> engine = Ref<Engine>(new Engine());
 
 		engine->m_RootPath = std::filesystem::current_path(); 
