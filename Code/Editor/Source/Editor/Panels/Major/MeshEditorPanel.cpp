@@ -73,10 +73,11 @@ namespace Suora
 		CalculateMeshData(m_Mesh);
 
 		m_ViewportPanel = CreateRef<ViewportPanel>(this, &m_World);
-		Ref<DetailsPanel> t2 = CreateRef<DetailsPanel>(this);
+		Ref<DetailsPanel> details = CreateRef<DetailsPanel>(this);
+		details->m_Data = m_Mesh;
 
 		Ref<DockingSpace> ds1 = CreateRef<DockingSpace>(0, 0, 0.75f, 1, this);					    m_DockspacePanel.m_DockingSpaces.Add(ds1); ds1->m_MinorTabs.Add(m_ViewportPanel);
-		Ref<DockingSpace> ds2 = CreateRef<DockingSpace>(0.75f, 0.0f, 1.0f, 1.0f, this);				m_DockspacePanel.m_DockingSpaces.Add(ds2); ds2->m_MinorTabs.Add(t2);
+		Ref<DockingSpace> ds2 = CreateRef<DockingSpace>(0.75f, 0.0f, 1.0f, 1.0f, this);				m_DockspacePanel.m_DockingSpaces.Add(ds2); ds2->m_MinorTabs.Add(details);
 
 		MeshNode* PlaneMesh = m_World.Spawn<MeshNode>();
 		PlaneMesh->mesh = AssetManager::GetAssetByName<Mesh>("Plane.mesh");

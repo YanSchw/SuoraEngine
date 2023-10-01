@@ -874,6 +874,11 @@ namespace Suora
 		GroupClusters(buffer, leafCluster);
 	}
 
+	Array<std::string> Mesh::GetSupportedSourceAssetExtensions()
+	{
+		return {".obj"};
+	}
+
 	Ref<VertexArray> Cluster::GetVertexArray(MeshBuffer& buffer)
 	{
 		if (!m_VertexArray.get())

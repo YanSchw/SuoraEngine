@@ -26,6 +26,11 @@ namespace Suora
 		}
 	}
 
+	Array<std::string> Texture2D::GetSupportedSourceAssetExtensions()
+	{
+		return {".png", ".jpg"};
+	}
+
 	void Texture2D::PreInitializeAsset(const std::string& str)
 	{
 		Super::PreInitializeAsset(str);

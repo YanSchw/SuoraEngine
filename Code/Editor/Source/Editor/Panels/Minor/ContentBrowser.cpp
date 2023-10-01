@@ -94,11 +94,39 @@ namespace Suora
 			float width = GetMajorTab()->GetEditorWindow()->GetWindow()->GetWidth();
 			float height = GetMajorTab()->GetEditorWindow()->GetWindow()->GetHeight();
 			std::string currentPath = m_CurrentPath;
+
+			std::vector<EditorUI::ContextMenuElement> Texture2DImports;
+			std::vector<EditorUI::ContextMenuElement> MeshImports;
+
+			for (auto file : std::filesystem::directory_iterator(currentPath))
+			{
+				if (!file.is_directory())
+				{
+					Array<std::string> textureExtensions = Texture2D::GetSupportedSourceAssetExtensions();
+					Array<std::string> meshExtensions = Mesh::GetSupportedSourceAssetExtensions();
+					for (auto ext : textureExtensions)
+					{
+						if (File::GetFileExtension(file) == ext)
+						{
+							Texture2DImports.push_back(EditorUI::ContextMenuElement{ {}, [width, height, file, currentPath]() { EditorUI::CreateOverlay<ImportTexture2DOverlay>(width / 2 - 425.0f, height / 2 - 275.0f, 850.0f, 550.0f, file.path(), currentPath); }, "Import " + file.path().filename().string(), nullptr});
+						}
+					}
+					for (auto ext : meshExtensions)
+					{
+						if (File::GetFileExtension(file) == ext)
+						{
+							MeshImports.push_back(EditorUI::ContextMenuElement{ {}, [width, height, file, currentPath]() { EditorUI::CreateOverlay<ImportMeshOverlay>(width / 2 - 425.0f, height / 2 - 275.0f, 850.0f, 550.0f, file.path(), currentPath); }, "Import " + file.path().filename().string(), nullptr });
+						}
+					}
+				}
+			}
 			
 			EditorUI::CreateContextMenu({ EditorUI::ContextMenuElement{
 												{
 													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateClassOverlay>(width / 2 - 425.0f, height / 2 - 275.0f, 850.0f, 550.0f, currentPath); }, "Blueprint Class", nullptr },
 													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateLevelOverlay>(width / 2 - 425.0f, height / 2 - 275.0f, 850.0f, 550.0f, currentPath); }, "Level", nullptr },
+													EditorUI::ContextMenuElement{{ Texture2DImports }, []() {}, "Texture2D", nullptr },
+													EditorUI::ContextMenuElement{{ MeshImports }, []() {}, "Mesh", nullptr },
 													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateSimpleAssetOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath, "Create a new ShaderGraph", "MyShaderGraph", ShaderGraph::StaticClass(), [](Asset* shader) { shader->As<ShaderGraph>()->m_BaseShader = "DeferredLit.glsl"; }); }, "ShaderGraph", nullptr},
 													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateSimpleAssetOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath, "Create a new Material", "MyMaterial", Material::StaticClass(), [](Asset* material) {}); }, "Material", nullptr},
 												}, []() {}, "Create Asset", nullptr },

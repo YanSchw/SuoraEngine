@@ -105,4 +105,37 @@ namespace Suora
 		}
 	};
 
+	struct ImportTexture2DOverlay : public CreateAssetOverlay
+	{
+		ImportTexture2DOverlay(const std::filesystem::path& filePath, const std::string& directory)
+			: CreateAssetOverlay(directory, "Import " + filePath.string(), filePath.stem().string())
+		{
+			m_SourceFile = filePath;
+		}
+
+		virtual void Render(float deltaTime) override;
+		virtual std::string GetAssetExtension() override;
+
+		virtual void CreateAsset() override;
+
+	private:
+		std::filesystem::path m_SourceFile;
+	};
+	struct ImportMeshOverlay : public CreateAssetOverlay
+	{
+		ImportMeshOverlay(const std::filesystem::path& filePath, const std::string& directory)
+			: CreateAssetOverlay(directory, "Import " + filePath.string(), filePath.stem().string())
+		{
+			m_SourceFile = filePath;
+		}
+
+		virtual void Render(float deltaTime) override;
+		virtual std::string GetAssetExtension() override;
+
+		virtual void CreateAsset() override;
+
+	private:
+		std::filesystem::path m_SourceFile;
+	};
+
 }

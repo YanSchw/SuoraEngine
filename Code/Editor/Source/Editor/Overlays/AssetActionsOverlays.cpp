@@ -198,4 +198,42 @@ namespace Suora
 		Platform::WriteToFile(level->m_Path.string(), out);
 	}
 
+	void ImportTexture2DOverlay::Render(float deltaTime)
+	{
+		CreateAssetOverlay::Render(deltaTime);
+	}
+	std::string ImportTexture2DOverlay::GetAssetExtension()
+	{
+		return ".texture";
+	}
+	void ImportTexture2DOverlay::CreateAsset()
+	{
+		Texture2D* asset = AssetManager::CreateAsset(Texture2D::StaticClass(), s_AssetName, m_Directory)->As<Texture2D>();
+		asset->SetSourceAssetName(m_SourceFile.filename().string());
+		Yaml::Node root;
+		asset->Serialize(root);
+		std::string out;
+		Yaml::Serialize(root, out);
+		Platform::WriteToFile(asset->m_Path.string(), out);
+	}
+
+	void ImportMeshOverlay::Render(float deltaTime)
+	{
+		CreateAssetOverlay::Render(deltaTime);
+	}
+	std::string ImportMeshOverlay::GetAssetExtension()
+	{
+		return ".mesh";
+	}
+	void ImportMeshOverlay::CreateAsset()
+	{
+		Mesh* asset = AssetManager::CreateAsset(Mesh::StaticClass(), s_AssetName, m_Directory)->As<Mesh>();
+		asset->SetSourceAssetName(m_SourceFile.filename().string());
+		Yaml::Node root;
+		asset->Serialize(root);
+		std::string out;
+		Yaml::Serialize(root, out);
+		Platform::WriteToFile(asset->m_Path.string(), out);
+	}
+
 }

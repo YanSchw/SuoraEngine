@@ -76,6 +76,8 @@ namespace Suora
 		static Mesh* Cube;
 		static Mesh* Sphere;
 
+		static Array<std::string> GetSupportedSourceAssetExtensions();
+
 	private:
 		bool m_IsMasterMesh = false;
 		Mesh* m_ParentMesh = nullptr;

@@ -20,6 +20,8 @@ namespace Suora
 		Texture2D();
 		~Texture2D();
 
+		static Array<std::string> GetSupportedSourceAssetExtensions();
+
 		void PreInitializeAsset(const std::string& str) override;
 		virtual uint32_t GetAssetFileSize() override;
 
