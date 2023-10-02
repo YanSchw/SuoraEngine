@@ -143,7 +143,11 @@ namespace Suora::Tools
 		if (writeAllModules)
 		{
 			Platform::WriteToFile(projectRootPath.string() + "/Build/AllModules/premake5.lua", premake5);
-			Platform::WriteToFile(projectRootPath.string() + "/Build/AllModules/Modules.generated.cpp", modulesCPP);
+			std::string modulesCPP_Path = projectRootPath.string() + "/Build/AllModules/Modules.generated.cpp";
+			if (Platform::ReadFromFile(modulesCPP_Path) != modulesCPP)
+			{
+				Platform::WriteToFile(modulesCPP_Path, modulesCPP);
+			}
 		}
 	}
 
@@ -332,7 +336,11 @@ namespace Suora::Tools
 			}";
 
 		Platform::WriteToFile(collection.allModulesPath + "/" + moduleName + ".generated.lua", premake5Module);
-		Platform::WriteToFile(modulePath.string() + "/" + moduleName + ".module.cpp", moduleCPP);
+		std::string moduleCPP_Path = modulePath.string() + "/" + moduleName + ".module.cpp";
+		if (Platform::ReadFromFile(moduleCPP_Path) != moduleCPP)
+		{
+			Platform::WriteToFile(moduleCPP_Path, moduleCPP);
+		}
 	}
 
 }
