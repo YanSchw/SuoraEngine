@@ -114,6 +114,13 @@ namespace Suora::Tools
 	void HeaderTool::ParseSingleHeader(const std::filesystem::path& path)
 	{
 		std::string str = Platform::ReadFromFile(path.string());
+
+		// Check if further proccessing is necessary
+		if (str.find("SUORA_CLASS") == std::string::npos)
+		{
+			return;
+		}
+
 		Util::RemoveCommentsFromString(str);
 		// TODO: Remove Comments from file. AND Remove \n and \t etc.
 		if (str.find("SUORA_CLASS") != std::string::npos && path.stem() != "Object")
