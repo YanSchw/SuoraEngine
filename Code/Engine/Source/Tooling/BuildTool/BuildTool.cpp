@@ -103,8 +103,11 @@ namespace Suora::Tools
 			" + collection.links + "\n\
 		}\n\
 \n\
-		group \"Modules\"\n\
-			" + collection.includes + "\n\
+		group \"EngineModules\"\n\
+			" + collection.includesEngine + "\n\
+		group \"\"\n\
+		group \"ProjectModules\"\n\
+			" + collection.includesProject + "\n\
 		group \"\"\n\
 \n\
 		filter \"system:windows\"\n\
@@ -169,6 +172,7 @@ namespace Suora::Tools
 		std::string premake5 = "include \"" + enginePathStr + "/Code/Dependencies/premake/premake_customization/solution_items.lua\"\n\
 \n\
 			ENGINE_PATH = \"" + enginePathStr + "\"\n\
+			SCRIPT_PATH = \"%{wks.location}/Scripts\"\
 \n\
 			workspace \"" + projectName + "\"\n\
 			architecture \"x86_64\"\n\
@@ -224,6 +228,11 @@ namespace Suora::Tools
 		Platform::WriteToFile(projectRootPath.string() + "/Scripts/GenerateSolution.bat", batchScript);
 	}
 
+	static bool IsSubpath(const std::filesystem::path& base, const std::filesystem::path& path)
+	{
+		auto rel = std::filesystem::relative(path, base);
+		return !rel.empty() && rel.native()[0] != '.';
+	}
 	void BuildTool::GenerateModule(const std::filesystem::path& modulePath, const std::filesystem::path& enginePath, BuildCollection& collection)
 	{
 		std::string moduleName = "";
@@ -238,7 +247,15 @@ namespace Suora::Tools
 		}
 
 		collection.links += "\"" + moduleName + "\",\n";
-		collection.includes += "include \"" + moduleName + ".generated.lua" + "\"\n";
+		std::string include = "include \"" + moduleName + ".generated.lua" + "\"\n";
+		if (IsSubpath(enginePath, modulePath))
+		{
+			collection.includesEngine += include;
+		}
+		else
+		{
+			collection.includesProject += include;
+		}
 		collection.inits += "extern void " + moduleName + "_Init(); " + moduleName + "_Init();\n";
 
 		std::string headerIncludes = "";
@@ -276,6 +293,7 @@ namespace Suora::Tools
 			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Dependencies/spdlog/include\",\n\
 			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Dependencies/glm\",\n\
 			\"" + FixPathForPremake5(enginePath.string()) + "/Code/Dependencies/entt/include\",\n\
+			\"" + FixPathForPremake5(modulePath.string()) + "\",\n\
 		}\n\
 \n\
 		links\n\
@@ -285,6 +303,7 @@ namespace Suora::Tools
 \n\
 		filter \"system:windows\"\n\
 			systemversion \"latest\"\n\
+			prebuildcommands {\"call %{SCRIPT_PATH}/SuoraBuildTool.exe\"}\n\
 \n\
 		filter \"configurations:Debug\"\n\
 			defines \"SUORA_DEBUG\"\n\

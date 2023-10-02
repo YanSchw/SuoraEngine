@@ -52,6 +52,7 @@ project "Engine"
 
 	filter "system:windows"
 		systemversion "latest"
+		prebuildcommands {"call %{SCRIPT_PATH}/SuoraBuildTool.exe"}
 
 		defines
 		{

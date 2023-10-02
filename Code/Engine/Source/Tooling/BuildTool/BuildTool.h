@@ -19,7 +19,8 @@ namespace Suora::Tools
 			std::string allModulesPath = "";
 			std::vector<std::filesystem::path> collectedModules;
 			std::string links;
-			std::string includes;
+			std::string includesEngine;
+			std::string includesProject;
 			std::string inits;
 		};
 

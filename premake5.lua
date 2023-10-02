@@ -1,6 +1,7 @@
 include "./Code/Dependencies/premake/premake_customization/solution_items.lua"
 
 ENGINE_PATH = "%{wks.location}"
+SCRIPT_PATH = "%{wks.location}/Binaries/Scripts"
 
 workspace "Suora"
 	architecture "x86_64"

@@ -34,6 +34,7 @@ project "Runtime"
 
 	filter "system:windows"
 		systemversion "latest"
+		prebuildcommands {"call %{SCRIPT_PATH}/SuoraBuildTool.exe"}
 
 	filter "configurations:Debug"
 		defines "SUORA_DEBUG"
