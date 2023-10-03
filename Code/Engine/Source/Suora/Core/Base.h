@@ -1,7 +1,7 @@
 #pragma once
 
 #define SUORA_VERSION_MAJOR 0
-#define SUORA_VERSION_MINOR 6
+#define SUORA_VERSION_MINOR 7
 #define SUORA_VERSION_PATCH 0
 
 #include <memory>
