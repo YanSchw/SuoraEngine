@@ -138,6 +138,6 @@ namespace Suora
 
 		friend class Ilum;
 		friend class Decima;
-		friend class VolumetricFog;
+		friend class ViewportPanel;
 	};
 }

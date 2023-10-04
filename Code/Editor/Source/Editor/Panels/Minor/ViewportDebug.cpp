@@ -176,6 +176,12 @@ namespace Suora
 			static Ref<Shader> shader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Debug/ClusterDebug.glsl");
 			_GBUFFER_RENDER(GBuffer::ClusterID, shader);
 		} return;
+		case DebugView::DeferredLightPass:
+		{
+			auto GBufferSize = Engine::Get()->GetRenderPipeline()->GetGBuffer()->GetSize();
+			RenderPipeline::RenderFramebufferIntoFramebuffer(*Engine::Get()->GetRenderPipeline()->GetDeferredLitBuffer(GBufferSize),
+				buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, GetWidth(), GetHeight()), "u_Texture", 0, false);
+		} return;
 		case DebugView::Ilum_Surfels:
 		{
 			struct IlumDebugShaderGraph : public ShaderGraph
