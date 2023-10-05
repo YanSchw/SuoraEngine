@@ -27,6 +27,8 @@ namespace Suora
 
 		void Serialize(Yaml::Node& root) override;
 
+		virtual void ReloadAsset() override;
+
 		bool IsLoaded() const override
 		{
 			return m_Texture;

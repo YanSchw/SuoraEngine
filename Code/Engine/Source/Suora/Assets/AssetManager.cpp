@@ -197,6 +197,25 @@ namespace Suora
 				SuoraError("AssetManager::Update(float): Missing 'StreamAssetClass' implementation. Cannot resolve possible stream blockage!");
 			}
 		}
+
+		if (s_AssetHotReloading)
+		{
+			for (int i = 0; i < s_AssetHotReloadingCount; i++)
+			{
+				s_AssetHotReloadingIteratorIndex %= s_Assets.Size();
+				Asset* asset = s_Assets[s_AssetHotReloadingIteratorIndex++];
+
+				if (asset->IsMissing() || !asset->IsFlagSet(AssetFlags::WasPreInitialized))
+				{
+					continue;
+				}
+
+				if (asset->IsAssetReloadRequired())
+				{
+					asset->ReloadAsset();
+				}
+			}
+		}
 	}
 	
 	void AssetManager::RemoveAsset(Asset* asset)

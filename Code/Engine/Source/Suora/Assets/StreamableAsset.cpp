@@ -24,6 +24,8 @@ namespace Suora
 
 		m_SourceAssetName = streamable["m_SourceAssetName"].As<std::string>();
 		m_StreamMode = (AssetStreamMode)std::stoi(streamable["m_StreamMode"].As<std::string>());
+
+		m_LastWriteTimeOfSource = std::filesystem::last_write_time(GetSourceAssetPath());
 	}
 	void StreamableAsset::InitializeAsset(const std::string& str)
 	{
@@ -38,6 +40,23 @@ namespace Suora
 
 		streamable["m_SourceAssetName"] = m_SourceAssetName;
 		streamable["m_StreamMode"] = std::to_string((int32_t)m_StreamMode);
+	}
+
+	bool StreamableAsset::IsAssetReloadRequired() const
+	{
+		if (Super::IsAssetReloadRequired())
+		{
+			return true;
+		}
+
+		return m_LastWriteTimeOfSource != std::filesystem::last_write_time(GetSourceAssetPath());
+	}
+
+	void StreamableAsset::ReloadAsset()
+	{
+		Super::ReloadAsset();
+
+		m_LastWriteTimeOfSource = std::filesystem::last_write_time(GetSourceAssetPath());
 	}
 
 	void StreamableAsset::SetSourceAssetName(const std::string& name)

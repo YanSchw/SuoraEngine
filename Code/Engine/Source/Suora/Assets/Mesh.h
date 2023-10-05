@@ -39,6 +39,7 @@ namespace Suora
 		~Mesh();
 		void PreInitializeAsset(const std::string& str) override;
 		void InitializeAsset(const std::string& str) override;
+		virtual void ReloadAsset() override;
 		virtual uint32_t GetAssetFileSize() override;
 		VertexArray* GetVertexArray();
 		static MeshBuffer Decimate(/*COPY*/ MeshBuffer buffer, uint32_t N);

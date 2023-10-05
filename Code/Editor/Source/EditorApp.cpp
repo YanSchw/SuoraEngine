@@ -26,6 +26,7 @@ namespace Suora
 		Editor()
 		{
 			//GetWindow().SetVSync(false);
+			AssetManager::s_AssetHotReloading = true;
 
 			EditorWindows.Add(new EditorWindow());
 

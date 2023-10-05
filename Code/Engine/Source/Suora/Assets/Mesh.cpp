@@ -81,6 +81,15 @@ namespace Suora
 		}
 	}
 
+	void Mesh::ReloadAsset()
+	{
+		Super::ReloadAsset();
+
+		m_VertexArray = nullptr; 
+		m_MeshBuffer = MeshBuffer();
+		m_MainCluster = nullptr;
+	}
+
 	uint32_t Mesh::GetAssetFileSize()
 	{
 		uint32_t baseSize = Super::GetAssetFileSize();

@@ -22,6 +22,9 @@ namespace Suora
 		void InitializeAsset(const std::string& str) override;
 		void Serialize(Yaml::Node& root);
 
+		virtual bool IsAssetReloadRequired() const override;
+		virtual void ReloadAsset() override;
+
 		void SetSourceAssetName(const std::string& name);
 		std::string GetSourceAssetName() const;
 		void SetAssetStreamMode(AssetStreamMode streamMode);
@@ -30,6 +33,7 @@ namespace Suora
 	private:
 		std::string m_SourceAssetName;
 		AssetStreamMode m_StreamMode = AssetStreamMode::AlwaysLoaded;
+		std::filesystem::file_time_type m_LastWriteTimeOfSource;
 	};
 
 }

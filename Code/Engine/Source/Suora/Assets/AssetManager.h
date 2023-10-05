@@ -22,12 +22,15 @@ namespace Suora
 	private:
 		inline static Array<Asset*> s_Assets;
 		inline static std::string s_AssetRootPath = "", s_ProjectAssetPath = "";
-
+		inline static uint32_t s_AssetHotReloadingIteratorIndex = 0;
 		inline static Array<Asset*> s_AssetStreamPool;
 
 		static Asset* CreateMissingAsset(const Class& cls, const SuoraID& id);
 
 	public:
+		inline static bool s_AssetHotReloading = false;
+		inline static uint32_t s_AssetHotReloadingCount = 8;
+
 		static void Initialize(const FilePath& contentPath);
 		~AssetManager();
 

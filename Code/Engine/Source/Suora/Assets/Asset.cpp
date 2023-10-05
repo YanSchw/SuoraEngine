@@ -11,6 +11,7 @@ namespace Suora
 		Yaml::Node root;
 		Yaml::Parse(root, str);
 		m_UUID = root["UUID"].As<std::string>();
+		m_LastWriteTime = std::filesystem::last_write_time(m_Path);
 
 		SetFlag(AssetFlags::WasPreInitialized);
 	}
@@ -24,6 +25,16 @@ namespace Suora
 	{
 		root = Yaml::Node();
 		root["UUID"] = m_UUID.GetString();
+	}
+
+	bool Asset::IsAssetReloadRequired() const
+	{
+		return m_LastWriteTime != std::filesystem::last_write_time(m_Path);
+	}
+
+	void Asset::ReloadAsset()
+	{
+		m_LastWriteTime = std::filesystem::last_write_time(m_Path);
 	}
 
 	void Asset::RemoveAsset()

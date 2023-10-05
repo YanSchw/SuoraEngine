@@ -60,6 +60,13 @@ namespace Suora
 
 	}
 
+	void Texture2D::ReloadAsset()
+	{
+		Super::ReloadAsset();
+
+		m_Texture = nullptr;
+	}
+
 	Texture* Texture2D::GetTexture()
 	{
 		if (IsMissing() || !IsSourceAssetPathValid())
