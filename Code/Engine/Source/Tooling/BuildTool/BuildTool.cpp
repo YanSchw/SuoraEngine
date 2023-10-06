@@ -210,9 +210,9 @@ namespace Suora::Tools
 				include \"Build/Premake5Projects/GLFW.lua\"\n\
 				include \"Build/Premake5Projects/Glad.lua\"\n\
 				include \"Build/Premake5Projects/assimp.lua\"\n\
-			group \"\"\n\
 \n\
-			include \"Build/AllModules\"\n\
+				include \"Build/AllModules\"\n\
+			group \"\"\n\
 \n\
 			include \"Build/Premake5Projects/Engine.lua\"\n\
 			include \"Build/Premake5Projects/Editor.lua\"\n\

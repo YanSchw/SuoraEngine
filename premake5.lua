@@ -41,9 +41,10 @@ group "Dependencies"
 	include "Code/Dependencies/GLFW/GLFW.lua"
 	include "Code/Dependencies/Glad/Glad.lua"
 	include "Code/Dependencies/assimp/assimp.lua"
-group ""
 
-include "Build/AllModules"
+	include "Build/AllModules"
+
+group ""
 
 
 include "Code/Engine/Engine.lua"
