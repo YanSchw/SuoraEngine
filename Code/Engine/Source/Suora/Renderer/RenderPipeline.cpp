@@ -260,6 +260,7 @@ namespace Suora
 
 	void RenderPipeline::DeferredPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
+		RenderCommand::SetClearColor(Color(0,0,0,1));
 		RenderGBuffer(world, camera, gbuffer, params);
 
 		DecalPass(world, camera, gbuffer);
