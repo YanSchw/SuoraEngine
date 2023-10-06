@@ -120,6 +120,7 @@ namespace Suora
 
 	private:
 		std::filesystem::path m_SourceFile;
+		Ref<Texture> m_PreviewTexture = nullptr;
 	};
 	struct ImportMeshOverlay : public CreateAssetOverlay
 	{

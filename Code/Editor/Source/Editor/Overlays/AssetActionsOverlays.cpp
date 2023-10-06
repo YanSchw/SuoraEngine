@@ -201,6 +201,14 @@ namespace Suora
 	void ImportTexture2DOverlay::Render(float deltaTime)
 	{
 		CreateAssetOverlay::Render(deltaTime);
+
+		if (m_PreviewTexture == nullptr)
+		{
+			m_PreviewTexture = Texture::Create(m_SourceFile.string());
+		}
+
+		EditorUI::DrawTexturedRect(m_PreviewTexture, x + 50.0f, y + 50.0f, 250.0f, 250.0f, 0.0f, Color(1.0f));
+
 	}
 	std::string ImportTexture2DOverlay::GetAssetExtension()
 	{
