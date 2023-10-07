@@ -9,12 +9,18 @@
 
 #ifdef SUORA_DEBUG
 	#define SUORA_ENABLE_ASSERTS
-	#define SUORA_ENABLE_VERIFY
 #endif
 
 #ifdef SUORA_RELEASE
-	#define SUORA_ENABLE_VERIFY
+
 #endif
+
+#ifdef SUORA_DIST
+
+#endif
+
+// Verifies are always enabled!
+#define SUORA_ENABLE_VERIFY
 
 // Debugbreak
 #if defined(SUORA_ENABLE_ASSERTS) || defined(SUORA_ENABLE_VERIFY)
@@ -36,12 +42,6 @@
 #define BIT(x) (1 << x)
 
 #define SUORA_BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
-
-#ifdef SUORA_EDITOR
-	#define EDITOR_ONLY(...) __VA_ARGS__
-#else
-	#define EDITOR_ONLY(...) 
-#endif
 
 #define SUORA_DEPRECATED(Version, Message) [[deprecated(Message "Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.")]]
 
