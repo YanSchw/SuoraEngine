@@ -21,7 +21,8 @@ namespace Suora
 		EditorUI::DrawRect(0, 0, GetWidth(), GetHeight(), 0, EditorPreferences::Get()->UiBackgroundColor);
 
 		EditorUI::ButtonParams Params;
-		Params.TextOrientation = Vec2(-0.95f, 0.0f);
+		Params.TextOrientation = Vec2(-1.0f, 0.0f);
+		Params.TextOffsetLeft = 25.0f;
 		Params.ButtonRoundness = 0;
 		Params.ButtonColor = EditorPreferences::Get()->UiBackgroundColor;
 		Params.ButtonOutlineColor = Color(0);
