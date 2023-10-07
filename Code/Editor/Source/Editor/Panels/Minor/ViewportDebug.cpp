@@ -182,6 +182,12 @@ namespace Suora
 			RenderPipeline::RenderFramebufferIntoFramebuffer(*Engine::Get()->GetRenderPipeline()->GetDeferredLitBuffer(GBufferSize),
 				buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, GetWidth(), GetHeight()), "u_Texture", 0, false);
 		} return;
+		case DebugView::ForwardReadyBuffer:
+		{
+			auto GBufferSize = Engine::Get()->GetRenderPipeline()->GetGBuffer()->GetSize();
+			RenderPipeline::RenderFramebufferIntoFramebuffer(*Engine::Get()->GetRenderPipeline()->GetForwardReadyBuffer(GBufferSize),
+				buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, GetWidth(), GetHeight()), "u_Texture", 0, false);
+		} return;
 		case DebugView::Ilum_Surfels:
 		{
 			struct IlumDebugShaderGraph : public ShaderGraph

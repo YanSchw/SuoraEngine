@@ -146,40 +146,6 @@ void main(void)
 	}
 
 	float nDotL = 1.0 - max(dot(worldNormal, u_LightDirection), 0.75);
-/*
-	vec3 albedo = texture(u_BaseColor, UV).xyz;
-	float roughness = texture(u_Roughness, UV).x;
-	float metallness = texture(u_Metallness, UV).x;
-    vec3 reflectDir = reflect(u_LightDirection, worldNormal);
-    vec3 viewDir = normalize(u_ViewPos - worldPos);
-    float specular = pow(max(dot(viewDir, reflectDir), 0.0), Remap(roughness, 0.0, 1.0, 255.0, 1.0)) * (roughness == 1.0 ? 0.0 : 1.0);
-*/
-
-	//light += (u_LightColor * u_LightIntensity /*+ (specular * u_LightColor * u_LightIntensity)*/) * (1.0 - shadow) * 1.0;
-/*
-	out_Radiance = vec4(light, 1.0);
-
-
-    vec3 L = normalize(u_LightDirection);
-    vec3 H = normalize(viewDir + L);
-    // Reflectance at normal incidence angle
-    vec3 F0 = mix(Fdielectric, albedo, metallness);
-
-	//BRDF
-    float NDF = distributionGGX(worldNormal, H, roughness);
-    float G = geometrySmith(worldNormal, viewDir, L, roughness);
-    vec3 F = fresnelSchlick(clamp(dot(H, viewDir), 0.0, 1.0), F0);
-
-	// Fresnel
-	out_Fresnel = vec4(-F, 1.0);
-	// Specular
-	vec3 nominator = NDF * G * F;
-    float denominator = 4 * max(dot(worldNormal, viewDir), 0.0) * max(dot(worldNormal, L), 0.0);
-	out_Specular = vec4(nominator / max(denominator, 0.001), 1.0);
-*/
-
-
-
 
 	// Sample input textures to get shading model params.
 	vec3 albedo = texture(u_BaseColor, UV).xyz;
@@ -200,7 +166,6 @@ void main(void)
 
 	// Fresnel reflectance at normal incidence (for metals use albedo color).
 	vec3 F0 = mix(Fdielectric, albedo, metalness);
-
 
 
 	vec3 Li = -u_LightDirection;
@@ -235,8 +200,5 @@ void main(void)
 
 	// Total contribution for this light.
 	out_DirectLight = vec4((diffuseBRDF + specularBRDF) * Lradiance * cosLi, 1.0) * (1.0 - shadow);
-
-
-
 
 }

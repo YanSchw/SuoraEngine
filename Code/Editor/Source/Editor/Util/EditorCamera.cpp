@@ -9,6 +9,7 @@ namespace Suora
 		m_MajorTab = major;
 		m_Position = GetPosition();
 		m_Rotation = GetEulerRotation();
+		SetClearColor(Color(0.2f, 0.2f, 0.2f, 1.0f));
 		//SaveClip(0);
 	}
 

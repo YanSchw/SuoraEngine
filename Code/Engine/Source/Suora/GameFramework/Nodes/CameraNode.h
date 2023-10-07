@@ -68,6 +68,19 @@ namespace Suora
 
 	public:
 		void RecalculateProjection();
+
+		const glm::mat4& GetProjectionMatrix() const { return m_Projection; }
+
+		void SetAutoPossess(bool autoPossess) { m_AutoPossess = autoPossess; }
+		bool IsAutoPossessed() const { return m_AutoPossess; }
+		void SetPossessable(bool possessable) { m_IsPossessable = possessable; }
+		bool IsPossessable() const { return m_IsPossessable; }
+		void SetClearColor(Color color) { m_ClearColor = color; }
+		Color GetClearColor() const { return m_ClearColor; }
+
+	protected:
+		glm::mat4 m_Projection = glm::mat4(1.0f);
+
 	private:
 		ProjectionType m_ProjectionType = ProjectionType::Perspective;
 
@@ -78,16 +91,13 @@ namespace Suora
 		float m_OrthographicNear = -1.0f, m_OrthographicFar = 1.0f;
 
 		float m_AspectRatio = 1.0f;
-	public:
-		const glm::mat4& GetProjectionMatrix() const { return m_Projection; }
-	protected:
-		glm::mat4 m_Projection = glm::mat4(1.0f);
 
-	public:
 		MEMBER()
 		bool m_AutoPossess = true;
 		MEMBER()
 		bool m_IsPossessable = true;
+		MEMBER()
+		Color m_ClearColor = Color(0, 0, 0, 1);
 
 		friend class World;
 		friend class Renderer3D;

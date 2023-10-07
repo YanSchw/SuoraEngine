@@ -76,14 +76,6 @@ namespace Suora
 			m_TemporaryAddBuffer = Framebuffer::Create(spec);
 		}
 		{
-			/*FramebufferSpecification spec;
-			spec.Width = m_InternalResolution.x;
-			spec.Height = m_InternalResolution.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-			m_FinalFramebuffer = Framebuffer::Create(spec);*/
-		} 
-		{
 			FramebufferSpecification spec;
 			spec.Width = m_InternalResolution.x;
 			spec.Height = m_InternalResolution.y;
@@ -94,26 +86,7 @@ namespace Suora
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_GBuffer = Framebuffer::Create(spec);
 		}
-		{
-			/*FramebufferSpecification spec;
-			spec.Width = m_InternalResolution.x;
-			spec.Height = m_InternalResolution.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F); // Radiance
-			//spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F); // Specular
-			//spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F); // Fresnel
-			//m_DeferredTempLitBuffer = Framebuffer::Create(spec);
-			m_DeferredLitBuffer = Framebuffer::Create(spec);*/
-		}
-		{
-			/*FramebufferSpecification spec;
-			spec.Width = m_InternalResolution.x;
-			spec.Height = m_InternalResolution.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-			m_ForwardReadyBuffer = Framebuffer::Create(spec);*/
-		}
 		m_DecimaInstance = CreateRef<Decima>();
-		//m_DecimaThread = std::thread(&Decima::Run, m_DecimaInstance.get());
 	}
 
 	Ref<Shader> RenderPipeline::GetFullscreenPassShaderStatic()
@@ -156,14 +129,6 @@ namespace Suora
 
 		// Output Final Buffer
 		RenderFramebufferIntoFramebuffer(*GetFinalFramebuffer(gbuffer.GetSize()), buffer, *m_FullscreenPassShader, BufferToRect(buffer), "u_Texture", 0, true);
-		
-		/*buffer.Bind();
-		m_FullscreenPassShader->Bind();
-		m_FullscreenPassShader->SetInt("u_Texture", 0);
-		m_FinalFramebuffer->BindColorAttachmentByIndex(0, 0);
-		RenderCommand::SetDepthTest(false);
-		GetFullscreenQuad()->Bind();
-		RenderCommand::DrawIndexed(GetFullscreenQuad());*/
 
 		if (!Ilum::IsInIlumPass())
 		{
@@ -353,11 +318,8 @@ namespace Suora
 	void RenderPipeline::DeferredLightPass(Ref<Framebuffer> target, Framebuffer& gBuffer, World& world, CameraNode* camera, bool lowQuality, int quadTick, bool volumetric)
 	{
 		RenderCommand::SetClearColor(glm::vec4(0.0f));
-		//m_DeferredLitBuffer->Bind();
 		target->Bind();
 		RenderCommand::Clear();
-		/*m_DeferredTempLitBuffer->Bind();
-		RenderCommand::Clear();*/
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Disable);
 		
 		if (lowQuality)
@@ -370,9 +332,6 @@ namespace Suora
 		}
 		else SetFullscreenViewport(gBuffer);
 
-
-		//AddFramebufferToFramebuffer(*m_GBuffer, *m_DeferredLitBuffer, (int)GBuffer::Emissive);
-		//AddFramebufferToFramebuffer(*gBuffer, *target, (int)GBuffer::Emissive);
 		RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_FullscreenPassShader, BufferToRect(gBuffer), "u_Texture", (int)GBuffer::Emissive);
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Additive);
 
@@ -388,10 +347,9 @@ namespace Suora
 				if (sky && sky->IsEnabled())
 				{
 					m_DeferredSkyLightShader->SetFloat3("u_ViewPos", camera->GetTransform()->GetPosition());
-					/*m_DeferredDirectionalLightShader*/m_DeferredSkyLightShader->SetInt("u_Emissive", (int)GBuffer::Emissive); gBuffer.BindColorAttachmentByIndex((int)GBuffer::Emissive, (int)GBuffer::Emissive);
-					/*m_DeferredDirectionalLightShader*/m_DeferredSkyLightShader->SetInt("u_WorldNormal", (int)GBuffer::WorldNormal); gBuffer.BindColorAttachmentByIndex((int)GBuffer::WorldNormal, (int)GBuffer::WorldNormal);
+					m_DeferredSkyLightShader->SetInt("u_Emissive", (int)GBuffer::Emissive); gBuffer.BindColorAttachmentByIndex((int)GBuffer::Emissive, (int)GBuffer::Emissive);
+					m_DeferredSkyLightShader->SetInt("u_WorldNormal", (int)GBuffer::WorldNormal); gBuffer.BindColorAttachmentByIndex((int)GBuffer::WorldNormal, (int)GBuffer::WorldNormal);
 					RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredSkyLightShader, BufferToRect(gBuffer), "u_WorldPos", (int)GBuffer::WorldPosition, false);
-					//AddFramebufferToFramebuffer(*m_DeferredTempLitBuffer, *target);
 				}
 			}
 
@@ -437,7 +395,6 @@ namespace Suora
 
 
 				RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredDirectionalLightShader, BufferToRect(gBuffer), "u_BaseColor", (int)GBuffer::BaseColor, false);
-				//AddFramebufferToFramebuffer(*m_DeferredTempLitBuffer, *target);
 			}
 		}
 
@@ -481,10 +438,7 @@ namespace Suora
 			m_DeferredPointLightShader->SetInt("u_Metallic", 4); gBuffer.BindColorAttachmentByIndex((int)GBuffer::Metallic, 4);
 			m_DeferredPointLightShader->SetInt("u_ShadowAtlas", 5); if (PointLightNode::s_ShadowAtlas) PointLightNode::s_ShadowAtlas->BindDepthAttachmentToSlot(5);
 
-			/*m_DeferredPointLightMatrixBuffer->Write(sizeof(PointLightMatrixStruct) * SSBO.size(), SSBO.data());
-			m_DeferredPointLightMatrixBuffer->Bind();*/
 			RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredPointLightShader, BufferToRect(gBuffer), "u_WorldPos", (int)GBuffer::WorldPosition, false);
-			//AddFramebufferToFramebuffer(*m_DeferredTempLitBuffer, *target);
 		}
 
 
@@ -492,30 +446,20 @@ namespace Suora
 		if (!lowQuality)
 		{
 			world.GetIlumContext()->ApplyIlumination(gBuffer, *camera, world, *target);
-			//AddFramebufferToFramebuffer(*m_DeferredTempLitBuffer, *target);
 		}
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Disable);
 	}
 
 	void RenderPipeline::DeferredCompositePass(World& world, CameraNode& camera, Framebuffer& gbuffer)
 	{
-		/*
-		BlitDepthBuffer(*m_GBuffer, *m_ForwardReadyBuffer, *m_DepthBlitShader);
-		m_ToneMapping->Bind();
-		m_ToneMapping->SetInt("u_BaseColor", 1);
-		m_GBuffer->BindColorAttachmentByIndex((int)GBuffer::BaseColor, 1);
-		RenderFramebufferIntoFramebuffer(*m_DeferredLitBuffer, *m_ForwardReadyBuffer, *m_ToneMapping, "u_Texture", 0, false);
-		*/
-
 		BlitDepthBuffer(gbuffer, *GetForwardReadyBuffer(gbuffer.GetSize()), *m_DepthBlitShader);
 		
 		m_DeferredComposite->Bind();
 		m_DeferredComposite->SetFloat3("u_View", camera.GetForwardVector());
+		m_DeferredComposite->SetFloat4("u_ForwardClearColor", camera.GetClearColor());
 		// BaseColor = 0
 		gbuffer.BindColorAttachmentByIndex((int)GBuffer::Metallic, 1); m_DeferredComposite->SetInt("u_Metallic", 1);
 		GetDeferredLitBuffer(gbuffer.GetSize())->BindColorAttachmentByIndex(0, 2); m_DeferredComposite->SetInt("u_Radiance", 2);
-		//m_DeferredLitBuffer->BindColorAttachmentByIndex(1, 3); m_DeferredComposite->SetInt("u_Specular", 3);
-		//m_DeferredLitBuffer->BindColorAttachmentByIndex(2, 4); m_DeferredComposite->SetInt("u_Fresnel", 4);
 		gbuffer.BindColorAttachmentByIndex((int)GBuffer::WorldNormal, 5); m_DeferredComposite->SetInt("u_WorldNormal", 5);
 		gbuffer.BindColorAttachmentByIndex((int)GBuffer::WorldPosition, 13); m_DeferredComposite->SetInt("u_WorldPosition", 13);
 		gbuffer.BindColorAttachmentByIndex((int)GBuffer::Roughness, 6); m_DeferredComposite->SetInt("u_Roughness", 6);
@@ -544,21 +488,6 @@ namespace Suora
 	{
 		SetFullscreenViewport(gbuffer);
 
-		/** Forward Sky */
-		{
-			/*ArrayList<SkyLightNode*> skies = world.FindNodesByClass<SkyLightNode>();
-			if (skies.Size() > 0)
-			{
-				SkyLightNode* sky = skies[0];
-				if (sky && sky->IsEnabled() && sky->m_SkyTexture)
-				{
-					Mesh* skySphere = AssetManager::GetAsset<Mesh>(SuoraID("16785296892383475"));
-					Material* skyMaterial = AssetManager::GetAsset<Material>(SuoraID("7e3cff68-f571-45a1-abe9-8d56fc3f0e40"));
-					Renderer3D::DrawMesh(&camera, sky->GetTransformMatrix(), *skySphere, skyMaterial);
-				}
-			}*/
-		}
-
 		RenderCommand::SetWireframeMode(params.DrawWireframe);
 
 		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
@@ -579,18 +508,7 @@ namespace Suora
 	void RenderPipeline::PostProcessPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
 		SetFullscreenViewport(gbuffer);
-		// FXAA
-		/*if (!Input::GetKey(Key::M))
-		{
-			m_FXAA->Bind();
-			m_FXAA->SetFloat2("u_Resolution", m_InternalResolution);
-#define FXAA_COUNT 1
-			for (int i = 0; i < FXAA_COUNT; i++)
-			{
-				RenderFramebufferIntoFramebuffer(*m_FinalFramebuffer, *m_TemporaryAddBuffer, *m_FXAA);
-				RenderFramebufferIntoFramebuffer(*m_TemporaryAddBuffer, *m_FinalFramebuffer, *m_FullscreenPassShader);
-			}
-		}*/
+		
 		// PostProcessNodes
 		{
 			Array<PostProcessEffect*> effects = world.FindNodesByClass<PostProcessEffect>();

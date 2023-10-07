@@ -18,6 +18,7 @@ namespace Suora
 		GBuffer_MeshID,
 		GBuffer_Cluster,
 		DeferredLightPass,
+		ForwardReadyBuffer,
 		Ilum_Surfels,
 		Ilum_Probes,
 		Ilum_Debug
