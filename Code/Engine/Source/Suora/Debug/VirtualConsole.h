@@ -6,56 +6,37 @@
 namespace Suora
 {
 
-	struct DebugMessage
+	struct ConsoleMessage
 	{
-		DebugMessage(const std::string& str, LogCategory category, LogLevel level)
+		ConsoleMessage(const std::string& str, LogCategory category, LogLevel level)
 			: m_Message(str), m_Category(category), m_Level(level) {}
+
+		ConsoleMessage(std::string_view message, const char* callerPath, const char* callerFunction, int32_t callerLine, LogLevel level, LogCategory category)
+			: m_Message(message.data(), message.size()), m_CallerPath(callerPath), m_CallerFunction(callerFunction), m_CallerLine(callerLine), m_Level(level), m_Category(category)
+		{
+		}
 
 		std::string m_Message;
 		LogCategory m_Category;
 		LogLevel m_Level;
+
+		const char* m_CallerPath;
+		const char* m_CallerFunction;
+		int32_t m_CallerLine;
 	};
 
 	struct VirtualConsole
 	{
-		inline static std::vector<DebugMessage> m_Messages;
+		inline static std::vector<ConsoleMessage> m_Messages;
 		inline static uint64_t m_MaxMessageCount = 250;
 
-		static void Tick()
-		{
-			if (m_Messages.size() > m_MaxMessageCount)
-				m_Messages.erase(m_Messages.begin(), m_Messages.begin() + (m_Messages.size() - m_MaxMessageCount));
-		}
-		static void Clear()
-		{
-			m_Messages.clear();
-		}
-		static std::vector<DebugMessage> GetMessagesWithLevel(LogLevel level)
-		{
-			std::vector<DebugMessage> vec;
-
-			for (auto& It : m_Messages)
-			{
-				if (It.m_Level == level)
-				{
-					vec.push_back(It);
-				}
-			}
-
-			return vec;
-		}
-		static std::vector<DebugMessage> GetLogMessages()
-		{
-			return GetMessagesWithLevel(LogLevel::Info);
-		}
-		static std::vector<DebugMessage> GetWarnMessages()
-		{
-			return GetMessagesWithLevel(LogLevel::Warn);
-		}
-		static std::vector<DebugMessage> GetErrorMessages()
-		{
-			return GetMessagesWithLevel(LogLevel::Error);
-		}
+		static void Tick();
+		static void Clear();
+		static std::vector<ConsoleMessage> GetMessagesWithLevel(LogLevel level);
+		static std::vector<ConsoleMessage> GetLogMessages();
+		static std::vector<ConsoleMessage> GetWarnMessages();
+		static std::vector<ConsoleMessage> GetErrorMessages();
+		static void PushMessage(const ConsoleMessage& msg);
 
 	};
 

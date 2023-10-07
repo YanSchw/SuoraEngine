@@ -81,7 +81,6 @@ namespace Suora
 		static void LogMessage(LogCategory category, LogLevel verbosity, std::string fmt, Args &&... args)
 		{
 			GetLogger(category)->log((::spdlog::level::level_enum)verbosity, ::spdlog::format_string_t<Args...>(fmt), std::forward<Args>(args)...);
-			LogVirtualMessage(category, verbosity, string_format(fmt, args...));
 		}
 
 		static Ref<spdlog::logger>& GetLogger(LogCategory category);
