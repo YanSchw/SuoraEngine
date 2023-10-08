@@ -51,16 +51,6 @@ namespace Suora
 
 		world->m_SourceLevel = level->As<Level>();
 
-		// Dispatch Begin
-		for (Node* node : world->m_WorldNodes)
-		{
-			node->Begin();
-			/*for (Component* component : actor->GetComponents<Component>())
-			{
-				component->Begin();
-			}*/
-		}
-
 		return world;
 	}
 

@@ -11,12 +11,16 @@
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Core/Object/Pointer.h"
 
+namespace Suora::Physics
+{
+	class PhysicsEngine;
+}
+
 namespace Suora
 {
 	class World;
 	class AssetManager;
 	class GameInstance;
-	class PhysicsEngine;
 	class RenderPipeline;
 
 	/** The Engine controls its Subsystems and GameFlow */
@@ -24,6 +28,7 @@ namespace Suora
 	{
 		Ref<GameInstance> m_GameInstance;
 		Ref<RenderPipeline> m_RenderPipeline = nullptr;
+		Ref<Physics::PhysicsEngine> m_PhysicsEngine = nullptr;
 		std::chrono::time_point<std::chrono::steady_clock> m_PreviousTime;
 		FilePath m_RootPath;
 
@@ -38,6 +43,7 @@ namespace Suora
 		void CreateGameInstance(const Class& cls);
 		void DisposeGameInstance();
 		RenderPipeline* GetRenderPipeline();
+		Physics::PhysicsEngine* GetPhysicsEngine() const;
 
 		std::string GetRootPath() const;
 		float GetDeltaTime() const;

@@ -3,7 +3,9 @@
 #include "Suora/GameFramework/Node.h"
 #include "New.h"
 #include "Suora/Renderer/Ilum.h"
+#include "Suora/Core/Engine.h"
 #include "Suora/Physics/PhysicsEngine.h"
+#include "Suora/Physics/PhysicsWorld.h"
 
 #define LOCAL_UPDATE_CHUNKS_PER_THREAD 128
 
@@ -13,7 +15,6 @@ namespace Suora
 	World::World()
 	{
 		m_IlumContext = Ref<Ilum>(new Ilum(this));
-		m_PhysicsWorld = Ref<Physics::PhysicsWorld>(new Physics::PhysicsWorld());
 	}
 
 	World::~World()
@@ -67,8 +68,12 @@ namespace Suora
 	{
 		return m_SourceLevel;
 	}
-	Physics::PhysicsWorld* World::GetPhysicsWorld() const
+	Physics::PhysicsWorld* World::GetPhysicsWorld()
 	{
+		if (m_PhysicsWorld == nullptr)
+		{
+			m_PhysicsWorld = Engine::Get()->GetPhysicsEngine()->CreatePhysicsWorld();
+		}
 		return m_PhysicsWorld.get();
 	}
 	GameInstance* World::GetGameInstance() const

@@ -69,7 +69,7 @@ namespace Suora
 
 		float GetDeltaTime() const;
 		Level* GetSourceLevel() const;
-		Physics::PhysicsWorld* GetPhysicsWorld() const;
+		Physics::PhysicsWorld* GetPhysicsWorld();
 		GameInstance* GetGameInstance() const;
 		Ilum* GetIlumContext() const;
 

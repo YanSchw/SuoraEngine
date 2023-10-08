@@ -6,7 +6,7 @@
 #include "Suora/Renderer/Ilum.h"
 #include "Suora/Assets/ShaderGraph.h"
 #include "Suora/Assets/AssetManager.h"
-#include "Suora/GameFramework/Nodes/PhysicsNodes.h"
+#include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/PointLightNode.h"
 #include "../../Util/EditorCamera.h"
@@ -36,13 +36,13 @@ namespace Suora
 		RenderCommand::SetWireframeMode(true);
 		RenderCommand::SetWireframeThickness(3.0f);
 
-		Array<BoxCollisionNode*> boxes = world->FindNodesByClass<BoxCollisionNode>();
-		for (BoxCollisionNode* box : boxes)
+		Array<BoxShapeNode*> boxes = world->FindNodesByClass<BoxShapeNode>();
+		for (BoxShapeNode* box : boxes)
 		{
 			Node3D tr;
 			tr.SetPosition(box->GetPosition());
 			tr.SetRotation(box->GetRotation());
-			tr.SetScale(box->GetScale());
+			tr.SetScale(2.0f * box->GetBoxExtends());
 			Material* mat = GizmoMaterial(HandlingMousePick, pickingID, box->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(0.0f, 1.0f, 1.0f));
 			Texture2D* old = mat->m_UniformSlots[0].m_Texture2D;
 			mat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("55c17fb8-b445-431c-a59f-9ad9242d7c5c"));
@@ -54,13 +54,13 @@ namespace Suora
 			}
 			mat->m_UniformSlots[0].m_Texture2D = old;
 		}
-		Array<SphereCollisionNode*> spheres = world->FindNodesByClass<SphereCollisionNode>();
-		for (SphereCollisionNode* sphere : spheres)
+		Array<SphereShapeNode*> spheres = world->FindNodesByClass<SphereShapeNode>();
+		for (SphereShapeNode* sphere : spheres)
 		{
 			Node3D tr;
 			tr.SetPosition(sphere->GetPosition());
 			tr.SetRotation(sphere->GetRotation());
-			tr.SetScale(Vec::One * sphere->m_Radius * 0.5f);
+			tr.SetScale(Vec3(sphere->GetSphereRadius()));
 			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *Mesh::Sphere, GizmoMaterial(HandlingMousePick, pickingID, sphere->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(1.0f)), HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
 			if (HandlingMousePick)
 			{
@@ -68,12 +68,11 @@ namespace Suora
 				(*pickingID)++;
 			}
 		}
-		Array<CapsuleCollisionNode*> capsules = world->FindNodesByClass<CapsuleCollisionNode>();
+		/*Array<CapsuleCollisionNode*> capsules = world->FindNodesByClass<CapsuleCollisionNode>();
 		for (CapsuleCollisionNode* capsule : capsules)
 		{
 			Node3D tr;
 			tr.SetPosition(capsule->GetPosition());
-			//tr.SetRotation(capsule->GetRotation());
 			tr.SetScale(Vec3(capsule->m_Radius * 2.0f, capsule->m_Height / 2.0f, capsule->m_Radius * 2.0f));
 			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("77d60b2a-790a-42d6-9760-4b3cb3b853d5")), GizmoMaterial(HandlingMousePick, pickingID, capsule->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(1.0f)), HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
 			if (HandlingMousePick)
@@ -81,7 +80,7 @@ namespace Suora
 				(*pickingMap)[*pickingID] = capsule;
 				(*pickingID)++;
 			}
-		}
+		}*/
 		RenderCommand::SetWireframeMode(false);
 		RenderCommand::SetWireframeThickness(1.0f);
 

@@ -42,6 +42,9 @@ namespace Suora
 
 		engine->m_PreviousTime = std::chrono::steady_clock::now();
 
+		engine->m_PhysicsEngine = Physics::PhysicsEngine::Create();
+		engine->m_PhysicsEngine->Initialize();
+
 		return engine;
 	}
 
@@ -78,6 +81,11 @@ namespace Suora
 			m_RenderPipeline->Initialize();
 		}
 		return m_RenderPipeline.get();
+	}
+
+	Physics::PhysicsEngine* Engine::GetPhysicsEngine() const
+	{
+		return m_PhysicsEngine.get();
 	}
 
 	std::string Engine::GetRootPath() const
