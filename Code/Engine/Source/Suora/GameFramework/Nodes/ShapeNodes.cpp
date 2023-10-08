@@ -85,6 +85,12 @@ namespace Suora
 	{
 		m_CollisionNodeDestroyed = true;
 		
+		if (IsPendingKill())
+		{
+			SuoraAssert(GetWorld());
+			SuoraAssert(GetWorld()->GetPhysicsWorld());
+			GetWorld()->GetPhysicsWorld()->DestroyShapeNode(this);
+		}
 	}
 
 	void ShapeNode::InitializeNode(World& world)
@@ -116,9 +122,6 @@ namespace Suora
 	{
 		Super::OnNodeDestroy();
 
-		SuoraAssert(GetWorld());
-		SuoraAssert(GetWorld()->GetPhysicsWorld());
-		GetWorld()->GetPhysicsWorld()->DestroyShapeNode(this);
 	}
 
 	void ShapeNode::TickTransform(bool inverseParentTransform)

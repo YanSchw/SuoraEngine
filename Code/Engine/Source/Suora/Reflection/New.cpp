@@ -11,6 +11,8 @@ namespace Suora
 
 	inline Object* InlineNew(const Class& cls, bool includeCompositionData, bool deepestLayer)
 	{
+		SuoraAssert(cls != Class::None);
+
 		Object* obj = cls.IsNative() ?									ObjectFactory::Allocate(cls.GetNativeClassID()) 
 					: cls.IsScriptClass() ?								cls.GetScriptClass()->CreateInstance(includeCompositionData)
 					:													cls.GetBlueprintClass()->CreateInstance(includeCompositionData, deepestLayer);

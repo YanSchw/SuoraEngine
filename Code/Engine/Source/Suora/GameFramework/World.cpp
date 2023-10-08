@@ -25,7 +25,6 @@ namespace Suora
 		}
 		while (m_WorldNodes.Size() > 0)
 		{
-			SuoraError(m_WorldNodes[0]->GetName());
 			delete m_WorldNodes[0];
 		}
 	}

@@ -3,7 +3,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 
 #include "Suora/GameFramework/World.h"
-#include "Suora/GameFramework/Nodes/PhysicsNodes.h"
+#include "Suora/GameFramework/Nodes/ShapeNodes.h"
 
 namespace Suora::Physics
 {

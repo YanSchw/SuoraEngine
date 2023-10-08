@@ -223,7 +223,7 @@ namespace Suora::Physics
 
 		for (auto It : m_Body_Rigidbody)
 		{
-			if (!It.second->IsStatic)
+			if (!It.second->IsStatic && It.second->ShouldUpdateInCurrentContext())
 			{
 				JPH::BodyInterface& body_interface = m_PhysicsSystem->GetBodyInterface();
 				It.second->SetPosition(Convert::ToVec3(body_interface.GetPosition(It.first->GetID())));
