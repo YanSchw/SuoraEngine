@@ -8,7 +8,7 @@
 #include "Suora/Assets/SuoraProject.h"
 #include "Suora/Assets/ShaderGraph.h"
 #include "Suora/Assets/Blueprint.h"
-#include "Suora/GameFramework/Nodes/PhysicsNodes.h"
+#include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/InputModule.h"
 #include "Suora/GameFramework/Node.h"
 #include "Suora/Common/Filesystem.h"
@@ -317,10 +317,6 @@ namespace Suora
 
 	void DetailsPanel::Render(float deltaTime)
 	{
-		//Renderer3D::BeginUI();
-
-		/*Renderer3D::DrawRect(0, 0, GetWidth(), GetHeight(), 0, Color(.3f, .3f, .3f, 1));
-		Renderer3D::DrawRect(4, 4, GetWidth() * m_Seperator - 4, GetHeight() - 4, 4, Color(0.28f, 0.28f, 0.28f, 1));*/
 		EditorUI::DrawRect(0, 0, GetWidth(), GetHeight(), 0, EditorPreferences::Get()->UiColor);
 		EditorUI::DrawRect(4, 4, GetWidth() * m_Seperator - 4, GetHeight() - 4, 4, EditorPreferences::Get()->UiColor * 0.95f);
 
@@ -544,7 +540,7 @@ namespace Suora
 				if (Transform_Rot.z == -0.0f || Transform_Rot.z == 0.0f) Transform_Rot.z = 0.0f; if (Transform_Rot.z == -180.0f) Transform_Rot.z = 180.0f;
 			}
 			readTransform = true;
-			if (EditorUI::CategoryShutter(0, "Transform", 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
+			if (EditorUI::CategoryShutter(0, "Node3D", 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
 			{
 				y -= 34;
 				DrawLabel("Position", y, 35.0f);
@@ -571,17 +567,6 @@ namespace Suora
 
 				Transform_LastNode = node;
 			}
-		}
-		y -= 35;
-		if (EditorUI::CategoryShutter(1, "Node", 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
-		{
-			y -= 34; //EditorUI::Text("Name", Font::Instance, 0, y, GetDetailWidth() * m_Seperator, 25, 28, Vec2(-1, 0), Color(1));
-			DrawLabel("Name", y, 35.0f);
-			EditorUI::TextField(&node->m_Name, GetDetailWidth() * m_Seperator, y + 5.0f, GetDetailWidth() - GetDetailWidth() * m_Seperator, 25);
-			y -= 34; //EditorUI::Text("Enabled", Font::Instance, 0, y, GetDetailWidth() * m_Seperator, 25, 28, Vec2(-1, 0), Color(1));
-			DrawLabel("Enabled", y, 35.0f);
-			EditorUI::Checkbox(&node->m_Enabled, GetDetailWidth() * m_Seperator, y + 5.0f, 25, 25);
-			y -= 15; // Padding Bottom
 		}
 
 		// Node Derivates

@@ -201,6 +201,10 @@ namespace Suora::Physics
 
 	void JoltPhysicsWorld::DestroyShapeNode(ShapeNode* node)
 	{
+		if (m_Rigidbody_Body.find(node) == m_Rigidbody_Body.end())
+		{
+			return;
+		}
 		JPH::Body* body = m_Rigidbody_Body[node];
 
 		JPH::BodyInterface& bodyInterface = m_PhysicsSystem->GetBodyInterface();
