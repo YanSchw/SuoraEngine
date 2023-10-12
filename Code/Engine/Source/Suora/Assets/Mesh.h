@@ -42,6 +42,7 @@ namespace Suora
 		virtual void ReloadAsset() override;
 		virtual uint32_t GetAssetFileSize() override;
 		VertexArray* GetVertexArray();
+		void RebuildMesh();
 		static MeshBuffer Decimate(/*COPY*/ MeshBuffer buffer, uint32_t N);
 		static void Decimate_Edge(MeshBuffer& buffer, uint32_t N);
 		static void Decimate_ClusterEdge(MeshBuffer& buffer);

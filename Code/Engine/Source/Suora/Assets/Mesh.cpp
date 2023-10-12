@@ -85,9 +85,7 @@ namespace Suora
 	{
 		Super::ReloadAsset();
 
-		m_VertexArray = nullptr; 
-		m_MeshBuffer = MeshBuffer();
-		m_MainCluster = nullptr;
+		RebuildMesh();
 	}
 
 	uint32_t Mesh::GetAssetFileSize()
@@ -440,6 +438,13 @@ namespace Suora
 		}
 
 		return m_VertexArray.get();
+	}
+
+	void Mesh::RebuildMesh()
+	{
+		m_VertexArray = nullptr;
+		m_MeshBuffer = MeshBuffer();
+		m_MainCluster = nullptr;
 	}
 
 	Ref<MeshBuffer> Mesh::Async_LoadMeshBuffer(const std::string& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i)

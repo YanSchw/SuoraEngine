@@ -24,11 +24,15 @@ namespace Suora::Physics
 		virtual void DestroyShapeNode(ShapeNode* node) override;
 		virtual void TickShapeNode(ShapeNode* node) override;
 
+		virtual Ref<CharacterController> CreateCharacterNode(CharacterNode* node) override;
+		virtual void DestroyCharacterNode(CharacterNode* node) override;
+		virtual void TickCharacterNode(CharacterNode* node) override;
+
 		virtual void Step(double timeStep) override;
 
 		void Inititalize();
 
-	private:
+	public:
 		Ref<JPH::PhysicsSystem> m_PhysicsSystem;
 		Ref<JPH::TempAllocator> m_TempAllocator;
 		Ref<JPH::JobSystemThreadPool> m_JobSystem;
@@ -39,6 +43,7 @@ namespace Suora::Physics
 
 		std::unordered_map<JPH::Body*, Suora::ShapeNode*> m_Body_Rigidbody;
 		std::unordered_map<Suora::ShapeNode*, JPH::Body*> m_Rigidbody_Body;
+		std::unordered_map<CharacterNode*, Ref<CharacterController>> m_CharacterControllers;
 	};
 
 }

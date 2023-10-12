@@ -10,7 +10,7 @@
 #include "Suora/GameFramework/GameInstance.h"
 #include "Suora/Assets/ShaderGraph.h"
 #include "Suora/Assets/AssetManager.h"
-#include "Suora/GameFramework/Nodes/PhysicsNodes.h"
+#include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/Nodes/Light/PointLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/InputModule.h"

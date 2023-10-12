@@ -49,6 +49,8 @@ template<class T> using Scope = std::unique_ptr<T>;
 #include "Suora/GameFramework/World.h"
 #include "Suora/GameFramework/GameInstance.h"
 #include "Suora/GameFramework/Nodes/OrganizationNodes.h"
+#include "Suora/GameFramework/Nodes/ShapeNodes.h"
+#include "Suora/GameFramework/Nodes/CharacterNode.h"
 #include "Suora/NodeScript/NodeScriptLibrary.h"
 
 #include "Suora/Reflection/Class.h"

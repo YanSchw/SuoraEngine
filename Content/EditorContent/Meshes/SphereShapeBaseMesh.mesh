@@ -1,0 +1,11 @@
+Mesh: 
+  Materials: 
+    0: "9bc003a3-7ceb-4433-b39d-81537ecdd5c5"
+    Overwrite: false
+  m_BoundingSphereRadius: 1.414214
+  m_IsDecimaMesh: false
+  m_NegativeY_Bounds: "-1.000000"
+StreamableAsset: 
+  m_SourceAssetName: SphereShapeBaseMesh.obj
+  m_StreamMode: 0
+UUID: "005ab997-d566-4cb0-bcea-dc3ab5563cf5"

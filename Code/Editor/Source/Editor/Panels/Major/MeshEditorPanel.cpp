@@ -116,11 +116,9 @@ namespace Suora
 	{
 		Super::DrawToolbar(x, y, height);
 
-		if (EditorUI::Button("Rebuild Mesh", x + 15, y, 100, height, EditorUI::ButtonParams::Highlight()))
+		if (EditorUI::Button("Rebuild Mesh", x + 15, y, 150, height, EditorUI::ButtonParams::Highlight()))
 		{
-			m_Mesh->m_VertexArray = nullptr;
-			m_Mesh->m_MeshBuffer = MeshBuffer();
-			m_Mesh->m_MainCluster = nullptr;
+			m_Mesh->RebuildMesh();
 		}
 	}
 

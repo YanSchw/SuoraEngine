@@ -54,6 +54,7 @@ namespace Suora
 			}
 			mat->m_UniformSlots[0].m_Texture2D = old;
 		}
+		RenderCommand::SetWireframeMode(false);
 		Array<SphereShapeNode*> spheres = world->FindNodesByClass<SphereShapeNode>();
 		for (SphereShapeNode* sphere : spheres)
 		{
@@ -61,12 +62,16 @@ namespace Suora
 			tr.SetPosition(sphere->GetPosition());
 			tr.SetRotation(sphere->GetRotation());
 			tr.SetScale(Vec3(sphere->GetSphereRadius()));
-			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *Mesh::Sphere, GizmoMaterial(HandlingMousePick, pickingID, sphere->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(1.0f)), HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
+			Material* mat = GizmoMaterial(HandlingMousePick, pickingID, sphere->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(0.0f, 1.0f, 1.0f));
+			Texture2D* old = mat->m_UniformSlots[0].m_Texture2D;
+			mat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("37b37d49-abe8-4609-929f-fec01e7bbcab"));
+			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("005ab997-d566-4cb0-bcea-dc3ab5563cf5")), mat, HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
 			if (HandlingMousePick)
 			{
 				(*pickingMap)[*pickingID] = sphere;
 				(*pickingID)++;
 			}
+			mat->m_UniformSlots[0].m_Texture2D = old;
 		}
 		/*Array<CapsuleCollisionNode*> capsules = world->FindNodesByClass<CapsuleCollisionNode>();
 		for (CapsuleCollisionNode* capsule : capsules)

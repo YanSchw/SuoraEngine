@@ -1,7 +1,9 @@
 #include "JoltPhysicsWorld.h"
 #include "JoltPhysicsEngine.h"
+#include "JoltCharacterController.h"
 
 #include "Suora/GameFramework/Nodes/ShapeNodes.h"
+#include "Suora/GameFramework/Nodes/CharacterNode.h"
 
 #include <Jolt/Jolt.h>
 
@@ -221,8 +223,36 @@ namespace Suora::Physics
 		body_interface.SetPosition(m_Rigidbody_Body[node]->GetID(), Convert::ToRVec3(node->GetPosition()), JPH::EActivation::DontActivate);
 	}
 
+	Ref<CharacterController> JoltPhysicsWorld::CreateCharacterNode(CharacterNode* node)
+	{
+		Ref<JoltCharacterController> characterController = CreateRef<JoltCharacterController>(node);
+		m_CharacterControllers[node] = characterController;
+		return characterController;
+	}
+
+	void JoltPhysicsWorld::DestroyCharacterNode(CharacterNode* node)
+	{
+		if (auto it = m_CharacterControllers.find(node); it != m_CharacterControllers.end())
+			m_CharacterControllers.erase(it);
+	}
+
+	void JoltPhysicsWorld::TickCharacterNode(CharacterNode* node)
+	{
+		Ref<CharacterController> characterController = m_CharacterControllers.at(node);
+		characterController->SetInternalPosition(node->GetPosition());
+	}
+
 	void JoltPhysicsWorld::Step(double timeStep)
 	{
+		for (auto& It : m_CharacterControllers)
+		{
+			It.second->Simulate(timeStep);
+		}
+		for (auto& It : m_CharacterControllers)
+		{
+			It.second->PreSimulate(timeStep);
+		}
+
 		m_PhysicsSystem->Update(timeStep, 1, m_TempAllocator.get(), m_JobSystem.get());
 
 		for (auto It : m_Body_Rigidbody)
@@ -233,6 +263,26 @@ namespace Suora::Physics
 				It.second->SetPosition(Convert::ToVec3(body_interface.GetPosition(It.first->GetID())));
 				It.second->SetRotation(Convert::ToSuoraQuat(body_interface.GetRotation(It.first->GetID())));
 			}
+		}
+		for (auto& It : m_CharacterControllers)
+		{
+			It.second->Simulate(timeStep);
+		}
+		for (auto& It : m_CharacterControllers)
+		{
+			JoltCharacterController* joltCharacterController = (JoltCharacterController*)It.second.get();
+
+			const Vec3 newPos = Convert::ToVec3(joltCharacterController->m_Controller->GetPosition());
+			if (glm::distance(newPos, It.first->GetPosition()) <= 0.01f)
+			{
+				joltCharacterController->m_Controller->SetPosition(Convert::ToRVec3(It.first->GetPosition()));
+			}
+			else
+			{
+				It.first->SetPosition(newPos);
+			}
+			It.first->SetRotation(Convert::ToSuoraQuat(joltCharacterController->m_Controller->GetRotation()));
+
 		}
 	}
 

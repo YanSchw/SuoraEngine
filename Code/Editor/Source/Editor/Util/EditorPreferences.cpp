@@ -5,7 +5,7 @@
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/Nodes/PostProcess/PostProcessNode.h"
 #include "Suora/GameFramework/Nodes/DecalNode.h"
-#include "Suora/GameFramework/Nodes/PhysicsNodes.h"
+#include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/Nodes/MeshNode.h"
 #include "Suora/GameFramework/Nodes/CameraNode.h"
 #include "Suora/GameFramework/Nodes/OrganizationNodes.h"

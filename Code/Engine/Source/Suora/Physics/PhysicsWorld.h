@@ -11,6 +11,8 @@ namespace Suora
 {
 	class Node;
 	class ShapeNode;
+	class CharacterNode;
+	class CharacterController;
 	class BoxShapeNode;
 	enum class ShapeType : uint32_t;
 
@@ -29,6 +31,10 @@ namespace Suora::Physics
 		virtual void CreateShapeNode(ShapeNode* node) { SuoraVerify(false, "Not implemented!"); }
 		virtual void DestroyShapeNode(ShapeNode* node) { SuoraVerify(false, "Not implemented!"); }
 		virtual void TickShapeNode(ShapeNode* node) { SuoraVerify(false, "Not implemented!"); }
+
+		virtual Ref<CharacterController> CreateCharacterNode(CharacterNode* node) { SuoraVerify(false, "Not implemented!"); return nullptr; }
+		virtual void DestroyCharacterNode(CharacterNode* node) { SuoraVerify(false, "Not implemented!"); }
+		virtual void TickCharacterNode(CharacterNode* node) { SuoraVerify(false, "Not implemented!"); }
 
 		void Update(float deltaTime);
 		virtual void Step(double timeStep)

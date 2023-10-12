@@ -11,7 +11,7 @@
 #include "Suora/GameFramework/GameInstance.h"
 #include "Suora/Assets/ShaderGraph.h"
 #include "Suora/Assets/AssetManager.h"
-#include "Suora/GameFramework/Nodes/PhysicsNodes.h"
+#include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/Nodes/Light/PointLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/InputModule.h"
@@ -327,6 +327,7 @@ namespace Suora
 
 		Node3D tr;
 		tr.SetPosition(m_EditorCamera->GetPosition() + Vec::Normalized((node->GetPosition() - m_EditorCamera->GetPosition())) * 0.1f);
+		tr.SetRotation(node->GetRotation());
 
 		tr.SetScale(Vec3(0.0025f));
 		tr.RecalculateTransformMatrix();
@@ -338,26 +339,32 @@ namespace Suora
 		{
 			Node3D qTr;
 			qTr.SetPosition(tr.GetPosition());
-			qTr.SetEulerRotation(Vec3(0, -90, 0));
+			qTr.SetParent(&tr, false);
+			qTr.SetLocalEulerRotation(Vec3(0, -90, 0));
 			qTr.SetScale(Vec3(0.0025f));
 			gizmoMat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("6b0cc5fd-13f5-4eea-b71e-b2df3edf5976"));
 			Renderer3D::DrawMesh(m_EditorCamera->GetCameraComponent(), qTr.GetTransformMatrix(), *quad, gizmoMat);
+			qTr.SetParent(nullptr);
 		}
 		{
 			Node3D qTr;
 			qTr.SetPosition(tr.GetPosition());
-			qTr.SetEulerRotation(Vec3(90, 0, 0));
+			qTr.SetParent(&tr, false);
+			qTr.SetLocalEulerRotation(Vec3(90, 0, 0));
 			qTr.SetScale(Vec3(0.0025f));
 			gizmoMat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("98110e98-37ef-4a9a-bfe3-ac0fcd33f7c1"));
 			Renderer3D::DrawMesh(m_EditorCamera->GetCameraComponent(), qTr.GetTransformMatrix(), *quad, gizmoMat);
+			qTr.SetParent(nullptr);
 		}
 		{
 			Node3D qTr;
 			qTr.SetPosition(tr.GetPosition());
-			qTr.SetEulerRotation(Vec3(0, 180, -90));
+			qTr.SetParent(&tr, false);
+			qTr.SetLocalEulerRotation(Vec3(0, 180, -90));
 			qTr.SetScale(Vec3(0.0025f));
 			gizmoMat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("cd206aec-e3d4-487b-9fb6-d775520cc880"));
 			Renderer3D::DrawMesh(m_EditorCamera->GetCameraComponent(), qTr.GetTransformMatrix(), *quad, gizmoMat);
+			qTr.SetParent(nullptr);
 		}
 
 		const Vec2 ScreenPos = Vec2(EditorUI::GetInput().x / GetWidth() * (m_TranformGizmoPickingBuffer->GetSize().x), EditorUI::GetInput().y / GetHeight() * (m_TranformGizmoPickingBuffer->GetSize().y));
@@ -373,26 +380,32 @@ namespace Suora
 		{
 			Node3D qTr;
 			qTr.SetPosition(tr.GetPosition());
-			qTr.SetEulerRotation(Vec3(0, -90, 0));
+			qTr.SetParent(&tr, false);
+			qTr.SetLocalEulerRotation(Vec3(0, -90, 0));
 			qTr.SetScale(Vec3(0.0025f));
 			gizmoMat->m_UniformSlots[0].m_Texture2D = !intersectR ? AssetManager::GetAsset<Texture2D>(SuoraID("c5b3f142-d160-4672-988c-4818c1ef32bf")) : AssetManager::GetAsset<Texture2D>(SuoraID("4f70cf5f-1998-41fa-8d5e-1c747a6dba47"));
 			Renderer3D::DrawMesh(m_EditorCamera->GetCameraComponent(), qTr.GetTransformMatrix(), *quad, gizmoMat);
+			qTr.SetParent(nullptr);
 		}
 		{
 			Node3D qTr;
 			qTr.SetPosition(tr.GetPosition());
-			qTr.SetEulerRotation(Vec3(90, 0, 0));
+			qTr.SetParent(&tr, false);
+			qTr.SetLocalEulerRotation(Vec3(90, 0, 0));
 			qTr.SetScale(Vec3(0.0025f));
 			gizmoMat->m_UniformSlots[0].m_Texture2D = !intersectG ? AssetManager::GetAsset<Texture2D>(SuoraID("5aeb3c3d-d220-4bb9-8e69-7e3cfca16e3a")) : AssetManager::GetAsset<Texture2D>(SuoraID("4f70cf5f-1998-41fa-8d5e-1c747a6dba47"));
 			Renderer3D::DrawMesh(m_EditorCamera->GetCameraComponent(), qTr.GetTransformMatrix(), *quad, gizmoMat);
+			qTr.SetParent(nullptr);
 		}
 		{
 			Node3D qTr;
 			qTr.SetPosition(tr.GetPosition());
-			qTr.SetEulerRotation(Vec3(0, 180, -90));
+			qTr.SetParent(&tr, false);
+			qTr.SetLocalEulerRotation(Vec3(0, 180, -90));
 			qTr.SetScale(Vec3(0.0025f));
 			gizmoMat->m_UniformSlots[0].m_Texture2D = !intersectB ? AssetManager::GetAsset<Texture2D>(SuoraID("5d7364da-4822-4db3-8636-ed3705b38924")) : AssetManager::GetAsset<Texture2D>(SuoraID("4f70cf5f-1998-41fa-8d5e-1c747a6dba47"));
 			Renderer3D::DrawMesh(m_EditorCamera->GetCameraComponent(), qTr.GetTransformMatrix(), *quad, gizmoMat);
+			qTr.SetParent(nullptr);
 		}
 
 
@@ -416,7 +429,7 @@ namespace Suora
 			GetMajorTab()->GetEditorWindow()->GetWindow()->SetCursorLocked(true);
 		}
 
-		if (IsInputMode(EditorInputEvent::TransformGizmo)/* && translateDir == Vec3(1, 0, 0)*/)
+		if (IsInputMode(EditorInputEvent::TransformGizmo))
 		{
 			if (NativeInput::GetMouseButtonUp(Mouse::ButtonLeft)) GetMajorTab()->GetEditorWindow()->GetWindow()->SetCursorLocked(false);
 			float currentT = 0.0f;
