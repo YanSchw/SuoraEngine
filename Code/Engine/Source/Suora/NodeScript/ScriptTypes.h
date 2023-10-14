@@ -14,6 +14,7 @@ namespace Suora
 		Vec2,
 		Vec3,
 		Vec4,
+		Quat,
 		ObjectPtr,
 		Class,
 		Bool,

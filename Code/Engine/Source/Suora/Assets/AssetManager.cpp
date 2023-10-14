@@ -116,8 +116,6 @@ namespace Suora
 
 		InitializeAllAssets();
 
-		ScriptEngine::CompileAllScriptClasses();
-
 	}
 
 	void AssetManager::InitializeAllAssets()

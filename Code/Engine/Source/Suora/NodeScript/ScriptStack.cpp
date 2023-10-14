@@ -43,7 +43,7 @@ namespace Suora
 	int64_t ScriptStack::ConvertToStack<Vec2>(Vec2 value)
 	{
 		Vec2* heap = new Vec2();
-		ScriptEngine::m_ScriptCache.push_back(heap);
+		ScriptEngine::m_ScriptCache.push_back({ heap, ScriptDataType::Vec2 });
 		*heap = value;
 		return (int64_t)heap;
 	}
@@ -51,7 +51,7 @@ namespace Suora
 	int64_t ScriptStack::ConvertToStack<Vec3>(Vec3 value)
 	{
 		Vec3* heap = new Vec3();
-		ScriptEngine::m_ScriptCache.push_back(heap);
+		ScriptEngine::m_ScriptCache.push_back({ heap, ScriptDataType::Vec3 });
 		*heap = value;
 		return (int64_t)heap;
 	}
@@ -59,7 +59,7 @@ namespace Suora
 	int64_t ScriptStack::ConvertToStack<const Vec3&>(const Vec3& value)
 	{
 		Vec3* heap = new Vec3();
-		ScriptEngine::m_ScriptCache.push_back(heap);
+		ScriptEngine::m_ScriptCache.push_back({ heap, ScriptDataType::Vec3 });
 		*heap = value;
 		return (int64_t)heap;
 	}
@@ -67,7 +67,7 @@ namespace Suora
 	int64_t ScriptStack::ConvertToStack<Quat>(Quat value)
 	{
 		Quat* heap = new Quat();
-		ScriptEngine::m_ScriptCache.push_back(heap);
+		ScriptEngine::m_ScriptCache.push_back({ heap, ScriptDataType::Quat});
 		*heap = value;
 		return (int64_t)heap;
 	}

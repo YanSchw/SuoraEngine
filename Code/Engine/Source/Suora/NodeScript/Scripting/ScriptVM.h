@@ -4,13 +4,13 @@
 #include <stack>
 #include "inttypes.h"
 #include "Suora/NodeScript/ScriptStack.h"
+#include "Suora/NodeScript/ScriptTypes.h"
 
 namespace Yaml { class Node; }
 
 namespace Suora
 {
 	class Object;
-	enum class ScriptDataType : int64_t;
 
 	struct ScriptVar
 	{
@@ -75,12 +75,17 @@ namespace Suora
 		void Deserialize(Yaml::Node& root);
 	};
 
+
+	struct ScriptGarbage
+	{
+		void* Data = nullptr;
+		ScriptDataType Type = ScriptDataType::None;
+	};
 	struct ScriptEngine
 	{
-		inline static std::vector<void*> m_ScriptCache;
+		inline static std::vector<ScriptGarbage> m_ScriptCache;
 
 		static void CleanUp();
-		static void CompileAllScriptClasses();
 	};
 
 }
