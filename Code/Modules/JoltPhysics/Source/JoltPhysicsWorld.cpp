@@ -240,6 +240,7 @@ namespace Suora::Physics
 	{
 		Ref<CharacterController> characterController = m_CharacterControllers.at(node);
 		characterController->SetInternalPosition(node->GetPosition());
+		characterController->SetInternalRotation(node->GetRotation());
 	}
 
 	void JoltPhysicsWorld::Step(double timeStep)

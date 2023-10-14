@@ -37,6 +37,8 @@ namespace Suora
 
 		virtual void SetInternalPosition(const Vec3& position) = 0;
 		virtual Vec3 GetInternalPosition() = 0;
+		virtual void SetInternalRotation(const Quat& rotation) = 0;
+		virtual Quat GetInternalRotation() = 0;
 		virtual void Move(const Vec3& movementInput) = 0;
 		virtual void Jump(float jumpForce) = 0;
 
