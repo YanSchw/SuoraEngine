@@ -65,6 +65,11 @@ namespace Suora
 		return !m_Props.isDecorated;
 	}
 
+	void WindowsWindow::Minimize()
+	{
+		glfwIconifyWindow(m_Window);
+	}
+
 	void WindowsWindow::Maximize()
 	{
 		int maximized = glfwGetWindowAttrib(m_Window, GLFW_MAXIMIZED);
@@ -78,9 +83,15 @@ namespace Suora
 		}
 	}
 
+
 	void WindowsWindow::Iconify()
 	{
 		glfwIconifyWindow(m_Window);
+	}
+
+	void WindowsWindow::RegisterOverTitlebar(bool value)
+	{
+		m_Data.OverTitlebar = value;
 	}
 
 	void WindowsWindow::CenterWindow()
@@ -146,7 +157,12 @@ namespace Suora
 			if (RendererAPI::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 		#endif
-			glfwWindowHint(GLFW_DECORATED, m_Props.isDecorated ? 1 : 0);
+
+		#ifdef SUORA_PLATFORM_WINDOWS
+			glfwWindowHint(GLFW_TITLEBAR, m_Props.hasTitlebar ? GLFW_TRUE : GLFW_FALSE);
+		#endif
+
+			glfwWindowHint(GLFW_DECORATED, m_Props.isDecorated ? GLFW_TRUE : GLFW_FALSE);
 			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, (Window::AllWindows.Size() > 0) ? (GLFWwindow*) Window::AllWindows[0]->GetNativeWindow() : nullptr);
 			Window::AllWindows.Add(this);
 			GLFW::CenterWindow(m_Window);
@@ -279,6 +295,13 @@ namespace Suora
 			}
 			data.m_Window->m_OnDesktopFilesDropped(args);
 		});
+
+		#ifdef SUORA_PLATFORM_WINDOWS
+		glfwSetTitlebarHitTestCallback(m_Window, [](GLFWwindow* window, int xPos, int yPos, int* hit)
+			{
+				*hit = static_cast<WindowData*>(glfwGetWindowUserPointer(window))->OverTitlebar ? 1 : 0;
+			});
+		#endif
 
 		SetCursor(Cursor::Default);
 		SetVSync(false);

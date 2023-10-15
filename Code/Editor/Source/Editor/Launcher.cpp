@@ -272,7 +272,7 @@ namespace Suora
 		Color BackgroundColor = EditorPreferences::Get()->UiColor * 0.65f; BackgroundColor.a = 1.0f;
 		EditorUI::DrawRect(250.0f * ui, 0, GetWindow()->GetWidth() - 250.0f * ui, GetWindow()->GetHeight(), 0, BackgroundColor);
 
-		if (EditorUI::Button("Add Project", GetWindow()->GetWidth() - 175.0f, GetWindow()->GetHeight() - 35.0f, 125, 33.0f))
+		if (EditorUI::Button("Add Project", GetWindow()->GetWidth() - 175.0f, 35.0f, 125, 33.0f))
 		{
 			std::optional<std::string> path = Platform::OpenFileDialog({".suora"});
 			

@@ -26,6 +26,7 @@ namespace Suora
 		void SetEnginePath(const std::string& path);
 
 		static ProjectSettings* Get();
+		static std::string GetProjectName();
 
 		float m_TargetFramerate = 60.0f;
 		SubclassOf<GameInstance> m_GameInstanceClass;

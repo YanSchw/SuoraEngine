@@ -318,7 +318,10 @@ namespace Suora
 		bool mousePickReady = EditorUI::IsNotHoveringOverlays() && !EditorUI::WasInputConsumed();
 		if (IsInputValid() && EditorUI::IsNotHoveringOverlays())
 		{
-			EditorUI::SetCursor(Cursor::Crosshair);
+			if (GetMajorTab()->IsA<NodeClassEditor>() && GetMajorTab()->As<NodeClassEditor>()->m_CurrentPlayState != PlayState::Playing)
+			{
+				EditorUI::SetCursor(Cursor::Crosshair);
+			}
 		}
 		/** Viewport Tools */
 		{
@@ -469,8 +472,6 @@ namespace Suora
 
 		RenderCommand::SetDepthTest(false);
 		RenderCommand::SetCullingMode(CullingMode::None);
-
-		EditorUI::DrawRectOutline(0, 0, GetWidth(), GetHeight(), 1, EditorPreferences::Get()->UiHighlightColor);
 	}
 
 }

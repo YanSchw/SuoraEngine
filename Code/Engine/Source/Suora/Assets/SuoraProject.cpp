@@ -98,5 +98,9 @@ namespace Suora
 	{
 		return AssetManager::GetFirstAssetOfType<ProjectSettings>();
 	}
+	std::string ProjectSettings::GetProjectName()
+	{
+		return Get()->m_Path.stem().string();
+	}
 
 }

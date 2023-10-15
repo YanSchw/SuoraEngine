@@ -26,12 +26,14 @@ namespace Suora
 		uint32_t Width;
 		uint32_t Height;
 		bool isDecorated;
+		bool hasTitlebar;
 
 		WindowProps(const std::string& title = "Suora Engine",
 			        uint32_t width = 1280,
 			        uint32_t height = 720,
-					bool isDecorated = true)
-			: Title(title), Width(width), Height(height), isDecorated(isDecorated)
+					bool _isDecorated = true,
+					bool _hasTitlebar = true)
+			: Title(title), Width(width), Height(height), isDecorated(_isDecorated), hasTitlebar(_hasTitlebar)
 		{
 		}
 	};
@@ -56,13 +58,15 @@ namespace Suora
 		virtual Cursor GetCursor() = 0;
 		virtual void SetCursorLocked(bool locked) = 0;
 		virtual bool IsVSync() const = 0;
-		virtual bool IsMaximized() const = 0;
 
 		virtual void* GetNativeWindow() const = 0;
 		virtual void* GetGraphicsContext() const = 0;
 		virtual bool IsUndecorated() const = 0;
+		virtual void Minimize() = 0;
+		virtual bool IsMaximized() const = 0;
 		virtual void Maximize() = 0;
 		virtual void Iconify() = 0;
+		virtual void RegisterOverTitlebar(bool value) = 0;
 		virtual void CenterWindow() = 0;
 
 		virtual void SetFullscreen(bool fullscreen) = 0;
@@ -73,7 +77,6 @@ namespace Suora
 		inline static Array<Window*> AllWindows = Array<Window*>();
 		inline static Window* CurrentFocusedWindow = nullptr;
 
-		float WindowScale = 1;
 		Cursor currentCursorType = Cursor::Default;
 
 		Texture2D* m_WindowIconOverride = nullptr;
