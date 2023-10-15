@@ -441,8 +441,11 @@ namespace Suora
 
 	void WindowsWindow::SetCursorLocked(bool locked)
 	{
-		NativeInput::ResetMouseDelta();
+		bool needsReset = GLFW_CURSOR_NORMAL == glfwGetInputMode(m_Window, GLFW_CURSOR) && locked;
 		glfwSetInputMode(m_Window, GLFW_CURSOR, locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+
+		if (needsReset)
+			NativeInput::ResetMouseDelta();
 	}
 
 	bool WindowsWindow::IsWindowResizing()
