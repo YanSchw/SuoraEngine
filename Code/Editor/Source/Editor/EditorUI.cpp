@@ -261,7 +261,7 @@ namespace Suora
 
 	void EditorUI::Tick(float deltaTime)
 	{
-		if (Window::CurrentFocusedWindow->GetCursor() != s_CurrentCursor) Window::CurrentFocusedWindow->SetCursor(s_CurrentCursor);
+		if (Window::s_CurrentFocusedWindow->GetCursor() != s_CurrentCursor) Window::s_CurrentFocusedWindow->SetCursor(s_CurrentCursor);
 		s_CurrentCursor = Cursor::Default;
 
 		if (s_WasInputConsumed > 0)

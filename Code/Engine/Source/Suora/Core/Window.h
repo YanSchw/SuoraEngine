@@ -74,10 +74,10 @@ namespace Suora
 
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
 		static Window* CreatePtr(const WindowProps& props = WindowProps());
-		inline static Array<Window*> AllWindows = Array<Window*>();
-		inline static Window* CurrentFocusedWindow = nullptr;
+		inline static Array<Window*> s_AllWindows = Array<Window*>();
+		inline static Window* s_CurrentFocusedWindow = nullptr;
 
-		Cursor currentCursorType = Cursor::Default;
+		Cursor m_CurrentCursorType = Cursor::Default;
 
 		Texture2D* m_WindowIconOverride = nullptr;
 

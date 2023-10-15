@@ -50,13 +50,13 @@ namespace Suora
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 		: m_Props(props)
 	{
-		Window::CurrentFocusedWindow = this;
+		Window::s_CurrentFocusedWindow = this;
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
-		Window::AllWindows.Remove(this);
+		Window::s_AllWindows.Remove(this);
 		Shutdown();
 	}
 
@@ -163,8 +163,8 @@ namespace Suora
 		#endif
 
 			glfwWindowHint(GLFW_DECORATED, m_Props.isDecorated ? GLFW_TRUE : GLFW_FALSE);
-			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, (Window::AllWindows.Size() > 0) ? (GLFWwindow*) Window::AllWindows[0]->GetNativeWindow() : nullptr);
-			Window::AllWindows.Add(this);
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, (Window::s_AllWindows.Size() > 0) ? (GLFWwindow*) Window::s_AllWindows[0]->GetNativeWindow() : nullptr);
+			Window::s_AllWindows.Add(this);
 			GLFW::CenterWindow(m_Window);
 			++s_GLFWWindowCount;
 
@@ -198,11 +198,11 @@ namespace Suora
 			if (focused)
 			{
 				// Iterate over all Windows until we find the focused one; // TODO: Remove this hack
-				for (Window* w : Window::AllWindows.GetData())
+				for (Window* w : Window::s_AllWindows.GetData())
 				{
 					if (static_cast<GLFWwindow*>(w->GetNativeWindow()) == window)
 					{
-						Window::CurrentFocusedWindow = w;
+						Window::s_CurrentFocusedWindow = w;
 						break;
 					}
 				}
@@ -415,8 +415,8 @@ namespace Suora
 
 	void WindowsWindow::SetCursor(Cursor cursor)
 	{
-		if (cursor == currentCursorType) return;
-		currentCursorType = cursor;
+		if (cursor == m_CurrentCursorType) return;
+		m_CurrentCursorType = cursor;
 
 		if(m_Cursor) glfwDestroyCursor(m_Cursor);
 
@@ -436,7 +436,7 @@ namespace Suora
 	}
 	Cursor WindowsWindow::GetCursor()
 	{
-		return currentCursorType;
+		return m_CurrentCursorType;
 	}
 
 	void WindowsWindow::SetCursorLocked(bool locked)
