@@ -618,7 +618,7 @@ namespace Suora
 			{
 				int i = 0;
 				std::vector<std::pair<std::string, std::function<void(void)>>> options;
-				std::filesystem::path directory = AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/ShadergraphBase/";
+				std::filesystem::path directory = AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/ShadergraphBase/";
 				std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(directory);
 				for (int j = 0; j < entries.size(); j++)
 				{

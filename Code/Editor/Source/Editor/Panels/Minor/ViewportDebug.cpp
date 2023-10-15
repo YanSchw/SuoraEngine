@@ -172,12 +172,12 @@ namespace Suora
 		case DebugView::GBuffer_Emissive: _GBUFFER_RENDER(GBuffer::Emissive, RenderPipeline::GetFullscreenPassShaderStatic()); return;
 		case DebugView::GBuffer_MeshID:
 		{
-			static Ref<Shader> shader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Debug/ClusterDebug.glsl");
+			static Ref<Shader> shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Debug/ClusterDebug.glsl");
 			_GBUFFER_RENDER(GBuffer::MeshID, shader);
 		} return;
 		case DebugView::GBuffer_Cluster:
 		{
-			static Ref<Shader> shader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Debug/ClusterDebug.glsl");
+			static Ref<Shader> shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Debug/ClusterDebug.glsl");
 			_GBUFFER_RENDER(GBuffer::ClusterID, shader);
 		} return;
 		case DebugView::DeferredLightPass:
@@ -198,7 +198,7 @@ namespace Suora
 			{
 				IlumDebugShaderGraph()
 				{
-					m_ShaderSource = Platform::ReadFromFile(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Debug/IlumDebug.glsl");
+					m_ShaderSource = Platform::ReadFromFile(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Debug/IlumDebug.glsl");
 				}
 			};
 			static IlumDebugShaderGraph ProbeShader;
@@ -227,7 +227,7 @@ namespace Suora
 			{
 				IlumDebugShaderGraph()
 				{
-					m_ShaderSource = Platform::ReadFromFile(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Debug/IlumDebug_Probes.glsl");
+					m_ShaderSource = Platform::ReadFromFile(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Debug/IlumDebug_Probes.glsl");
 				}
 			};
 			static IlumDebugShaderGraph ProbeShader;

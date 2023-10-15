@@ -88,7 +88,7 @@ namespace Suora
 
 	Texture* Texture::GetOrCreateDefaultTexture()
 	{
-		if (!s_DefaultTexture) s_DefaultTexture = Texture::CreatePtr(AssetManager::GetAssetRootPath() + "/EngineContent/Textures/Checkerboard.png");
+		if (!s_DefaultTexture) s_DefaultTexture = Texture::CreatePtr(AssetManager::GetEngineAssetPath() + "/EngineContent/Textures/Checkerboard.png");
 		return s_DefaultTexture;
 	}
 

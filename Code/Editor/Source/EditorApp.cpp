@@ -30,7 +30,7 @@ namespace Suora
 
 			EditorWindows.Add(new EditorWindow());
 
-			AssetManager::LoadAsset(AssetManager::GetAssetRootPath() + "/EditorPreferences.editor");
+			AssetManager::LoadAsset(AssetManager::GetEngineAssetPath() + "/EditorPreferences.editor");
 
 			Font::Instance = AssetManager::GetAssetByName<Font>("Inter-SemiBold.font");
 			Font::Instance = AssetManager::GetAssetByName<Font>("Inter-Light.font");

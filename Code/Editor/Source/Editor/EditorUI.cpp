@@ -218,15 +218,15 @@ namespace Suora
 	{
 		NativeInput::s_CharInputCallback.Register(&EditorUI::TextFieldCharInput);
 
-		UiShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/UI/Rect.glsl");
-		TextShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/Text.glsl");
+		UiShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/UI/Rect.glsl");
+		TextShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/Text.glsl");
 
 		CheckboxTickTexture = AssetManager::GetAssetByName<Texture2D>("CheckboxTick.texture");
 		CheckerboardTexture = AssetManager::GetAssetByName<Texture2D>("Checkerboard.texture");
 		DragFloatTexture = AssetManager::GetAssetByName<Texture2D>("DragFloat.texture");
 		ArrowDown = AssetManager::GetAssetByName<Texture2D>("ArrowDown.texture");
 		ArrowRight = AssetManager::GetAssetByName<Texture2D>("ArrowRight.texture");
-		ColorCircleShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/ColorCircle.glsl");
+		ColorCircleShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/ColorCircle.glsl");
 
 		{
 			FramebufferSpecification specs;

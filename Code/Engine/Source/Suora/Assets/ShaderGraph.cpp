@@ -49,7 +49,7 @@ namespace Suora
 
 	std::string ShaderGraph::GetBaseShaderPath() const
 	{
-		return AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/ShadergraphBase/" + m_BaseShader;
+		return AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/ShadergraphBase/" + m_BaseShader;
 	}
 
 	Shader* ShaderGraph::GetShaderViaType(MaterialType type)

@@ -19,7 +19,7 @@ namespace Suora
 	Launcher::Launcher(EditorWindow* editor)
 		: m_EditorWindow(editor)
 	{
-		std::filesystem::path engineContentPath = AssetManager::GetAssetRootPath();
+		std::filesystem::path engineContentPath = AssetManager::GetEngineAssetPath();
 		std::filesystem::path templateContentPath = engineContentPath.parent_path().append("Templates");
 
 		if (std::filesystem::exists(templateContentPath))
@@ -135,7 +135,7 @@ namespace Suora
 			Yaml::Parse(root, str);
 			Yaml::Node& settings = root["Settings"];
 			{
-				settings["Engine"]["Path"] = std::filesystem::path(AssetManager::GetAssetRootPath()).parent_path().string();
+				settings["Engine"]["Path"] = std::filesystem::path(AssetManager::GetEngineAssetPath()).parent_path().string();
 			}
 			std::string out;
 			Yaml::Serialize(root, out);

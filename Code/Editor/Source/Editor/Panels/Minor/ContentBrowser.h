@@ -38,11 +38,11 @@ namespace Suora
 		std::string GetCurrentDirectory() const;
 
 	private:
-		Ref<Texture> m_Checkerboard = Texture::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Textures/Checkerboard.png");
-		Ref<Texture> m_FolderIcon = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/FolderNew.png");
-		Ref<Texture> m_ShadowTexture = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Textures/AssetEntryShadow.png");
-		Ref<Texture> m_ArrowRight = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/ArrowRight.png");
-		std::string m_CurrentPath = AssetManager::GetAssetRootPath();
+		Ref<Texture> m_Checkerboard = Texture::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Textures/Checkerboard.png");
+		Ref<Texture> m_FolderIcon = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Icons/FolderNew.png");
+		Ref<Texture> m_ShadowTexture = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Textures/AssetEntryShadow.png");
+		Ref<Texture> m_ArrowRight = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Icons/ArrowRight.png");
+		std::string m_CurrentPath = AssetManager::GetEngineAssetPath();
 		PathMode m_CurrentMode = PathMode::ProjectPath;
 		float m_ScrollY = 0.0f;
 

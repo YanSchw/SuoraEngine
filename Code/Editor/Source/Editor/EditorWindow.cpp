@@ -46,9 +46,9 @@ namespace Suora
 		if (!TextureInit)
 		{
 			TextureInit = true;
-			TexIcon = Texture::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Suora.png");
+			TexIcon = Texture::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Suora.png");
 
-			TexDockingCenter = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Textures/Docking/Center.png");
+			TexDockingCenter = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Textures/Docking/Center.png");
 		}
 
 		m_Launcher = CreateRef<Launcher>(this);

@@ -56,18 +56,18 @@ namespace Suora
 	void RenderPipeline::Initialize()
 	{
 		s_Instance = this;
-		m_FullscreenPassShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/FullscreenPass.glsl");
-		m_AddShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Add.glsl");
-		m_DepthBlitShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/DepthBlit.glsl");
-		m_ToneMapping = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/ToneMapping.glsl");
-		m_FXAA = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
-		m_DeferredDecalPreparation = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_DecalPreparation.glsl");
-		m_DeferredDirectionalLightShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_DirectionalLight.glsl");
-		m_DeferredPointLightShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_PointLight.glsl");
+		m_FullscreenPassShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/FullscreenPass.glsl");
+		m_AddShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Add.glsl");
+		m_DepthBlitShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/DepthBlit.glsl");
+		m_ToneMapping = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/ToneMapping.glsl");
+		m_FXAA = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
+		m_DeferredDecalPreparation = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_DecalPreparation.glsl");
+		m_DeferredDirectionalLightShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_DirectionalLight.glsl");
+		m_DeferredPointLightShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_PointLight.glsl");
 		m_DeferredPointLightMatrixBuffer = ShaderStorageBuffer::Create();
-		m_DeferredSkyShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_Sky.glsl");
-		m_DeferredSkyLightShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_SkyLight.glsl");
-		m_DeferredComposite = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_Composite.glsl");
+		m_DeferredSkyShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_Sky.glsl");
+		m_DeferredSkyLightShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_SkyLight.glsl");
+		m_DeferredComposite = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_Composite.glsl");
 		{
 			FramebufferSpecification spec;
 			spec.Width = m_InternalResolution.x;
@@ -195,7 +195,7 @@ namespace Suora
 			Ref<Shader> ClearShader;
 			RenderPipeline_ClearDepth()
 			{
-				ClearShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/ClearDepth.glsl");
+				ClearShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/ClearDepth.glsl");
 			}
 		};
 		static RenderPipeline_ClearDepth Cmd;

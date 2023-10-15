@@ -21,7 +21,7 @@ namespace Suora
 	{
 	private:
 		inline static Array<Asset*> s_Assets;
-		inline static std::string s_AssetRootPath = "", s_ProjectAssetPath = "";
+		inline static std::string s_EngineAssetPath = "", s_ProjectAssetPath = "";
 		inline static uint32_t s_AssetHotReloadingIteratorIndex = 0;
 		inline static Array<Asset*> s_AssetStreamPool;
 
@@ -34,7 +34,7 @@ namespace Suora
 		static void Initialize(const FilePath& contentPath);
 		~AssetManager();
 
-		static void HotReload(const std::filesystem::path& contentPath = s_AssetRootPath, const Class& baseClass = Asset::StaticClass());
+		static void HotReload(const std::filesystem::path& contentPath = s_EngineAssetPath, const Class& baseClass = Asset::StaticClass());
 		static void InitializeAllAssets();
 
 		static void Update(float deltaTime);
@@ -119,9 +119,9 @@ namespace Suora
 			return CreateAsset(T::StaticClass(), name, dir)->As<T>();
 		}
 
-		static std::string GetAssetRootPath()
+		static std::string GetEngineAssetPath()
 		{
-			return s_AssetRootPath;
+			return s_EngineAssetPath;
 		}
 		static std::string GetProjectAssetPath()
 		{

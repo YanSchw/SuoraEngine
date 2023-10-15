@@ -77,7 +77,7 @@ namespace Suora
 			spec.Height = 1080;
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
 			m_SelectionOutlineFramebuffer = Framebuffer::Create(spec);
-			m_SelectionOutlineShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/SelectionOutline.glsl");
+			m_SelectionOutlineShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/SelectionOutline.glsl");
 		}
 	}
 
@@ -459,7 +459,7 @@ namespace Suora
 
 		// Gizmo Buffer
 		/*m_GizmoBuffer->Unbind();
-		static Ref<Shader> FXAA = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
+		static Ref<Shader> FXAA = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
 		FXAA->Bind();
 		FXAA->SetFloat2("u_Resolution", m_GizmoBufferSmooth->GetSize());
 		RenderPipeline::RenderFramebufferIntoFramebuffer(*m_GizmoBuffer, *m_GizmoBufferSmooth, *FXAA, glm::ivec4(0, 0, m_GizmoBufferSmooth->GetSize()));
