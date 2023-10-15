@@ -22,11 +22,7 @@ namespace Suora
 		Material* m_SkyMaterial = nullptr;*/
 
 		MEMBER()
-		float m_Red = 1.0f;
-		MEMBER()
-		float m_Green = 1.0f;
-		MEMBER()
-		float m_Blue = 1.0f;
+		Color m_Color = Color(1.0f);
 
 		SkyLightNode();
 		void Begin() override;

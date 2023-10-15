@@ -25,6 +25,7 @@ namespace Suora
 		SUORA_CLASS(45738744712);
 	public:
 
+		MEMBER()
 		Color m_Color = Color(1.0f);
 
 		MEMBER()

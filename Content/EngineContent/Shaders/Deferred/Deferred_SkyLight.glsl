@@ -17,24 +17,15 @@ void main(void)
 in vec2 UV;
 out vec4 out_Color;
 
-uniform sampler2D u_WorldPos;
-uniform sampler2D u_WorldNormal;
-uniform sampler2D u_Emissive;
-uniform vec3 u_ViewPos;
+uniform sampler2D u_BaseColor;
+uniform float u_Intensity;
+uniform vec3 u_Color;
 
 void main(void)
 {
-	vec3 light = vec3(0.00);
+	vec3 baseColor = texture(u_BaseColor, UV).xyz;
 
-	vec3 worldPos = texture(u_WorldPos, UV).xyz;
-	vec3 worldNormal = texture(u_WorldNormal, UV).xyz;
-	vec3 emissive = texture(u_Emissive, UV).xyz;
-    vec3 viewDir = normalize(u_ViewPos - worldPos);
-
-    if (emissive != vec3(0.0))
-    {
-        light = vec3(0.0);
-    }
+	vec3 light = baseColor * u_Color * u_Intensity * 0.1;
 
 	out_Color = vec4(light, 1.0);
 	

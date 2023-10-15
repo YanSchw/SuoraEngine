@@ -153,7 +153,7 @@ namespace Suora
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
-		const float dragFloatWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 250.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 250.0f;
+		const float dragFloatWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 150.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 150.0f;
 		EditorUI::ColorPicker(v, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, dragFloatWidth, 25.0f, {}, [v]() { _Vec4_ColorPickerResults[v] = 1; }, [v]() { _Vec4_ColorPickerResults[v] = 2; });
 
 		if (_Vec4_ColorPickerResults.find(v) != _Vec4_ColorPickerResults.end())

@@ -154,7 +154,7 @@ namespace Suora
 			Params.CenteredIcon = AssetManager::GetAsset<Texture2D>(SuoraID(m_Window->IsMaximized() ? "37489392-8840-44f8-b5d7-278452845669" : "425b4026-5db2-4398-ac6a-593524379285"));
 			if (EditorUI::Button("", m_Window->GetWidth() - (36 * ui) * 2, m_Window->GetHeight() - (36 * ui), 36 * ui, 36 * ui, Params))
 			{
-				NativeInput::ConsumeInput();
+				EditorUI::ConsumeInput();
 				m_Window->Maximize();
 			}
 			Params.ButtonColorHover = Color(0.35f, 0.35f, 0.35f, 1.0f);

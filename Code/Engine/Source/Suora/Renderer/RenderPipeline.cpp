@@ -346,10 +346,9 @@ namespace Suora
 				SkyLightNode* sky = lights[0];
 				if (sky && sky->IsEnabled())
 				{
-					m_DeferredSkyLightShader->SetFloat3("u_ViewPos", camera->GetTransform()->GetPosition());
-					m_DeferredSkyLightShader->SetInt("u_Emissive", (int)GBuffer::Emissive); gBuffer.BindColorAttachmentByIndex((int)GBuffer::Emissive, (int)GBuffer::Emissive);
-					m_DeferredSkyLightShader->SetInt("u_WorldNormal", (int)GBuffer::WorldNormal); gBuffer.BindColorAttachmentByIndex((int)GBuffer::WorldNormal, (int)GBuffer::WorldNormal);
-					RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredSkyLightShader, BufferToRect(gBuffer), "u_WorldPos", (int)GBuffer::WorldPosition, false);
+					m_DeferredSkyLightShader->SetFloat("u_Intensity", sky->m_Intensity);
+					m_DeferredSkyLightShader->SetFloat3("u_Color", sky->m_Color);
+					RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredSkyLightShader, BufferToRect(gBuffer), "u_BaseColor", (int)GBuffer::BaseColor, false);
 				}
 			}
 
