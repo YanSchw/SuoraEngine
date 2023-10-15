@@ -448,6 +448,11 @@ namespace Suora
 			NativeInput::ResetMouseDelta();
 	}
 
+	bool WindowsWindow::IsCursorLocked()
+	{
+		return GLFW_CURSOR_DISABLED == glfwGetInputMode(m_Window, GLFW_CURSOR);
+	}
+
 	bool WindowsWindow::IsWindowResizing()
 	{
 		return false;

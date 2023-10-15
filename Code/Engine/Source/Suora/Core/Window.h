@@ -57,6 +57,7 @@ namespace Suora
 		virtual void SetCursor(Cursor cursor) = 0;
 		virtual Cursor GetCursor() = 0;
 		virtual void SetCursorLocked(bool locked) = 0;
+		virtual bool IsCursorLocked() = 0;
 		virtual bool IsVSync() const = 0;
 
 		virtual void* GetNativeWindow() const = 0;

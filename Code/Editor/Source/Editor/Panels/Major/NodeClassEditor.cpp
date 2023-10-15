@@ -259,7 +259,6 @@ namespace Suora
 		Engine::Get()->DisposeGameInstance();
 
 		GetEditorWindow()->GetWindow()->SetCursorLocked(false);
-		GetEditorWindow()->m_InputEvent = EditorInputEvent::None;
 		m_CurrentPlayState = PlayState::Editor;
 		m_SelectedObject = nullptr;
 		m_DetailsPanel->m_Data = nullptr;
@@ -289,12 +288,10 @@ namespace Suora
 		{
 			if (m_CurrentPlayState == PlayState::Editor)
 			{
-				GetEditorWindow()->m_InputEvent = EditorInputEvent::Viewport_PlayMode;
 				PlayInEditor();
 			}
 			else
 			{
-				GetEditorWindow()->m_InputEvent = EditorInputEvent::None;
 				StopPlayInEditor();
 			}
 			m_SelectedObject = nullptr;

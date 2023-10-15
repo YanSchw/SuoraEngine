@@ -135,7 +135,7 @@ namespace Suora
 		// Logo
 		EditorUI::DrawRect(0, m_Window->GetHeight() - (36 * ui), m_Window->GetWidth(), 36 * ui, 0, EditorPreferences::Get()->UiTitlebarColor);
 		EditorUI::DrawTexturedRect(TexIcon, 4 * ui, m_Window->GetHeight() - (27 * ui), 73 * ui, 20 * ui, 0, Color(0.8f));
-		m_Window->RegisterOverTitlebar(NativeInput::GetMousePosition().y < (35 * ui) && NativeInput::GetMousePosition().x < m_Window->GetWidth() - (36 * ui) * 3);
+		m_Window->RegisterOverTitlebar(!m_Window->IsCursorLocked() && NativeInput::GetMousePosition().y < (35 * ui) && NativeInput::GetMousePosition().x < m_Window->GetWidth() - (36 * ui) * 3);
 		// Window Handling... (Iconify, Minimize, Maximize)
 		{
 			EditorUI::PushInput(NativeInput::GetMousePosition().x, m_Window->GetHeight() - NativeInput::GetMousePosition().y, 0, 0);

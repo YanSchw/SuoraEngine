@@ -501,7 +501,7 @@ namespace Suora
 	bool EditorUI::Button(const std::string& text, float x, float y, float width, float height, ButtonParams params)
 	{
 		bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height && (GetHoveredOverlay() == s_CurrentProcessedOverlay);
-		const bool ButtonClicked = Hovering && (params.OverrideActivationEvent ? params.OverrittenActivationEvent() : NativeInput::GetMouseButtonDown(Mouse::ButtonLeft)) && CurrentWindow->m_InputEvent == params.InputMode && !WasInputConsumed();
+		const bool ButtonClicked = Hovering && (params.OverrideActivationEvent ? params.OverrittenActivationEvent() : NativeInput::GetMouseButtonDown(Mouse::ButtonLeft)) && CurrentWindow->m_InputEvent == params.InputMode && !WasInputConsumed() && !CurrentWindow->GetWindow()->IsCursorLocked();
 
 		if (params.OutHover) 
 			*params.OutHover = Hovering;

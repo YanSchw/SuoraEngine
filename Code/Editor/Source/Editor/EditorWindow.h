@@ -25,7 +25,6 @@ namespace Suora
 		EditorUI_ScrollbarVertical,
 		DetailsPanel_MoveSperator,
 		Viewport_EditorCamera,
-		Viewport_PlayMode,
 		NodeGraph_DragNode,
 		NodeGraph_DragWire,
 		TransformGizmo,
