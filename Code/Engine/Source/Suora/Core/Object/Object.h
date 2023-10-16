@@ -18,6 +18,8 @@ namespace Suora
 	struct ScriptStack;
 	class INodeScriptObject;
 
+    template <class To, class From> static To* Cast(From* Src);
+
 	/** Base Class for all SuoraClasses */
 	class Object
 	{

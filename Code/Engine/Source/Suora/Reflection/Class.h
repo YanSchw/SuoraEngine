@@ -25,7 +25,6 @@ namespace Suora
 	struct Class
 	{
 		static const Class None;
-		friend struct Class;
 
 	private:
 		NativeClassID m_NativeClassID = 0;
