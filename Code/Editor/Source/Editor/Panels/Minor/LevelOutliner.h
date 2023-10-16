@@ -37,6 +37,7 @@ namespace Suora
 		float m_HeaderSeperator2 = 0.97f;
 		Ptr<Node> m_DragNode = nullptr;
 		Ptr<Node> m_RootNode = nullptr;
+		std::unordered_map<Node*, float> m_TempYValuesOfParentNodes;
 
 		friend class NodeClassEditor;
 	};
