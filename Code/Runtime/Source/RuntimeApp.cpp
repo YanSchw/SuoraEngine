@@ -35,6 +35,8 @@ public:
 		AssetManager::HotReload();
 		SuoraVerify(ProjectSettings::Get());
 
+		m_StandaloneWindow->SetTitle(ProjectSettings::GetProjectName());
+
 		Engine::Get()->CreateGameInstance();
 		if (Level* defaultLevel = ProjectSettings::Get()->m_DefaultLevel)
 		{

@@ -453,6 +453,11 @@ namespace Suora
 		return GLFW_CURSOR_DISABLED == glfwGetInputMode(m_Window, GLFW_CURSOR);
 	}
 
+	void WindowsWindow::SetTitle(const std::string& title)
+	{
+		glfwSetWindowTitle(m_Window, title.c_str());
+	}
+
 	bool WindowsWindow::IsWindowResizing()
 	{
 		return false;

@@ -28,7 +28,7 @@ namespace Suora
 		bool isDecorated;
 		bool hasTitlebar;
 
-		WindowProps(const std::string& title = "Suora Engine",
+		WindowProps(const std::string& title = "",
 			        uint32_t width = 1280,
 			        uint32_t height = 720,
 					bool _isDecorated = true,
@@ -59,6 +59,7 @@ namespace Suora
 		virtual void SetCursorLocked(bool locked) = 0;
 		virtual bool IsCursorLocked() = 0;
 		virtual bool IsVSync() const = 0;
+		virtual void SetTitle(const std::string& title) = 0;
 
 		virtual void* GetNativeWindow() const = 0;
 		virtual void* GetGraphicsContext() const = 0;

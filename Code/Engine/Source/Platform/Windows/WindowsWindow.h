@@ -31,6 +31,7 @@ namespace Suora
 		Cursor GetCursor() override;
 		void SetCursorLocked(bool locked) override;
 		bool IsCursorLocked() override;
+		void SetTitle(const std::string& title) override;
 		bool IsWindowResizing();
 
 		virtual void* GetNativeWindow() const { return m_Window; }
