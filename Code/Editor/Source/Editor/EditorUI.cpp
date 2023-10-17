@@ -50,7 +50,7 @@ namespace Suora
 				spec.Height = 128;
 				for (int32_t i = 0; i < (int32_t)GBuffer::GBufferSlotCount; i++)
 				{
-					spec.Attachments.Attachments.push_back(RenderPipeline::GBufferSlotToBufferFormat((GBuffer)i));
+					spec.Attachments.Attachments.push_back(RenderPipeline::GBufferSlotToBufferParams((GBuffer)i));
 				}
 				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 				m_GBuffer = Framebuffer::Create(spec);

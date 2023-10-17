@@ -47,7 +47,7 @@ namespace Suora
 			specs.Height = 64;
 			for (int32_t i = 0; i < (int32_t)GBuffer::GBufferSlotCount; i++)
 			{
-				specs.Attachments.Attachments.push_back(FramebufferTextureParams(RenderPipeline::GBufferSlotToBufferFormat((GBuffer)i), FramebufferTextureFilter::Nearest));
+				specs.Attachments.Attachments.push_back(FramebufferTextureParams(RenderPipeline::GBufferSlotToBufferParams((GBuffer)i).TextureFormat, FramebufferTextureFilter::Nearest));
 			}
 			specs.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_SurfelCache = Framebuffer::Create(specs);

@@ -27,7 +27,7 @@ namespace Suora
 		return glm::ivec4(0, 0, buffer.GetSpecification().Width, buffer.GetSpecification().Height);
 	}
 
-	FramebufferTextureFormat RenderPipeline::GBufferSlotToBufferFormat(GBuffer slot)
+	FramebufferTextureParams RenderPipeline::GBufferSlotToBufferParams(GBuffer slot)
 	{
 		switch (slot)
 		{
@@ -35,7 +35,7 @@ namespace Suora
 		case GBuffer::Metallic: return FramebufferTextureFormat::R8;
 		case GBuffer::Roughness: return FramebufferTextureFormat::R8;
 		case GBuffer::WorldPosition: return FramebufferTextureFormat::RGB32F;
-		case GBuffer::WorldNormal: return FramebufferTextureFormat::RGB32F;
+		case GBuffer::WorldNormal: return FramebufferTextureParams(FramebufferTextureFormat::RGB32F, FramebufferTextureFilter::Nearest);
 		case GBuffer::Emissive: return FramebufferTextureFormat::RGB32F;
 		case GBuffer::MeshID: return FramebufferTextureFormat::R32I;
 		case GBuffer::ClusterID: return FramebufferTextureFormat::R32I;
@@ -81,7 +81,7 @@ namespace Suora
 			spec.Height = m_InternalResolution.y;
 			for (int32_t i = 0; i < (int32_t) GBuffer::GBufferSlotCount; i++)
 			{
-				spec.Attachments.Attachments.push_back(GBufferSlotToBufferFormat((GBuffer)i));
+				spec.Attachments.Attachments.push_back(GBufferSlotToBufferParams((GBuffer)i));
 			}
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_GBuffer = Framebuffer::Create(spec);
@@ -580,7 +580,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = size.x;
 			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(GBufferSlotToBufferFormat(GBuffer::WorldPosition));
+			spec.Attachments.Attachments.push_back(GBufferSlotToBufferParams(GBuffer::WorldPosition));
 			m_DeferredDecalBuffer[size] = Framebuffer::Create(spec);
 		}
 		return m_DeferredDecalBuffer[size];
