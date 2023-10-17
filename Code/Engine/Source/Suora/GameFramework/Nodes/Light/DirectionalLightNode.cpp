@@ -17,7 +17,7 @@ namespace Suora
 		FramebufferSpecification spec;
 		spec.Width = resolution;
 		spec.Height = resolution;
-		spec.Attachments.Attachments.push_back(FramebufferTextureFormat::DEPTH32F_STENCIL8);
+		spec.Attachments.Attachments.push_back(FramebufferTextureParams(FramebufferTextureFormat::DEPTH32F_STENCIL8, FramebufferTextureFilter::Linear));
 		m_ShadowMapBuffer = Framebuffer::Create(spec);
 	}
 
