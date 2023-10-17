@@ -358,7 +358,7 @@ namespace Suora
 		float x = 250 * ui;
 
 		float y = GetWindow()->GetHeight() - (36.0f * ui);
-		y -= 25.0f * ui;
+		y -= 55.0f * ui;
 		if (EditorUI::Button("C++", x + (GetWindow()->GetWidth() - x) * 0.3f - 225.0f, y, 200.0f, 30.0f, m_SelectedContentOnlyTab ? EditorUI::ButtonParams() : EditorUI::ButtonParams::Outlined()))
 		{
 			m_SelectedContentOnlyTab = false;
