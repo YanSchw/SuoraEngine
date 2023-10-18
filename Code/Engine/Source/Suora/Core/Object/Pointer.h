@@ -7,7 +7,7 @@
 
 namespace Suora
 {
-	template<class T, bool R> struct TemplatePtr;
+	template<class T, bool R> struct TObjectPtr;
 	class Object;
 
 	struct InternalPtr
@@ -30,35 +30,35 @@ namespace Suora
 		Object* m_Value = nullptr;
 		bool m_RefCounting;
 
-		template<class T, bool R> friend struct TemplatePtr;
+		template<class T, bool R> friend struct TObjectPtr;
 		friend class Object;
 		friend class Node;
 	};
 
 	/** Runtime-Safe ObjectPtr implementation; automatically nullifies, if Object is deleted! */
 	template<class T, bool REF_COUNTED>
-	struct TemplatePtr
+	struct TObjectPtr
 	{
-		TemplatePtr()
+		TObjectPtr()
 		{
 			m_InternalPtr.m_RefCounting = REF_COUNTED;
 		}
-		TemplatePtr(T& obj)
+		TObjectPtr(T& obj)
 		{
 			m_InternalPtr.m_RefCounting = REF_COUNTED;
 			m_InternalPtr = (Object*) &obj;
 		}
-		TemplatePtr(T* obj)
+		TObjectPtr(T* obj)
 		{
 			m_InternalPtr.m_RefCounting = REF_COUNTED;
 			m_InternalPtr = (Object*) obj;
 		}
-		TemplatePtr(const std::shared_ptr<T>& obj)
+		TObjectPtr(const std::shared_ptr<T>& obj)
 		{
 			m_InternalPtr.m_RefCounting = REF_COUNTED;
 			m_InternalPtr = (Object*) obj.get();
 		}
-		~TemplatePtr()
+		~TObjectPtr()
 		{
 			m_InternalPtr.Asign(nullptr);
 		}
@@ -79,21 +79,21 @@ namespace Suora
 
 
 		template<class U, bool R>
-		bool operator==(TemplatePtr<U, R>& other) const
+		bool operator==(TObjectPtr<U, R>& other) const
 		{
 			return m_InternalPtr == other.m_InternalPtr;
 		}
-		TemplatePtr<T, REF_COUNTED>& operator=(T& obj)
+		TObjectPtr<T, REF_COUNTED>& operator=(T& obj)
 		{
 			m_InternalPtr = &obj;
 			return *this;
 		}
-		TemplatePtr<T, REF_COUNTED>& operator=(T* obj)
+		TObjectPtr<T, REF_COUNTED>& operator=(T* obj)
 		{
 			m_InternalPtr = obj;
 			return *this;
 		}
-		TemplatePtr<T, REF_COUNTED>& operator=(const std::shared_ptr<T>& obj)
+		TObjectPtr<T, REF_COUNTED>& operator=(const std::shared_ptr<T>& obj)
 		{
 			m_InternalPtr = obj.get();
 			return *this;
@@ -112,11 +112,11 @@ namespace Suora
 	protected:
 		InternalPtr m_InternalPtr;
 
-		template<class U, bool R> friend struct TemplatePtr;
+		template<class U, bool R> friend struct TObjectPtr;
 		friend struct InternalPtr;
 	};
 
-	template<class T> using Ptr			= TemplatePtr<T, false>;
-	template<class T> using SharedPtr	= TemplatePtr<T, true>;
+	template<class T> using Ptr			= TObjectPtr<T, false>;
+	template<class T> using SharedPtr	= TObjectPtr<T, true>;
 
 }
