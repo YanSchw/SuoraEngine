@@ -53,6 +53,14 @@ namespace Suora
 			m_InternalPtr.m_RefCounting = REF_COUNTED;
 			m_InternalPtr = (Object*) obj;
 		}
+		template<class U, bool R>
+		TObjectPtr(const TObjectPtr<U, R>& obj)
+		{
+			static_assert(std::is_base_of<T, U>::value);
+
+			m_InternalPtr.m_RefCounting = REF_COUNTED;
+			m_InternalPtr = (Object*)obj.Get();
+		}
 		TObjectPtr(const std::shared_ptr<T>& obj)
 		{
 			m_InternalPtr.m_RefCounting = REF_COUNTED;
@@ -77,7 +85,6 @@ namespace Suora
 			return *(T*)m_InternalPtr.GetAddress();
 		}
 
-
 		template<class U, bool R>
 		bool operator==(TObjectPtr<U, R>& other) const
 		{
@@ -85,12 +92,20 @@ namespace Suora
 		}
 		TObjectPtr<T, REF_COUNTED>& operator=(T& obj)
 		{
-			m_InternalPtr = &obj;
+			m_InternalPtr = (Object*) &obj;
 			return *this;
 		}
 		TObjectPtr<T, REF_COUNTED>& operator=(T* obj)
 		{
-			m_InternalPtr = obj;
+			m_InternalPtr = (Object*) obj;
+			return *this;
+		}
+
+		template<class U, bool R>
+		TObjectPtr<T, REF_COUNTED>& operator=(const TObjectPtr<U, R>& obj)
+		{
+			static_assert(std::is_base_of<T, U>::value);
+			m_InternalPtr = obj.Get();
 			return *this;
 		}
 		TObjectPtr<T, REF_COUNTED>& operator=(const std::shared_ptr<T>& obj)
@@ -116,7 +131,10 @@ namespace Suora
 		friend struct InternalPtr;
 	};
 
-	template<class T> using Ptr			= TObjectPtr<T, false>;
-	template<class T> using SharedPtr	= TObjectPtr<T, true>;
+	template<class T> using Ptr         = TObjectPtr<T, false>;
+	template<class T> using WeakPtr     = TObjectPtr<T, false>;
+	template<class T> using SharedPtr   = TObjectPtr<T, true>;
+	template<class T> using Ref         = std::shared_ptr<T>;
+	template<class T> using Scope       = std::unique_ptr<T>;
 
 }

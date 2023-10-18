@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <functional>
 #include <string>
-
+#include "Suora/Core/Log.h"
 
 namespace Suora
 {

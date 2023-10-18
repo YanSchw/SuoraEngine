@@ -21,7 +21,7 @@ namespace Suora
 	class InputAction; 
 	struct InputDispatcher;
 	enum class InputActionType : uint32_t;
-	template<class T> using Ref = std::shared_ptr<T>;
+	
 	extern void DrawInputDispatcherDropDown(Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height);
 
 	/** For Project Settings */

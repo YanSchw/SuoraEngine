@@ -853,7 +853,7 @@ namespace Suora
 			y -= 400.0f;
 			EditorUI::DrawRect(0, y, GetDetailWidth(), 400.0f, 0.0f, EditorPreferences::Get()->UiColor);
 			/** InputCategories */
-			static WeakRef<InputCategory> s_SelectedInputCategory = WeakRef<InputCategory>();
+			static std::weak_ptr<InputCategory> s_SelectedInputCategory = std::weak_ptr<InputCategory>();
 			{
 				static float scrollY = 0.0f;
 				float catY = y + 375.0f + scrollY;
@@ -901,7 +901,7 @@ namespace Suora
 				EditorUI::ScrollbarVertical(GetDetailWidth() * 0.25f - 5.0f, y, 5.0f, 400.0f, 0.0f, y, GetDetailWidth() * 0.25f, 400.0f, 0.0f, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &scrollY);
 			}
 			/** InputActions */
-			static WeakRef<InputBinding> s_SelectedInputBinding = WeakRef<InputBinding>();
+			static std::weak_ptr<InputBinding> s_SelectedInputBinding = std::weak_ptr<InputBinding>();
 			{
 				static float scrollY = 0.0f;
 				float actionY = y + 375.0f + scrollY;
