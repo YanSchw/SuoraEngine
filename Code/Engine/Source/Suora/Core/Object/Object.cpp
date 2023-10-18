@@ -8,7 +8,7 @@
 
 namespace Suora
 {
-	REGISTER_CLASS(Object, 1);
+	SUORA_REGISTER_CLASS(Object, 1);
 
 	Object::Object()
 	{

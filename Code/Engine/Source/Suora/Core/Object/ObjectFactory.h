@@ -13,13 +13,13 @@ namespace Suora
 	struct ObjectFactory
 	{
         template<class T>
-        struct RegisterClass
+        struct RegisterSuoraClass
         {
-            RegisterClass()
+            RegisterSuoraClass()
             {
                 s_ObjectAllocators[T::StaticClass().GetNativeClassID()] = InternalAllocate<T>;
             }
-            RegisterClass(NativeClassID id)
+            RegisterSuoraClass(NativeClassID id)
             {
                 s_ObjectAllocators[id] = InternalAllocate<T>;
             }
@@ -46,8 +46,8 @@ namespace Suora
 }
 
 
-#define REGISTER_CLASS(name, classid) \
-    ::Suora::ObjectFactory::RegisterClass<name> register_class_##name(##classid); \
+#define SUORA_REGISTER_CLASS(name, classid) \
+    ::Suora::ObjectFactory::RegisterSuoraClass<name> register_class_##name(##classid); \
 
-#define REGISTER_CLASS(name) \
-    ::Suora::ObjectFactory::RegisterClass<name> register_class_##name(##name::StaticClass().GetNativeClassID()); \
+#define SUORA_REGISTER_CLASS(name) \
+    ::Suora::ObjectFactory::RegisterSuoraClass<name> register_class_##name(##name::StaticClass().GetNativeClassID()); \
