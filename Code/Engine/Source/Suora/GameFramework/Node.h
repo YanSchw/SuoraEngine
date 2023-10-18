@@ -6,7 +6,7 @@
 
 namespace Yaml
 {
-	struct Node;
+	class Node;
 }
 namespace Suora::Physics
 {

@@ -48,7 +48,7 @@ namespace Suora
 		static void Decimate_ClusterEdge(MeshBuffer& buffer);
 		void Decimate_Cluster(MeshBuffer& meshBuffer, Ref<Cluster> cluster);
 		Ref<MeshBuffer> Async_LoadMeshBuffer(const std::string& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i);
-		void Serialize(Yaml::Node& root);
+		void Serialize(Yaml::Node& root) override;
 		void PostProcessCluster(MeshBuffer& buffer, Ref<Cluster> cluster, int32_t& id);
 		void GroupClusters(MeshBuffer& buffer, std::vector<Ref<Cluster>> clusters);
 		void Clusterfication(MeshBuffer& buffer);

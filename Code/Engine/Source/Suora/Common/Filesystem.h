@@ -25,7 +25,7 @@ namespace File
 
         return m.first == b.end();
     }
-    static std::vector<DirectoryEntry> GetAllAbsoluteEntriesOfPath(const FilePath& Path)
+    static inline std::vector<DirectoryEntry> GetAllAbsoluteEntriesOfPath(const FilePath& Path)
     {
         std::vector<DirectoryEntry> Entries;
         for (auto file : std::filesystem::directory_iterator(Path))

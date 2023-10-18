@@ -8,7 +8,7 @@ namespace Suora
 	class Object;
 
 	/** Internal use only... */
-	extern inline Object* InlineNew(const Class& cls, bool includeCompositionData, bool deepestLayer);
+	extern Object* InlineNew(const Class& cls, bool includeCompositionData, bool deepestLayer);
 
 	/** Use Suora::New(...) to allocated a new Instance of a SuoraClass */
 	static Object* New(const Class& cls, bool includeCompositionData = false, bool deepestLayer = false)
