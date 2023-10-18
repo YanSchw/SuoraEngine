@@ -31,12 +31,12 @@ namespace Suora
 	{
 		switch (slot)
 		{
-		case GBuffer::BaseColor: return FramebufferTextureFormat::RGB32F;
+		case GBuffer::BaseColor: return FramebufferTextureFormat::RGB16F;
 		case GBuffer::Metallic: return FramebufferTextureFormat::R8;
 		case GBuffer::Roughness: return FramebufferTextureFormat::R8;
-		case GBuffer::WorldPosition: return FramebufferTextureFormat::RGB32F;
-		case GBuffer::WorldNormal: return FramebufferTextureParams(FramebufferTextureFormat::RGB32F, FramebufferTextureFilter::Nearest);
-		case GBuffer::Emissive: return FramebufferTextureFormat::RGB32F;
+		case GBuffer::WorldPosition: return FramebufferTextureFormat::RGB16F;
+		case GBuffer::WorldNormal: return FramebufferTextureParams(FramebufferTextureFormat::RGB16F, FramebufferTextureFilter::Nearest);
+		case GBuffer::Emissive: return FramebufferTextureFormat::RGB16F;
 		case GBuffer::MeshID: return FramebufferTextureFormat::R32I;
 		case GBuffer::ClusterID: return FramebufferTextureFormat::R32I;
 		case GBuffer::GBufferSlotCount:
@@ -72,7 +72,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = m_InternalResolution.x;
 			spec.Height = m_InternalResolution.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			m_TemporaryAddBuffer = Framebuffer::Create(spec);
 		}
 		{
@@ -97,7 +97,7 @@ namespace Suora
 
 	void RenderPipeline::Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
-		SUORA_ASSERT(buffer.GetSpecification().Attachments.Attachments[0].TextureFormat == FramebufferTextureFormat::RGB32F);
+		SUORA_ASSERT(buffer.GetSpecification().Attachments.Attachments[0].TextureFormat == FramebufferTextureFormat::RGB16F);
 
 		if (!Ilum::IsInIlumPass())
 		{
@@ -132,7 +132,7 @@ namespace Suora
 
 		if (!Ilum::IsInIlumPass())
 		{
-			m_DecimaInstance->Run(&world, &camera);
+			//m_DecimaInstance->Run(&world, &camera);
 		}
 	}
 
@@ -568,7 +568,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = size.x;
 			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			m_DeferredLitBuffer[size] = Framebuffer::Create(spec);
 		}
 		return m_DeferredLitBuffer[size];
@@ -593,7 +593,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = size.x;
 			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_ForwardReadyBuffer[size] = Framebuffer::Create(spec);
 		}
@@ -607,7 +607,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = size.x;
 			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_FinalFramebuffer[size] = Framebuffer::Create(spec);
 		}

@@ -28,7 +28,7 @@ public:
 			FramebufferSpecification spec;
 			spec.Width = 1920;
 			spec.Height = 1080;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_Framebuffer = Framebuffer::Create(spec);
 		}

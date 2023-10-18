@@ -67,7 +67,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = 192;
 			spec.Height = 108;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_TranformGizmoPickingBuffer = Framebuffer::Create(spec);
 		}
