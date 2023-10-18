@@ -57,6 +57,7 @@ namespace Suora
 		void RenderSelectedMajorTab(float deltaTime);
 		void RenderTooltip(float deltaTime);
 		void RenderBottomBarAndHeroTool(float deltaTime);
+		void RenderTitlebar(float deltaTime);
 
 		Window* GetWindow();
 		static EditorWindow* GetCurrent() { return s_Current; }

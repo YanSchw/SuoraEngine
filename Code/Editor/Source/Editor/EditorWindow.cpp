@@ -111,6 +111,7 @@ namespace Suora
 				EditorUI::Text("Use Ctrl + Space to open the ContentDrawer", Font::Instance, 0.0f, 0.0f, m_Window->GetWidth(), m_Window->GetHeight(), 28.0f, Vec2(0.0f), Color(1.0f));
 				RenderBottomBarAndHeroTool(deltaTime);
 				EditorUI::PushInput(NativeInput::GetMousePosition().x, m_Window->GetHeight() - NativeInput::GetMousePosition().y, 0, 0);
+				RenderTitlebar(deltaTime);
 				EditorUI::RenderOverlays(deltaTime);
 				return;
 			}
@@ -132,43 +133,7 @@ namespace Suora
 #if defined(SUORA_DEBUG)
 		EditorUI::Text("Debug", Font::Instance, 85*ui, m_Window->GetHeight() - (27 * ui), 75*ui, 20*ui, 22.0f, Vec2(0.0f), Color(0.65f, 0.75f, 0.75f, 1.0f));
 #endif
-		// Logo
-		EditorUI::DrawRect(0, m_Window->GetHeight() - (36 * ui), m_Window->GetWidth(), 36 * ui, 0, EditorPreferences::Get()->UiTitlebarColor);
-		EditorUI::DrawTexturedRect(TexIcon, 4 * ui, m_Window->GetHeight() - (27 * ui), 73 * ui, 20 * ui, 0, Color(0.8f));
-		m_Window->RegisterOverTitlebar(!m_Window->IsCursorLocked() && NativeInput::GetMousePosition().y < (35 * ui) && NativeInput::GetMousePosition().x < m_Window->GetWidth() - (36 * ui) * 3);
-		// Window Handling... (Iconify, Minimize, Maximize)
-		{
-			EditorUI::PushInput(NativeInput::GetMousePosition().x, m_Window->GetHeight() - NativeInput::GetMousePosition().y, 0, 0);
-			EditorUI::ButtonParams Params;
-			Params.ButtonRoundness = 0.0f;
-			Params.ButtonColor = EditorPreferences::Get()->UiTitlebarColor;
-			Params.ButtonOutlineColor = EditorPreferences::Get()->UiTitlebarColor;
-			Params.ButtonColorClicked = EditorPreferences::Get()->UiTitlebarColor;
-			Params.ButtonColorHover = Color(0.95f, 0.15f, 0.15f, 1.0f);
-			Params.CenteredIcon = AssetManager::GetAsset<Texture2D>(SuoraID("c86ec48b-0c9a-489a-a082-ef0250a246ca"));
-			if (EditorUI::Button("", m_Window->GetWidth() - (36 * ui) * 1, m_Window->GetHeight() - (36 * ui), 36 * ui, 36 * ui, Params))
-			{
-				std::exit(0);
-			}
-			Params.ButtonColorHover = Color(0.35f, 0.35f, 0.35f, 1.0f);
-			Params.CenteredIcon = AssetManager::GetAsset<Texture2D>(SuoraID(m_Window->IsMaximized() ? "37489392-8840-44f8-b5d7-278452845669" : "425b4026-5db2-4398-ac6a-593524379285"));
-			if (EditorUI::Button("", m_Window->GetWidth() - (36 * ui) * 2, m_Window->GetHeight() - (36 * ui), 36 * ui, 36 * ui, Params))
-			{
-				EditorUI::ConsumeInput();
-				m_Window->Maximize();
-			}
-			Params.ButtonColorHover = Color(0.35f, 0.35f, 0.35f, 1.0f);
-			Params.CenteredIcon = AssetManager::GetAsset<Texture2D>(SuoraID("47d123a4-eae7-4499-9a69-d6b8e99c05c4"));
-			if (EditorUI::Button("", m_Window->GetWidth() - (36 * ui) * 3, m_Window->GetHeight() - (36 * ui), 36 * ui, 36 * ui, Params))
-			{
-				m_Window->Iconify();
-			}
-
-			if (!IsLauncher())
-			{
-				EditorUI::Button(ProjectSettings::GetProjectName(), m_Window->GetWidth() - (36 * ui) * 9, m_Window->GetHeight() - (17 * ui), 5 * 36 * ui, 18 * ui);
-			}
-		}
+		RenderTitlebar(deltaTime);
 
 		if (!IsLauncher())
 		{
@@ -446,6 +411,48 @@ namespace Suora
 		// Draw Stats
 		EditorUI::Text(std::string("FPS: ").append(std::to_string(Engine::GetFramerate())), Font::Instance, m_Window->GetWidth() - 160, 0, 150, 35.0f * ui, 20.0f, Vec2(1, +1), Color(1));
 		EditorUI::Text(std::to_string(deltaTime * 1000.0f) + "ms", Font::Instance, m_Window->GetWidth() - 160, 0, 150, 35.0f * ui, 20.0f, Vec2(1, -1), Color(1));
+	}
+
+	void EditorWindow::RenderTitlebar(float deltaTime)
+	{
+		float const ui = EditorPreferences::Get()->UiScale;
+		// Logo
+		EditorUI::DrawRect(0, m_Window->GetHeight() - (36 * ui), m_Window->GetWidth(), 36 * ui, 0, EditorPreferences::Get()->UiTitlebarColor);
+		EditorUI::DrawTexturedRect(TexIcon, 4 * ui, m_Window->GetHeight() - (27 * ui), 73 * ui, 20 * ui, 0, Color(0.8f));
+		m_Window->RegisterOverTitlebar(!m_Window->IsCursorLocked() && NativeInput::GetMousePosition().y < (35 * ui) && NativeInput::GetMousePosition().x < m_Window->GetWidth() - (36 * ui) * 3);
+		// Window Handling... (Iconify, Minimize, Maximize)
+		{
+			EditorUI::PushInput(NativeInput::GetMousePosition().x, m_Window->GetHeight() - NativeInput::GetMousePosition().y, 0, 0);
+			EditorUI::ButtonParams Params;
+			Params.ButtonRoundness = 0.0f;
+			Params.ButtonColor = EditorPreferences::Get()->UiTitlebarColor;
+			Params.ButtonOutlineColor = EditorPreferences::Get()->UiTitlebarColor;
+			Params.ButtonColorClicked = EditorPreferences::Get()->UiTitlebarColor;
+			Params.ButtonColorHover = Color(0.95f, 0.15f, 0.15f, 1.0f);
+			Params.CenteredIcon = AssetManager::GetAsset<Texture2D>(SuoraID("c86ec48b-0c9a-489a-a082-ef0250a246ca"));
+			if (EditorUI::Button("", m_Window->GetWidth() - (36 * ui) * 1, m_Window->GetHeight() - (36 * ui), 36 * ui, 36 * ui, Params))
+			{
+				std::exit(0);
+			}
+			Params.ButtonColorHover = Color(0.35f, 0.35f, 0.35f, 1.0f);
+			Params.CenteredIcon = AssetManager::GetAsset<Texture2D>(SuoraID(m_Window->IsMaximized() ? "37489392-8840-44f8-b5d7-278452845669" : "425b4026-5db2-4398-ac6a-593524379285"));
+			if (EditorUI::Button("", m_Window->GetWidth() - (36 * ui) * 2, m_Window->GetHeight() - (36 * ui), 36 * ui, 36 * ui, Params))
+			{
+				EditorUI::ConsumeInput();
+				m_Window->Maximize();
+			}
+			Params.ButtonColorHover = Color(0.35f, 0.35f, 0.35f, 1.0f);
+			Params.CenteredIcon = AssetManager::GetAsset<Texture2D>(SuoraID("47d123a4-eae7-4499-9a69-d6b8e99c05c4"));
+			if (EditorUI::Button("", m_Window->GetWidth() - (36 * ui) * 3, m_Window->GetHeight() - (36 * ui), 36 * ui, 36 * ui, Params))
+			{
+				m_Window->Iconify();
+			}
+
+			if (!IsLauncher())
+			{
+				EditorUI::Button(ProjectSettings::GetProjectName(), m_Window->GetWidth() - (36 * ui) * 9, m_Window->GetHeight() - (17 * ui), 5 * 36 * ui, 18 * ui);
+			}
+		}
 	}
 
 	Window* EditorWindow::GetWindow()
