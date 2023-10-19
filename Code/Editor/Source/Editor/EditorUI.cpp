@@ -59,7 +59,7 @@ namespace Suora
 				FramebufferSpecification spec;
 				spec.Width = 128;
 				spec.Height = 128;
-				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
 				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 				m_Preview = Framebuffer::Create(spec);
 			}

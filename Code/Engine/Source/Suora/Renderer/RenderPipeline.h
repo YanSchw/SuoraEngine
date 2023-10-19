@@ -45,7 +45,10 @@ namespace Suora
 
 	struct RenderingParams
 	{
+		RenderingParams();
+
 		bool DrawWireframe = false;
+		bool EnableDeferredRendering = true;
 	};
 
 	/** All Rendering is maintained here */

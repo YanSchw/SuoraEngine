@@ -11,6 +11,7 @@
 #include "Suora/Renderer/Decima.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/ShaderGraph.h"
+#include "Suora/Assets/SuoraProject.h"
 
 #include "Suora/GameFramework/Nodes/MeshNode.h"
 #include "Suora/GameFramework/Nodes/DecalNode.h"
@@ -97,7 +98,7 @@ namespace Suora
 
 	void RenderPipeline::Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
-		SUORA_ASSERT(buffer.GetSpecification().Attachments.Attachments[0].TextureFormat == FramebufferTextureFormat::RGB16F);
+		SUORA_ASSERT(buffer.GetSpecification().Attachments.Attachments[0].TextureFormat == FramebufferTextureFormat::RGBA8);
 
 		if (!Ilum::IsInIlumPass())
 		{
@@ -116,7 +117,16 @@ namespace Suora
 		}
 		SetFullscreenViewport(gbuffer);
 
-		DeferredPass(world, camera, gbuffer, params);
+		if (params.EnableDeferredRendering)
+		{
+			DeferredPass(world, camera, gbuffer, params);
+		}
+		else
+		{
+			GetForwardReadyBuffer(gbuffer.GetSize())->Bind();
+			RenderCommand::SetClearColor(camera.GetClearColor());
+			RenderCommand::Clear();
+		}
 
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Blend);
 
@@ -612,6 +622,14 @@ namespace Suora
 			m_FinalFramebuffer[size] = Framebuffer::Create(spec);
 		}
 		return m_FinalFramebuffer[size];
+	}
+
+	RenderingParams::RenderingParams()
+	{
+		if (ProjectSettings::Get())
+		{
+			EnableDeferredRendering = ProjectSettings::Get()->m_EnableDeferredRendering;
+		}
 	}
 
 }

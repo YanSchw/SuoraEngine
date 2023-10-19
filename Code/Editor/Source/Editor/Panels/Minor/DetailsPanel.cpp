@@ -816,7 +816,8 @@ namespace Suora
 		y -= 35.0f;
 		if (EditorUI::CategoryShutter(0, "Rendering", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
 		{
-			DrawFloat(&settings->m_TargetFramerate, "TargetFramerate", y, false);
+			DrawFloat(&settings->m_TargetFramerate, "Target Framerate", y, false);
+			DrawBool(&settings->m_EnableDeferredRendering, "Enable Deferred Rendering", y, false);
 		}
 		y -= 35.0f;
 		if (EditorUI::CategoryShutter(1, "Game", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
