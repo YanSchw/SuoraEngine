@@ -1,5 +1,6 @@
 #pragma once
 #include "inttypes.h"
+#include "Suora/Common/Array.h"
 #include <unordered_map>
 
 template<class T> class Array;
@@ -31,7 +32,7 @@ namespace Suora
 		Blueprint* m_BlueprintClass = nullptr; // nullptr if this is a native class
 		ScriptClass* m_ScriptClass = nullptr;  // nullptr if this is a native class
 	public:
-		Class(NativeClassID id)
+		explicit Class(const NativeClassID id)
 		{
 			m_NativeClassID = id;
 		}
@@ -39,20 +40,20 @@ namespace Suora
 		{
 			m_BlueprintClass = node;
 		}
-		Class(Blueprint& node)
+		explicit Class(Blueprint& node)
 		{
 			m_BlueprintClass = &node;
 		}
-		Class(ScriptClass* script)
+		explicit Class(ScriptClass* script)
 		{
 			m_ScriptClass = script;
 		}
-		Class(ScriptClass& script)
+		explicit Class(ScriptClass& script)
 		{
 			m_ScriptClass = &script;
 		}
 
-		Class& operator=(NativeClassID id)
+		Class& operator=(const NativeClassID id)
 		{
 			m_NativeClassID = id;
 			m_BlueprintClass = nullptr;
@@ -91,15 +92,15 @@ namespace Suora
 		{
 			return IsNative() ? (*this == cls.m_NativeClassID) : ( IsScriptClass() ? (*this == cls.m_ScriptClass) : (*this == cls.m_BlueprintClass));
 		}
-		bool operator==(NativeClassID id) const
+		bool operator==(const NativeClassID id) const
 		{
 			return id == m_NativeClassID;
 		}
-		bool operator==(Blueprint* node) const
+		bool operator==(const Blueprint* node) const
 		{
 			return node == m_BlueprintClass;
 		}
-		bool operator==(ScriptClass* script) const
+		bool operator==(const ScriptClass* script) const
 		{
 			return script == m_ScriptClass;
 		}
@@ -107,7 +108,7 @@ namespace Suora
 		{
 			return !operator==(cls);
 		}
-		bool operator!=(NativeClassID id) const
+		bool operator!=(const NativeClassID id) const
 		{
 			return !operator==(id);
 		}
@@ -143,7 +144,7 @@ namespace Suora
 
 		static void GenerateNativeClassReflector(const Class& cls);
 
-		Array<Class> GetInheritanceTree();
+		Array<Class> GetInheritanceTree() const;
 
 		static Array<Class> GetAllClasses();
 		static Array<Class> GetSubclassesOf(const Class& base);
@@ -176,7 +177,7 @@ namespace std
 	template <>
 	struct hash<Suora::Class>
 	{
-		std::size_t operator()(const Suora::Class& cls) const
+		std::size_t operator()(const Suora::Class& cls) const noexcept
 		{
 			return ((std::hash<Suora::NativeClassID>()(cls.GetNativeClassID())
 				^ (std::hash<Suora::Blueprint*>()(cls.GetBlueprintClass()) << 1)) >> 1)

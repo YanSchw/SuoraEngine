@@ -171,7 +171,7 @@ namespace Suora
 				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::Pop));
 			}
 		}
-		CompileVisualNode(func, blueprint, *exec.Target->GetNode(), exec.Target, cache, graph);
+		CompileVisualNode(func, Class(blueprint), *exec.Target->GetNode(), exec.Target, cache, graph);
 		func.m_LocalVarCount = cache.LocalVars.Size();
 	}
 	bool BlueprintCompiler::CompileVisualNode(ScriptFunction& func, const Class& cls, VisualNode& node, VisualNodePin* exec, CompilerCache& cache, Ref<VisualNodeGraph> graph)

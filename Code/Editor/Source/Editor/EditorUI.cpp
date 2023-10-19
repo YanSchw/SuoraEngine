@@ -129,7 +129,7 @@ namespace Suora
 				camera->SetPosition(Vec3(5 * -1.0f, 5, 5 * -1.0f));
 				camera->SetEulerRotation(Vec3(45, 45, 0));
 				camera->SetViewportSize(256, 256);
-				m_World->Spawn(asset->As<Blueprint>());
+				m_World->Spawn(Class(asset->As<Blueprint>()));
 			}
 		}
 		void Render(Asset* asset)
