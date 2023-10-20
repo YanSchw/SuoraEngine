@@ -12,13 +12,14 @@ SuoraEngine is an open-source C++ Engine for building 3D real-time rendering and
 ## Current Features
 In its current state, Suora's most remarkable features are:
 
-| Feature               | Description                              |
-| -------               | -----------                              |
-| **C++ Reflection**    | C++ Reflection using **SuoraHeaderTool** |
-| **Physics**           | 3D Physics using JoltPhysics             |
-| **GameFramework**     | Flexible Node-based GameFramework        |
-| **Custom EditorUI**   | ... using the RenderingAPI as a Backend  |
-| **Visual Scripting** (Experimental)   | Add custom Game Code using VisualScripting |
+| Feature                               | Description                                               |
+| -------                               | -----------                                               |
+| **C++ Reflection**                    | C++ Reflection using **SuoraHeaderTool**                  |
+| **Physics**                           | 3D Physics using JoltPhysics                              |
+| **GameFramework**                     | Flexible Node-based GameFramework                         |
+| **Custom EditorUI**                   | ... using the RenderingAPI as a Backend                   |
+| **Visual Scripting** (Experimental)   | Add custom Game Code using VisualScripting                |
+| **Deferred Rendering**                | Deferred + Forward Rendering using scriptable Shaders     |
 
 ## Getting Started [Windows]
 - Install Visual Studio 2019 and also install **Desktop Development with C++** using the Visual Studio Installer
