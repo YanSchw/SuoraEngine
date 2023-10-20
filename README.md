@@ -20,8 +20,9 @@ In its current state, Suora's most remarkable features are:
 | **Custom EditorUI**   | ... using the RenderingAPI as a Backend  |
 | **Visual Scripting** (Experimental)   | Add custom Game Code using VisualScripting |
 
-## Getting Started
+## Getting Started [Windows]
 - Install Visual Studio 2019 and also install **Desktop Development with C++** using the Visual Studio Installer
+![Screenshot of VS2022-Installer-Workloads](Docs/Images/VS2022-Installer-Workloads.png)
 - To *create a new* or *open an existing* Suora Project, start the Launcher in /Binaries/
 - Select a Project Name and Location and hit *Create*
 - Visual Studio should open by default
@@ -30,16 +31,17 @@ In its current state, Suora's most remarkable features are:
 - Choose **Editor** as your Startup Project and **Release** as your Configuration
 - Compile and Run
 
-## Setup the Engine Project
+## Build the Engine yourself
 - Clone the repository: git clone --recursive https://github.com/YanSchw/SuoraEngine
 - Execute the Buildscript in /Binaries/Scripts/{...}
   - Or build SuoraBuildTool yourself in /Code/SuoraBuildTool
 - Generate the Solution using /GenerateSolution.bat
 - Open the Solution using Visual Studio 2019
+- Build using VS2019
 
 ## Build Requirements
 - C++17 Compiler
-- Visual Studio 2019 Toolset
+- [Windows] Visual Studio 2019 Toolset (**MSVC**)
 
 ## Supported Platforms
 - Windows (64bit)
