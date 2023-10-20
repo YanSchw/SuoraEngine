@@ -26,6 +26,7 @@ In its current state, Suora's most remarkable features are:
 ![Screenshot of VS2022-Installer-Workloads](Docs/Images/VS2022-Installer-Workloads.png)
 - To *create a new* or *open an existing* Suora Project, start the Launcher in /Binaries/
 - Select a Project Name and Location and hit *Create*
+![CreateProject](Docs/Images/CreateProject.png)
 - Visual Studio should open by default
   - If not, open the Location in your File Explorer and use the Buildscripts in {ProjectLocation}/Scripts/
   - Open the .sln manually
