@@ -1,7 +1,5 @@
 #pragma once
 #include <unordered_map>
-#include <vector>
-#include "Object.h"
 #include "Suora/Reflection/Class.h"
 
 namespace Suora

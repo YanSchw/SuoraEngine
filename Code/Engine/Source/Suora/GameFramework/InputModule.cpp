@@ -1,6 +1,7 @@
 #include "Precompiled.h"
 #include "InputModule.h"
 #include "Suora/Core/NativeInput.h"
+#include "Suora/Common/Common.h"
 #include "Suora/Serialization/Yaml.h"
 #include "Suora/GameFramework/Node.h"
 #include "Suora/NodeScript/ScriptStack.h"

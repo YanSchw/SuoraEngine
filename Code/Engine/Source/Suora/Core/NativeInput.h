@@ -1,6 +1,5 @@
 #pragma once
 #include <unordered_map>
-#include <glm/glm.hpp>
 #include "CoreMinimal.h"
 #include "Suora/Common/Delegate.h"
 #include "Suora/Core/KeyCodes.h"
