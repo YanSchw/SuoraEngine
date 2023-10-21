@@ -1233,6 +1233,7 @@ namespace Suora
 					}
 				}
 				InputReady = true;
+				EditorUI::DrawRectOutline(x, y, width, height, 1.0f, EditorPreferences::Get()->UiBackgroundColor);
 			}
 		};
 
