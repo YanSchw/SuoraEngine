@@ -22,7 +22,7 @@ In its current state, Suora's most remarkable features are:
 | **Deferred Rendering**                | Deferred + Forward Rendering using scriptable Shaders     |
 
 ## Getting Started [Windows]
-- Install Visual Studio 2019 and also install **Desktop Development with C++** using the Visual Studio Installer
+- Install Visual Studio 2022 and also install **Desktop Development with C++** using the Visual Studio Installer
 ![Screenshot of VS2022-Installer-Workloads](Docs/Images/VS2022-Installer-Workloads.png)
 - To *create a new* or *open an existing* Suora Project, start the Launcher in /Binaries/
 - Select a Project Name and Location and hit *Create*
@@ -38,12 +38,12 @@ In its current state, Suora's most remarkable features are:
 - Execute the Buildscript in /Binaries/Scripts/{...}
   - Or build SuoraBuildTool yourself in /Code/SuoraBuildTool
 - Generate the Solution using /GenerateSolution.bat
-- Open the Solution using Visual Studio 2019
-- Build using VS2019
+- Open the Solution using Visual Studio 2022
+- Build using VS2022
 
 ## Build Requirements
 - C++17 Compiler
-- [Windows] Visual Studio 2019 Toolset (**MSVC**)
+- [Windows] Visual Studio 2022 Toolset (**MSVC**)
 
 ## Supported Platforms
 - Windows (64bit)

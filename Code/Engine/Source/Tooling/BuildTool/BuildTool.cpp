@@ -226,7 +226,7 @@ namespace Suora::Tools
 	{
 		std::string batchScript = "@echo off\n\
 			pushd %~dp0\\..\\\n\
-			call " + FixPathForPremake5(engineRootPath.string()) + "/Code/Dependencies/premake/PremakeBinaries/premake5.exe vs2019\n\
+			call " + FixPathForPremake5(engineRootPath.string()) + "/Code/Dependencies/premake/PremakeBinaries/premake5.exe vs2022\n\
 			popd\n\
 			";
 		Platform::WriteToFile(projectRootPath.string() + "/Scripts/GenerateSolution.bat", batchScript);
