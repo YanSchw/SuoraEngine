@@ -82,7 +82,7 @@ namespace Suora
 
 		static Ref<spdlog::logger>& GetLogger(LogCategory category);
 	private:
-		static std::string CategoryToString(LogCategory category);
+		static std::string CategoryToString(const LogCategory category);
 
 	};
 

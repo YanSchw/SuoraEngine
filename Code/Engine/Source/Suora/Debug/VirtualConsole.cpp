@@ -1,5 +1,6 @@
 #include "Precompiled.h"
 #include "VirtualConsole.h"
+#include "Suora/Common/Common.h"
 
 namespace Suora
 {
@@ -41,8 +42,13 @@ namespace Suora
 		return GetMessagesWithLevel(LogLevel::Error);
 	}
 
-	void VirtualConsole::PushMessage(const ConsoleMessage& msg)
+	void VirtualConsole::PushMessage(ConsoleMessage msg)
 	{
+		while (Util::ReplaceSequence(msg.m_Message, "\r", ""));
 		m_Messages.push_back(msg);
+	}
+	void VirtualConsole::IssueCommand(const std::string& cmd)
+	{
+		SuoraError("Command: {0}", cmd);
 	}
 }

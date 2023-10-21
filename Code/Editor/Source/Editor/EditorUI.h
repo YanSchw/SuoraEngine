@@ -549,7 +549,7 @@ namespace Suora
 			Params.HoverCursor = Cursor::IBeam;
 			return Params;
 		}
-		static void TextField(std::string* str, float x, float y, float width, float height, ButtonParams params = TextFieldButtonParams());
+		static void TextField(std::string* str, float x, float y, float width, float height, ButtonParams params = TextFieldButtonParams(), const std::function<void(std::string)>& lambda = nullptr);
 		static void _SetTextFieldStringPtr(std::string* str, float x, float y, float width, float height, bool needsFlag = true);
 
 	private:

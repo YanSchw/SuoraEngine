@@ -27,7 +27,6 @@ namespace Suora
 
 		Editor()
 		{
-			//GetWindow().SetVSync(false);
 			AssetManager::s_AssetHotReloading = true;
 
 			EditorWindows.Add(new EditorWindow());
@@ -68,9 +67,6 @@ namespace Suora
 			m_StopPIE_Flag = true;
 		}
 
-		~Editor()
-		{
-		}
 	};
 
 	Application* CreateApplication()

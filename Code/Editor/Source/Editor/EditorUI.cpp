@@ -583,14 +583,14 @@ namespace Suora
 			TextFieldCharBuffer.Add(keyCode);
 		}
 	}
-	void EditorUI::TextField(std::string* str, float x, float y, float width, float height, ButtonParams params)
+	void EditorUI::TextField(std::string* str, float x, float y, float width, float height, ButtonParams params, const std::function<void(std::string)>& lambda)
 	{
 		if (EditorUI::Button(*str, x, y, width, height, params) && !TextField_Str && CurrentWindow->m_InputEvent == EditorInputEvent::None)
 		{
 			TextField_StrFlag = true;
 			TextField_Str = str;
 			TextFieldCharBuffer.Clear();
-			CreateOverlay<TextFieldOverlay>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, str, params.TextSize);
+			CreateOverlay<TextFieldOverlay>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, str, params.TextSize, lambda);
 		}
 
 		if (TextField_Str == str)

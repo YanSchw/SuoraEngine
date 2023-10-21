@@ -8,11 +8,12 @@ namespace Suora
 	{
 	public:
 		EditorConsolePanel(MajorTab* majorTab);
-		~EditorConsolePanel();
 
 		virtual void Render(float deltaTime) override;
+
+		static class Texture* GetLogLevelIcon(const LogLevel level);
 	private:
 		float m_ScrollY = 0.0f;
-		inline static std::string s_Input;
+		inline static std::string s_InputCommand;
 	};
 }
