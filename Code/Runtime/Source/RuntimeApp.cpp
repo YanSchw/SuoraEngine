@@ -8,6 +8,8 @@
 #include "Suora/Assets/SuoraProject.h"
 #include "Suora/GameFramework/Nodes/CameraNode.h"
 
+extern void Modules_Init();
+
 class Runtime : public Suora::Application
 {
 public:
@@ -16,7 +18,6 @@ public:
 
 	Runtime()
 	{
-		extern void Modules_Init();
 		Modules_Init();
 		
 		m_StandaloneWindow = Suora::Ref<Window>(CreateAppWindow(WindowProps()));

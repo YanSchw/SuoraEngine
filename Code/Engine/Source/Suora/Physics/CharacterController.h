@@ -20,7 +20,7 @@ namespace Suora
 		return static_cast<ECollisionFlags>(static_cast<int32_t>(a) | static_cast<int32_t>(b));
 	}
 
-	class CharacterController abstract
+	class CharacterController
 	{
 	public:
 		virtual ~CharacterController() = default;

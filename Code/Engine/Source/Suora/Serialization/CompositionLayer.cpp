@@ -311,7 +311,7 @@ namespace Suora
 
 		if (true) // isMembernative
 		{
-			for (Ref<ClassMember> mem : allMembers)
+			for (const Ref<ClassMember>& mem : allMembers)
 			{
 				if (m_Member.m_MemberName == mem->m_MemberName && m_Member.m_Type == mem->m_Type)
 				{
@@ -342,7 +342,7 @@ namespace Suora
 						*ClassMember::AccessMember<Class>(obj, mem->m_MemberOffset) = parentHasMember ? *ClassMember::AccessMember<Class>(DefaultComp, mem->m_MemberOffset) : Class::None;
 						break;
 					case ClassMember::Type::SubclassOf:
-						*ClassMember::AccessMember<TSubclassOf>(obj, mem->m_MemberOffset) = parentHasMember ? *ClassMember::AccessMember<TSubclassOf>(DefaultComp, mem->m_MemberOffset) : ClassMember::AccessMember<TSubclassOf>(obj, mem->m_MemberOffset)->GetBase();
+						*ClassMember::AccessMember<TSubclassOf>(obj, mem->m_MemberOffset) = parentHasMember ? ClassMember::AccessMember<TSubclassOf>(DefaultComp, mem->m_MemberOffset)->GetClass() : ClassMember::AccessMember<TSubclassOf>(obj, mem->m_MemberOffset)->GetBase();
 						break;
 					default: SuoraError("{0}, ReflectionType missing!", __FUNCTION__); break;
 					}

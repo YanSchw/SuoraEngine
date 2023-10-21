@@ -12,6 +12,8 @@
 // HeaderTool
 #include "Tooling/HeaderTool/HeaderTool.h"
 
+extern void Modules_Init();
+
 namespace Suora 
 {
 
@@ -36,7 +38,6 @@ namespace Suora
 			Font::Instance = AssetManager::GetAssetByName<Font>("Inter-Light.font");
 			Font::Instance = AssetManager::GetAssetByName<Font>("JetbrainsMono32b.font");
 
-			extern void Modules_Init();
 			Modules_Init();
 			
 			EditorUI::Init();

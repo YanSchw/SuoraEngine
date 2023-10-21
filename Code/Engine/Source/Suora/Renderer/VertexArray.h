@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include "Suora/Renderer/Buffer.h"
 
 namespace Suora 
@@ -23,9 +24,9 @@ namespace Suora
 		virtual const Ref<IndexBuffer>& GetIndexBuffer() const = 0;
 
 		static Ref<VertexArray> Create();
-		static VertexArray* Create(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
+		static VertexArray* Create(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 		static VertexArray* Create(const Ref<MeshBuffer>& buffer);
-		static VertexArray* Create(MeshBuffer& buffer);
+		static VertexArray* Create(const MeshBuffer& buffer);
 	};
 
 }

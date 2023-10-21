@@ -13,7 +13,7 @@ namespace Suora
 {
 	struct EditorUI
 	{
-		struct Overlay abstract
+		struct Overlay
 		{
 			float x = 0, y = 0, width = 100, height = 100;
 
@@ -302,6 +302,10 @@ namespace Suora
 			Cursor HoverCursor = Cursor::Hand;
 
 			bool* OutHover = nullptr;
+
+			ButtonParams()
+			{
+			}
 
 			inline static ButtonParams Invisible()
 			{

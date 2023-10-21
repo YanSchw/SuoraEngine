@@ -45,5 +45,5 @@ namespace Suora
 
 
 #define SUORA_REGISTER_CLASS(name, classid) \
-    ::Suora::ObjectFactory::RegisterSuoraClass<name> register_class_##name(##classid); \
+    ::Suora::ObjectFactory::RegisterSuoraClass<name> register_class_##name(classid); \
 

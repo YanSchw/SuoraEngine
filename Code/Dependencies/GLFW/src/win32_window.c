@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windowsx.h>
+#include <winuser.h>
 #include <shellapi.h>
 #include <uxtheme.h>
 
@@ -484,6 +485,9 @@ static void releaseMonitor(_GLFWwindow* window)
     _glfwInputMonitorWindow(window->monitor, NULL);
     _glfwRestoreVideoModeWin32(window->monitor);
 }
+// Fix for Clang compile-error
+// call to undeclared function 'GetSystemMetricsForDpi'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+WINUSERAPI int WINAPI GetSystemMetricsForDpi(_In_ int nIndex, _In_ UINT dpi);
 
 // Window callback function (handles window messages)
 //

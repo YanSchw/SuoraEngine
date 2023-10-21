@@ -35,7 +35,7 @@ namespace Suora
 		virtual void Render(float deltaTime) override;
 	};
 
-	struct CreateAssetOverlay abstract : public DragableOverlay
+	struct CreateAssetOverlay : public DragableOverlay
 	{
 		CreateAssetOverlay(const std::string& directory, const std::string& title, const std::string& defaultAssetName)
 			: DragableOverlay(title), m_Directory(directory)

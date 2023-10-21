@@ -26,7 +26,7 @@ namespace Suora::Tools
 
 		/** Generates the 'AllModules' Project in /Build/AllModules
 		  *  projectRootPath is not the /Code path, but the path containing /Code, /Content etc. */
-		void GenerateModules(const std::filesystem::path& projectRootPath, BuildCollection& collection = BuildCollection(), bool writeAllModules = true);
+		void GenerateModules(const std::filesystem::path& projectRootPath, BuildCollection& collection, bool writeAllModules = true);
 
 		void GenerateProjectPremake5(const std::filesystem::path& projectRootPath, const std::filesystem::path& engineRootPath);
 

@@ -21,7 +21,7 @@ namespace Suora
 		return nullptr;
 	}
 
-	VertexArray* VertexArray::Create(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices)
+	VertexArray* VertexArray::Create(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
 	{
 		VertexArray* vao = nullptr;
 
@@ -53,7 +53,7 @@ namespace Suora
 	{
 		return VertexArray::Create(buffer->Vertices, buffer->Indices);
 	}
-	VertexArray* VertexArray::Create(MeshBuffer& buffer)
+	VertexArray* VertexArray::Create(const MeshBuffer& buffer)
 	{
 		return VertexArray::Create(buffer.Vertices, buffer.Indices);
 	}
