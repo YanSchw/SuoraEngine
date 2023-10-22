@@ -2,7 +2,6 @@
 #include "../../EditorWindow.h"
 #include "../Major/NodeClassEditor.h"
 #include "../../Util/EditorPreferences.h"
-#include "Suora/Serialization/CompositionLayer.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 #include "Suora/Assets/SuoraProject.h"
@@ -363,138 +362,73 @@ namespace Suora
 		EditorUI::ScrollbarVertical(GetWidth() - 10, 0, 10, GetHeight(), 0, 0, GetWidth(), GetHeight(), 0, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &m_ScrollY);
 	}
 
-	void DetailsPanel::DrawClassMember(float& x, float& y, Object* obj, ClassMember* member, int memberIndex)
+	void DetailsPanel::DrawClassMember(float& x, float& y, Node* obj, ClassMember* member, int memberIndex)
 	{
 		//y -= 10.0f;
-		if (!obj->Implements<IObjectCompositionData>()) obj->Implement<IObjectCompositionData>();
-		IObjectCompositionData& data = *obj->GetInterface<IObjectCompositionData>();
-		if (data.m_DefaultMemberValues.Size() <= memberIndex) return;
-
-		if (member->m_Type == ClassMember::Type::Float)
+		const auto type = member->m_Type;
+		const auto mname = member->m_MemberName;
+		const bool valueChangedBefore = obj->m_OverwrittenProperties.Contains(mname);
+		Result result = Result::None;
+		if (type == ClassMember::Type::Float)
 		{
 			float* f = ClassMember::AccessMember<float>(obj, member->m_MemberOffset);
-			const Result result = DrawFloat(f, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-			else if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueFloat = *f;
-			}
-			
+			result = DrawFloat(f, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Bool)
 		{
 			bool* b = ClassMember::AccessMember<bool>(obj, member->m_MemberOffset);
-			const Result result = DrawBool(b, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueBool = *b;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-			
+			result = DrawBool(b, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Vector3)
 		{
 			Vec3* v = ClassMember::AccessMember<Vec3>(obj, member->m_MemberOffset);
-			const Result result = DrawVec3(v, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueVec3 = *v;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-
+			result = DrawVec3(v, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Vector4)
 		{
 			Vec4* v = ClassMember::AccessMember<Vec4>(obj, member->m_MemberOffset);
-			const Result result = DrawVec4(v, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueVec4 = *v;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-
+			result = DrawVec4(v, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::AssetPtr)
 		{
 			Asset** asset = ClassMember::AccessMember<Asset*>(obj, member->m_MemberOffset);
-			const Result result = DrawAsset(asset, ((ClassMember_AssetPtr*)(member))->m_AssetClass, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueAssetPtr = *asset;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-			
+			result = DrawAsset(asset, ((ClassMember_AssetPtr*)(member))->m_AssetClass, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::MaterialSlots)
 		{
 			MaterialSlots* materials = ClassMember::AccessMember<MaterialSlots>(obj, member->m_MemberOffset);
-			const Result result = DrawMaterialSlots(materials, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueMaterialSlots = *materials;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
+			result = DrawMaterialSlots(materials, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Class)
 		{
 			Class* cls = ClassMember::AccessMember<Class>(obj, member->m_MemberOffset);
-			const Result result = DrawClass(cls, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueClass = *cls;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
+			result = DrawClass(cls, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::SubclassOf)
 		{
 			TSubclassOf* cls = ClassMember::AccessMember<TSubclassOf>(obj, member->m_MemberOffset);
-			const Result result = DrawSubclassOf(cls, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueClass = *cls;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
+			result = DrawSubclassOf(cls, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Delegate)
 		{
 			TDelegate* delegate = ClassMember::AccessMember<TDelegate>(obj, member->m_MemberOffset);
-			const Result result = DrawDelegate(delegate, member->m_MemberName, y);
+			result = DrawDelegate(delegate, mname, y);
 		}
 		else
 		{
 			SuoraError("{0}: Missing ClassMember implementation!", __FUNCTION__);
+		}
+
+		if (result == Result::ValueReset)
+		{
+			obj->ResetProperty(*member);
+		}
+		else if (result == Result::ValueChange)
+		{
+			if (!obj->m_OverwrittenProperties.Contains(mname))
+			{
+				obj->m_OverwrittenProperties.Add(mname);
+			}
 		}
 	}
 

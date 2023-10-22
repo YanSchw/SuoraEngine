@@ -1,6 +1,5 @@
 #pragma once
 #include "Asset.h"
-#include "Suora/Serialization/CompositionLayer.h"
 #include "Blueprint.h"
 #include <vector>
 #include <string>

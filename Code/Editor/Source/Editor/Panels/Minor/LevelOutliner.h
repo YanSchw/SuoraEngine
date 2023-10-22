@@ -13,6 +13,8 @@ namespace Suora
 		LevelOutliner(MajorTab* majorTab);
 		~LevelOutliner();
 
+		static std::vector<EditorUI::ContextMenuElement> CreateNodeMenu(World* world, Node* node);
+
 		Texture2D* TexActorIcon = nullptr;
 		Texture2D* TexVisible0 = nullptr;
 		Texture2D* TexVisible1 = nullptr;

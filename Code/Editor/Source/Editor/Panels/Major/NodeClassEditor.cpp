@@ -113,7 +113,7 @@ namespace Suora
 	void NodeClassEditor::ResetEnvironment()
 	{
 		m_World = CreateRef<World>();
-		m_Actor = m_BlueprintClass->CreateInstance(true, true, true)->As<Node>();
+		m_Actor = m_BlueprintClass->CreateInstance(true)->As<Node>();
 		m_Actor->InitializeNode(*m_World);
 		m_Actor->m_Name = m_Name;
 
@@ -182,14 +182,11 @@ namespace Suora
 		
 		if (NativeInput::GetKeyDown(Key::Delete) && m_SelectedObject && m_SelectedObject->IsA<Node>())
 		{
-			if (IObjectCompositionData* obj = m_SelectedObject->As<Node>()->GetInterface<IObjectCompositionData>())
+			if (m_SelectedObject->As<Node>()->m_IsActorLayer)
 			{
-				if (obj->m_IsActorLayer)
-				{
-					if (m_SelectedObject == m_DetailsPanel->m_Data) m_DetailsPanel->m_Data = nullptr;
-					m_SelectedObject->As<Node>()->Destroy();
-					m_SelectedObject = nullptr;
-				}
+				if (m_SelectedObject == m_DetailsPanel->m_Data) m_DetailsPanel->m_Data = nullptr;
+				m_SelectedObject->As<Node>()->Destroy();
+				m_SelectedObject = nullptr;
 			}
 		}
 	}

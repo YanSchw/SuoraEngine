@@ -398,7 +398,7 @@ namespace Suora
 			}
 		}
 
-		Node* node = m_BlueprintClass->CreateInstance(true, true, true)->As<Node>();
+		Node* node = m_BlueprintClass->CreateInstance(true)->As<Node>();
 		RecursiveNodeDelegates(node, false);
 		delete node;
 	}

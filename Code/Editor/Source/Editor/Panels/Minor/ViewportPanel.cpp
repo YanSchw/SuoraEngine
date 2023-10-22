@@ -178,21 +178,9 @@ namespace Suora
 						AssetDragDropNode->SetName(ContentBrowser::s_DraggedAsset->GetAssetName());
 						AssetDragDropNode->As<MeshNode>()->mesh = ContentBrowser::s_DraggedAsset->As<Mesh>();
 						AssetDragDropNode->As<MeshNode>()->materials = AssetManager::GetAsset<Material>(SuoraID("75423845379822"));
-						AssetDragDropNode->Implement<IObjectCompositionData>();
-						AssetDragDropNode->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
-						for (auto& it : AssetDragDropNode->GetInterface<IObjectCompositionData>()->m_DefaultMemberValues)
-						{
-							if (it.m_Member.m_Type == ClassMember::Type::AssetPtr && it.m_Member.m_MemberName == "mesh")
-							{
-								it.m_ValueChanged = true;
-								it.m_ValueAssetPtr = ContentBrowser::s_DraggedAsset->As<Mesh>();
-							}
-							if (it.m_Member.m_Type == ClassMember::Type::AssetPtr && it.m_Member.m_MemberName == "material")
-							{
-								it.m_ValueChanged = true;
-								it.m_ValueAssetPtr = AssetManager::GetAsset<Material>(SuoraID("75423845379822"));
-							}
-						}
+						AssetDragDropNode->m_IsActorLayer = true;
+						AssetDragDropNode->m_OverwrittenProperties.Add("mesh");
+						AssetDragDropNode->m_OverwrittenProperties.Add("material");
 					}
 					else if (ContentBrowser::s_DraggedAsset->IsA<Blueprint>())
 					{
@@ -208,8 +196,7 @@ namespace Suora
 
 				if (NativeInput::GetMouseButtonUp(Mouse::ButtonLeft) && AssetDragDropNode)
 				{
-					AssetDragDropNode->Implement<IObjectCompositionData>();
-					AssetDragDropNode->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
+					AssetDragDropNode->m_IsActorLayer = true;
 					AssetDragDropValidation = true;
 
 					if (GetMajorTab()->IsA<NodeClassEditor>()) GetMajorTab()->As<NodeClassEditor>()->m_SelectedObject = AssetDragDropNode;

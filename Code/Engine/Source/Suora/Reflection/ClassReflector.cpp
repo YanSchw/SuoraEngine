@@ -5,6 +5,7 @@
 #include "Suora/Assets/Blueprint.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 #include "Suora/Common/Common.h"
+#include "Suora/Common/VectorUtils.h"
 
 namespace Suora
 {

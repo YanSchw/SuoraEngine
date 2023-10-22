@@ -2,7 +2,6 @@
 #include "ScriptClass.h"
 #include "Suora/Serialization/Yaml.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
-#include "Suora/Serialization/CompositionLayer.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/Assets/Level.h"
 #include "Suora/GameFramework/Node.h"
@@ -39,20 +38,9 @@ namespace Suora
 		return m_ParentClass;
 	}
 
-	Object* ScriptClass::CreateInstance(bool includeCompositionData)
+	Object* ScriptClass::CreateInstance(bool isRootNode)
 	{
-		Object* obj = New(m_ParentClass, includeCompositionData, false);
-		
-		/*if (Node* node = Cast<Node>(obj))
-		{
-			// Apply Composition Layer in World
-			Level temp;
-			node->SetUpdateMode(EUpdateMode::WorldUpdate);
-		}
-		else
-		{
-			// Apply Composition Layer to Object
-		}*/
+		Object* obj = New(m_ParentClass, isRootNode);
 
 		// If needed apply NodeGraph here !
 		obj->Implement<INodeScriptObject>();

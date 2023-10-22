@@ -34,12 +34,10 @@ namespace Suora
 		LOCAL_UPDATE_LOCK();
 		SuoraAssert(!cls.Inherits(Component::StaticClass()), "A RootNode may not be a Component!");
 
-		Node* node = Cast<Node>(New(cls, false, false));
+		Node* node = Cast<Node>(New(cls, false));
 		SuoraVerify(node);
 
-		node->Implement<IObjectCompositionData>();
-		node->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
-		node->MakeAllChildrenPuppets();
+		node->m_IsActorLayer = true;
 
 		node->InitializeNode(*this);
 

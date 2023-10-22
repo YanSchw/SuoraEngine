@@ -3,7 +3,6 @@
 #include "Suora/Common/Delegate.h"
 #include "Suora/Serialization/Yaml.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
-#include "Suora/Serialization/CompositionLayer.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/Assets/Level.h"
 #include "Suora/GameFramework/Node.h"
@@ -69,23 +68,14 @@ namespace Suora
 		return m_ParentClass;
 	}
 
-	Object* Blueprint::CreateInstance(bool includeCompositionData, bool deepestLayer, bool editContext)
+	Object* Blueprint::CreateInstance(bool isRootNode)
 	{
-		Object* obj = New(m_ParentClass, includeCompositionData, false);
-		
-		if (Node* node = Cast<Node>(obj))
-		{
-			Node::Deserialize(m_Composition, includeCompositionData, node, deepestLayer, editContext);
-			node->SetUpdateFlag(UpdateFlag::WorldUpdate);
-		}
-		else
-		{
-			// Apply Composition Layer to Object
-		}
+		Node* node = Node::Deserialize(m_Composition, isRootNode);
+		node->SetUpdateFlag(UpdateFlag::WorldUpdate);
 
 		// If needed apply NodeGraph here !
-		obj->Implement<INodeScriptObject>();
-		INodeScriptObject* interface = obj->GetInterface<INodeScriptObject>();
+		node->Implement<INodeScriptObject>();
+		INodeScriptObject* interface = node->GetInterface<INodeScriptObject>();
 		interface->m_Class = this;
 		interface->m_ScriptClasses.Add(m_ScriptClass);
 		interface->m_BlueprintLinks.Add(this);
@@ -93,7 +83,7 @@ namespace Suora
 		// Bind Delegates
 		for (const DelegateEventBind& It : m_DelegateEventsToBindDuringGameplay)
 		{
-			Node* applicant = It.ChildName == "" ? obj->As<Node>() : obj->As<Node>()->GetChildByName(It.ChildName);
+			Node* applicant = It.ChildName == "" ? node : node->GetChildByName(It.ChildName);
 
 			if (applicant == nullptr)
 			{
@@ -108,12 +98,12 @@ namespace Suora
 				if (member->m_Type == ClassMember::Type::Delegate && member->m_MemberName == It.DelegateName)
 				{
 					TDelegate* delegate = ClassMember::AccessMember<TDelegate>(applicant, member->m_MemberOffset);
-					delegate->Bindings.Add(TDelegate::SciptDelegateBinding(obj->As<Node>(), It.ScriptFunctionHash));
+					delegate->Bindings.Add(TDelegate::SciptDelegateBinding(node, It.ScriptFunctionHash));
 				}
 			}
 		}
 
-		return obj;
+		return node;
 	}
 
 	void Blueprint::Serialize(Yaml::Node& root)
@@ -159,10 +149,19 @@ namespace Suora
 		// ScriptClass
 		m_ScriptClass->Serialize(node);
 	}
-
+	
 	void Blueprint::SetParentClass(const Class& cls)
 	{
 		m_ParentClass = cls;
+	}
+	void Blueprint::InitComposition(const Class& cls)
+	{
+		SetParentClass(cls);
+		m_Composition = Yaml::Node();
+		m_Composition["ChildCount"] = "0";
+		m_Composition["RootEnabled"] = "true";
+		m_Composition["RootName"] = GetAssetName();
+		m_Composition["RootParentClass"] = GetNodeParentClass().ToString();
 	}
 
 }

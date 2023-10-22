@@ -17,6 +17,7 @@ namespace Suora
 	}
 	void SkyLightNode::OnDestroyed()
 	{
+		Super::OnNodeDestroy();
 	}
 
 }

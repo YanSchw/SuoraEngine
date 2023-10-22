@@ -17,23 +17,16 @@ namespace Suora
 	static float BaseEntryHeight = 20.0f;
 	static float EntryHeight = BaseEntryHeight;
 
-	static std::vector<EditorUI::ContextMenuElement> CreateNodeMenu(World* world, Node* node)
+	std::vector<EditorUI::ContextMenuElement> LevelOutliner::CreateNodeMenu(World* world, Node* node)
 	{
 		std::vector<EditorUI::ContextMenuElement> out;
 
 		out.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
 		{
-			/*EditorUI::SubclassSelectionMenu(Node::StaticClass(), [world, node](const Class& cls)
-			{
-				Node* n = world ? world->Spawn(cls) : node->CreateChild(cls);
-				n->Implement<IObjectCompositionData>();
-				n->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
-			});*/
 			EditorUI::CreateOverlay<SelectAnyClassOverlay>(EditorUI::CurrentWindow->GetWindow()->GetWidth() / 2 - 300, EditorUI::CurrentWindow->GetWindow()->GetHeight() / 2 - 400, 600, 800, "Select a Class", Node::StaticClass(), [world, node](const Class& cls)
 			{
 				Node* n = world ? world->Spawn(cls) : node->CreateChild(cls);
-				n->Implement<IObjectCompositionData>();
-				n->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
+				n->m_IsActorLayer = true;
 			});
 
 		}, "Custom Class", nullptr });
@@ -41,39 +34,22 @@ namespace Suora
 		{
 			FolderNode* folder = world ? world->Spawn<FolderNode>() : node->CreateChild<FolderNode>();
 			folder->SetName("New Folder");
-			folder->Implement<IObjectCompositionData>();
-			folder->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
+			folder->m_IsActorLayer = true;
 		}, "Folder", nullptr });
 		out.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
 		{
 			MeshNode* cube = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
 			cube->SetName("Cube");
-			cube->Implement<IObjectCompositionData>();
-			cube->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
-			for (auto& It : cube->GetInterface<IObjectCompositionData>()->m_DefaultMemberValues)
-			{
-				if (It.m_Member.m_MemberName == "mesh")
-				{
-					It.m_ValueChanged = true;
-					It.m_ValueAssetPtr = AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8"));
-				}
-			}
+			cube->m_IsActorLayer = true;
+			cube->m_OverwrittenProperties.Add("mesh");
 			cube->mesh = AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8"));
 		}, "Cube", nullptr });
 		out.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
 		{
 			MeshNode* sphere = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
 			sphere->SetName("Sphere");
-			sphere->Implement<IObjectCompositionData>();
-			sphere->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
-			for (auto& It : sphere->GetInterface<IObjectCompositionData>()->m_DefaultMemberValues)
-			{
-				if (It.m_Member.m_MemberName == "mesh")
-				{
-					It.m_ValueChanged = true;
-					It.m_ValueAssetPtr = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
-				}
-			}
+			sphere->m_IsActorLayer = true;
+			sphere->m_OverwrittenProperties.Add("mesh");
 			sphere->mesh = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
 		}, "Sphere", nullptr });
 
@@ -209,11 +185,6 @@ namespace Suora
 			m_DropDowns[node] = true;
 		}
 
-		if (!node->Implements<IObjectCompositionData>())
-		{
-			node->Implement<IObjectCompositionData>();
-		}
-
 		Vec2 mousePosition = EditorUI::GetInput();
 		const bool Hovering = mousePosition.x >= x + (EntryHeight + 6) && mousePosition.x <= 0 + GetWidth() && mousePosition.y > y && mousePosition.y <= y + EntryHeight && (mousePosition.y > 35.0f && mousePosition.y < GetHeight() - 35.0f && mousePosition.x < GetWidth() - 10.0f);
 		const bool Selected = (node == GetSelectedObject());
@@ -222,7 +193,7 @@ namespace Suora
 		const bool isNode = node->GetClass().IsBlueprintClass();
 		Color LabelColor = isNode ? EditorPreferences::Get()->UiHighlightColor : Color(1.0f);
 		
-		if (!isNode && node->Implements<IObjectCompositionData>() && !node->GetInterface<IObjectCompositionData>()->m_IsActorLayer)
+		if (!isNode && !node->m_IsActorLayer)
 		{
 			Node* parent = node->GetParent();
 			while (parent)
@@ -252,15 +223,14 @@ namespace Suora
 					EditorUI::SubclassSelectionMenu(Node::StaticClass(), [node](const Class& cls)
 					{
 						Node* n = node->CreateChild(cls);
-						n->Implement<IObjectCompositionData>();
-						n->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
+						n->m_IsActorLayer = true;
 					}); },"Create Child Node", nullptr }, EditorUI::ContextMenuElement{ {},[node, this]() {
-						if (node->Implements<IObjectCompositionData>() && node->GetInterface<IObjectCompositionData>()->m_IsActorLayer)
+						if (node->m_IsActorLayer)
 						{
 							SetSelectedObject(nullptr);
 							node->Destroy();
 						}
-					}, (node->GetInterface<IObjectCompositionData>()->m_IsActorLayer ? "Delete Node" : "Cannot Delete Inherited Node"), nullptr}, EditorUI::ContextMenuElement{{},[node, this]() {
+					}, (node->m_IsActorLayer ? "Delete Node" : "Cannot Delete Inherited Node"), nullptr}, EditorUI::ContextMenuElement{{},[node, this]() {
 						node->Duplicate();
 					},"Duplicate Node", nullptr } });
 			}
@@ -275,12 +245,9 @@ namespace Suora
 
 			if (EditorUI::DragSource(0, y, GetWidth(), EntryHeight, 5.0f))
 			{
-				if (IObjectCompositionData* obj = node->GetInterface<IObjectCompositionData>())
+				if (node->m_IsActorLayer)
 				{
-					if (obj->m_IsActorLayer)
-					{
-						m_DragNode = node;
-					}
+					m_DragNode = node;
 				}
 			}
 			EditorUI::ButtonParams dragParams = EditorUI::ButtonParams::Invisible();

@@ -44,10 +44,9 @@ namespace Suora
 		World* world = CreateWorld();
 
 		// Todo: false, false but Actorlayer has to be stored in the Node
-		Node* root = level->CreateInstance(true, true)->As<Node>();
+		Node* root = level->CreateInstance(false)->As<Node>();
 		root->InitializeNode(*world);
-		root->Implement<IObjectCompositionData>();
-		root->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
+		root->m_IsActorLayer = true;
 
 		world->m_SourceLevel = level->As<Level>();
 
