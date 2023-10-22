@@ -132,7 +132,7 @@ void main(void)
 		// Sample pre-filtered specular reflection environment at correct mipmap level.
 		int specularTextureLevels = textureQueryLevels(u_PrefilterMap);
 		vec3 ReflectionNormal = N; //reflect(u_View, N);
-		vec3 specularIrradiance = sampleHDRI(u_PrefilterMap, normalize(ReflectionNormal + 15.0 * N), roughness * specularTextureLevels).rgb * vec3(1.0 - roughness);
+		vec3 specularIrradiance = sampleHDRI(u_PrefilterMap, normalize(ReflectionNormal), roughness * specularTextureLevels).rgb * vec3(1.0 - roughness);
 
 		// Split-sum approximation factors for Cook-Torrance specular BRDF.
 		vec2 specularBRDF = texture(u_BrdfLUT, vec2(cosLo, roughness)).rg;
