@@ -52,18 +52,4 @@ namespace Suora
 		bool m_IsActorLayer = false;
 	};
 
-	struct CompositionLayer
-	{
-		IObjectCompositionData m_RootCompositionData;
-
-		// Node stuff
-		std::string m_Name;
-		Vec3 Transform_Pos = Vec3(0.0f), Transform_Rot = Vec3(0.0f), Transform_Scale = Vec3(1.0f);
-		Array<CompositionLayer> m_SubCompositionLayers;
-		Array<Array<int32_t>> m_SubCompositionIndentation;
-
-		static void SerializeCompositionLayer(Suora::CompositionLayer& layer, Yaml::Node& yaml);
-		static void DeserializeCompositionLayer(Suora::CompositionLayer& layer, Yaml::Node& yaml);
-	};
-
 }

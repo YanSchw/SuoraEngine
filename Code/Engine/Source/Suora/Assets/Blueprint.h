@@ -6,7 +6,6 @@
 namespace Suora
 {
 	struct ScriptClassInternal;
-	struct CompositionLayer;
 	class DetailsPanel;
 	enum class InputScriptEventFlags : uint64_t;
 
