@@ -11,14 +11,14 @@ namespace Suora
 	extern Object* InlineNew(const Class& cls, const bool isRootNode);
 
 	/** Use Suora::New(...) to allocated a new Instance of a SuoraClass */
-	static Object* New(const Class& cls, const bool isRootNode = false)
+	[[nodiscard]] static Object* New(const Class& cls, const bool isRootNode = false)
 	{
 		return InlineNew(cls, isRootNode);
 	}
 
 	/** See above, just templated... */
 	template<class T>
-	static T* New()
+	[[nodiscard]] static T* New()
 	{
 		return (T*)New(T::StaticClass());
 	}
