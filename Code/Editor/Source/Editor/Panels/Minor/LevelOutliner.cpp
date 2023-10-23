@@ -4,6 +4,7 @@
 #include "../Major/NodeClassEditor.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
 #include "Suora/GameFramework/Node.h"
+#include "Suora/GameFramework/Nodes/Light/SkyLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/PointLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/Nodes/PostProcess/PostProcessNode.h"
@@ -38,20 +39,73 @@ namespace Suora
 		}, "Folder", nullptr });
 		out.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
 		{
-			MeshNode* cube = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
-			cube->SetName("Cube");
-			cube->m_IsActorLayer = true;
-			cube->m_OverwrittenProperties.Add("mesh");
-			cube->mesh = AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8"));
-		}, "Cube", nullptr });
-		out.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			Node* n = world ? world->Spawn<Node>() : node->CreateChild<Node>();
+			n->SetName("New Node");
+			n->m_IsActorLayer = true;
+		}, "Empty Node", nullptr });
+
+
+		std::vector<EditorUI::ContextMenuElement> _3D;
 		{
-			MeshNode* sphere = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
-			sphere->SetName("Sphere");
-			sphere->m_IsActorLayer = true;
-			sphere->m_OverwrittenProperties.Add("mesh");
-			sphere->mesh = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
-		}, "Sphere", nullptr });
+			_3D.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			{
+				Node3D* node3D = world ? world->Spawn<Node3D>() : node->CreateChild<Node3D>();
+				node3D->SetName("Node3D");
+				node3D->m_IsActorLayer = true;
+			}, "Node3D", nullptr });
+			_3D.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			{
+				MeshNode* cube = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
+				cube->SetName("Cube");
+				cube->m_IsActorLayer = true;
+				cube->m_OverwrittenProperties.Add("mesh");
+				cube->mesh = AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8"));
+			}, "Cube", nullptr });
+			_3D.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			{
+				MeshNode* sphere = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
+				sphere->SetName("Sphere");
+				sphere->m_IsActorLayer = true;
+				sphere->m_OverwrittenProperties.Add("mesh");
+				sphere->mesh = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
+			}, "Sphere", nullptr });
+		}
+		out.push_back(EditorUI::ContextMenuElement{ {_3D}, [world, node]() {}, "3D", nullptr });
+
+		std::vector<EditorUI::ContextMenuElement> _Lights;
+		{
+			_Lights.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			{
+				SkyLightNode* sky = world ? world->Spawn<SkyLightNode>() : node->CreateChild<SkyLightNode>();
+				sky->SetName("SkyLightNode");
+				sky->m_IsActorLayer = true;
+			}, "SkyLightNode", nullptr });
+			_Lights.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			{
+				DirectionalLightNode* directionalLightNode = world ? world->Spawn<DirectionalLightNode>() : node->CreateChild<DirectionalLightNode>();
+				directionalLightNode->SetName("DirectionalLightNode");
+				directionalLightNode->SetEulerRotation(Vec3(45.0f, 45.0f, 0.0f));
+				directionalLightNode->m_IsActorLayer = true;
+			}, "DirectionalLightNode", nullptr });
+			_Lights.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			{
+				PointLightNode* pointLight = world ? world->Spawn<PointLightNode>() : node->CreateChild<PointLightNode>();
+				pointLight->SetName("PointLightNode");
+				pointLight->m_IsActorLayer = true;
+			}, "PointLightNode", nullptr });
+		}
+		out.push_back(EditorUI::ContextMenuElement{ {_Lights}, [world, node]() {}, "Lights", nullptr });
+
+		std::vector<EditorUI::ContextMenuElement> _UI;
+		{
+			_UI.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			{
+				UINode* nodeUI = world ? world->Spawn<UINode>() : node->CreateChild<UINode>();
+				nodeUI->SetName("UINode");
+				nodeUI->m_IsActorLayer = true;
+			}, "UINode", nullptr });
+		}
+		out.push_back(EditorUI::ContextMenuElement{ {_UI}, [world, node]() {}, "UI", nullptr });
 
 		return out;
 	}
