@@ -308,6 +308,11 @@ namespace Suora
 			const std::string propertyName = yamlProperty["PropertyName"].As<std::string>();
 			Node* applyPropertyTo = node->GetChildByName(nodeName);
 
+			if (applyPropertyTo == nullptr)
+			{
+				continue;
+			}
+
 			const ClassReflector& refl = ClassReflector::GetByClass(applyPropertyTo->GetNativeClass());
 			const auto allMembers = refl.GetAllClassMember();
 			for (const Ref<ClassMember>& mem : allMembers)
