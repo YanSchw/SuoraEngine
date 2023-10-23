@@ -143,7 +143,7 @@ namespace Suora
 		m_Data.Height = props.Height;
 		m_Data.m_Window = this;
 
-		SUORA_INFO(LogCategory::Rendering, "Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+		SUORA_INFO(LogCategory::Rendering, "Creating Window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 		if (s_GLFWWindowCount == 0)
 		{
