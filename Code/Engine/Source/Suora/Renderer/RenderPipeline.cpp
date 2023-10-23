@@ -465,6 +465,7 @@ namespace Suora
 		
 		m_DeferredComposite->Bind();
 		m_DeferredComposite->SetFloat3("u_View", camera.GetForwardVector());
+		m_DeferredComposite->SetFloat3("u_ViewPos", camera.GetPosition());
 		m_DeferredComposite->SetFloat4("u_ForwardClearColor", camera.GetClearColor());
 		// BaseColor = 0
 		gbuffer.BindColorAttachmentByIndex((int)GBuffer::Metallic, 1); m_DeferredComposite->SetInt("u_Metallic", 1);

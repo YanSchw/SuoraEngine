@@ -24,6 +24,7 @@ in vec2 UV;
 out vec4 out_Color;
 
 uniform vec3 u_View;
+uniform vec3 u_ViewPos;
 uniform vec4 u_ForwardClearColor;
 
 uniform sampler2D u_BaseColor;
@@ -131,7 +132,8 @@ void main(void)
 
 		// Sample pre-filtered specular reflection environment at correct mipmap level.
 		int specularTextureLevels = textureQueryLevels(u_PrefilterMap);
-		vec3 ReflectionNormal = N; //reflect(u_View, N);
+		vec3 EyeToSurface = normalize(worldPos - u_ViewPos);
+		vec3 ReflectionNormal = reflect(EyeToSurface, N);
 		vec3 specularIrradiance = sampleHDRI(u_PrefilterMap, normalize(ReflectionNormal), roughness * specularTextureLevels).rgb * vec3(1.0 - roughness);
 
 		// Split-sum approximation factors for Cook-Torrance specular BRDF.
