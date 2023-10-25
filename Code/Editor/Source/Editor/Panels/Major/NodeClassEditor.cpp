@@ -310,7 +310,22 @@ namespace Suora
 		}
 		else
 		{
-			EditorUI::DrawRect(x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, 4.0f, EditorPreferences::Get()->UiBackgroundColor);
+			if (m_CurrentPlayState == PlayState::Playing)
+			{
+				if (EditorUI::Button("Eject", x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, Params) || NativeInput::GetKeyDown(Key::F6))
+				{
+					m_CurrentPlayState = PlayState::Simulating;
+				}
+				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("24294e57-bae7-4ff7-a0f2-73f9741069da"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
+			}
+			else if (m_CurrentPlayState == PlayState::Simulating)
+			{
+				if (EditorUI::Button("Inject", x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, Params) || NativeInput::GetKeyDown(Key::F6))
+				{
+					m_CurrentPlayState = PlayState::Playing;
+				}
+				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("24294e57-bae7-4ff7-a0f2-73f9741069da"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
+			}
 		}
 		x += 15 + height * 0.8f + 90.0f;
 
