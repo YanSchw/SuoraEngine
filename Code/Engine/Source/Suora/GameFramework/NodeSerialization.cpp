@@ -227,18 +227,21 @@ namespace Suora
 
 		NodeDeserializer(Yaml::Node& root)
 		{
-			const int32_t inheretedChildCount = std::stoi(root["InheretedChildCount"].As<std::string>());
-			for (int32_t i = 0; i < inheretedChildCount; i++)
+			if (!root["InheretedChildCount"].IsNone())
 			{
-				Yaml::Node& yamlChild = root["InheretedChildren"][std::to_string(i)];
-				const std::string childOwner = yamlChild["Owner"].As<std::string>();
-				if (m_InheretedChildren.find(childOwner) == m_InheretedChildren.end())
-					m_InheretedChildren[childOwner] = CreateRef<InheretedChildNodes>();
+				const int32_t inheretedChildCount = std::stoi(root["InheretedChildCount"].As<std::string>());
+				for (int32_t i = 0; i < inheretedChildCount; i++)
+				{
+					Yaml::Node& yamlChild = root["InheretedChildren"][std::to_string(i)];
+					const std::string childOwner = yamlChild["Owner"].As<std::string>();
+					if (m_InheretedChildren.find(childOwner) == m_InheretedChildren.end())
+						m_InheretedChildren[childOwner] = CreateRef<InheretedChildNodes>();
 
-				m_InheretedChildren[childOwner]->Name.Add(yamlChild["Name"].As<std::string>());
-				m_InheretedChildren[childOwner]->Indicies.Add(yamlChild["Indicies"].As<std::string>());
-				m_InheretedChildren[childOwner]->Enabled.Add(yamlChild["Enabled"].As<std::string>());
-				m_InheretedChildren[childOwner]->Node3DTransform.Add(yamlChild["Node3D"].As<std::string>());
+					m_InheretedChildren[childOwner]->Name.Add(yamlChild["Name"].As<std::string>());
+					m_InheretedChildren[childOwner]->Indicies.Add(yamlChild["Indicies"].As<std::string>());
+					m_InheretedChildren[childOwner]->Enabled.Add(yamlChild["Enabled"].As<std::string>());
+					m_InheretedChildren[childOwner]->Node3DTransform.Add(yamlChild["Node3D"].As<std::string>());
+				}
 			}
 		}
 		std::unordered_map<std::string, Ref<InheretedChildNodes>> m_InheretedChildren;
@@ -300,33 +303,36 @@ namespace Suora
 
 		}
 
-		const int32_t propertyCount = std::stoi(root["PropertyCount"].As<std::string>());
-		for (int32_t i = 0; i < propertyCount; i++)
+		if (!root["PropertyCount"].IsNone())
 		{
-			Yaml::Node& yamlProperty = root["Properties"][std::to_string(i)];
-			const std::string nodeName = yamlProperty["NodeName"].As<std::string>();
-			const std::string propertyName = yamlProperty["PropertyName"].As<std::string>();
-			Node* applyPropertyTo = node->GetChildByName(nodeName);
-
-			if (applyPropertyTo == nullptr)
+			const int32_t propertyCount = std::stoi(root["PropertyCount"].As<std::string>());
+			for (int32_t i = 0; i < propertyCount; i++)
 			{
-				continue;
-			}
+				Yaml::Node& yamlProperty = root["Properties"][std::to_string(i)];
+				const std::string nodeName = yamlProperty["NodeName"].As<std::string>();
+				const std::string propertyName = yamlProperty["PropertyName"].As<std::string>();
+				Node* applyPropertyTo = node->GetChildByName(nodeName);
 
-			const ClassReflector& refl = ClassReflector::GetByClass(applyPropertyTo->GetNativeClass());
-			const auto allMembers = refl.GetAllClassMember();
-			for (const Ref<ClassMember>& mem : allMembers)
-			{
-				if (mem->m_MemberName == propertyName)
+				if (applyPropertyTo == nullptr)
 				{
-					ReadPropertyValue(yamlProperty, *mem, applyPropertyTo);
+					continue;
+				}
 
-					if (isRootNode)
+				const ClassReflector& refl = ClassReflector::GetByClass(applyPropertyTo->GetNativeClass());
+				const auto allMembers = refl.GetAllClassMember();
+				for (const Ref<ClassMember>& mem : allMembers)
+				{
+					if (mem->m_MemberName == propertyName)
 					{
-						applyPropertyTo->m_OverwrittenProperties.Add(propertyName);
-					}
+						ReadPropertyValue(yamlProperty, *mem, applyPropertyTo);
 
-					break;
+						if (isRootNode)
+						{
+							applyPropertyTo->m_OverwrittenProperties.Add(propertyName);
+						}
+
+						break;
+					}
 				}
 			}
 		}
