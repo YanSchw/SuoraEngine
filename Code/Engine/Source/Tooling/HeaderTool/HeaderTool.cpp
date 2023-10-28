@@ -4,6 +4,7 @@
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Common/Common.h"
 
+#include <iostream>
 #include <fstream>
 
 static std::mutex PrintMutex;

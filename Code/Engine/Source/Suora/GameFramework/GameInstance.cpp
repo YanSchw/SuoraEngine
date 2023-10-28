@@ -3,6 +3,7 @@
 #include "World.h"
 #include "Suora/Core/Engine.h"
 #include "Suora/Assets/Level.h"
+#include "Suora/Renderer/Framebuffer.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "InputModule.h"
 
@@ -98,6 +99,11 @@ namespace Suora
 				//GetEngine()->GetRenderPipeline()->Render(*m_Framebuffer.get(), *GetCurrentWorld(), *GetCurrentWorld()->GetMainCamera());
 			}
 		}
+	}
+
+	Framebuffer* GameInstance::GetFinalFramebuffer() const
+	{
+		return m_Framebuffer.get();
 	}
 
 	InputModule* GameInstance::GetInputModule() const

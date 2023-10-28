@@ -1,5 +1,4 @@
 #pragma once
-#include <thread>
 #include <future>
 #include "Suora/Common/Array.h"
 #include "Suora/Assets/Blueprint.h"

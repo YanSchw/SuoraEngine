@@ -1,12 +1,12 @@
 #pragma once
 #include "Suora/Core/EngineSubSystem.h"
-#include "Suora/Renderer/Framebuffer.h"
 #include "GameInstance.generated.h"
 
 namespace Suora
 {
 	class Blueprint;
 	class InputModule;
+	class Framebuffer;
 	class Level;
 	class World;
 	class Engine;
@@ -32,7 +32,7 @@ namespace Suora
 		void Update(float deltaTime);
 
 		Engine* GetEngine() const { return m_Engine; }
-		Framebuffer* GetFinalFramebuffer() const { return m_Framebuffer.get(); }
+		Framebuffer* GetFinalFramebuffer() const;
 		InputModule* GetInputModule() const;
 	private:
 		Engine* m_Engine = nullptr;

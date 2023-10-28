@@ -5,6 +5,7 @@
 #include "Suora/Renderer/RenderCommand.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "Suora/Renderer/Renderer3D.h"
+#include "Suora/Renderer/Framebuffer.h"
 #include "Panels/MajorTab.h"
 #include "Panels/MinorTab.h"
 #include "Panels/DockspacePanel.h"

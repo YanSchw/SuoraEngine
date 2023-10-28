@@ -5,6 +5,7 @@
 #include "../../Util/EditorPreferences.h"
 #include "Suora/Renderer/RenderCommand.h"
 #include "Suora/Renderer/RenderPipeline.h"
+#include "Suora/Renderer/Framebuffer.h"
 #include "Suora/Renderer/Shader.h"
 #include "Suora/Renderer/Renderer3D.h"
 

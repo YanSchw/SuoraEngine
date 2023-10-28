@@ -3,6 +3,7 @@
 #include "MajorTab.h"
 #include "../EditorWindow.h"
 #include "Suora/Renderer/RenderPipeline.h"
+#include "Suora/Renderer/Framebuffer.h"
 #include <Suora.h>
 
 namespace Suora
