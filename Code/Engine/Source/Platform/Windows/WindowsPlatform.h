@@ -58,7 +58,7 @@ namespace Suora
 		CHAR currentDir[256] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Window::CurrentFocusedWindow->GetNativeWindow());
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Window::s_CurrentFocusedWindow->GetNativeWindow());
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
 		if (GetCurrentDirectoryA(256, currentDir))
@@ -89,7 +89,7 @@ namespace Suora
 		CHAR currentDir[256] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Window::CurrentFocusedWindow->GetNativeWindow());
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)Window::s_CurrentFocusedWindow->GetNativeWindow());
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
 		if (GetCurrentDirectoryA(256, currentDir))

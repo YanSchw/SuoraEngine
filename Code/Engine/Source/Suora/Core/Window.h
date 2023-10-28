@@ -1,6 +1,5 @@
 #pragma once
 
-#include <sstream>
 #include "Suora/Core/Base.h"
 #include "Suora/Events/Event.h"
 #include "Suora/Common/Array.h"
@@ -26,12 +25,14 @@ namespace Suora
 		uint32_t Width;
 		uint32_t Height;
 		bool isDecorated;
+		bool hasTitlebar;
 
-		WindowProps(const std::string& title = "Suora Engine",
+		WindowProps(const std::string& title = "",
 			        uint32_t width = 1280,
 			        uint32_t height = 720,
-					bool isDecorated = true)
-			: Title(title), Width(width), Height(height), isDecorated(isDecorated)
+					bool _isDecorated = true,
+					bool _hasTitlebar = true)
+			: Title(title), Width(width), Height(height), isDecorated(_isDecorated), hasTitlebar(_hasTitlebar)
 		{
 		}
 	};
@@ -55,14 +56,18 @@ namespace Suora
 		virtual void SetCursor(Cursor cursor) = 0;
 		virtual Cursor GetCursor() = 0;
 		virtual void SetCursorLocked(bool locked) = 0;
+		virtual bool IsCursorLocked() = 0;
 		virtual bool IsVSync() const = 0;
-		virtual bool IsMaximized() const = 0;
+		virtual void SetTitle(const std::string& title) = 0;
 
 		virtual void* GetNativeWindow() const = 0;
 		virtual void* GetGraphicsContext() const = 0;
 		virtual bool IsUndecorated() const = 0;
+		virtual void Minimize() = 0;
+		virtual bool IsMaximized() const = 0;
 		virtual void Maximize() = 0;
 		virtual void Iconify() = 0;
+		virtual void RegisterOverTitlebar(bool value) = 0;
 		virtual void CenterWindow() = 0;
 
 		virtual void SetFullscreen(bool fullscreen) = 0;
@@ -70,11 +75,10 @@ namespace Suora
 
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
 		static Window* CreatePtr(const WindowProps& props = WindowProps());
-		inline static Array<Window*> AllWindows = Array<Window*>();
-		inline static Window* CurrentFocusedWindow = nullptr;
+		inline static Array<Window*> s_AllWindows = Array<Window*>();
+		inline static Window* s_CurrentFocusedWindow = nullptr;
 
-		float WindowScale = 1;
-		Cursor currentCursorType = Cursor::Default;
+		Cursor m_CurrentCursorType = Cursor::Default;
 
 		Texture2D* m_WindowIconOverride = nullptr;
 

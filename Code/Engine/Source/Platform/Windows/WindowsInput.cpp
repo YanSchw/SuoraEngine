@@ -9,27 +9,27 @@ namespace Suora
 
 	bool NativeInput::IsKeyPressed(const KeyCode key)
 	{
-		if (!Window::CurrentFocusedWindow) return false;
+		if (!Window::s_CurrentFocusedWindow) return false;
 
-		auto* window = static_cast<GLFWwindow*>(Window::CurrentFocusedWindow->GetNativeWindow());
+		auto* window = static_cast<GLFWwindow*>(Window::s_CurrentFocusedWindow->GetNativeWindow());
 		auto state = glfwGetKey(window, static_cast<int32_t>(key));
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
 	bool NativeInput::IsMouseButtonPressed(const MouseCode button)
 	{
-		if (!Window::CurrentFocusedWindow) return false;
+		if (!Window::s_CurrentFocusedWindow) return false;
 
-		auto* window = static_cast<GLFWwindow*>(Window::CurrentFocusedWindow->GetNativeWindow());
+		auto* window = static_cast<GLFWwindow*>(Window::s_CurrentFocusedWindow->GetNativeWindow());
 		auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
 		return state == GLFW_PRESS;
 	}
 
 	glm::vec2 NativeInput::GetMousePosition()
 	{
-		if (!Window::CurrentFocusedWindow) return glm::vec2(0);
+		if (!Window::s_CurrentFocusedWindow) return glm::vec2(0);
 
-		auto* window = static_cast<GLFWwindow*>(Window::CurrentFocusedWindow->GetNativeWindow());
+		auto* window = static_cast<GLFWwindow*>(Window::s_CurrentFocusedWindow->GetNativeWindow());
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 
@@ -48,7 +48,7 @@ namespace Suora
 
 	void NativeInput::NativeTick(float deltaTime)
 	{
-		auto* window = static_cast<GLFWwindow*>(Window::CurrentFocusedWindow->GetNativeWindow());
+		auto* window = static_cast<GLFWwindow*>(Window::s_CurrentFocusedWindow->GetNativeWindow());
 
 		// Fills Event Map (!)
 		for (auto& it : s_DownKeyEvents) s_KeyEvents[it.first] = s_KeyEvents[it.first];

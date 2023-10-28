@@ -13,20 +13,11 @@ class SuoraBuildTool
 {
 public:
 
-	SuoraBuildTool()
-	{
-	}
-
-	~SuoraBuildTool()
-	{
-	}
-
-	inline static void ProccessHeaders()
+	static void ProccessHeaders()
 	{
 		using namespace Suora;
 
-		std::filesystem::path projectCodePath;
-		projectCodePath = std::filesystem::current_path();
+		std::filesystem::path projectCodePath = std::filesystem::current_path();
 		while (!std::filesystem::is_directory(projectCodePath.append("Code")))
 		{
 			projectCodePath = projectCodePath.parent_path().parent_path();
@@ -62,7 +53,8 @@ public:
 
 		std::cout << "Generating Modules..." << std::endl;
 		Tools::BuildTool buildTool;
-		buildTool.GenerateModules(std::filesystem::path(projectCodePath).parent_path());
+		Tools::BuildTool::BuildCollection collection;
+		buildTool.GenerateModules(std::filesystem::path(projectCodePath).parent_path(), collection);
 		std::cout << "Generated AllModules!" << std::endl;
 
 		if (enginePath != "")
@@ -80,7 +72,5 @@ int main()
 {
 	SuoraBuildTool::ProccessHeaders();
 
-	/*SUORA_INFO("Press Enter to close the Console...");
-	std::cin.get();*/
 	return EXIT_SUCCESS;
 }

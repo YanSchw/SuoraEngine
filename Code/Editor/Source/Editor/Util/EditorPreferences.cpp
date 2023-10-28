@@ -25,7 +25,7 @@ namespace Suora
 	EditorPreferences* EditorPreferences::Get()
 	{
 		EditorPreferences* ptr = AssetManager::GetFirstAssetOfType<EditorPreferences>();
-		return ptr ? ptr : AssetManager::CreateAsset<EditorPreferences>("EditorPreferences", AssetManager::GetAssetRootPath());
+		return ptr ? ptr : AssetManager::CreateAsset<EditorPreferences>("EditorPreferences", AssetManager::GetEngineAssetPath());
 	}
 
 	void EditorPreferences::PreInitializeAsset(const std::string& str)

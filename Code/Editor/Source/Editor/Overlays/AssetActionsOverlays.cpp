@@ -164,10 +164,9 @@ namespace Suora
 	void CreateClassOverlay::CreateAsset()
 	{
 		Blueprint* blueprint = AssetManager::CreateAsset<Blueprint>(s_AssetName, m_Directory);
-		blueprint->SetParentClass(m_ParentClass);
+		blueprint->InitComposition(m_ParentClass);
 		Yaml::Node root;
 		blueprint->Serialize(root);
-		root["NodeComposition"]["Enabled"] = "true";
 		std::string out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(blueprint->m_Path.string(), out);
@@ -189,10 +188,9 @@ namespace Suora
 	void CreateLevelOverlay::CreateAsset()
 	{
 		Level* level = AssetManager::CreateAsset<Level>(s_AssetName, m_Directory);
-		level->SetParentClass(m_ParentClass);
+		level->InitComposition(m_ParentClass);
 		Yaml::Node root;
 		level->Serialize(root);
-		root["NodeComposition"]["Enabled"] = "true";
 		std::string out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(level->m_Path.string(), out);

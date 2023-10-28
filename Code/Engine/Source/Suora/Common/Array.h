@@ -45,38 +45,38 @@ public:
 		m_Data.push_back(item);
 	}
 
-	void Insert(int index, T& item)
+	void Insert(int32_t index, T& item)
 	{
 		m_Data.insert(m_Data.begin() + index, item);
 	}
 	
-	void SwapElements(int indexA, int indexB)
+	void SwapElements(int32_t indexA, int32_t indexB)
 	{
 		std::iter_swap(m_Data.begin() + indexA, m_Data.begin() + indexB);
 	}
 
-	inline T& Get(int index)
+	inline T& Get(int32_t index)
 	{
 		return m_Data[index];
 	}
-	inline T& operator[](int index)
+	inline T& operator[](int32_t index)
 	{
 		return m_Data[index];
 	}
-	inline const T& operator[](int index) const
+	inline const T& operator[](int32_t index) const
 	{
 		return m_Data[index];
 	}
 
-	int IndexOf(const T& item)
+	int32_t IndexOf(const T& item)
 	{
 		auto it = std::find(m_Data.begin(), m_Data.end(), item);
 
-		if (it != m_Data.end()) return it - m_Data.begin();
+		if (it != m_Data.end()) return (int32_t)(it - m_Data.begin());
 		else return -1;
 	}
 
-	void RemoveAt(int index)
+	void RemoveAt(int32_t index)
 	{
 		SuoraAssert(index >= 0);
 		m_Data.erase(m_Data.begin() + index);
@@ -109,13 +109,13 @@ public:
 		m_Data.clear();
 	}
 
-	inline int Size() const
+	inline int32_t Size() const
 	{
-		return m_Data.size();
+		return (int32_t)m_Data.size();
 	}
-	inline int Last() const
+	inline int32_t Last() const
 	{
-		return m_Data.size() - 1;
+		return Size() - 1;
 	}
 
 	std::vector<T>& GetData()

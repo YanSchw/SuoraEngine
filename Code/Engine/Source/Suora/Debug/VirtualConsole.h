@@ -8,11 +8,11 @@ namespace Suora
 
 	struct ConsoleMessage
 	{
-		ConsoleMessage(const std::string& str, LogCategory category, LogLevel level)
+		ConsoleMessage(const std::string& str, const LogCategory category, const LogLevel level)
 			: m_Message(str), m_Category(category), m_Level(level) {}
 
-		ConsoleMessage(std::string_view message, const char* callerPath, const char* callerFunction, int32_t callerLine, LogLevel level, LogCategory category)
-			: m_Message(message.data(), message.size()), m_CallerPath(callerPath), m_CallerFunction(callerFunction), m_CallerLine(callerLine), m_Level(level), m_Category(category)
+		ConsoleMessage(const std::string_view message, const char* callerPath, const char* callerFunction, const int32_t callerLine, const LogLevel level, const LogCategory category)
+			: m_Message(message.data(), message.size()), m_Level(level), m_Category(category), m_CallerPath(callerPath), m_CallerFunction(callerFunction), m_CallerLine(callerLine)
 		{
 		}
 
@@ -20,9 +20,9 @@ namespace Suora
 		LogCategory m_Category;
 		LogLevel m_Level;
 
-		const char* m_CallerPath;
-		const char* m_CallerFunction;
-		int32_t m_CallerLine;
+		const char* m_CallerPath = nullptr;
+		const char* m_CallerFunction = nullptr;
+		int32_t m_CallerLine = 0;
 	};
 
 	struct VirtualConsole
@@ -36,7 +36,9 @@ namespace Suora
 		static std::vector<ConsoleMessage> GetLogMessages();
 		static std::vector<ConsoleMessage> GetWarnMessages();
 		static std::vector<ConsoleMessage> GetErrorMessages();
-		static void PushMessage(const ConsoleMessage& msg);
+		static void PushMessage(ConsoleMessage msg);
+
+		static void IssueCommand(const std::string& cmd);
 
 	};
 

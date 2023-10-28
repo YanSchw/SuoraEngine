@@ -260,7 +260,7 @@ struct InternalAlloc\n\
 {\n\
 private:\n\
 	InternalAlloc() {}\n\
-	inline static ObjectFactory::RegisterClass<" + header->m_ClassName + "> _ClassAllocator_" + header->m_ClassName + ";\n\
+	inline static ObjectFactory::RegisterSuoraClass<" + header->m_ClassName + "> _ClassAllocator_" + header->m_ClassName + ";\n\
 	inline static Internal Internal_Instance = Internal();\n\
 };\n";
 		}

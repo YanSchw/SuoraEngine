@@ -20,7 +20,7 @@ namespace Suora
 		ScriptClass();
 		void PreInitializeAsset(const std::string& str) override;
 		Class GetScriptParentClass() const;
-		Object* CreateInstance(bool includeCompositionData = false);
+		Object* CreateInstance(bool isRootNode);
 
 		friend class DetailsPanel;
 		friend class NodeClassEditor;

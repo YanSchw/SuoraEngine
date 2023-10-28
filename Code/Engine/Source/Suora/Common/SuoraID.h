@@ -75,7 +75,6 @@ namespace Suora
 
         static const SuoraID Invalid;
 
-        friend struct SuoraID;
     };
 
 }

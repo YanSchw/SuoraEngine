@@ -11,6 +11,7 @@
 #include "Suora/Renderer/Decima.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/ShaderGraph.h"
+#include "Suora/Assets/SuoraProject.h"
 
 #include "Suora/GameFramework/Nodes/MeshNode.h"
 #include "Suora/GameFramework/Nodes/DecalNode.h"
@@ -27,16 +28,16 @@ namespace Suora
 		return glm::ivec4(0, 0, buffer.GetSpecification().Width, buffer.GetSpecification().Height);
 	}
 
-	FramebufferTextureFormat RenderPipeline::GBufferSlotToBufferFormat(GBuffer slot)
+	FramebufferTextureParams RenderPipeline::GBufferSlotToBufferParams(GBuffer slot)
 	{
 		switch (slot)
 		{
-		case GBuffer::BaseColor: return FramebufferTextureFormat::RGB32F;
+		case GBuffer::BaseColor: return FramebufferTextureFormat::RGB16F;
 		case GBuffer::Metallic: return FramebufferTextureFormat::R8;
 		case GBuffer::Roughness: return FramebufferTextureFormat::R8;
-		case GBuffer::WorldPosition: return FramebufferTextureFormat::RGB32F;
-		case GBuffer::WorldNormal: return FramebufferTextureFormat::RGB32F;
-		case GBuffer::Emissive: return FramebufferTextureFormat::RGB32F;
+		case GBuffer::WorldPosition: return FramebufferTextureFormat::RGB16F;
+		case GBuffer::WorldNormal: return FramebufferTextureParams(FramebufferTextureFormat::RGB16F, FramebufferTextureFilter::Nearest);
+		case GBuffer::Emissive: return FramebufferTextureFormat::RGB16F;
 		case GBuffer::MeshID: return FramebufferTextureFormat::R32I;
 		case GBuffer::ClusterID: return FramebufferTextureFormat::R32I;
 		case GBuffer::GBufferSlotCount:
@@ -56,23 +57,23 @@ namespace Suora
 	void RenderPipeline::Initialize()
 	{
 		s_Instance = this;
-		m_FullscreenPassShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/FullscreenPass.glsl");
-		m_AddShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Add.glsl");
-		m_DepthBlitShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/DepthBlit.glsl");
-		m_ToneMapping = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/ToneMapping.glsl");
-		m_FXAA = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
-		m_DeferredDecalPreparation = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_DecalPreparation.glsl");
-		m_DeferredDirectionalLightShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_DirectionalLight.glsl");
-		m_DeferredPointLightShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_PointLight.glsl");
+		m_FullscreenPassShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/FullscreenPass.glsl");
+		m_AddShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Add.glsl");
+		m_DepthBlitShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/DepthBlit.glsl");
+		m_ToneMapping = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/ToneMapping.glsl");
+		m_FXAA = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
+		m_DeferredDecalPreparation = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_DecalPreparation.glsl");
+		m_DeferredDirectionalLightShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_DirectionalLight.glsl");
+		m_DeferredPointLightShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_PointLight.glsl");
 		m_DeferredPointLightMatrixBuffer = ShaderStorageBuffer::Create();
-		m_DeferredSkyShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_Sky.glsl");
-		m_DeferredSkyLightShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_SkyLight.glsl");
-		m_DeferredComposite = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Deferred/Deferred_Composite.glsl");
+		m_DeferredSkyShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_Sky.glsl");
+		m_DeferredSkyLightShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_SkyLight.glsl");
+		m_DeferredComposite = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_Composite.glsl");
 		{
 			FramebufferSpecification spec;
 			spec.Width = m_InternalResolution.x;
 			spec.Height = m_InternalResolution.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			m_TemporaryAddBuffer = Framebuffer::Create(spec);
 		}
 		{
@@ -81,7 +82,7 @@ namespace Suora
 			spec.Height = m_InternalResolution.y;
 			for (int32_t i = 0; i < (int32_t) GBuffer::GBufferSlotCount; i++)
 			{
-				spec.Attachments.Attachments.push_back(GBufferSlotToBufferFormat((GBuffer)i));
+				spec.Attachments.Attachments.push_back(GBufferSlotToBufferParams((GBuffer)i));
 			}
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_GBuffer = Framebuffer::Create(spec);
@@ -97,7 +98,7 @@ namespace Suora
 
 	void RenderPipeline::Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
-		SUORA_ASSERT(buffer.GetSpecification().Attachments.Attachments[0].TextureFormat == FramebufferTextureFormat::RGB32F);
+		SUORA_ASSERT(buffer.GetSpecification().Attachments.Attachments[0].TextureFormat == FramebufferTextureFormat::RGBA8);
 
 		if (!Ilum::IsInIlumPass())
 		{
@@ -116,7 +117,16 @@ namespace Suora
 		}
 		SetFullscreenViewport(gbuffer);
 
-		DeferredPass(world, camera, gbuffer, params);
+		if (params.EnableDeferredRendering)
+		{
+			DeferredPass(world, camera, gbuffer, params);
+		}
+		else
+		{
+			GetForwardReadyBuffer(gbuffer.GetSize())->Bind();
+			RenderCommand::SetClearColor(camera.GetClearColor());
+			RenderCommand::Clear();
+		}
 
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Blend);
 
@@ -132,7 +142,7 @@ namespace Suora
 
 		if (!Ilum::IsInIlumPass())
 		{
-			m_DecimaInstance->Run(&world, &camera);
+			//m_DecimaInstance->Run(&world, &camera);
 		}
 	}
 
@@ -195,7 +205,7 @@ namespace Suora
 			Ref<Shader> ClearShader;
 			RenderPipeline_ClearDepth()
 			{
-				ClearShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/ClearDepth.glsl");
+				ClearShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/ClearDepth.glsl");
 			}
 		};
 		static RenderPipeline_ClearDepth Cmd;
@@ -346,10 +356,9 @@ namespace Suora
 				SkyLightNode* sky = lights[0];
 				if (sky && sky->IsEnabled())
 				{
-					m_DeferredSkyLightShader->SetFloat3("u_ViewPos", camera->GetTransform()->GetPosition());
-					m_DeferredSkyLightShader->SetInt("u_Emissive", (int)GBuffer::Emissive); gBuffer.BindColorAttachmentByIndex((int)GBuffer::Emissive, (int)GBuffer::Emissive);
-					m_DeferredSkyLightShader->SetInt("u_WorldNormal", (int)GBuffer::WorldNormal); gBuffer.BindColorAttachmentByIndex((int)GBuffer::WorldNormal, (int)GBuffer::WorldNormal);
-					RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredSkyLightShader, BufferToRect(gBuffer), "u_WorldPos", (int)GBuffer::WorldPosition, false);
+					m_DeferredSkyLightShader->SetFloat("u_Intensity", sky->m_Intensity);
+					m_DeferredSkyLightShader->SetFloat3("u_Color", sky->m_Color);
+					RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredSkyLightShader, BufferToRect(gBuffer), "u_BaseColor", (int)GBuffer::BaseColor, false);
 				}
 			}
 
@@ -456,6 +465,7 @@ namespace Suora
 		
 		m_DeferredComposite->Bind();
 		m_DeferredComposite->SetFloat3("u_View", camera.GetForwardVector());
+		m_DeferredComposite->SetFloat3("u_ViewPos", camera.GetPosition());
 		m_DeferredComposite->SetFloat4("u_ForwardClearColor", camera.GetClearColor());
 		// BaseColor = 0
 		gbuffer.BindColorAttachmentByIndex((int)GBuffer::Metallic, 1); m_DeferredComposite->SetInt("u_Metallic", 1);
@@ -569,7 +579,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = size.x;
 			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			m_DeferredLitBuffer[size] = Framebuffer::Create(spec);
 		}
 		return m_DeferredLitBuffer[size];
@@ -581,7 +591,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = size.x;
 			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(GBufferSlotToBufferFormat(GBuffer::WorldPosition));
+			spec.Attachments.Attachments.push_back(GBufferSlotToBufferParams(GBuffer::WorldPosition));
 			m_DeferredDecalBuffer[size] = Framebuffer::Create(spec);
 		}
 		return m_DeferredDecalBuffer[size];
@@ -594,7 +604,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = size.x;
 			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_ForwardReadyBuffer[size] = Framebuffer::Create(spec);
 		}
@@ -608,11 +618,19 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = size.x;
 			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_FinalFramebuffer[size] = Framebuffer::Create(spec);
 		}
 		return m_FinalFramebuffer[size];
+	}
+
+	RenderingParams::RenderingParams()
+	{
+		if (ProjectSettings::Get())
+		{
+			EnableDeferredRendering = ProjectSettings::Get()->m_EnableDeferredRendering;
+		}
 	}
 
 }

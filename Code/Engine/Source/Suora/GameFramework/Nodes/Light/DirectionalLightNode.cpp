@@ -17,7 +17,7 @@ namespace Suora
 		FramebufferSpecification spec;
 		spec.Width = resolution;
 		spec.Height = resolution;
-		spec.Attachments.Attachments.push_back(FramebufferTextureFormat::DEPTH32F_STENCIL8);
+		spec.Attachments.Attachments.push_back(FramebufferTextureParams(FramebufferTextureFormat::DEPTH32F_STENCIL8, FramebufferTextureFilter::Linear));
 		m_ShadowMapBuffer = Framebuffer::Create(spec);
 	}
 
@@ -29,7 +29,7 @@ namespace Suora
 		m_Cascades.Add(ShadowCascade( 8192 / 4, 5.0f,	0.65f ));
 		m_Cascades.Add(ShadowCascade( 8192 / 4, 25.0f,	2.2f ));
 		m_Cascades.Add(ShadowCascade( 8192 / 4, 125.0f,	9.0f ));
-		m_Cascades.Add(ShadowCascade( 8192 / 4, 500.0f,	65.0f ));
+		//m_Cascades.Add(ShadowCascade( 8192 / 4, 500.0f,	65.0f ));
 	}
 	void DirectionalLightNode::Begin()
 	{

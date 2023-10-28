@@ -50,7 +50,7 @@ namespace Suora
 				spec.Height = 128;
 				for (int32_t i = 0; i < (int32_t)GBuffer::GBufferSlotCount; i++)
 				{
-					spec.Attachments.Attachments.push_back(RenderPipeline::GBufferSlotToBufferFormat((GBuffer)i));
+					spec.Attachments.Attachments.push_back(RenderPipeline::GBufferSlotToBufferParams((GBuffer)i));
 				}
 				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 				m_GBuffer = Framebuffer::Create(spec);
@@ -59,7 +59,7 @@ namespace Suora
 				FramebufferSpecification spec;
 				spec.Width = 128;
 				spec.Height = 128;
-				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
 				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 				m_Preview = Framebuffer::Create(spec);
 			}
@@ -129,7 +129,7 @@ namespace Suora
 				camera->SetPosition(Vec3(5 * -1.0f, 5, 5 * -1.0f));
 				camera->SetEulerRotation(Vec3(45, 45, 0));
 				camera->SetViewportSize(256, 256);
-				m_World->Spawn(asset->As<Blueprint>());
+				m_World->Spawn(Class(asset->As<Blueprint>()));
 			}
 		}
 		void Render(Asset* asset)
@@ -218,15 +218,15 @@ namespace Suora
 	{
 		NativeInput::s_CharInputCallback.Register(&EditorUI::TextFieldCharInput);
 
-		UiShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/UI/Rect.glsl");
-		TextShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/Text.glsl");
+		UiShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/UI/Rect.glsl");
+		TextShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/Text.glsl");
 
 		CheckboxTickTexture = AssetManager::GetAssetByName<Texture2D>("CheckboxTick.texture");
 		CheckerboardTexture = AssetManager::GetAssetByName<Texture2D>("Checkerboard.texture");
 		DragFloatTexture = AssetManager::GetAssetByName<Texture2D>("DragFloat.texture");
 		ArrowDown = AssetManager::GetAssetByName<Texture2D>("ArrowDown.texture");
 		ArrowRight = AssetManager::GetAssetByName<Texture2D>("ArrowRight.texture");
-		ColorCircleShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/ColorCircle.glsl");
+		ColorCircleShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/ColorCircle.glsl");
 
 		{
 			FramebufferSpecification specs;
@@ -261,7 +261,7 @@ namespace Suora
 
 	void EditorUI::Tick(float deltaTime)
 	{
-		if (Window::CurrentFocusedWindow->GetCursor() != s_CurrentCursor) Window::CurrentFocusedWindow->SetCursor(s_CurrentCursor);
+		if (Window::s_CurrentFocusedWindow->GetCursor() != s_CurrentCursor) Window::s_CurrentFocusedWindow->SetCursor(s_CurrentCursor);
 		s_CurrentCursor = Cursor::Default;
 
 		if (s_WasInputConsumed > 0)
@@ -501,7 +501,7 @@ namespace Suora
 	bool EditorUI::Button(const std::string& text, float x, float y, float width, float height, ButtonParams params)
 	{
 		bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height && (GetHoveredOverlay() == s_CurrentProcessedOverlay);
-		const bool ButtonClicked = Hovering && (params.OverrideActivationEvent ? params.OverrittenActivationEvent() : NativeInput::GetMouseButtonDown(Mouse::ButtonLeft)) && CurrentWindow->m_InputEvent == params.InputMode && !WasInputConsumed();
+		const bool ButtonClicked = Hovering && (params.OverrideActivationEvent ? params.OverrittenActivationEvent() : NativeInput::GetMouseButtonDown(Mouse::ButtonLeft)) && CurrentWindow->m_InputEvent == params.InputMode && !WasInputConsumed() && !CurrentWindow->GetWindow()->IsCursorLocked();
 
 		if (params.OutHover) 
 			*params.OutHover = Hovering;
@@ -583,14 +583,14 @@ namespace Suora
 			TextFieldCharBuffer.Add(keyCode);
 		}
 	}
-	void EditorUI::TextField(std::string* str, float x, float y, float width, float height, ButtonParams params)
+	void EditorUI::TextField(std::string* str, float x, float y, float width, float height, ButtonParams params, const std::function<void(std::string)>& lambda)
 	{
 		if (EditorUI::Button(*str, x, y, width, height, params) && !TextField_Str && CurrentWindow->m_InputEvent == EditorInputEvent::None)
 		{
 			TextField_StrFlag = true;
 			TextField_Str = str;
 			TextFieldCharBuffer.Clear();
-			CreateOverlay<TextFieldOverlay>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, str, params.TextSize);
+			CreateOverlay<TextFieldOverlay>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, str, params.TextSize, lambda);
 		}
 
 		if (TextField_Str == str)
@@ -1233,6 +1233,7 @@ namespace Suora
 					}
 				}
 				InputReady = true;
+				EditorUI::DrawRectOutline(x, y, width, height, 1.0f, EditorPreferences::Get()->UiBackgroundColor);
 			}
 		};
 

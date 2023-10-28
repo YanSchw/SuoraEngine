@@ -1,12 +1,10 @@
 #pragma once
 #include "Asset.h"
-#include "Suora/Serialization/CompositionLayer.h"
 #include "Blueprint.generated.h"
 
 namespace Suora
 {
 	struct ScriptClassInternal;
-	struct CompositionLayer;
 	class DetailsPanel;
 	enum class InputScriptEventFlags : uint64_t;
 
@@ -51,12 +49,13 @@ namespace Suora
 		Blueprint();
 		void PreInitializeAsset(const std::string& str) override;
 		Class GetNodeParentClass() const;
-		Object* CreateInstance(bool includeCompositionData = false, bool deepestLayer = false, bool editContext = false);
+		Object* CreateInstance(bool isRootNode);
 
 		void Serialize(Yaml::Node& root) override;
 
 	private:
 		void SetParentClass(const Class& cls);
+		void InitComposition(const Class& cls);
 
 		friend class Level;
 		friend class World;

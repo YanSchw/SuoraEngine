@@ -50,19 +50,24 @@ namespace Suora
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 		: m_Props(props)
 	{
-		Window::CurrentFocusedWindow = this;
+		Window::s_CurrentFocusedWindow = this;
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
-		Window::AllWindows.Remove(this);
+		Window::s_AllWindows.Remove(this);
 		Shutdown();
 	}
 
 	bool WindowsWindow::IsUndecorated() const
 	{
 		return !m_Props.isDecorated;
+	}
+
+	void WindowsWindow::Minimize()
+	{
+		glfwIconifyWindow(m_Window);
 	}
 
 	void WindowsWindow::Maximize()
@@ -78,9 +83,15 @@ namespace Suora
 		}
 	}
 
+
 	void WindowsWindow::Iconify()
 	{
 		glfwIconifyWindow(m_Window);
+	}
+
+	void WindowsWindow::RegisterOverTitlebar(bool value)
+	{
+		m_Data.OverTitlebar = value;
 	}
 
 	void WindowsWindow::CenterWindow()
@@ -132,7 +143,7 @@ namespace Suora
 		m_Data.Height = props.Height;
 		m_Data.m_Window = this;
 
-		SUORA_INFO(LogCategory::Rendering, "Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+		SUORA_INFO(LogCategory::Rendering, "Creating Window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 		if (s_GLFWWindowCount == 0)
 		{
@@ -146,9 +157,14 @@ namespace Suora
 			if (RendererAPI::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 		#endif
-			glfwWindowHint(GLFW_DECORATED, m_Props.isDecorated ? 1 : 0);
-			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, (Window::AllWindows.Size() > 0) ? (GLFWwindow*) Window::AllWindows[0]->GetNativeWindow() : nullptr);
-			Window::AllWindows.Add(this);
+
+		#ifdef SUORA_PLATFORM_WINDOWS
+			glfwWindowHint(GLFW_TITLEBAR, m_Props.hasTitlebar ? GLFW_TRUE : GLFW_FALSE);
+		#endif
+
+			glfwWindowHint(GLFW_DECORATED, m_Props.isDecorated ? GLFW_TRUE : GLFW_FALSE);
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, (Window::s_AllWindows.Size() > 0) ? (GLFWwindow*) Window::s_AllWindows[0]->GetNativeWindow() : nullptr);
+			Window::s_AllWindows.Add(this);
 			GLFW::CenterWindow(m_Window);
 			++s_GLFWWindowCount;
 
@@ -182,11 +198,11 @@ namespace Suora
 			if (focused)
 			{
 				// Iterate over all Windows until we find the focused one; // TODO: Remove this hack
-				for (Window* w : Window::AllWindows.GetData())
+				for (Window* w : Window::s_AllWindows.GetData())
 				{
 					if (static_cast<GLFWwindow*>(w->GetNativeWindow()) == window)
 					{
-						Window::CurrentFocusedWindow = w;
+						Window::s_CurrentFocusedWindow = w;
 						break;
 					}
 				}
@@ -279,6 +295,13 @@ namespace Suora
 			}
 			data.m_Window->m_OnDesktopFilesDropped(args);
 		});
+
+		#ifdef SUORA_PLATFORM_WINDOWS
+		glfwSetTitlebarHitTestCallback(m_Window, [](GLFWwindow* window, int xPos, int yPos, int* hit)
+			{
+				*hit = static_cast<WindowData*>(glfwGetWindowUserPointer(window))->OverTitlebar ? 1 : 0;
+			});
+		#endif
 
 		SetCursor(Cursor::Default);
 		SetVSync(false);
@@ -392,8 +415,8 @@ namespace Suora
 
 	void WindowsWindow::SetCursor(Cursor cursor)
 	{
-		if (cursor == currentCursorType) return;
-		currentCursorType = cursor;
+		if (cursor == m_CurrentCursorType) return;
+		m_CurrentCursorType = cursor;
 
 		if(m_Cursor) glfwDestroyCursor(m_Cursor);
 
@@ -413,13 +436,26 @@ namespace Suora
 	}
 	Cursor WindowsWindow::GetCursor()
 	{
-		return currentCursorType;
+		return m_CurrentCursorType;
 	}
 
 	void WindowsWindow::SetCursorLocked(bool locked)
 	{
-		NativeInput::ResetMouseDelta();
+		bool needsReset = GLFW_CURSOR_NORMAL == glfwGetInputMode(m_Window, GLFW_CURSOR) && locked;
 		glfwSetInputMode(m_Window, GLFW_CURSOR, locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+
+		if (needsReset)
+			NativeInput::ResetMouseDelta();
+	}
+
+	bool WindowsWindow::IsCursorLocked()
+	{
+		return GLFW_CURSOR_DISABLED == glfwGetInputMode(m_Window, GLFW_CURSOR);
+	}
+
+	void WindowsWindow::SetTitle(const std::string& title)
+	{
+		glfwSetWindowTitle(m_Window, title.c_str());
 	}
 
 	bool WindowsWindow::IsWindowResizing()

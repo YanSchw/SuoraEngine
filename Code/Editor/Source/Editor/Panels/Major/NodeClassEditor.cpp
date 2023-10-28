@@ -113,7 +113,7 @@ namespace Suora
 	void NodeClassEditor::ResetEnvironment()
 	{
 		m_World = CreateRef<World>();
-		m_Actor = m_BlueprintClass->CreateInstance(true, true, true)->As<Node>();
+		m_Actor = m_BlueprintClass->CreateInstance(true)->As<Node>();
 		m_Actor->InitializeNode(*m_World);
 		m_Actor->m_Name = m_Name;
 
@@ -182,14 +182,11 @@ namespace Suora
 		
 		if (NativeInput::GetKeyDown(Key::Delete) && m_SelectedObject && m_SelectedObject->IsA<Node>())
 		{
-			if (IObjectCompositionData* obj = m_SelectedObject->As<Node>()->GetInterface<IObjectCompositionData>())
+			if (m_SelectedObject->As<Node>()->m_IsActorLayer)
 			{
-				if (obj->m_IsActorLayer)
-				{
-					if (m_SelectedObject == m_DetailsPanel->m_Data) m_DetailsPanel->m_Data = nullptr;
-					m_SelectedObject->As<Node>()->Destroy();
-					m_SelectedObject = nullptr;
-				}
+				if (m_SelectedObject == m_DetailsPanel->m_Data) m_DetailsPanel->m_Data = nullptr;
+				m_SelectedObject->As<Node>()->Destroy();
+				m_SelectedObject = nullptr;
 			}
 		}
 	}
@@ -259,7 +256,6 @@ namespace Suora
 		Engine::Get()->DisposeGameInstance();
 
 		GetEditorWindow()->GetWindow()->SetCursorLocked(false);
-		GetEditorWindow()->m_InputEvent = EditorInputEvent::None;
 		m_CurrentPlayState = PlayState::Editor;
 		m_SelectedObject = nullptr;
 		m_DetailsPanel->m_Data = nullptr;
@@ -289,12 +285,10 @@ namespace Suora
 		{
 			if (m_CurrentPlayState == PlayState::Editor)
 			{
-				GetEditorWindow()->m_InputEvent = EditorInputEvent::Viewport_PlayMode;
 				PlayInEditor();
 			}
 			else
 			{
-				GetEditorWindow()->m_InputEvent = EditorInputEvent::None;
 				StopPlayInEditor();
 			}
 			m_SelectedObject = nullptr;
@@ -316,7 +310,22 @@ namespace Suora
 		}
 		else
 		{
-			EditorUI::DrawRect(x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, 4.0f, EditorPreferences::Get()->UiBackgroundColor);
+			if (m_CurrentPlayState == PlayState::Playing)
+			{
+				if (EditorUI::Button("Eject", x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, Params) || NativeInput::GetKeyDown(Key::F6))
+				{
+					m_CurrentPlayState = PlayState::Simulating;
+				}
+				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("24294e57-bae7-4ff7-a0f2-73f9741069da"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
+			}
+			else if (m_CurrentPlayState == PlayState::Simulating)
+			{
+				if (EditorUI::Button("Inject", x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, Params) || NativeInput::GetKeyDown(Key::F6))
+				{
+					m_CurrentPlayState = PlayState::Playing;
+				}
+				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("24294e57-bae7-4ff7-a0f2-73f9741069da"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
+			}
 		}
 		x += 15 + height * 0.8f + 90.0f;
 

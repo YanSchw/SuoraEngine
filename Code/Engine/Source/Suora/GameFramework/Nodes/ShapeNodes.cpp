@@ -29,12 +29,6 @@ namespace Suora
 	{
 		Super::Begin();
 
-		if (!Implements<IObjectCompositionData>())
-		{
-			Implement<IObjectCompositionData>();
-		}
-		GetInterface<IObjectCompositionData>()->m_IsActorLayer = false;
-
 		if (IsStatic)
 		{
 			SetBodyType(BodyType::Static);

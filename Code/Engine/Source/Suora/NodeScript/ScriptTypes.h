@@ -14,6 +14,7 @@ namespace Suora
 		Vec2,
 		Vec3,
 		Vec4,
+		Quat,
 		ObjectPtr,
 		Class,
 		Bool,
@@ -36,7 +37,7 @@ namespace Suora
 			str.erase(str.find("const"), 5);
 			str.erase(str.find("&"), 1);
 		}
-		for (int i = str.size() - 1; i >= 0; i--)
+		for (int64_t i = str.size() - 1; i >= 0; i--)
 		{
 			if (str[i] == ' ') str.erase(i, 1);
 		}

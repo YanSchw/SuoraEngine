@@ -57,9 +57,9 @@ namespace Suora
 		Array<UniformSlot> m_UniformSlots;
 
 		Material();
-		void PreInitializeAsset(const std::string& str);
-		void InitializeAsset(const std::string& str);
-		void Serialize(Yaml::Node& root);
+		void PreInitializeAsset(const std::string& str) override;
+		void InitializeAsset(const std::string& str) override;
+		void Serialize(Yaml::Node& root) override;
 
 		void SetShaderGraph(ShaderGraph* shaderGraph);
 		ShaderGraph* GetShaderGraph() const;

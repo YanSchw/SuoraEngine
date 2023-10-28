@@ -1,7 +1,5 @@
 #pragma once
 #include <unordered_map>
-#include <vector>
-#include "Object.h"
 #include "Suora/Reflection/Class.h"
 
 namespace Suora
@@ -13,25 +11,25 @@ namespace Suora
 	struct ObjectFactory
 	{
         template<class T>
-        struct RegisterClass
+        struct RegisterSuoraClass
         {
-            RegisterClass()
+            RegisterSuoraClass()
             {
                 s_ObjectAllocators[T::StaticClass().GetNativeClassID()] = InternalAllocate<T>;
             }
-            RegisterClass(NativeClassID id)
+            explicit RegisterSuoraClass(const NativeClassID id)
             {
                 s_ObjectAllocators[id] = InternalAllocate<T>;
             }
         };
 
 
-        static Object* Allocate(NativeClassID id);
+        static Object* Allocate(const NativeClassID id);
 
         static Array<Class> GetAllNativeClasses();
 
-    private:
         ObjectFactory() = delete;
+    private:
 
         inline static std::unordered_map<NativeClassID, Object * (*)(void)> s_ObjectAllocators;
 
@@ -46,8 +44,6 @@ namespace Suora
 }
 
 
-#define REGISTER_CLASS(name, classid) \
-    ::Suora::ObjectFactory::RegisterClass<name> register_class_##name(##classid); \
+#define SUORA_REGISTER_CLASS(name, classid) \
+    ::Suora::ObjectFactory::RegisterSuoraClass<name> register_class_##name(classid); \
 
-#define REGISTER_CLASS(name) \
-    ::Suora::ObjectFactory::RegisterClass<name> register_class_##name(##name::StaticClass().GetNativeClassID()); \

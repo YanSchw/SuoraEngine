@@ -35,6 +35,7 @@ namespace Suora
 		Color UiForgroundColor = Color(0.2f, 0.20392157f, 0.211764706f, 1.0f); // Color(0.18531372f, 0.18531372f, 0.18531372f, 1.0f);
 		Color UiBackgroundColor = Color(0.101961f, 0.105882f, 0.1198039f, 1.0f); // Color(0.10216078f, 0.10216078f, 0.10216078f, 1.0f);
 		Color UiHighlightColor = Color(0.4f, 0.64f, 1.0f, 1.0f);// = Color(.87f, .64f, .04f, 1.0f); // = Color(.87f, .64f, .04f, 1.0f); for Orange
+		Color UiTitlebarColor = Color(0.05882f, 0.05882f, 0.05882f, 1.0f);
 		Color UiInputColor = Color(0.05882f, 0.05882f, 0.05882f, 1.0f);
 		Color UiTextColor = Color(0.75f, 0.75f, 0.75f, 1.0f);
 

@@ -12,14 +12,18 @@ namespace Suora
 
 		for (auto it : s_ObjectAllocators)
 		{
-			Classes.Add(it.first);
+			Classes.Add(Class(it.first));
 		}
 
 		return Classes;
 	}
 
-	Object* ObjectFactory::Allocate(NativeClassID id)
+	Object* ObjectFactory::Allocate(const NativeClassID id)
 	{
+		if (s_ObjectAllocators.find(id) == s_ObjectAllocators.end())
+		{
+			return nullptr;
+		}
 		return s_ObjectAllocators.at(id)();
 	}
 }

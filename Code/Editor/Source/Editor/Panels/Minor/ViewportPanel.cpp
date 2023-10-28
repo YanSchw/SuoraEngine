@@ -67,7 +67,7 @@ namespace Suora
 			FramebufferSpecification spec;
 			spec.Width = 192;
 			spec.Height = 108;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_TranformGizmoPickingBuffer = Framebuffer::Create(spec);
 		}
@@ -77,7 +77,7 @@ namespace Suora
 			spec.Height = 1080;
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
 			m_SelectionOutlineFramebuffer = Framebuffer::Create(spec);
-			m_SelectionOutlineShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/SelectionOutline.glsl");
+			m_SelectionOutlineShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/SelectionOutline.glsl");
 		}
 	}
 
@@ -178,21 +178,9 @@ namespace Suora
 						AssetDragDropNode->SetName(ContentBrowser::s_DraggedAsset->GetAssetName());
 						AssetDragDropNode->As<MeshNode>()->mesh = ContentBrowser::s_DraggedAsset->As<Mesh>();
 						AssetDragDropNode->As<MeshNode>()->materials = AssetManager::GetAsset<Material>(SuoraID("75423845379822"));
-						AssetDragDropNode->Implement<IObjectCompositionData>();
-						AssetDragDropNode->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
-						for (auto& it : AssetDragDropNode->GetInterface<IObjectCompositionData>()->m_DefaultMemberValues)
-						{
-							if (it.m_Member.m_Type == ClassMember::Type::AssetPtr && it.m_Member.m_MemberName == "mesh")
-							{
-								it.m_ValueChanged = true;
-								it.m_ValueAssetPtr = ContentBrowser::s_DraggedAsset->As<Mesh>();
-							}
-							if (it.m_Member.m_Type == ClassMember::Type::AssetPtr && it.m_Member.m_MemberName == "material")
-							{
-								it.m_ValueChanged = true;
-								it.m_ValueAssetPtr = AssetManager::GetAsset<Material>(SuoraID("75423845379822"));
-							}
-						}
+						AssetDragDropNode->m_IsActorLayer = true;
+						AssetDragDropNode->m_OverwrittenProperties.Add("mesh");
+						AssetDragDropNode->m_OverwrittenProperties.Add("material");
 					}
 					else if (ContentBrowser::s_DraggedAsset->IsA<Blueprint>())
 					{
@@ -208,8 +196,7 @@ namespace Suora
 
 				if (NativeInput::GetMouseButtonUp(Mouse::ButtonLeft) && AssetDragDropNode)
 				{
-					AssetDragDropNode->Implement<IObjectCompositionData>();
-					AssetDragDropNode->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
+					AssetDragDropNode->m_IsActorLayer = true;
 					AssetDragDropValidation = true;
 
 					if (GetMajorTab()->IsA<NodeClassEditor>()) GetMajorTab()->As<NodeClassEditor>()->m_SelectedObject = AssetDragDropNode;
@@ -318,7 +305,10 @@ namespace Suora
 		bool mousePickReady = EditorUI::IsNotHoveringOverlays() && !EditorUI::WasInputConsumed();
 		if (IsInputValid() && EditorUI::IsNotHoveringOverlays())
 		{
-			EditorUI::SetCursor(Cursor::Crosshair);
+			if (GetMajorTab()->IsA<NodeClassEditor>() && GetMajorTab()->As<NodeClassEditor>()->m_CurrentPlayState != PlayState::Playing)
+			{
+				EditorUI::SetCursor(Cursor::Crosshair);
+			}
 		}
 		/** Viewport Tools */
 		{
@@ -456,7 +446,7 @@ namespace Suora
 
 		// Gizmo Buffer
 		/*m_GizmoBuffer->Unbind();
-		static Ref<Shader> FXAA = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
+		static Ref<Shader> FXAA = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
 		FXAA->Bind();
 		FXAA->SetFloat2("u_Resolution", m_GizmoBufferSmooth->GetSize());
 		RenderPipeline::RenderFramebufferIntoFramebuffer(*m_GizmoBuffer, *m_GizmoBufferSmooth, *FXAA, glm::ivec4(0, 0, m_GizmoBufferSmooth->GetSize()));
@@ -469,8 +459,6 @@ namespace Suora
 
 		RenderCommand::SetDepthTest(false);
 		RenderCommand::SetCullingMode(CullingMode::None);
-
-		EditorUI::DrawRectOutline(0, 0, GetWidth(), GetHeight(), 1, EditorPreferences::Get()->UiHighlightColor);
 	}
 
 }

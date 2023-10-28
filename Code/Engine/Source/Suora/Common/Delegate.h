@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <vector>
 #include <functional>
 #include "Suora/Common/Array.h"

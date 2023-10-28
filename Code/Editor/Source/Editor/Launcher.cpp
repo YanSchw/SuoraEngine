@@ -19,7 +19,7 @@ namespace Suora
 	Launcher::Launcher(EditorWindow* editor)
 		: m_EditorWindow(editor)
 	{
-		std::filesystem::path engineContentPath = AssetManager::GetAssetRootPath();
+		std::filesystem::path engineContentPath = AssetManager::GetEngineAssetPath();
 		std::filesystem::path templateContentPath = engineContentPath.parent_path().append("Templates");
 
 		if (std::filesystem::exists(templateContentPath))
@@ -135,7 +135,7 @@ namespace Suora
 			Yaml::Parse(root, str);
 			Yaml::Node& settings = root["Settings"];
 			{
-				settings["Engine"]["Path"] = std::filesystem::path(AssetManager::GetAssetRootPath()).parent_path().string();
+				settings["Engine"]["Path"] = std::filesystem::path(AssetManager::GetEngineAssetPath()).parent_path().string();
 			}
 			std::string out;
 			Yaml::Serialize(root, out);
@@ -272,7 +272,7 @@ namespace Suora
 		Color BackgroundColor = EditorPreferences::Get()->UiColor * 0.65f; BackgroundColor.a = 1.0f;
 		EditorUI::DrawRect(250.0f * ui, 0, GetWindow()->GetWidth() - 250.0f * ui, GetWindow()->GetHeight(), 0, BackgroundColor);
 
-		if (EditorUI::Button("Add Project", GetWindow()->GetWidth() - 175.0f, GetWindow()->GetHeight() - 35.0f, 125, 33.0f))
+		if (EditorUI::Button("Add Project", GetWindow()->GetWidth() - 175.0f, 35.0f, 125, 33.0f))
 		{
 			std::optional<std::string> path = Platform::OpenFileDialog({".suora"});
 			
@@ -358,7 +358,7 @@ namespace Suora
 		float x = 250 * ui;
 
 		float y = GetWindow()->GetHeight() - (36.0f * ui);
-		y -= 25.0f * ui;
+		y -= 55.0f * ui;
 		if (EditorUI::Button("C++", x + (GetWindow()->GetWidth() - x) * 0.3f - 225.0f, y, 200.0f, 30.0f, m_SelectedContentOnlyTab ? EditorUI::ButtonParams() : EditorUI::ButtonParams::Outlined()))
 		{
 			m_SelectedContentOnlyTab = false;

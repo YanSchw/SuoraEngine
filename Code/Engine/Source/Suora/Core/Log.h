@@ -5,14 +5,11 @@
 // This ignores all warnings raised inside External headers
 #pragma warning(push, 0)
 #include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
 #pragma warning(pop)
 
-#include <unordered_map>
 #include <memory>
 #include <string>
 #include <sstream>
-#include <stdexcept>
 
 extern std::string string_format(std::string format, const std::vector<std::stringstream>& streams);
 
@@ -85,7 +82,7 @@ namespace Suora
 
 		static Ref<spdlog::logger>& GetLogger(LogCategory category);
 	private:
-		static std::string CategoryToString(LogCategory category);
+		static std::string CategoryToString(const LogCategory category);
 
 	};
 

@@ -29,9 +29,6 @@ namespace Suora
 		MEMBER()
 		bool m_ShadowMap = false;
 
-		MEMBER()
-		Color m_Color = Color(1.0f);
-
 	};
 
 }

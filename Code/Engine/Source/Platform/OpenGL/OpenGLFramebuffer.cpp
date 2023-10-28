@@ -62,7 +62,7 @@ namespace Suora
 			else
 			{
 				glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
-
+				
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter == FramebufferTextureFilter::Nearest ? GL_NEAREST : GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter == FramebufferTextureFilter::Nearest ? GL_NEAREST : GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);

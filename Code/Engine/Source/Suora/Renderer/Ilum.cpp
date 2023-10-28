@@ -47,7 +47,7 @@ namespace Suora
 			specs.Height = 64;
 			for (int32_t i = 0; i < (int32_t)GBuffer::GBufferSlotCount; i++)
 			{
-				specs.Attachments.Attachments.push_back(FramebufferTextureParams(RenderPipeline::GBufferSlotToBufferFormat((GBuffer)i), FramebufferTextureFilter::Nearest));
+				specs.Attachments.Attachments.push_back(FramebufferTextureParams(RenderPipeline::GBufferSlotToBufferParams((GBuffer)i).TextureFormat, FramebufferTextureFilter::Nearest));
 			}
 			specs.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_SurfelCache = Framebuffer::Create(specs);
@@ -69,7 +69,7 @@ namespace Suora
 			m_IluminationCache = Framebuffer::Create(specs);
 			m_IluminationCacheAcc = Framebuffer::Create(specs);
 		}
-		m_LightPropagationShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Ilum/Ilum_LightPropagation.glsl");
+		m_LightPropagationShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Ilum/Ilum_LightPropagation.glsl");
 
 		{
 			FramebufferSpecification specs;
@@ -79,9 +79,9 @@ namespace Suora
 			m_SurfelIlumCache = Framebuffer::Create(specs);
 			m_SurfelIlumCacheAcc = Framebuffer::Create(specs);
 		}
-		m_SurfelPropagationShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Ilum/Ilum_SurfelPropagation.glsl");
-		m_ApplySurfels = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Ilum/Ilum_ApplySurfels.glsl");
-		m_Denoiser = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Ilum/Ilum_Denoiser.glsl");
+		m_SurfelPropagationShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Ilum/Ilum_SurfelPropagation.glsl");
+		m_ApplySurfels = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Ilum/Ilum_ApplySurfels.glsl");
+		m_Denoiser = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Ilum/Ilum_Denoiser.glsl");
 		{
 			FramebufferSpecification specs;
 			specs.Width = 64;
@@ -90,9 +90,9 @@ namespace Suora
 			m_EmptyViewport = Framebuffer::Create(specs);
 			m_EmptyViewport2 = Framebuffer::Create(specs);
 		}
-		m_PosReadback = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Ilum/Ilum_PositionReadback.glsl");
+		m_PosReadback = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Ilum/Ilum_PositionReadback.glsl");
 		m_PosReadbackSSBO = ShaderStorageBuffer::Create();
-		m_WriteToSurfelCache = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Ilum/Ilum_WriteToSurfelCache.glsl");
+		m_WriteToSurfelCache = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Ilum/Ilum_WriteToSurfelCache.glsl");
 	}
 
 	void Ilum::Tick(float deltaTime, Framebuffer& gBuffer, CameraNode& camera, World& world)
@@ -307,9 +307,9 @@ namespace Suora
 	void Ilum::Init()
 	{
 		m_Initialized = true;
-		m_PositionReadbackShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Ilum/Ilum_PositionReadback.glsl");
+		m_PositionReadbackShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Ilum/Ilum_PositionReadback.glsl");
 		m_PositionSSBO = ShaderStorageBuffer::Create();
-		m_GatherIluminationShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/Ilum/Ilum_Gather.glsl");
+		m_GatherIluminationShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Ilum/Ilum_Gather.glsl");
 		{
 			FramebufferSpecification specs;
 			specs.Width = m_ViewResolution;

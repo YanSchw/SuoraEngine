@@ -13,7 +13,7 @@ namespace Suora
 {
 	struct EditorUI
 	{
-		struct Overlay abstract
+		struct Overlay
 		{
 			float x = 0, y = 0, width = 100, height = 100;
 
@@ -303,6 +303,10 @@ namespace Suora
 
 			bool* OutHover = nullptr;
 
+			ButtonParams()
+			{
+			}
+
 			inline static ButtonParams Invisible()
 			{
 				ButtonParams Params;
@@ -545,7 +549,7 @@ namespace Suora
 			Params.HoverCursor = Cursor::IBeam;
 			return Params;
 		}
-		static void TextField(std::string* str, float x, float y, float width, float height, ButtonParams params = TextFieldButtonParams());
+		static void TextField(std::string* str, float x, float y, float width, float height, ButtonParams params = TextFieldButtonParams(), const std::function<void(std::string)>& lambda = nullptr);
 		static void _SetTextFieldStringPtr(std::string* str, float x, float y, float width, float height, bool needsFlag = true);
 
 	private:

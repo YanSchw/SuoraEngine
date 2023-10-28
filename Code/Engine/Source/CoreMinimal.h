@@ -17,10 +17,6 @@
 #include "Suora/Core/Object/Object.h"
 #include "Suora/Core/Object/Pointer.h"
 
-template<class T> using WeakRef = std::weak_ptr<T>;
-template<class T> using Ref = std::shared_ptr<T>;
-template<class T> using Scope = std::unique_ptr<T>;
-
 namespace Suora
 {
 	class Application;

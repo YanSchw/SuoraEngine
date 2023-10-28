@@ -57,7 +57,7 @@ namespace Suora
 		if (m_Asset)
 		{
 			EditorUI::ButtonParams SaveButtonParams;
-			SaveButtonParams.ButtonRoundness = 0.0f;
+			SaveButtonParams.ButtonRoundness = 4.0f;
 			SaveButtonParams.ButtonColorClicked = Color(0.0f);
 			SaveButtonParams.ButtonColorHover = EditorPreferences::Get()->UiForgroundColor * 1.2f;
 			SaveButtonParams.CenteredIcon = AssetManager::GetAsset<Texture2D>(SuoraID("617d1c03-b141-4d71-9d73-993188ff011f"));

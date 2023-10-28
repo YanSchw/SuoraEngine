@@ -1,6 +1,6 @@
 #pragma once
 #include <unordered_map>
-#include <glm/glm.hpp>
+#include "CoreMinimal.h"
 #include "Suora/Common/Delegate.h"
 #include "Suora/Core/KeyCodes.h"
 #include "Suora/Core/MouseCodes.h"
@@ -19,10 +19,10 @@ namespace Suora
 		{
 			return !s_LastFrameLeftMouseButton && IsMouseButtonPressed(Mouse::ButtonLeft);
 		}
-		static glm::vec2 GetMousePosition();
+		static Vec2 GetMousePosition();
 
-		inline static glm::vec2 s_LastMousePosition = glm::vec2(), s_DeltaMousePosition = glm::vec2();
-		static glm::vec2 GetMouseDelta()
+		inline static Vec2 s_LastMousePosition = Vec2(), s_DeltaMousePosition = Vec2();
+		static Vec2 GetMouseDelta()
 		{
 			return s_DeltaMousePosition;
 		}
@@ -62,12 +62,14 @@ namespace Suora
 
 		static void ResetMouseDelta()
 		{
-			s_DeltaMousePosition = glm::vec2(0.0f);
+			s_ResetMouseDelta = true;
+			s_DeltaMousePosition = Vec2(0.0f);
 			s_LastMousePosition = GetMousePosition();
 		}
 
 		static void ConsumeInput()
 		{
+			ResetMouseDelta();
 			for (auto& it : s_KeyEvents) it.second = false;
 			for (auto& it : s_DownKeyEvents) it.second = false;
 			for (auto& it : s_UpKeyEvents) it.second = false;
@@ -84,6 +86,7 @@ namespace Suora
 		inline static float s_GlobalScrollDelta = 0;
 		inline static float s_ScrollDelta = 0;
 		inline static bool s_LastFrameLeftMouseButton = false;
+		inline static bool s_ResetMouseDelta = false;
 
 		static void Init()
 		{
@@ -94,6 +97,11 @@ namespace Suora
 
 			s_DeltaMousePosition = GetMousePosition() - s_LastMousePosition;
 			s_LastMousePosition = GetMousePosition();
+			if (s_ResetMouseDelta)
+			{
+				s_ResetMouseDelta = false;
+				s_DeltaMousePosition = Vec2(0.0f);
+			}
 			s_LastFrameLeftMouseButton = IsMouseButtonPressed(Mouse::ButtonLeft);
 			s_ScrollDelta = s_GlobalScrollDelta;
 			s_GlobalScrollDelta = 0;

@@ -8,17 +8,17 @@ namespace Suora
 	class Object;
 
 	/** Internal use only... */
-	extern inline Object* InlineNew(const Class& cls, bool includeCompositionData, bool deepestLayer);
+	extern Object* InlineNew(const Class& cls, const bool isRootNode);
 
 	/** Use Suora::New(...) to allocated a new Instance of a SuoraClass */
-	static Object* New(const Class& cls, bool includeCompositionData = false, bool deepestLayer = false)
+	[[nodiscard]] static Object* New(const Class& cls, const bool isRootNode = false)
 	{
-		return InlineNew(cls, includeCompositionData, deepestLayer);
+		return InlineNew(cls, isRootNode);
 	}
 
 	/** See above, just templated... */
 	template<class T>
-	static T* New()
+	[[nodiscard]] static T* New()
 	{
 		return (T*)New(T::StaticClass());
 	}

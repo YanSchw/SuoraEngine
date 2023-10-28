@@ -24,6 +24,9 @@ namespace Suora
 	public:
 
 		MEMBER()
+		Color m_Color = Color(1.0f);
+
+		MEMBER()
 		float m_Radius = 4.5f;
 
 		MEMBER()

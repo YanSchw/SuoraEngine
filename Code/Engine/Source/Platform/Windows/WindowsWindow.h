@@ -27,17 +27,21 @@ namespace Suora
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
-		bool IsMaximized() const override;
 		void SetCursor(Cursor cursor) override;
 		Cursor GetCursor() override;
 		void SetCursorLocked(bool locked) override;
+		bool IsCursorLocked() override;
+		void SetTitle(const std::string& title) override;
 		bool IsWindowResizing();
 
 		virtual void* GetNativeWindow() const { return m_Window; }
 		virtual void* GetGraphicsContext() const { return m_Context.get(); }
 		virtual bool IsUndecorated() const;
+		virtual void Minimize() override;
+		virtual bool IsMaximized() const override;
 		virtual void Maximize() override;
 		virtual void Iconify() override;
+		void RegisterOverTitlebar(bool value) override;
 		virtual void CenterWindow() override;
 
 		virtual void SetFullscreen(bool fullscreen) override;
@@ -57,10 +61,11 @@ namespace Suora
 		struct WindowData
 		{
 			std::string Title;
-			unsigned int Width, Height;
-			bool VSync;
+			unsigned int Width = 192, Height = 108;
+			bool VSync = false;
 			Window* m_Window = nullptr;
 
+			bool OverTitlebar = false;
 			EventCallbackFn EventCallback;
 		};
 

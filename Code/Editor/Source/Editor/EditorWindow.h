@@ -25,7 +25,6 @@ namespace Suora
 		EditorUI_ScrollbarVertical,
 		DetailsPanel_MoveSperator,
 		Viewport_EditorCamera,
-		Viewport_PlayMode,
 		NodeGraph_DragNode,
 		NodeGraph_DragWire,
 		TransformGizmo,
@@ -58,6 +57,7 @@ namespace Suora
 		void RenderSelectedMajorTab(float deltaTime);
 		void RenderTooltip(float deltaTime);
 		void RenderBottomBarAndHeroTool(float deltaTime);
+		void RenderTitlebar(float deltaTime);
 
 		Window* GetWindow();
 		static EditorWindow* GetCurrent() { return s_Current; }

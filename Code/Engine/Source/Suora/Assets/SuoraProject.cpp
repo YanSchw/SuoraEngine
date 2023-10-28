@@ -49,6 +49,7 @@ namespace Suora
 		}
 
 		m_TargetFramerate = settings["Rendering"]["m_TargetFramerate"].IsNone() ? 60.0f : std::stof(settings["Rendering"]["m_TargetFramerate"].As<std::string>());
+		m_EnableDeferredRendering = settings["Rendering"]["m_EnableDeferredRendering"].IsNone() ? true : settings["Rendering"]["m_EnableDeferredRendering"].As<std::string>() == "true";
 
 		const Class gameInstanceClass = Class::FromString(settings["Game"]["m_GameInstanceClass"].As<std::string>());
 		m_GameInstanceClass = gameInstanceClass != Class::None ? gameInstanceClass : GameInstance::StaticClass();
@@ -75,6 +76,7 @@ namespace Suora
 		settings["Engine"]["m_EditorStartupAsset"] = m_EditorStartupAsset ? m_EditorStartupAsset->m_UUID.GetString() : "0";
 
 		settings["Rendering"]["m_TargetFramerate"] = std::to_string(m_TargetFramerate);
+		settings["Rendering"]["m_EnableDeferredRendering"] = m_EnableDeferredRendering ? "true" : "false";
 
 		settings["Game"]["m_GameInstanceClass"] = m_GameInstanceClass.GetClass().ToString();
 		settings["Game"]["m_DefaultLevel"] = m_DefaultLevel ? m_DefaultLevel->m_UUID.GetString() : "0";
@@ -97,6 +99,10 @@ namespace Suora
 	ProjectSettings* ProjectSettings::Get()
 	{
 		return AssetManager::GetFirstAssetOfType<ProjectSettings>();
+	}
+	std::string ProjectSettings::GetProjectName()
+	{
+		return Get()->m_Path.stem().string();
 	}
 
 }

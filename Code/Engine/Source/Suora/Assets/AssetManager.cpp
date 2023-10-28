@@ -59,22 +59,22 @@ namespace Suora
 			s_ProjectAssetPath = contentPath.string();
 			if (project->GetEnginePath() == "")
 			{
-				s_AssetRootPath = s_ProjectAssetPath;
+				s_EngineAssetPath = s_ProjectAssetPath;
 			}
 			else
 			{
-				s_AssetRootPath = project->GetEnginePath() + "/Content";
+				s_EngineAssetPath = project->GetEnginePath() + "/Content";
 			}
 		}
 		else
 		{
 			s_ProjectAssetPath = "";
-			s_AssetRootPath = contentPath.string();
+			s_EngineAssetPath = contentPath.string();
 		}
 
 		// Now, actually load all Assets...
-		HotReload(s_AssetRootPath);
-		if (s_ProjectAssetPath != "" && s_ProjectAssetPath != s_AssetRootPath)
+		HotReload(s_EngineAssetPath);
+		if (s_ProjectAssetPath != "" && s_ProjectAssetPath != s_EngineAssetPath)
 		{
 			HotReload(s_ProjectAssetPath);
 		}
@@ -115,8 +115,6 @@ namespace Suora
 		}
 
 		InitializeAllAssets();
-
-		ScriptEngine::CompileAllScriptClasses();
 
 	}
 

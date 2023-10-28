@@ -46,6 +46,15 @@ namespace Suora::Physics
 	{
 		return Convert::ToVec3(m_Controller->GetPosition());
 	}
+	void JoltCharacterController::SetInternalRotation(const Quat& rotation)
+	{
+		m_Controller->SetRotation(Convert::ToJoltQuat(rotation));
+	}
+
+	Quat JoltCharacterController::GetInternalRotation()
+	{
+		return Convert::ToSuoraQuat(m_Controller->GetRotation());
+	}
 
 	void JoltCharacterController::Move(const Vec3& movementInput)
 	{

@@ -13,6 +13,8 @@ namespace Suora
 		LevelOutliner(MajorTab* majorTab);
 		~LevelOutliner();
 
+		static std::vector<EditorUI::ContextMenuElement> CreateNodeMenu(World* world, Node* node);
+
 		Texture2D* TexActorIcon = nullptr;
 		Texture2D* TexVisible0 = nullptr;
 		Texture2D* TexVisible1 = nullptr;
@@ -37,6 +39,7 @@ namespace Suora
 		float m_HeaderSeperator2 = 0.97f;
 		Ptr<Node> m_DragNode = nullptr;
 		Ptr<Node> m_RootNode = nullptr;
+		std::unordered_map<Node*, float> m_TempYValuesOfParentNodes;
 
 		friend class NodeClassEditor;
 	};

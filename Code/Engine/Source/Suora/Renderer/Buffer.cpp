@@ -32,12 +32,12 @@ namespace Suora
 		return nullptr;
 	}
 
-	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
+	Ref<IndexBuffer> IndexBuffer::Create(const uint32_t* indices, uint32_t count)
 	{
 		switch (RendererAPI::GetAPI())
 		{
 			case RendererAPI::API::None:    SUORA_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:  return CreateRef<OpenGLIndexBuffer>(indices, size);
+			case RendererAPI::API::OpenGL:  return CreateRef<OpenGLIndexBuffer>(indices, count);
 		}
 
 		SUORA_ASSERT(false, "Unknown RendererAPI!");

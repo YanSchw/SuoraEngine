@@ -1,7 +1,6 @@
 #include "Precompiled.h"
 #include "Mesh.h"
 #include "Suora/Common/Common.h"
-#include "Suora/Common/Random.h"
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Serialization/Yaml.h"
 #include "Suora/Renderer/VertexArray.h"
@@ -10,6 +9,7 @@
 #include "Suora/Core/Threading.h"
 #include "Suora/Assets/AssetManager.h"
 #include <fstream>
+#include <future>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -401,7 +401,7 @@ namespace Suora
 		return;
 	}
 
-	void Mesh::Decimate_Cluster(MeshBuffer& meshBuffer, Ref<Cluster> cluster)
+	void Mesh::Decimate_Cluster(const MeshBuffer& meshBuffer, const Ref<Cluster>& cluster)
 	{
 		MeshBuffer buffer;
 		buffer.Indices = cluster->Indices;
@@ -429,11 +429,23 @@ namespace Suora
 			else if (m_AsyncMeshBuffer.get() && IsFutureReady(*m_AsyncMeshBuffer.get()))
 			{
 				AssetManager::s_AssetStreamPool.Remove(this);
-				if (IsSubMesh() && AssetManager::s_AssetStreamPool.Contains(m_ParentMesh)) AssetManager::s_AssetStreamPool.Remove(m_ParentMesh);
-				Ref<MeshBuffer> buffer = m_AsyncMeshBuffer->get();
-				if (m_MeshBuffer.Indices.size() == 0) m_MeshBuffer = *buffer.get();
+
+				if (IsSubMesh() && AssetManager::s_AssetStreamPool.Contains(m_ParentMesh)) 
+					AssetManager::s_AssetStreamPool.Remove(m_ParentMesh);
+
+				const Ref<MeshBuffer> buffer = m_AsyncMeshBuffer->get();
+
+				if (m_MeshBuffer.Indices.empty())
+				{
+					m_MeshBuffer = *buffer.get();
+				}
+
 				m_AsyncMeshBuffer = nullptr;
-				if (!IsMasterMesh()) m_VertexArray = Ref<VertexArray>(VertexArray::Create(IsDecimaMesh() ? MeshBuffer(m_MeshBuffer.Vertices, m_MainCluster->Indices) : m_MeshBuffer));
+
+				if (!IsMasterMesh())
+				{
+					m_VertexArray = Ref<VertexArray>(VertexArray::Create(IsDecimaMesh() ? MeshBuffer(m_MeshBuffer.Vertices, m_MainCluster->Indices) : m_MeshBuffer));
+				}
 			}
 		}
 
@@ -673,10 +685,10 @@ namespace Suora
 		if (Parents.size() > 1)
 		{
 			std::vector<std::future<void>> jobs;
-			for (Ref<Cluster> cluster : Parents)
+			for (const Ref<Cluster>& cluster : Parents)
 			{
 				//Decimate_Cluster(buffer, cluster);
-				jobs.push_back(std::async(std::launch::async, &Mesh::Decimate_Cluster, this, buffer, cluster));
+				jobs.push_back(std::async(std::launch::async, &Decimate_Cluster, buffer, cluster));
 			}
 			for (auto& job : jobs)
 			{

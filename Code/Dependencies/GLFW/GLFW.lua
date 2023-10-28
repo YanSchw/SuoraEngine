@@ -14,6 +14,13 @@ project "GLFW"
 		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/init.c",
 		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/input.c",
 		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/monitor.c",
+		
+		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/null_init.c",
+		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/null_joystick.c",
+		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/null_monitor.c",
+		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/null_window.c",
+		
+		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/platform.c",
 		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/vulkan.c",
 		"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/window.c"
 	}
@@ -29,6 +36,7 @@ project "GLFW"
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/x11_monitor.c",
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/x11_window.c",
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/xkb_unicode.c",
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/posix_module.c",
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/posix_time.c",
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/posix_thread.c",
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/glx_context.c",
@@ -50,6 +58,7 @@ project "GLFW"
 		{
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/win32_init.c",
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/win32_joystick.c",
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/win32_module.c",
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/win32_monitor.c",
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/win32_time.c",
 			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/win32_thread.c",

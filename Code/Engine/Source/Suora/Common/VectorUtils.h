@@ -1,5 +1,4 @@
 #pragma once
-#include <cmath>
 #include <ostream>
 
 #define GLM_ENABLE_EXPERIMENTAL

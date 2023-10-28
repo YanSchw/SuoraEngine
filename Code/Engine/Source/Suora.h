@@ -17,9 +17,6 @@
 namespace glm { }
 
 using Color = glm::vec4;
-template<class T> using WeakRef = std::weak_ptr<T>;
-template<class T> using Ref = std::shared_ptr<T>;
-template<class T> using Scope = std::unique_ptr<T>;
 
 #include "Suora/Common/Common.h"
 #include "Suora/Common/Delegate.h"

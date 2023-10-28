@@ -29,6 +29,8 @@ namespace Suora::Physics
 
 		virtual void SetInternalPosition(const Vec3& position) override;
 		virtual Vec3 GetInternalPosition() override;
+		virtual void SetInternalRotation(const Quat& rotation) override;
+		virtual Quat GetInternalRotation() override;
 		virtual void Move(const Vec3& movementInput) override;
 		virtual void Jump(float jumpPower) override;
 

@@ -135,9 +135,23 @@ namespace Suora
 
 	void ScriptEngine::CleanUp()
 	{
-		for (void* cache : m_ScriptCache)
+		for (auto& cache : m_ScriptCache)
 		{
-			delete cache;
+			switch (cache.Type)
+			{
+			case ScriptDataType::Vec2:
+			case ScriptDataType::Vec3:
+			case ScriptDataType::Vec4:
+			case ScriptDataType::Quat:
+			{
+				delete cache.Data;
+				break;
+			}
+			case ScriptDataType::None:
+			default:
+				SuoraVerify(false, "Implementation missing!");
+				break;
+			}
 		}
 		m_ScriptCache.clear();
 	}

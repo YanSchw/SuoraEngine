@@ -8,7 +8,7 @@ namespace Suora
 		None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
 	};
 
-	static uint32_t ShaderDataTypeSize(ShaderDataType type)
+	static uint32_t ShaderDataTypeSize(const ShaderDataType type)
 	{
 		switch (type)
 		{
@@ -23,6 +23,8 @@ namespace Suora
 			case ShaderDataType::Int3:     return 4 * 3;
 			case ShaderDataType::Int4:     return 4 * 4;
 			case ShaderDataType::Bool:     return 1;
+		case ShaderDataType::None:
+		default: break;
 		}
 
 		SUORA_ASSERT(false, "Unknown ShaderDataType!");
@@ -133,7 +135,7 @@ namespace Suora
 
 		virtual uint32_t GetCount() const = 0;
 
-		static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
+		static Ref<IndexBuffer> Create(const uint32_t* indices, uint32_t count);
 	};
 
 	class ShaderStorageBuffer

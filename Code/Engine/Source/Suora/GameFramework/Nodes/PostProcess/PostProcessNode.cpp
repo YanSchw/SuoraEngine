@@ -45,7 +45,7 @@ namespace Suora
 	}
 	void MotionBlur::Init()
 	{
-		m_Shader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/MotionBlur.glsl");
+		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/MotionBlur.glsl");
 		{
 			FramebufferSpecification spec;
 			spec.Width = RenderPipeline::GetInternalResolution().x;
@@ -78,7 +78,7 @@ namespace Suora
 
 	void ChromaticAberration::Init()
 	{
-		m_Shader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/ChromaticAberration.glsl");
+		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/ChromaticAberration.glsl");
 		{
 			FramebufferSpecification spec;
 			spec.Width = RenderPipeline::GetInternalResolution().x;
@@ -100,7 +100,7 @@ namespace Suora
 
 	void FilmGrain::Init()
 	{
-		m_Shader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/FilmGrain.glsl");
+		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FilmGrain.glsl");
 		{
 			FramebufferSpecification spec;
 			spec.Width = RenderPipeline::GetInternalResolution().x;
@@ -123,7 +123,7 @@ namespace Suora
 
 	void FXAA::Init()
 	{
-		m_Shader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
+		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
 		{
 			FramebufferSpecification spec;
 			spec.Width = RenderPipeline::GetInternalResolution().x;
@@ -148,7 +148,7 @@ namespace Suora
 
 	void ToneMapping::Init()
 	{
-		m_Shader = Shader::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/PostProccess/ToneMapping.glsl");
+		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/ToneMapping.glsl");
 		{
 			FramebufferSpecification spec;
 			spec.Width = RenderPipeline::GetInternalResolution().x;

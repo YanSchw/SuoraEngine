@@ -8,6 +8,8 @@
 #include "Suora/Assets/SuoraProject.h"
 #include "Suora/GameFramework/Nodes/CameraNode.h"
 
+extern void Modules_Init();
+
 class Runtime : public Suora::Application
 {
 public:
@@ -16,7 +18,6 @@ public:
 
 	Runtime()
 	{
-		extern void Modules_Init();
 		Modules_Init();
 		
 		m_StandaloneWindow = Suora::Ref<Window>(CreateAppWindow(WindowProps()));
@@ -28,12 +29,14 @@ public:
 			FramebufferSpecification spec;
 			spec.Width = 1920;
 			spec.Height = 1080;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_Framebuffer = Framebuffer::Create(spec);
 		}
 		AssetManager::HotReload();
 		SuoraVerify(ProjectSettings::Get());
+
+		m_StandaloneWindow->SetTitle(ProjectSettings::GetProjectName());
 
 		Engine::Get()->CreateGameInstance();
 		if (Level* defaultLevel = ProjectSettings::Get()->m_DefaultLevel)

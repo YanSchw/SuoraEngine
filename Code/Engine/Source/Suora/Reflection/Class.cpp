@@ -9,7 +9,7 @@
 
 namespace Suora
 {
-	const Class Class::None = (NativeClassID) 0;
+	const Class Class::None = Class((NativeClassID) 0);
 
 	Class Class::GetParentClass() const
 	{
@@ -43,7 +43,7 @@ namespace Suora
 		ClassReflector::GetByClass(cls);
 	}
 
-	Array<Class> Class::GetInheritanceTree()
+	Array<Class> Class::GetInheritanceTree() const
 	{
 		Array<Class> out;
 		Class level = *this;
@@ -65,13 +65,13 @@ namespace Suora
 		const Array<Blueprint*> blueprints = AssetManager::GetAssets<Blueprint>();
 		for (Blueprint* bp : blueprints)
 		{
-			classes.Add(bp);
+			classes.Add(Class(bp));
 		}
 
 		const Array<ScriptClass*> sclasses = AssetManager::GetAssets<ScriptClass>();
 		for (ScriptClass* sclass : sclasses)
 		{
-			classes.Add(sclass);
+			classes.Add(Class(sclass));
 		}
 
 		return classes;
@@ -143,13 +143,13 @@ namespace Suora
 		if (str.find("Native$") != std::string::npos)
 		{
 			const std::string substr = str.substr(7, str.size() - 7);
-			NativeClassID id = std::stoll(substr);
-			return id;
+			const NativeClassID id = std::stoll(substr);
+			return Class(id);
 		}
 		if (str.find("Node$") != std::string::npos)
 		{
-			std::string uid = str.substr(5, str.size() - 5);
-			return AssetManager::GetAsset<Blueprint>(uid);
+			const std::string uid = str.substr(5, str.size() - 5);
+			return Class(AssetManager::GetAsset<Blueprint>(uid));
 		}
 
 		return Class::None;

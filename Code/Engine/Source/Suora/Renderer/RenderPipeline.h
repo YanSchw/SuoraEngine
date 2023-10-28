@@ -27,6 +27,7 @@ namespace Suora
 	class VertexArray;
 	class ShaderStorageBuffer;
 
+	struct FramebufferTextureParams;
 	enum class FramebufferTextureFormat : uint32_t;
 
 	enum class GBuffer : int32_t
@@ -44,7 +45,10 @@ namespace Suora
 
 	struct RenderingParams
 	{
+		RenderingParams();
+
 		bool DrawWireframe = false;
+		bool EnableDeferredRendering = true;
 	};
 
 	/** All Rendering is maintained here */
@@ -52,7 +56,7 @@ namespace Suora
 	{
 		SUORA_CLASS(6453444876);
 	public:
-		static FramebufferTextureFormat GBufferSlotToBufferFormat(GBuffer slot);
+		static FramebufferTextureParams GBufferSlotToBufferParams(GBuffer slot);
 	public:
 		RenderPipeline();
 		~RenderPipeline();
@@ -67,7 +71,7 @@ namespace Suora
 		inline Ref<Shader> GetFullscreenPassShader() const { return m_FullscreenPassShader; }
 		static Ref<Shader> GetFullscreenPassShaderStatic();
 
-		static void RenderFramebufferIntoFramebuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const glm::ivec4& rect, const std::string& uniformName = "u_Texture", int attachmentIndex = 0, bool shouldClear = true);
+		static void RenderFramebufferIntoFramebuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const glm::ivec4& rect, const std::string& uniformName = "u_Texture", int attachmentIndex = 0, bool shouldClear = false);
 		static void AddFramebufferToFramebuffer(Framebuffer& src, Framebuffer& target, int attachmentIndex = 0);
 		static void BlitDepthBuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const std::string& uniformName = "u_Texture");
 		static void SetFullscreenViewport(Framebuffer& buffer);

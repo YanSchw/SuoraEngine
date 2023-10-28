@@ -4,20 +4,18 @@
 #include "Suora/Assets/ScriptClass.h"
 #include "Suora/Assets/Blueprint.h"
 #include "Suora/Core/Object/ObjectFactory.h"
-#include "Suora/Serialization/CompositionLayer.h"
 
 namespace Suora
 {
 
-	inline Object* InlineNew(const Class& cls, bool includeCompositionData, bool deepestLayer)
+	inline Object* InlineNew(const Class& cls, const bool isRootNode)
 	{
 		SuoraAssert(cls != Class::None);
 
 		Object* obj = cls.IsNative() ?									ObjectFactory::Allocate(cls.GetNativeClassID()) 
-					: cls.IsScriptClass() ?								cls.GetScriptClass()->CreateInstance(includeCompositionData)
-					:													cls.GetBlueprintClass()->CreateInstance(includeCompositionData, deepestLayer);
+					: cls.IsScriptClass() ?								cls.GetScriptClass()->CreateInstance(isRootNode)
+					:													cls.GetBlueprintClass()->CreateInstance(isRootNode);
 
-		if (includeCompositionData) obj->Implement<IObjectCompositionData>();
 		return obj;
 	}
 

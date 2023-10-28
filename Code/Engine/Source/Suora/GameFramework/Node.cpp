@@ -10,6 +10,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+
+#include "Suora/Common/Common.h"
 #include "Suora/Core/Engine.h"
 #include "Suora/GameFramework/GameInstance.h"
 #include "Suora/GameFramework/InputModule.h"
@@ -144,6 +146,12 @@ namespace Suora
 
 	void Node::SetName(const std::string& name)
 	{
+		if (name.empty())
+		{
+			SetName(GetClass().GetClassName());
+			return;
+		}
+
 		if (m_WasBeginCalled)
 		{
 			m_Name = name;
@@ -180,7 +188,7 @@ namespace Suora
 			return nullptr;
 		}
 
-		Node* duplicate = Deserialize(Serialized, true, nullptr, true);
+		Node* duplicate = Deserialize(Serialized, true);
 		if (IsInitialized())
 		{
 			duplicate->InitializeNode(*GetWorld());
@@ -193,8 +201,7 @@ namespace Suora
 
 		// Still bad....
 		// TODO: Fix -> Some ChildNodes dont get properly deserialized
-		duplicate->Implement<IObjectCompositionData>();
-		duplicate->GetInterface<IObjectCompositionData>()->m_IsActorLayer = true;
+		duplicate->m_IsActorLayer = true;
 
 		if (!m_WasBeginCalled)
 		{
@@ -270,31 +277,13 @@ namespace Suora
 	{
 		return this->IsA<LevelNode>() ? 
 			nullptr 
-			: (Implements<IObjectCompositionData>() && GetInterface<IObjectCompositionData>()->m_IsActorLayer ? 
+			: (m_IsActorLayer ? 
 				this 
 				: (GetParent() ? GetParent()->GetActorNode() : nullptr));
 	}
 	bool Node::IsTheActorNode()
 	{
 		return GetActorNode() == this;
-	}
-
-	void Node::MakeAllChildrenPuppets(bool includeSelf)
-	{
-		if (includeSelf)
-		{
-			Implement<IObjectCompositionData>();
-			GetInterface<IObjectCompositionData>()->m_IsActorLayer = false;
-			for (auto It : GetInterface<IObjectCompositionData>()->m_DefaultMemberValues)
-			{
-				It.m_ValueChanged = false;
-			}
-		}
-
-		for (Node* child : m_Children)
-		{
-			child->MakeAllChildrenPuppets(true);
-		}
 	}
 
 	Node* Node::GetRootNode()
@@ -389,6 +378,25 @@ namespace Suora
 			OutArray.Add(this);
 		}
 
+	}
+	int32_t Node::GetChildIndex() const
+	{
+		if (!GetParent())
+		{
+			return -1;
+		}
+
+		int32_t idx = 0;
+		for (const Node* child : GetParent()->m_Children)
+		{
+			if (child == this)
+			{
+				return idx;
+			}
+			idx++;
+		}
+
+		return -1;
 	}
 
 	Node* Node::GetParentNodeOfClass(const Class& cls, bool includeSelf)
@@ -522,156 +530,7 @@ namespace Suora
 		ForceSetParent(parent, keepWorldTransform, true);
 	}
 
-	void Node::Serialize(Yaml::Node& root)
-	{
-		root["Name"] = GetName();
-		root["Class"] = GetClass().ToString();
-		root["ParentClass"] = GetClass().GetParentClass().ToString();
-		root["Enabled"] = m_Enabled ? "true" : "false";
-
-		if (Node3D* node3D = this->As<Node3D>())
-		{
-			//root["Node3D"]["Pos"] = Vec::ToString<Vec3>(node3D->GetPosition());
-			//root["Node3D"]["Rot_Euler"] = Vec::ToString<Vec3>(node3D->m_EditorEulerAngles);
-			//root["Node3D"]["Scale"] = Vec::ToString<Vec3>(node3D->GetScale());
-			root["Node3D"]["Matrix"] = Vec::ToString<glm::mat4>(node3D->GetTransformMatrix());
-		}
-
-		if (!Implements<IObjectCompositionData>()) Implement<IObjectCompositionData>();
-		GetInterface<IObjectCompositionData>()->Serialize(root["IObjectCompositionData"]);
-
-		if (HasChildren())
-		{
-			Yaml::Node& children = root["Children"];
-			children["Count"] = std::to_string(GetChildCount());
-			for (int i = 0; i < GetChildCount(); i++)
-			{
-				GetChild(i)->Serialize(children["Child_" + std::to_string(i)]);
-			}
-		}
-	}
-
-	Node* Node::Deserialize(Yaml::Node& root, bool includeCompositionData, Node* liveNode, bool deepestLayer, bool editContext)
-	{
-		Node* node = liveNode ? liveNode : New(Class::FromString(root["Class"].As<std::string>()), includeCompositionData, false)->As<Node>();
-		SUORA_ASSERT(node);
-		node->m_Name = root["Name"].As<std::string>();
-		if (Node3D* node3D = node->As<Node3D>())
-		{
-			if (!root["Node3D"].IsNone())
-			{
-				//node3D->SetPosition(Vec::FromString<Vec3>(root["Node3D"]["Pos"].As<std::string>()));
-				//node3D->m_EditorEulerAngles = Vec::FromString<Vec3>(root["Node3D"]["Rot_Euler"].As<std::string>());
-				//node3D->SetEulerRotation(node3D->m_EditorEulerAngles);
-				//node3D->SetScale(Vec::FromString<Vec3>(root["Node3D"]["Scale"].As<std::string>()));
-				node3D->SetTransformMatrix(Vec::FromString<glm::mat4>(root["Node3D"]["Matrix"].As<std::string>()));
-				//node3D->TickTransform();
-			}
-		}
-
-		IObjectCompositionData CData;
-		CData.Deserialize(root["IObjectCompositionData"]);
-		if (includeCompositionData)
-		{
-			node->Implement<IObjectCompositionData>();
-			*node->GetInterface<IObjectCompositionData>() = CData;
-			node->GetInterface<IObjectCompositionData>()->AddMissingMembers();
-			if (!deepestLayer) node->GetInterface<IObjectCompositionData>()->m_IsActorLayer = false;
-		}
-		for (IObjectCompositionData::DefaultMemberValue& value : CData.m_DefaultMemberValues)
-		{
-			if (value.m_ValueChanged) value.Apply(node);
-		}
-		if (!deepestLayer)
-		{
-			for (IObjectCompositionData::DefaultMemberValue& value : CData.m_DefaultMemberValues)
-			{
-				value.m_ValueChanged = false;
-			}
-		}
-
-		if (!root["Children"].IsNone())
-		{
-			int childIndex = 0; 
-			int childCount = std::stoi(root["Children"]["Count"].As<std::string>());
-			while (childIndex < childCount)
-			{
-				Yaml::Node& child = root["Children"]["Child_" + std::to_string(childIndex++)];
-				if (child.IsNone()) break;
-
-				if (child["IObjectCompositionData"]["m_IsActorLayer"].As<std::string>() == "true")
-				{
-					Node* childNode = Deserialize(child, includeCompositionData, nullptr, deepestLayer, editContext);
-					childNode->SetParent(node);
-					if (Node3D* node3D = childNode->As<Node3D>())
-					{
-						//node3D->TickTransform(true);
-						//node3D->SetEulerRotation(node3D->m_EditorEulerAngles);
-						//node3D->TickTransform(true);
-					}
-				}
-				else
-				{
-					Node* childNode = Deserialize(child, includeCompositionData, node->GetChild(childIndex - 1), deepestLayer, false);
-					
-				}
-			}
-		}
-
-		node->SetEnabled(root["Enabled"].As<std::string>() != "false");
-
-		node->TickTransform();
-		return node;
-	}
-
-	Class Node::GetCompositeClass()
-	{
-		if (Implements<IObjectCompositionData>())
-		{
-			auto data = GetInterface<IObjectCompositionData>();
-			if (data->m_IsActorLayer)
-			{
-				return GetClass();
-			}
-			else
-			{
-				if (GetParent())
-				{
-					return GetParent()->GetCompositeClass();
-				}
-				else
-				{
-					return GetClass().GetParentClass();
-				}
-			}
-		}
-
-		return Class::None;
-	}
-	Node* Node::GetCompositionNode()
-	{
-		if (Implements<IObjectCompositionData>())
-		{
-			auto data = GetInterface<IObjectCompositionData>();
-			if (data->m_IsActorLayer)
-			{
-				return this;
-			}
-			else
-			{
-				if (GetParent())
-				{
-					return GetParent()->GetCompositionNode();
-				}
-				else
-				{
-					return this;
-				}
-			}
-		}
-
-		return nullptr;
-	}
+	// Serialization in NodeSerialization.cpp
 
 	/**   Node3D   **/
 
@@ -958,11 +817,7 @@ namespace Suora
 	{
 		Super::Begin();
 
-		if (!Implements<IObjectCompositionData>())
-		{
-			Implement<IObjectCompositionData>();
-		}
-		GetInterface<IObjectCompositionData>()->m_IsActorLayer = false;
+		m_IsActorLayer = false;
 	}
 
 	void Component::SetParent(Node* parent, bool keepWorldTransform)

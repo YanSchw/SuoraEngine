@@ -25,7 +25,7 @@ namespace Suora
 		{
 			spdlog::memory_buf_t formatted;
 			base_sink<std::mutex>::formatter_->format(msg, formatted);
-			Ref<ConsoleMessage> outMsg = CreateRef<ConsoleMessage>(std::string_view(formatted.data(), formatted.size()), msg.source.filename, msg.source.funcname, msg.source.line, GetMessageLevel(msg.level), m_Category);
+			const Ref<ConsoleMessage> outMsg = CreateRef<ConsoleMessage>(std::string_view(formatted.data(), formatted.size()), msg.source.filename, msg.source.funcname, msg.source.line, GetMessageLevel(msg.level), m_Category);
 
 			m_MessageBuffer.push_back(outMsg);
 
@@ -80,7 +80,7 @@ namespace Suora
 		logSinks[0]->set_pattern("%^[%T] %n: %v%$");
 		logSinks[1]->set_pattern("[%T] [%l] %n: %v");
 
-		for (int32_t i = 0; i < (uint32_t)LogCategory::COUNT; i++)
+		for (uint32_t i = 0; i < (uint32_t)LogCategory::COUNT; i++)
 		{
 			std::vector<spdlog::sink_ptr> logSinks_IncludingVirtualConsole = logSinks;
 			logSinks_IncludingVirtualConsole.emplace_back(std::make_shared<VirtualConsoleSink>(true, 10, (LogCategory)i));
@@ -104,7 +104,7 @@ namespace Suora
 		return s_Loggers[(uint32_t)category];
 	}
 
-	std::string Log::CategoryToString(LogCategory category)
+	std::string Log::CategoryToString(const LogCategory category)
 	{
 		switch (category)
 		{

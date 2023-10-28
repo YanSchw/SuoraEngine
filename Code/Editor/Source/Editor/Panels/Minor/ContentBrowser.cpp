@@ -264,7 +264,7 @@ namespace Suora
 	void ContentBrowser::DrawContentPaths()
 	{
 		// Reset, if needed...
-		if (m_CurrentMode == PathMode::ProjectPath && m_CurrentPath == AssetManager::GetAssetRootPath())
+		if (m_CurrentMode == PathMode::ProjectPath && m_CurrentPath == AssetManager::GetEngineAssetPath())
 		{
 			m_CurrentPath = GetRootPath();
 		}
@@ -296,7 +296,7 @@ namespace Suora
 		x_ += 35.0f;
 
 		// Now, render the rest
-		while (paths[0] != AssetManager::GetAssetRootPath() && paths[0] != AssetManager::GetProjectAssetPath())
+		while (paths[0] != AssetManager::GetEngineAssetPath() && paths[0] != AssetManager::GetProjectAssetPath())
 		{
 			paths.insert(paths.begin(), paths[0].parent_path());
 		}
@@ -392,7 +392,7 @@ namespace Suora
 
 	std::string ContentBrowser::GetRootPath()
 	{
-		return m_CurrentMode == PathMode::ProjectPath ? AssetManager::GetProjectAssetPath() : AssetManager::GetAssetRootPath();
+		return m_CurrentMode == PathMode::ProjectPath ? AssetManager::GetProjectAssetPath() : AssetManager::GetEngineAssetPath();
 	}
 
 	std::string ContentBrowser::GetCurrentDirectory() const

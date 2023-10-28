@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Object/Object.h"
-
 namespace Suora
 {
 	class World;

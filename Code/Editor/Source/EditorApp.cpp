@@ -12,6 +12,8 @@
 // HeaderTool
 #include "Tooling/HeaderTool/HeaderTool.h"
 
+extern void Modules_Init();
+
 namespace Suora 
 {
 
@@ -25,18 +27,16 @@ namespace Suora
 
 		Editor()
 		{
-			//GetWindow().SetVSync(false);
 			AssetManager::s_AssetHotReloading = true;
 
 			EditorWindows.Add(new EditorWindow());
 
-			AssetManager::LoadAsset(AssetManager::GetAssetRootPath() + "/EditorPreferences.editor");
+			AssetManager::LoadAsset(AssetManager::GetEngineAssetPath() + "/EditorPreferences.editor");
 
 			Font::Instance = AssetManager::GetAssetByName<Font>("Inter-SemiBold.font");
 			Font::Instance = AssetManager::GetAssetByName<Font>("Inter-Light.font");
 			Font::Instance = AssetManager::GetAssetByName<Font>("JetbrainsMono32b.font");
 
-			extern void Modules_Init();
 			Modules_Init();
 			
 			EditorUI::Init();
@@ -67,9 +67,6 @@ namespace Suora
 			m_StopPIE_Flag = true;
 		}
 
-		~Editor()
-		{
-		}
 	};
 
 	Application* CreateApplication()

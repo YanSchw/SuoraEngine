@@ -5,7 +5,7 @@
 namespace Suora
 {
 
-	struct DragableOverlay abstract : public EditorUI::Overlay
+	struct DragableOverlay : public EditorUI::Overlay
 	{
 		DragableOverlay(const std::string& title) 
 			: m_Title(title)

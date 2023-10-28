@@ -86,12 +86,12 @@ namespace Suora
 		m_NodeBuffer = Framebuffer::Create(spec);
 
 		Name = "Node Graph";
-		m_Checkerboard = Texture::Create(AssetManager::GetAssetRootPath() + "/EngineContent/Textures/Checkerboard.png");
-		m_PinConnectionTexture = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/VisualNodePin.png");
-		m_PinConnectionTexture2 = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/VisualNodePin2.png");
-		m_PinConnectionExecTexture = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/VisualNodeExecPin.png");
-		m_PinConnectionExecTexture2 = Texture::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Icons/VisualNodeExecPin2.png");
-		m_LineShader = Shader::Create(AssetManager::GetAssetRootPath() + "/EditorContent/Shaders/Line.glsl");
+		m_Checkerboard = Texture::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Textures/Checkerboard.png");
+		m_PinConnectionTexture = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Icons/VisualNodePin.png");
+		m_PinConnectionTexture2 = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Icons/VisualNodePin2.png");
+		m_PinConnectionExecTexture = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Icons/VisualNodeExecPin.png");
+		m_PinConnectionExecTexture2 = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Icons/VisualNodeExecPin2.png");
+		m_LineShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/Line.glsl");
 		NodeLabelTexture = AssetManager::GetAssetByName<Texture2D>("NodeLabel.texture");
 
 		font = AssetManager::GetAssetByName<Font>("InterSDF.font");

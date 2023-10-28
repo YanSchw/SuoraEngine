@@ -1,10 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <typeinfo>
 #include <inttypes.h>
 #include <vector>
-#include <string>
 
 #include "Suora/Core/Object/NativeFunctionManager.h"
 #include "Suora/Core/Object/ObjectFactory.h"
@@ -18,6 +15,8 @@ namespace Suora
 	struct ScriptStack;
 	class INodeScriptObject;
 
+    template <class To, class From> static To* Cast(From* Src);
+
 	/** Base Class for all SuoraClasses */
 	class Object
 	{
@@ -27,8 +26,8 @@ namespace Suora
 		Object();
 		virtual ~Object();
 
-		static Class StaticClass() { return (Class) 1; }
-		virtual Class GetNativeClass() { return (Class) 1; }
+		static Class StaticClass() { return Class(1); }
+		virtual Class GetNativeClass() { return Class(1); }
 		Class GetClass();
 		
 		virtual bool CastImpl(const Class& cls) const

@@ -6,7 +6,6 @@
 #include "Suora/Common/VectorUtils.h"
 #include "Suora/Common/Array.h"
 #include "Suora/Reflection/ClassReflector.h"
-#include "Suora/Common/Common.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/SuoraProject.h"
 #include "InputModule.generated.h"
@@ -21,7 +20,7 @@ namespace Suora
 	class InputAction; 
 	struct InputDispatcher;
 	enum class InputActionType : uint32_t;
-	template<class T> using Ref = std::shared_ptr<T>;
+	
 	extern void DrawInputDispatcherDropDown(Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height);
 
 	/** For Project Settings */

@@ -6,7 +6,7 @@
 
 namespace Yaml
 {
-	struct Node;
+	class Node;
 }
 namespace Suora::Physics
 {
@@ -36,6 +36,9 @@ namespace Suora
 		bool m_Enabled = true, m_EnabledInHierarchy = true;
 		bool m_WasBeginCalled = false;
 		bool m_IsPendingKill = false;
+
+		// Serialization
+		bool m_IsActorLayer = false;
 	public:
 		Node();
 		virtual ~Node();
@@ -86,7 +89,6 @@ namespace Suora
 		Node* GetActorNode();
 		FUNCTION(Callable, Pure)
 		bool IsTheActorNode();
-		void MakeAllChildrenPuppets(bool includeSelf = false);
 
 		Node* GetRootNode();
 
@@ -137,6 +139,7 @@ namespace Suora
 
 			return out;
 		}
+		int32_t GetChildIndex() const;
 		Node* GetParentNodeOfClass(const Class& cls, bool includeSelf = false);
 		template<class T>
 		T* GetParentNodeOfClass(bool includeSelf = false)
@@ -211,17 +214,24 @@ namespace Suora
 			}
 		}
 
+	private:
 		/** Serialization & Deserialization */
+		void SerializeAsChildNode(Yaml::Node& root, struct NodeSerializer& serializer);
+	public:
 		void Serialize(Yaml::Node& root);
-		static Node* Deserialize(Yaml::Node& root, bool includeCompositionData, Node* liveNode = nullptr, bool deepestLayer = false, bool editContext = false);
-		Class GetCompositeClass();
-		Node* GetCompositionNode();
+		static Node* Deserialize(Yaml::Node& root, const bool isRootNode);
+		void ResetProperty(const ClassMember& member);
 
+		Array<std::string> m_OverwrittenProperties;
+
+
+		friend class Component;
 		friend class Node3D;
 		friend class World;
 		friend class GameInstance;
 		friend class Level;
 		friend class DetailsPanel;
+		friend class ViewportPanel;
 		friend class LevelOutliner;
 		friend class NodeClassEditor;
 	};

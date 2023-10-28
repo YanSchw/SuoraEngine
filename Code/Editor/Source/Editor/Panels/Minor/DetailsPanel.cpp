@@ -2,7 +2,6 @@
 #include "../../EditorWindow.h"
 #include "../Major/NodeClassEditor.h"
 #include "../../Util/EditorPreferences.h"
-#include "Suora/Serialization/CompositionLayer.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 #include "Suora/Assets/SuoraProject.h"
@@ -153,7 +152,7 @@ namespace Suora
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
-		const float dragFloatWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 250.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 250.0f;
+		const float dragFloatWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 150.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 150.0f;
 		EditorUI::ColorPicker(v, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, dragFloatWidth, 25.0f, {}, [v]() { _Vec4_ColorPickerResults[v] = 1; }, [v]() { _Vec4_ColorPickerResults[v] = 2; });
 
 		if (_Vec4_ColorPickerResults.find(v) != _Vec4_ColorPickerResults.end())
@@ -363,138 +362,73 @@ namespace Suora
 		EditorUI::ScrollbarVertical(GetWidth() - 10, 0, 10, GetHeight(), 0, 0, GetWidth(), GetHeight(), 0, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &m_ScrollY);
 	}
 
-	void DetailsPanel::DrawClassMember(float& x, float& y, Object* obj, ClassMember* member, int memberIndex)
+	void DetailsPanel::DrawClassMember(float& x, float& y, Node* obj, ClassMember* member, int memberIndex)
 	{
 		//y -= 10.0f;
-		if (!obj->Implements<IObjectCompositionData>()) obj->Implement<IObjectCompositionData>();
-		IObjectCompositionData& data = *obj->GetInterface<IObjectCompositionData>();
-		if (data.m_DefaultMemberValues.Size() <= memberIndex) return;
-
-		if (member->m_Type == ClassMember::Type::Float)
+		const auto type = member->m_Type;
+		const auto mname = member->m_MemberName;
+		const bool valueChangedBefore = obj->m_OverwrittenProperties.Contains(mname);
+		Result result = Result::None;
+		if (type == ClassMember::Type::Float)
 		{
 			float* f = ClassMember::AccessMember<float>(obj, member->m_MemberOffset);
-			const Result result = DrawFloat(f, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-			else if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueFloat = *f;
-			}
-			
+			result = DrawFloat(f, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Bool)
 		{
 			bool* b = ClassMember::AccessMember<bool>(obj, member->m_MemberOffset);
-			const Result result = DrawBool(b, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueBool = *b;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-			
+			result = DrawBool(b, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Vector3)
 		{
 			Vec3* v = ClassMember::AccessMember<Vec3>(obj, member->m_MemberOffset);
-			const Result result = DrawVec3(v, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueVec3 = *v;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-
+			result = DrawVec3(v, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Vector4)
 		{
 			Vec4* v = ClassMember::AccessMember<Vec4>(obj, member->m_MemberOffset);
-			const Result result = DrawVec4(v, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueVec4 = *v;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-
+			result = DrawVec4(v, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::AssetPtr)
 		{
 			Asset** asset = ClassMember::AccessMember<Asset*>(obj, member->m_MemberOffset);
-			const Result result = DrawAsset(asset, ((ClassMember_AssetPtr*)(member))->m_AssetClass, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueAssetPtr = *asset;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
-			
+			result = DrawAsset(asset, ((ClassMember_AssetPtr*)(member))->m_AssetClass, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::MaterialSlots)
 		{
 			MaterialSlots* materials = ClassMember::AccessMember<MaterialSlots>(obj, member->m_MemberOffset);
-			const Result result = DrawMaterialSlots(materials, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueMaterialSlots = *materials;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
+			result = DrawMaterialSlots(materials, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Class)
 		{
 			Class* cls = ClassMember::AccessMember<Class>(obj, member->m_MemberOffset);
-			const Result result = DrawClass(cls, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueClass = *cls;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
+			result = DrawClass(cls, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::SubclassOf)
 		{
 			TSubclassOf* cls = ClassMember::AccessMember<TSubclassOf>(obj, member->m_MemberOffset);
-			const Result result = DrawSubclassOf(cls, member->m_MemberName, y, data.m_DefaultMemberValues[memberIndex].m_ValueChanged);
-			if (result == Result::ValueChange)
-			{
-				data.m_DefaultMemberValues[memberIndex].m_ValueChanged = true;
-				data.m_DefaultMemberValues[memberIndex].m_ValueClass = *cls;
-			}
-			else if (result == Result::ValueReset)
-			{
-				data.m_DefaultMemberValues[memberIndex].Reset(obj);
-			}
+			result = DrawSubclassOf(cls, mname, y, valueChangedBefore);
 		}
 		else if (member->m_Type == ClassMember::Type::Delegate)
 		{
 			TDelegate* delegate = ClassMember::AccessMember<TDelegate>(obj, member->m_MemberOffset);
-			const Result result = DrawDelegate(delegate, member->m_MemberName, y);
+			result = DrawDelegate(delegate, mname, y);
 		}
 		else
 		{
 			SuoraError("{0}: Missing ClassMember implementation!", __FUNCTION__);
+		}
+
+		if (result == Result::ValueReset)
+		{
+			obj->ResetProperty(*member);
+		}
+		else if (result == Result::ValueChange)
+		{
+			if (!obj->m_OverwrittenProperties.Contains(mname))
+			{
+				obj->m_OverwrittenProperties.Add(mname);
+			}
 		}
 	}
 
@@ -618,7 +552,7 @@ namespace Suora
 			{
 				int i = 0;
 				std::vector<std::pair<std::string, std::function<void(void)>>> options;
-				std::filesystem::path directory = AssetManager::GetAssetRootPath() + "/EngineContent/Shaders/ShadergraphBase/";
+				std::filesystem::path directory = AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/ShadergraphBase/";
 				std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(directory);
 				for (int j = 0; j < entries.size(); j++)
 				{
@@ -816,14 +750,15 @@ namespace Suora
 		y -= 35.0f;
 		if (EditorUI::CategoryShutter(0, "Rendering", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
 		{
-			DrawFloat(&settings->m_TargetFramerate, "TargetFramerate", y, false);
+			DrawFloat(&settings->m_TargetFramerate, "Target Framerate", y, false);
+			DrawBool(&settings->m_EnableDeferredRendering, "Enable Deferred Rendering", y, false);
 		}
 		y -= 35.0f;
 		if (EditorUI::CategoryShutter(1, "Game", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
 		{
 			DrawSubclassOf((TSubclassOf*)&settings->m_GameInstanceClass, "GameInstanceClass", y, false);
-			DrawAsset((Asset**)&(Level*)settings->m_DefaultLevel, Level::StaticClass(), "DefaultLevel", y, false);
-			DrawAsset((Asset**)&(Texture2D*)settings->m_ProjectIconTexture, Texture2D::StaticClass(), "ProjectIconTexture", y, false);
+			DrawAsset((Asset**)(&settings->m_DefaultLevel), Level::StaticClass(), "DefaultLevel", y, false);
+			DrawAsset((Asset**)(&settings->m_ProjectIconTexture), Texture2D::StaticClass(), "ProjectIconTexture", y, false);
 		}
 		y -= 35.0f;
 		if (EditorUI::CategoryShutter(2, "Editor", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
@@ -853,7 +788,7 @@ namespace Suora
 			y -= 400.0f;
 			EditorUI::DrawRect(0, y, GetDetailWidth(), 400.0f, 0.0f, EditorPreferences::Get()->UiColor);
 			/** InputCategories */
-			static WeakRef<InputCategory> s_SelectedInputCategory = WeakRef<InputCategory>();
+			static std::weak_ptr<InputCategory> s_SelectedInputCategory = std::weak_ptr<InputCategory>();
 			{
 				static float scrollY = 0.0f;
 				float catY = y + 375.0f + scrollY;
@@ -901,7 +836,7 @@ namespace Suora
 				EditorUI::ScrollbarVertical(GetDetailWidth() * 0.25f - 5.0f, y, 5.0f, 400.0f, 0.0f, y, GetDetailWidth() * 0.25f, 400.0f, 0.0f, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &scrollY);
 			}
 			/** InputActions */
-			static WeakRef<InputBinding> s_SelectedInputBinding = WeakRef<InputBinding>();
+			static std::weak_ptr<InputBinding> s_SelectedInputBinding = std::weak_ptr<InputBinding>();
 			{
 				static float scrollY = 0.0f;
 				float actionY = y + 375.0f + scrollY;

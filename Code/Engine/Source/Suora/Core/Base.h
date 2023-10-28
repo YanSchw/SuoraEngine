@@ -1,7 +1,7 @@
 #pragma once
 
 #define SUORA_VERSION_MAJOR 0
-#define SUORA_VERSION_MINOR 7
+#define SUORA_VERSION_MINOR 8
 #define SUORA_VERSION_PATCH 0
 
 #include <memory>
@@ -63,9 +63,6 @@ namespace Suora
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
-
-	template<typename T>
-	using WeakRef = std::weak_ptr<T>;
 
 }
 
