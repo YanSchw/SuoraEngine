@@ -1,1 +1,3 @@
 #pragma once
+
+#define SUORA_ENABLE_MODULE_AUTO_INCLUDE
