@@ -5,7 +5,7 @@ project "Editor"
 	filter {}
 	
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "on"
 
 	targetdir ("%{wks.location}/Build/" .. outputdir .. "/%{prj.name}")

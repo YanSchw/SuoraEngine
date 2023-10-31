@@ -329,7 +329,7 @@ namespace Suora
 		}
 		x += 15 + height * 0.8f + 90.0f;
 
-		if ((m_SelectedObject == m_BlueprintClass))
+		if (m_SelectedObject == m_BlueprintClass)
 		{
 			Params = EditorUI::ButtonParams::Outlined();
 			Params.TextOrientation = Vec2(0.8f, 0.0f);

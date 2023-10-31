@@ -41,13 +41,16 @@ namespace Suora
 		void Update(float deltaTime);
 		void Render(float deltaTime);
 
+	private:
+		void RegisterMajortab(MajorTab* majorTab);
+	public:
 		template<class T, class ... Args>
 		void AddMajorTab(Args&&... args)
 		{
 			SelectedMajorTab = Tabs.Size();
 			Tabs.Add(Ref<MajorTab>(new T(std::forward<Args>(args)...)));
-			Ref<MajorTab> tab = Tabs[Tabs.Last()];
-			tab->m_EditorWindow = this;
+			Ref<MajorTab> majorTab = Tabs[Tabs.Last()];
+			RegisterMajortab(majorTab.get());
 		}
 		void DelegateChanges(MajorTab* majorTab);
 		void OpenAsset(Asset* asset);

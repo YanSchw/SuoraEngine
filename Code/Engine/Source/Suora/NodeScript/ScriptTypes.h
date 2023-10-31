@@ -6,6 +6,7 @@
 namespace Suora
 {
 	using Color = glm::vec4;
+	class Object;
 
 	enum class ScriptDataType : int64_t
 	{

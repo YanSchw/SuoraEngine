@@ -161,6 +161,11 @@ namespace Suora
 
 	}
 
+	void EditorWindow::RegisterMajortab(MajorTab* majorTab)
+	{
+		majorTab->m_EditorWindow = this;
+	}
+
 	void EditorWindow::DelegateChanges(MajorTab* majorTab)
 	{
 		for (Ref<MajorTab> It : Tabs)

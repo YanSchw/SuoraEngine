@@ -78,7 +78,7 @@ namespace Suora::Tools
 		std::string premake5 = "project \"AllModules\"\n\
 		kind \"StaticLib\"\n\
 		language \"C++\"\n\
-		cppdialect \"C++17\"\n\
+		cppdialect \"C++20\"\n\
 		staticruntime \"on\"\n\
 \n\
 		targetdir(\"%{wks.location}/Build/\" ..outputdir .. \"/%{prj.name}\")\n\
@@ -276,7 +276,7 @@ namespace Suora::Tools
 		std::string premake5Module = "project \"" + moduleName + "\"\n\
 		kind \"StaticLib\"\n\
 		language \"C++\"\n\
-		cppdialect \"C++17\"\n\
+		cppdialect \"C++20\"\n\
 		staticruntime \"on\"\n\
 \n\
 		MODULE_PATH = \"" + FixPathForPremake5(modulePath.string()) + "\"\n\
