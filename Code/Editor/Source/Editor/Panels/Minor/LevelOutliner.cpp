@@ -239,6 +239,18 @@ namespace Suora
 			m_DropDowns[node] = true;
 		}
 
+
+		// Drawing the Parent/Child   v MyParentNode
+		//                            |
+		//                            |--> MyChildNode
+		// Stuff
+		if (node->GetParent())
+		{
+			EditorUI::DrawRect(x - 0.64f * EntryHeight, y + 0.5f * EntryHeight, EntryHeight * (node->HasChildren() ? 1.0f : 1.5f) - 10.0f, 2.0f, 0.0f, Color(0.3f, 0.3f, 0.3f, 1.0f));
+			EditorUI::DrawRect(x - 0.64f * EntryHeight, y + 0.5f * EntryHeight, 2.0f, m_TempYValuesOfParentNodes[node->GetParent()] - y - 10.0f, 0.0f, Color(0.3f, 0.3f, 0.3f, 1.0f));
+		}
+
+
 		Vec2 mousePosition = EditorUI::GetInput();
 		const bool Hovering = mousePosition.x >= x + (EntryHeight + 6) && mousePosition.x <= 0 + GetWidth() && mousePosition.y > y && mousePosition.y <= y + EntryHeight && (mousePosition.y > 35.0f && mousePosition.y < GetHeight() - 35.0f && mousePosition.x < GetWidth() - 10.0f);
 		const bool Selected = (node == GetSelectedObject());
@@ -373,16 +385,6 @@ namespace Suora
 				}
 				EditorUI::Text(className, Font::Instance, GetWidth() * m_HeaderSeperator1, y, GetWidth() * (m_HeaderSeperator2 - m_HeaderSeperator1), EntryHeight, EntryHeight * 0.9f, Vec2(-0.95f, 0), Selected ? EditorPreferences::Get()->UiColor : (isNativeClass ? Color(0.65f) : EditorPreferences::Get()->UiHighlightColor));
 			}
-		}
-
-		// Drawing the Parent/Child   v MyParentNode
-		//                            |
-		//                            |--> MyChildNode
-		// Stuff
-		if (node->GetParent())
-		{
-			EditorUI::DrawRect(x - 0.64f * EntryHeight, y + 0.5f * EntryHeight, EntryHeight * (node->HasChildren() ? 1.0f : 1.5f) - 10.0f, 2.0f, 0.0f, Color(0.3f, 0.3f, 0.3f, 1.0f));
-			EditorUI::DrawRect(x - 0.64f * EntryHeight, y + 0.5f * EntryHeight, 2.0f, m_TempYValuesOfParentNodes[node->GetParent()] - y - 10.0f, 0.0f, Color(0.3f, 0.3f, 0.3f, 1.0f));
 		}
 
 		y -= EntryHeight;
