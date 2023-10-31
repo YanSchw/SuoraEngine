@@ -43,12 +43,19 @@ namespace Suora
 		GBufferSlotCount
 	};
 
+	enum class AntiAliasing : int32_t
+	{
+		None = 0,
+		FXAA
+	};
+
 	struct RenderingParams
 	{
 		RenderingParams();
 
 		bool DrawWireframe = false;
 		bool EnableDeferredRendering = true;
+		AntiAliasing AntiAliasingMode = AntiAliasing::FXAA;
 	};
 
 	/** All Rendering is maintained here */
@@ -121,6 +128,9 @@ namespace Suora
 		// Forward
 		std::unordered_map<glm::ivec2, Ref<Framebuffer>, IVec2Hasher> m_ForwardReadyBuffer;
 		Ref<Framebuffer> GetForwardReadyBuffer(const glm::ivec2& size);
+
+		std::unordered_map<glm::ivec2, Ref<Framebuffer>, IVec2Hasher> m_PostProcessTempBuffer;
+		Ref<Framebuffer> GetPostProcessTempBuffer(const glm::ivec2& size);
 
 		Ref<Decima> m_DecimaInstance;
 		std::thread m_DecimaThread;

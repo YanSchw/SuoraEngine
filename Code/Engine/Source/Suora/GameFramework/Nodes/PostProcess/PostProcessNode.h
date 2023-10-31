@@ -30,11 +30,10 @@ namespace Suora
 		~PostProcessEffect();
 
 		virtual void Init();
-		virtual void Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera);
+		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, Framebuffer& InGBuffer, CameraNode& Camera);
 	private:
 		bool m_Initialized = false;
 	protected:
-		Ref<Framebuffer> m_ForwardBuffer;
 		friend class RenderPipeline;
 	};
 
@@ -50,7 +49,7 @@ namespace Suora
 		float m_Intensity = 0.125f;
 
 		virtual void Init() override;
-		virtual void Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
+		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
 	private:
 		Ref<Shader> m_Shader;
 		Ref<Framebuffer> m_AccumulatedBuffer;
@@ -70,10 +69,9 @@ namespace Suora
 			float m_Intensity = 0.04f;
 
 		virtual void Init() override;
-		virtual void Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
+		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
 	private:
 		Ref<Shader> m_Shader;
-		Ref<Framebuffer> m_Buffer;
 
 	};
 	class FilmGrain : public PostProcessEffect
@@ -85,10 +83,9 @@ namespace Suora
 		MEMBER() float m_Jitter = 1.65f;
 
 		virtual void Init() override;
-		virtual void Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
+		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
 	private:
 		Ref<Shader> m_Shader;
-		Ref<Framebuffer> m_Buffer;
 
 	};
 
@@ -101,10 +98,9 @@ namespace Suora
 		MEMBER() float m_Samples = 1; // TODO: should be int
 
 		virtual void Init() override;
-		virtual void Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
+		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
 	private:
 		Ref<Shader> m_Shader;
-		Ref<Framebuffer> m_Buffer;
 
 	};
 	class ToneMapping : public PostProcessEffect
@@ -114,14 +110,13 @@ namespace Suora
 	public:
 
 		virtual void Init() override;
-		virtual void Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
+		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
 
 		MEMBER()
 		float m_TonemapFunction = 3; /// TODO: Should be int
 
 	private:
 		Ref<Shader> m_Shader;
-		Ref<Framebuffer> m_Buffer;
 
 	};
 

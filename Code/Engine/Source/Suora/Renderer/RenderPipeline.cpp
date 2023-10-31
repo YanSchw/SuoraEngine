@@ -518,7 +518,21 @@ namespace Suora
 	void RenderPipeline::PostProcessPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
 	{
 		SetFullscreenViewport(gbuffer);
-		
+
+		bool resultIsInTempBuffer = false;
+		Ref<Framebuffer> forwardBuffer = GetForwardReadyBuffer(gbuffer.GetSize());
+		Ref<Framebuffer> postProcessTempBuffer = GetPostProcessTempBuffer(gbuffer.GetSize());
+			
+		// FXAA
+		{
+			if (params.AntiAliasingMode == AntiAliasing::FXAA)
+			{
+				m_FXAA->Bind();
+				m_FXAA->SetFloat2("u_Resolution", RenderPipeline::GetInternalResolution());
+				RenderFramebufferIntoFramebuffer(*forwardBuffer, *postProcessTempBuffer, *m_FXAA, BufferToRect(gbuffer));
+				resultIsInTempBuffer = true;
+			}
+		}
 		// PostProcessNodes
 		{
 			Array<PostProcessEffect*> effects = world.FindNodesByClass<PostProcessEffect>();
@@ -530,10 +544,13 @@ namespace Suora
 					effect->Init();
 					effect->m_Initialized = true;
 				}
-				effect->m_ForwardBuffer = GetForwardReadyBuffer(gbuffer.GetSize());
-				effect->Process(GetFinalFramebuffer(gbuffer.GetSize()), gbuffer, camera);
+				effect->Process((resultIsInTempBuffer ? postProcessTempBuffer : forwardBuffer), 
+								(resultIsInTempBuffer ? forwardBuffer : postProcessTempBuffer), gbuffer, camera);
+				resultIsInTempBuffer = !resultIsInTempBuffer;
 			}
 		}
+
+		RenderFramebufferIntoFramebuffer(*(resultIsInTempBuffer ? postProcessTempBuffer : forwardBuffer), *GetFinalFramebuffer(gbuffer.GetSize()), *GetFullscreenPassShader(), BufferToRect(gbuffer));
 	}
 
 
@@ -609,6 +626,19 @@ namespace Suora
 			m_ForwardReadyBuffer[size] = Framebuffer::Create(spec);
 		}
 		return m_ForwardReadyBuffer[size];
+	}
+
+	Ref<Framebuffer> RenderPipeline::GetPostProcessTempBuffer(const glm::ivec2& size)
+	{
+		if (m_PostProcessTempBuffer.find(size) == m_PostProcessTempBuffer.end())
+		{
+			FramebufferSpecification spec;
+			spec.Width = size.x;
+			spec.Height = size.y;
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
+			m_PostProcessTempBuffer[size] = Framebuffer::Create(spec);
+		}
+		return m_PostProcessTempBuffer[size];
 	}
 
 	Ref<Framebuffer> RenderPipeline::GetFinalFramebuffer(const glm::ivec2& size)
