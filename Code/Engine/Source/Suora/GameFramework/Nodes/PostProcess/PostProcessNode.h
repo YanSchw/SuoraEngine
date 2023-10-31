@@ -120,4 +120,20 @@ namespace Suora
 
 	};
 
+	class Vignette : public PostProcessEffect
+	{
+		SUORA_CLASS(47863233);
+
+	public:
+		MEMBER() float m_Intensity = 40.0f;
+		MEMBER() float m_Extend = 0.15f;
+		MEMBER() Color m_VignetteColor = Color(0, 0, 0, 1);
+
+		virtual void Init() override;
+		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
+	private:
+		Ref<Shader> m_Shader;
+
+	};
+
 }
