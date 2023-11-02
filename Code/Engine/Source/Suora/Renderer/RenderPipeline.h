@@ -100,6 +100,8 @@ namespace Suora
 
 		void PostProcessPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
 
+		void UserInterfacePass(World& world, const glm::mat4& view, Framebuffer& target, RenderingParams& params);
+
 	private:
 		static Ref<VertexArray> GetFullscreenQuad();
 

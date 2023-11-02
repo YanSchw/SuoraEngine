@@ -4,7 +4,11 @@
 
 namespace Suora
 {
-
+    template<>
+    std::string Vec::ToString<Vec2>(const Vec2& vec)
+    {
+        return (std::to_string(vec.x) + "/" + std::to_string(vec.y));
+    }
     template<>
     std::string Vec::ToString<Vec3>(const Vec3& vec)
     {
@@ -31,6 +35,13 @@ namespace Suora
         return str;
     }
 
+    template<>
+    Vec2 Vec::FromString<Vec2>(const std::string& str)
+    {
+        if (str == "") return Vec::Zero;
+        const std::vector<std::string> xyz = Util::SplitString(str, '/');
+        return Vec2(std::stof(xyz[0]), std::stof(xyz[1]));
+    }
     template<>
     Vec3 Vec::FromString<Vec3>(const std::string& str)
     {

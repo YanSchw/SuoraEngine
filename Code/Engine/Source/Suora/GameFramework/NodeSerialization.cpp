@@ -136,6 +136,7 @@ namespace Suora
 			child["Name"] = GetName();
 			child["Enabled"] = IsEnabled() ? "true" : "false";
 			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<glm::mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+			if (this->IsA<UINode>()) this->As<UINode>()->TransformToYaml(child["UINode"]);
 			child["Class"] = GetClass().ToString();
 			child["SocketName"] = GetParent()->GetName();
 		}
@@ -145,6 +146,7 @@ namespace Suora
 			child["Name"] = GetName();
 			child["Enabled"] = IsEnabled() ? "true" : "false";
 			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<glm::mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+			if (this->IsA<UINode>()) this->As<UINode>()->TransformToYaml(child["UINode"]);
 			std::string indicies;
 			Node* node = this;
 			bool firstIndex = true;
@@ -200,6 +202,7 @@ namespace Suora
 			Array<std::string> Indicies;
 			Array<std::string> Enabled;
 			Array<std::string> Node3DTransform;
+			Array<Yaml::Node> NodeUITransform;
 
 			void Apply(Node* affetedNode)
 			{
@@ -219,6 +222,10 @@ namespace Suora
 						if (node->IsA<Node3D>() && !Node3DTransform[i].empty())
 						{
 							node->As<Node3D>()->SetTransformMatrix(Vec::FromString<glm::mat4>(Node3DTransform[i]));
+						}
+						if (node->IsA<UINode>())
+						{
+							node->As<UINode>()->TransformFromYaml(NodeUITransform[i]);
 						}
 					}
 				}
@@ -241,6 +248,7 @@ namespace Suora
 					m_InheretedChildren[childOwner]->Indicies.Add(yamlChild["Indicies"].As<std::string>());
 					m_InheretedChildren[childOwner]->Enabled.Add(yamlChild["Enabled"].As<std::string>());
 					m_InheretedChildren[childOwner]->Node3DTransform.Add(yamlChild["Node3D"].As<std::string>());
+					m_InheretedChildren[childOwner]->NodeUITransform.Add(yamlChild["UINode"]);
 				}
 			}
 		}
@@ -276,6 +284,10 @@ namespace Suora
 				{
 					child->As<Node3D>()->SetTransformMatrix(Vec::FromString<glm::mat4>(yamlChild["Node3D"].As<std::string>()));
 				}
+			}
+			if (child->IsA<UINode>())
+			{
+				child->As<UINode>()->TransformFromYaml(yamlChild["UINode"]);
 			}
 
 			// Attach Child to Socket (if Socket exists)

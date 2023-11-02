@@ -17,6 +17,12 @@ namespace Suora
 
 	static Texture2D* undoTexture = nullptr;
 
+	static void DragFloat2(Vec2* vec, float x, float y, float width, float height)
+	{
+		float singleWidth = width / 2.0f;
+		EditorUI::DragFloat(&vec->x, x + singleWidth * 0.0f, y, singleWidth, height);
+		EditorUI::DragFloat(&vec->y, x + singleWidth * 1.0f, y, singleWidth, height);
+	}
 	static void DragFloat3(Vec3* vec, float x, float y, float width, float height)
 	{
 		float singleWidth = width / 3.0f;
@@ -459,8 +465,10 @@ namespace Suora
 			node->SetEnabled(node->m_Enabled);
 		}
 
+		bool skipFirstDerivative = false;
 		if (Node3D* node3D = node->As<Node3D>())
 		{
+			skipFirstDerivative = true;
 			y -= 35;
 			static bool readTransform = true;
 			static std::function<void(std::string)> disableReadTransform = [](std::string s) { readTransform = false; };
@@ -502,11 +510,45 @@ namespace Suora
 				Transform_LastNode = node;
 			}
 		}
+		if (UINode* uinode = node->As<UINode>())
+		{
+			skipFirstDerivative = true;
+			y -= 35;
+			if (EditorUI::CategoryShutter(0, "UINode", 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
+			{
+				y -= 34;
+				DrawLabel("Anchor", y, 35.0f);
+				DragFloat2(&uinode->m_Anchor, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Width", y, 35.0f);
+				EditorUI::Checkbox(&uinode->m_IsWidthRelative, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, 25.0f, 25.0f);
+				EditorUI::Text("Is Relative", Font::Instance, GetDetailWidth() * m_Seperator + 35.0f, y + 5.0f, 250.0f, 25.0f, 21.0f, Vec2(-1, 0), Color(1.0f));
+				y -= 34;
+				DrawLabel("", y, 35.0f);
+				EditorUI::DragFloat(&uinode->m_Width, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Height", y, 35.0f);
+				EditorUI::Checkbox(&uinode->m_IsHeightRelative, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, 25.0f, 25.0f);
+				EditorUI::Text("Is Relative", Font::Instance, GetDetailWidth() * m_Seperator + 35.0f, y + 5.0f, 250.0f, 25.0f, 21.0f, Vec2(-1, 0), Color(1.0f));
+				y -= 34;
+				DrawLabel("", y, 35.0f);
+				EditorUI::DragFloat(&uinode->m_Height, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Pivot", y, 35.0f);
+				DragFloat2(&uinode->m_Pivot, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Absolute Pixel Offset", y, 35.0f);
+				DragFloat3(&uinode->m_AbsolutePixelOffset, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Euler Rotation around Anchor", y, 35.0f);
+				DragFloat3(&uinode->m_EulerRotationAroundAnchor, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+			}
+		}
 
 		// Node Derivates
 		Array<Class> derivates = node->GetClass().GetInheritanceTree();
 		int memberIndex = 0;
-		for (int64_t i = node->IsA<Node3D>() ? 3 : 2; i < derivates.Size(); i++)
+		for (int64_t i = skipFirstDerivative ? 3 : 2; i < derivates.Size(); i++)
 		{
 			y -= 35;
 			const ClassReflector& refl = ClassReflector::GetByClass(derivates[i]);

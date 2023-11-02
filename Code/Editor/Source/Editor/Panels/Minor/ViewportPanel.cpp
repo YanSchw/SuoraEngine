@@ -225,8 +225,15 @@ namespace Suora
 
 	void ViewportPanel::Render(float deltaTime)
 	{
-		if (!m_EditorCamera) m_EditorCamera = Ref<EditorCamera>(new EditorCamera(GetMajorTab()->GetEditorWindow(), GetMajorTab()));
-		//Renderer3D::BeginUI();
+		if (!m_EditorCamera)
+		{
+			m_EditorCamera = Ref<EditorCamera>(new EditorCamera(GetMajorTab()->GetEditorWindow(), GetMajorTab()));
+		}
+		
+		// Update the UI Viewport
+		UINode::s_UIViewportWidth  = GetWidth();
+		UINode::s_UIViewportHeight = GetHeight();
+
 
 		if (m_GizmoBuffer->GetSize() != m_Framebuffer->GetSize() * 2) m_GizmoBuffer->Resize(m_Framebuffer->GetSize() * 2);
 		if (m_GizmoBufferSmooth->GetSize() != m_Framebuffer->GetSize() * 2) m_GizmoBufferSmooth->Resize(m_Framebuffer->GetSize() * 2);

@@ -459,6 +459,16 @@ namespace Suora
 		return GetParent() ? GetParent()->GetTransform() : nullptr;
 	}
 
+	UINode* Node::GetUITransform()
+	{
+		return GetParent() ? GetParent()->GetUITransform() : nullptr;
+	}
+
+	UINode* Node::GetParentUITransform()
+	{
+		return GetParent() ? GetParent()->GetUITransform() : nullptr;
+	}
+
 	void Node::TickTransform(bool inWorldSpace)
 	{
 		for (Node* child : m_Children)
@@ -812,6 +822,96 @@ namespace Suora
 	{
 		Super::InitializeNode(world);
 	}
+
+
+
+	void UINode::TransformToYaml(Yaml::Node& root) const
+	{
+		root["m_Anchor"] = Vec::ToString(m_Anchor);
+		root["m_IsWidthRelative"] = m_IsWidthRelative ? "true" : "false";
+		root["m_Width"] = std::to_string(m_Width);
+		root["m_IsHeightRelative"] = m_IsHeightRelative ? "true" : "false";
+		root["m_Height"] = std::to_string(m_Height);
+		root["m_Pivot"] = Vec::ToString(m_Pivot);
+		root["m_AbsolutePixelOffset"] = Vec::ToString(m_AbsolutePixelOffset);
+		root["m_EulerRotationAroundAnchor"] = Vec::ToString(m_EulerRotationAroundAnchor);
+	}
+
+	void UINode::TransformFromYaml(Yaml::Node& root)
+	{
+		if (root.IsNone())
+		{
+			return;
+		}
+
+		m_Anchor = Vec::FromString<Vec2>(root["m_Anchor"].As<std::string>());
+		m_IsWidthRelative = root["m_IsWidthRelative"].As<std::string>() == "true";
+		m_Width = std::stof(root["m_Width"].As<std::string>());
+		m_IsHeightRelative = root["m_IsHeightRelative"].As<std::string>() == "true";
+		m_Height = std::stof(root["m_Height"].As<std::string>());
+		m_Pivot = Vec::FromString<Vec2>(root["m_Pivot"].As<std::string>());
+		m_AbsolutePixelOffset = Vec::FromString<Vec3>(root["m_AbsolutePixelOffset"].As<std::string>());
+		m_EulerRotationAroundAnchor = Vec::FromString<Vec3>(root["m_EulerRotationAroundAnchor"].As<std::string>());
+	}
+
+	UINode* UINode::GetUITransform()
+	{
+		return this;
+	}
+
+	UINode::RectTransform UINode::GetRectTransform()
+	{
+		UINode* parentNode = GetParentUITransform();
+		RectTransform parentTransform = parentNode ? parentNode->GetRectTransform() : RectTransform();
+
+		Vec3 anchorPos = parentTransform.UpperLeft + parentTransform.GetHalfRight() + parentTransform.GetHalfDown();
+		anchorPos += parentTransform.GetHalfRight() * m_Anchor.x;
+		anchorPos -= parentTransform.GetHalfDown() * m_Anchor.y;
+
+		// Collapse RectTransform into Anchor
+		RectTransform transform = parentTransform;
+		transform.UpperLeft   = anchorPos;
+		transform.UpperRight  = anchorPos;
+		transform.BottomLeft  = anchorPos;
+
+		// Now, blow up the RectTransform again
+		transform.UpperLeft  -= parentTransform.GetHalfRight() * m_Width * (m_IsWidthRelative ? 1.0f : GetViewportPixelScale().x);
+		transform.UpperRight += parentTransform.GetHalfRight() * m_Width * (m_IsWidthRelative ? 1.0f : GetViewportPixelScale().x);
+		transform.BottomLeft -= parentTransform.GetHalfRight() * m_Width * (m_IsWidthRelative ? 1.0f : GetViewportPixelScale().x);
+
+		transform.UpperLeft  -= parentTransform.GetHalfDown() * m_Height * (m_IsHeightRelative ? 1.0f : GetViewportPixelScale().y);
+		transform.UpperRight -= parentTransform.GetHalfDown() * m_Height * (m_IsHeightRelative ? 1.0f : GetViewportPixelScale().y);
+		transform.BottomLeft += parentTransform.GetHalfDown() * m_Height * (m_IsHeightRelative ? 1.0f : GetViewportPixelScale().y);
+
+		// Apply Pivot
+		{
+			const Vec3 halfRight = transform.GetHalfRight();
+			transform.UpperLeft -= halfRight * m_Pivot.x;
+			transform.UpperRight -= halfRight * m_Pivot.x;
+			transform.BottomLeft -= halfRight * m_Pivot.x;
+
+			const Vec3 halfDown = transform.GetHalfDown();
+			transform.UpperLeft -= halfDown * m_Pivot.y;
+			transform.UpperRight -= halfDown * m_Pivot.y;
+			transform.BottomLeft -= halfDown * m_Pivot.y;
+		}
+
+		// TODO:
+		// 
+		// Apply Offset
+
+		// Apply Rotation
+
+
+		return transform;
+	}
+
+	Vec2 UINode::GetViewportPixelScale()
+	{
+		return Vec2(1.0f / (float)s_UIViewportWidth, 1.0f / (float)s_UIViewportHeight);
+	}
+
+
 
 	void Component::Begin()
 	{

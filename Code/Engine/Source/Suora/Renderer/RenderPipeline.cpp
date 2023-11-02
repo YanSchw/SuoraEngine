@@ -135,6 +135,8 @@ namespace Suora
 		if (!Ilum::IsInIlumPass())
 		{
 			PostProcessPass(world, camera, gbuffer, params);
+
+			UserInterfacePass(world, glm::orthoLH(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), *GetFinalFramebuffer(gbuffer.GetSize()), params);
 		}
 
 		// Output Final Buffer
@@ -553,6 +555,18 @@ namespace Suora
 		RenderFramebufferIntoFramebuffer(*(resultIsInTempBuffer ? postProcessTempBuffer : forwardBuffer), *GetFinalFramebuffer(gbuffer.GetSize()), *GetFullscreenPassShader(), BufferToRect(gbuffer));
 	}
 
+	void RenderPipeline::UserInterfacePass(World& world, const glm::mat4& view, Framebuffer& target, RenderingParams& params)
+	{
+		Array<UIRenderable*> renderables = world.FindNodesByClass<UIRenderable>();
+		for (UIRenderable* It : renderables)
+		{
+			if (It->IsEnabled())
+			{
+				It->RenderUI(view, target);
+			}
+		}
+	}
+
 
 	Ref<VertexArray> RenderPipeline::GetFullscreenQuad()
 	{
@@ -571,10 +585,10 @@ namespace Suora
 
 		s_FullscreenQuadVAO = VertexArray::Create();
 
-		Vertex vertices[4] = { Vertex(glm::vec3(1, -1, 0), glm::vec2(1, 0)),
-							  Vertex(glm::vec3(-1, 1, 0), glm::vec2(0, 1)),
-							  Vertex(glm::vec3(1, 1, 0),  glm::vec2(1, 1)),
-							  Vertex(glm::vec3(-1, -1, 0),glm::vec2(0, 0)) };
+		Vertex vertices[4] = { Vertex(Vec3(1, -1, 0), Vec2(1, 0)),
+							   Vertex(Vec3(-1, 1, 0), Vec2(0, 1)),
+							   Vertex(Vec3(1, 1, 0),  Vec2(1, 1)),
+							   Vertex(Vec3(-1, -1, 0),Vec2(0, 0)) };
 		uint32_t indices[6] = { 2, 1, 0, 0, 1, 3 };
 
 		s_FullscreenQuadVBO = VertexBuffer::Create(sizeof(Vertex) * 4);

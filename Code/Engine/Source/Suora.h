@@ -45,6 +45,7 @@ using Color = glm::vec4;
 #include "Suora/GameFramework/Node.h"
 #include "Suora/GameFramework/World.h"
 #include "Suora/GameFramework/GameInstance.h"
+#include "Suora/GameFramework/UserInterface.h"
 #include "Suora/GameFramework/Nodes/OrganizationNodes.h"
 #include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/Nodes/CharacterNode.h"

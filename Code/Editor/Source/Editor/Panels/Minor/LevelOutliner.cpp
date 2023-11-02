@@ -104,6 +104,12 @@ namespace Suora
 				nodeUI->SetName("UINode");
 				nodeUI->m_IsActorLayer = true;
 			}, "UINode", nullptr });
+			_UI.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			{
+				UINode* nodeUI = world ? world->Spawn<UIImage>() : node->CreateChild<UIImage>();
+				nodeUI->SetName("UIImage");
+				nodeUI->m_IsActorLayer = true;
+			}, "UIImage", nullptr });
 		}
 		out.push_back(EditorUI::ContextMenuElement{ {_UI}, [world, node]() {}, "UI", nullptr });
 

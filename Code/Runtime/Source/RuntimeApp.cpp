@@ -3,6 +3,7 @@
 #include "Suora/Core/Base.h"
 #include "Suora/Renderer/GraphicsContext.h"
 #include "Suora/Renderer/RenderCommand.h"
+#include "Suora/Renderer/Framebuffer.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "Suora/Renderer/Shader.h"
 #include "Suora/Assets/SuoraProject.h"
@@ -60,6 +61,10 @@ public:
 	void Update(float deltaTime) override
 	{
 		m_StandaloneWindow->OnUpdate();
+
+		// Update the UI Viewport
+		UINode::s_UIViewportWidth = m_StandaloneWindow->GetWidth();
+		UINode::s_UIViewportHeight = m_StandaloneWindow->GetHeight();
 
 		// Rendering
 		SuoraAssert(Engine::Get());

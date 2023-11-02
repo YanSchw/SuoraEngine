@@ -17,6 +17,7 @@ namespace Suora
 {
 	class World;
 	class Node3D;
+	class UINode;
 	class LevelNode;
 	class InputModule;
 
@@ -166,9 +167,12 @@ namespace Suora
 
 		FUNCTION(Callable, Pure)
 		virtual Node3D* GetTransform();
-
 		FUNCTION(Callable, Pure)
 		virtual Node3D* GetParentTransform();
+		FUNCTION(Callable, Pure)
+		virtual UINode* GetUITransform();
+		FUNCTION(Callable, Pure)
+		virtual UINode* GetParentUITransform();
 	protected:
 		virtual void TickTransform(bool inWorldSpace = true);
 		virtual void OnParentChange(Node* prev, Node* next);
@@ -336,7 +340,48 @@ namespace Suora
 	class UINode : public Node
 	{
 		SUORA_CLASS(8569225);
+	private:
+		Vec2 m_Anchor = Vec2(0.0f, 0.0f);
+
+		bool m_IsWidthRelative = true;
+		float m_Width = 1.0f;
+		bool m_IsHeightRelative = true;
+		float m_Height = 1.0f;
+
+		Vec2 m_Pivot = Vec2(0.0f, 0.0f);
+
+		Vec3 m_AbsolutePixelOffset = Vec3(0.0f, 0.0f, 0.0f);
+		Vec3 m_EulerRotationAroundAnchor = Vec3(0.0f, 0.0f, 0.0f);
+
 	public:
+		struct RectTransform
+		{
+			Vec3 UpperLeft	 = Vec3(-1.0f, +1.0f, 0.0f);
+			Vec3 UpperRight	 = Vec3(+1.0f, +1.0f, 0.0f);
+			//Vec3 BottomRight = Vec3(+1.0f, -1.0f, 0.0f); // Can be calculated from the other 3
+			Vec3 BottomLeft  = Vec3(-1.0f, -1.0f, 0.0f);
+
+			Vec3 GetRight() const { return UpperRight - UpperLeft; }
+			Vec3 GetDown() const  { return BottomLeft - UpperLeft; }
+			Vec3 GetHalfRight() const { return 0.5f * GetRight(); }
+			Vec3 GetHalfDown() const  { return 0.5f * GetDown(); }
+		};
+
+		void TransformToYaml(Yaml::Node& root) const;
+		void TransformFromYaml(Yaml::Node& root);
+
+		UINode* GetUITransform() override;
+		RectTransform GetRectTransform();
+
+		static Vec2 GetViewportPixelScale();
+
+	private:
+		inline static uint32_t s_UIViewportWidth = 1920;
+		inline static uint32_t s_UIViewportHeight = 1080;
+
+		friend class DetailsPanel;
+		friend class ViewportPanel;
+		friend class Runtime;
 	};
 
 	/** A special Node that cannot do anything by itself, but always alters its Parent; Cannot be unparented or spawned! */
