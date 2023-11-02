@@ -153,6 +153,7 @@ namespace Suora
 		{
 			_Params.HideColor = EditorPreferences::Get()->UiColor;
 			_Params.CurrentSelectedClass = m_ParentClass;
+			_Params.RootClass = Node::StaticClass();
 			if (EditorUI::DrawSubclassHierarchyBox(x + 15.0f, y + 15.0f, 550, height - 100.0f, _Params))
 			{
 				m_ParentClass = _Params.CurrentSelectedClass;
