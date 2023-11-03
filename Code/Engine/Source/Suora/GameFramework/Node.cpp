@@ -181,6 +181,7 @@ namespace Suora
 	{
 		Yaml::Node Serialized;
 		Serialize(Serialized);
+		Serialized["RootParentClass"] = GetClass().ToString();
 
 		if (!GetWorld())
 		{
