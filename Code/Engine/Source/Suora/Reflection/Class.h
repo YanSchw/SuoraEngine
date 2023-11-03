@@ -4,8 +4,6 @@
 #include <string>
 #include <unordered_map>
 
-template<class T> class Array;
-
 namespace Suora
 {
 	class Object;
