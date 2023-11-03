@@ -176,6 +176,9 @@ namespace Suora
 		root["RootClass"] = GetClass().ToString();
 		root["RootParentClass"] = GetClass().GetParentClass().ToString();
 		root["RootEnabled"] = m_Enabled ? "true" : "false";
+		root["Enabled"] = IsEnabled() ? "true" : "false";
+		root["Node3D"] = IsA<Node3D>() ? Vec::ToString<glm::mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+		if (this->IsA<UINode>()) this->As<UINode>()->TransformToYaml(root["UINode"]);
 
 		NodeSerializer serializer;
 		serializer.m_RootNode = this;
@@ -266,6 +269,16 @@ namespace Suora
 		if (deserializer.m_InheretedChildren.find(node->GetName()) != deserializer.m_InheretedChildren.end())
 		{
 			deserializer.m_InheretedChildren[node->GetName()]->Apply(node);
+		}
+
+		node->SetEnabled(true);
+		if (!root["Node3D"].IsNone() && node->IsA<Node3D>())
+		{
+			node->As<Node3D>()->SetTransformMatrix(Vec::FromString<glm::mat4>(root["Node3D"].As<std::string>()));
+		}
+		if (!root["UINode"].IsNone() && node->IsA<UINode>())
+		{
+			node->As<UINode>()->TransformFromYaml(root["UINode"]);
 		}
 
 		const int32_t childCount = std::stoi(root["ChildCount"].As<std::string>());
