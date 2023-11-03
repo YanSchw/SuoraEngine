@@ -1,6 +1,7 @@
 #pragma once
 #include "inttypes.h"
 #include "Suora/Common/Array.h"
+#include <string>
 #include <unordered_map>
 
 template<class T> class Array;
