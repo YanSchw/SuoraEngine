@@ -144,6 +144,7 @@ namespace Suora
 		m_Shader->Bind();
 		m_Shader->SetFloat("u_Intensity", m_Intensity);
 		m_Shader->SetFloat("u_Extend", m_Extend);
+		m_Shader->SetFloat("u_Alpha", m_Alpha);
 		m_Shader->SetFloat4("u_VignetteColor", m_VignetteColor);
 
 		RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y));

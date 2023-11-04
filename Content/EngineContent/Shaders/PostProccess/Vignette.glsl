@@ -20,6 +20,7 @@ out vec4 out_Color;
 uniform sampler2D u_Texture;
 uniform float u_Intensity;
 uniform float u_Extend;
+uniform float u_Alpha;
 uniform vec4 u_VignetteColor;
 
 vec4 Lerp(vec4 a, vec4 b, float v)
@@ -37,5 +38,7 @@ void main(void)
     vig = pow(vig, u_Extend);
     vig = clamp(vig, 0.0, 1.0);
 
-    out_Color = vec4(Lerp(u_VignetteColor, fragColor, vig).rgb, 1.0);
+    float alpha = clamp(u_Alpha, 0.0, 1.0);
+
+    out_Color = vec4(Lerp(fragColor, u_VignetteColor, (1.0 - vig) * alpha).rgb, 1.0);
 }

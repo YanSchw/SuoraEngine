@@ -127,6 +127,7 @@ namespace Suora
 	public:
 		MEMBER() float m_Intensity = 40.0f;
 		MEMBER() float m_Extend = 0.15f;
+		MEMBER() float m_Alpha = 0.5f;
 		MEMBER() Color m_VignetteColor = Color(0, 0, 0, 1);
 
 		virtual void Init() override;
