@@ -58,11 +58,7 @@ namespace Suora
 		bool IsBlueprintClass() const;
 		bool IsScriptClass() const;
 
-		bool Inherits(const Class& base) const
-		{
-			if ((*this) == base) return true;
-			return (m_NativeClassID == 1) ? false : (GetParentClass() == base ? true : (GetParentClass() != Class::None ? GetParentClass().Inherits(base) : false));
-		}
+		bool Inherits(const Class& base) const;
 		Class GetParentClass() const;
 		ClassType GetClassType() const;
 

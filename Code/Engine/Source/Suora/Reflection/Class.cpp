@@ -11,6 +11,12 @@ namespace Suora
 {
 	const Class Class::None = Class((NativeClassID) 0);
 
+	bool Class::Inherits(const Class& base) const
+	{
+		if ((*this) == base) return true;
+		return (m_NativeClassID == 1) ? false : (GetParentClass() == base ? true : (GetParentClass() != Class::None ? GetParentClass().Inherits(base) : false));
+	}
+
 	Class Class::GetParentClass() const
 	{
 		switch (GetClassType())
