@@ -41,6 +41,7 @@ namespace Suora
 		bool DrawButton(const std::string& label, const std::string& buttonLabel, float& y);
 		void DrawDropDown(const std::string& label, const std::vector<std::pair<std::string, std::function<void(void)>>>& options, int index, float& y);
 		bool DrawResetButton(float y, float height);
+		Result DrawInt32(int32_t* i, const std::string& label, float& y, bool valueChanged);
 		Result DrawFloat(float* f, const std::string& label, float& y, bool valueChanged);
 		Result DrawBool(bool* b, const std::string& label, float& y, bool valueChanged);
 		Result DrawVec3(Vec3* v, const std::string& label, float& y, bool valueChanged);

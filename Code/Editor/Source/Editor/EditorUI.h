@@ -553,12 +553,15 @@ namespace Suora
 		static void _SetTextFieldStringPtr(std::string* str, float x, float y, float width, float height, bool needsFlag = true);
 
 	private:
-		inline static float* DraggedFloatPtr = nullptr;
-		inline static float DraggedFloatBeginValue = 0;
-		inline static std::string DraggedFloatStr = "";
-		inline static float* DraggedFloatTabulatePtr = nullptr; inline static bool DraggedFloatTabulateNext = false;
+		inline static void* DraggedNumberPtr = nullptr;
+		inline static int32_t DraggedInt32BeginValue = 0;
+		inline static float DraggedFloatBeginValue = 0.0f;
+		inline static std::string DraggedNumberStr = "";
+		inline static void* DraggedNumberTabulatePtr = nullptr; inline static bool DraggedNumberTabulateNext = false;
 	public:
+		static void DragInt32(int32_t* i, float x, float y, float width, float height, const std::function<void(std::string)>& lambda = nullptr);
 		static void DragFloat(float* f, float x, float y, float width, float height, const std::function<void(std::string)>& lambda = nullptr);
+		static void DragNumber(void* n, ClassMember::Type type, float x, float y, float width, float height, const std::function<void(std::string)>& lambda = nullptr);
 
 	private:
 		inline static float* SliderFloat_F = nullptr;

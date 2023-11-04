@@ -43,6 +43,10 @@ namespace Suora
 
             return std::to_string(f);
         }
+        static std::string Int32ToString(int32_t i)
+        {
+            return FloatToString((float)i);
+        }
         static float StringToFloat(const std::string& str)
         {
             static Array<char> numericChars = {'-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -64,6 +68,10 @@ namespace Suora
             }
             
             return str.size() > 0 ? std::stof(str) : 0.0f;
+        }
+        static int32_t StringToInt32(const std::string& str)
+        {
+            return (int32_t)StringToFloat(str);
         }
 
         static std::string ToLower(std::string str)

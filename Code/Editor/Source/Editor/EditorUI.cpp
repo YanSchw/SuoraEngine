@@ -610,29 +610,53 @@ namespace Suora
 		overlay->needsFlag = needsFlag;
 	}
 
+	void EditorUI::DragInt32(int32_t* i, float x, float y, float width, float height, const std::function<void(std::string)>& lambda)
+	{
+		DragNumber(i, ClassMember::Type::Integer32, x, y, width, height, lambda);
+	}
 	void EditorUI::DragFloat(float* f, float x, float y, float width, float height, const std::function<void(std::string)>& lambda)
+	{
+		DragNumber(f, ClassMember::Type::Float, x, y, width, height, lambda);
+	}
+	void EditorUI::DragNumber(void* n, ClassMember::Type type, float x, float y, float width, float height, const std::function<void(std::string)>& lambda)
 	{
 		struct DragFloatTextField : public TextFieldOverlay
 		{
-			DragFloatTextField(std::string* str, const std::function<void(std::string)>& lambda, bool needsFlag = true) : TextFieldOverlay(str, 26.0f, lambda, needsFlag) 
+			ClassMember::Type m_Type;
+			DragFloatTextField(std::string* str, const std::function<void(std::string)>& lambda, ClassMember::Type type, bool needsFlag = true) : TextFieldOverlay(str, 26.0f, lambda, needsFlag)
 			{
+				m_Type = type;
 				CursorSelectionOffset = str->size();
 			}
 			void OnDispose() override
 			{
-				if (NativeInput::GetKeyDown(Key::Tab)) DraggedFloatTabulatePtr = DraggedFloatPtr;
-				*DraggedFloatPtr = Util::StringToFloat(DraggedFloatStr);// std::stof(DraggedFloatStr);
-				DraggedFloatPtr = nullptr;
+				if (NativeInput::GetKeyDown(Key::Tab)) DraggedNumberTabulatePtr = DraggedNumberPtr;
+				switch (m_Type)
+				{
+				case ClassMember::Type::Integer32: *(int32_t*)DraggedNumberPtr = Util::StringToInt32(DraggedNumberStr); break;
+				case ClassMember::Type::Float: *(float*)DraggedNumberPtr = Util::StringToFloat(DraggedNumberStr); break;
+				default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+				}
+				DraggedNumberPtr = nullptr;
 			}
 		};
-		// Tabulating
-		if (f == DraggedFloatTabulatePtr) { DraggedFloatTabulatePtr = nullptr; DraggedFloatTabulateNext = true; return; }
-		if (DraggedFloatTabulateNext)
+
+		std::string label;
+		switch (type)
 		{
-			DraggedFloatTabulateNext = false;
-			DraggedFloatPtr = f;
-			DraggedFloatStr = Util::FloatToString(*DraggedFloatPtr);
-			DragFloatTextField* overlay = CreateOverlay<DragFloatTextField>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, &DraggedFloatStr, lambda, false);
+		case ClassMember::Type::Integer32: label = Util::Int32ToString(*(int32_t*)n); break;
+		case ClassMember::Type::Float: label = Util::FloatToString(*(float*)n); break;
+		default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+		}
+
+		// Tabulating
+		if (n == DraggedNumberTabulatePtr) { DraggedNumberTabulatePtr = nullptr; DraggedNumberTabulateNext = true; return; }
+		if (DraggedNumberTabulateNext)
+		{
+			DraggedNumberTabulateNext = false;
+			DraggedNumberPtr = n;
+			DraggedNumberStr = label;
+			DragFloatTextField* overlay = CreateOverlay<DragFloatTextField>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, &DraggedNumberStr, lambda, type, false);
 			return;
 		}
 
@@ -640,35 +664,52 @@ namespace Suora
 		Params.TextOrientation = Vec2(-1, 0);
 		Params.TextOffsetLeft = 5.0f;
 		Params.HoverCursor = Cursor::HorizontalResize;
-		if (Button(Util::FloatToString(*f), x, y, width, height, Params) && CurrentWindow->m_InputEvent == EditorInputEvent::None)
+		if (Button(label, x, y, width, height, Params) && CurrentWindow->m_InputEvent == EditorInputEvent::None)
 		{
 			CurrentWindow->m_InputEvent = EditorInputEvent::EditorUI_DragFloat;
-			DraggedFloatPtr = f;
-			DraggedFloatBeginValue = *f;
+			DraggedNumberPtr = n;
+			switch (type)
+			{
+			case ClassMember::Type::Integer32: DraggedInt32BeginValue = *(int32_t*)n; break;
+			case ClassMember::Type::Float: DraggedFloatBeginValue = *(float*)n; break;
+			default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+			}
 			CurrentWindow->GetWindow()->SetCursorLocked(true);
 		}
-		else if (f == DraggedFloatPtr && CurrentWindow->m_InputEvent == EditorInputEvent::EditorUI_DragFloat && !NativeInput::GetMouseButton(Mouse::ButtonLeft)) // f == DraggedFloatPtr might lead to softlocks, if DragFloat() is not called on the float* 
+		else if (n == DraggedNumberPtr && CurrentWindow->m_InputEvent == EditorInputEvent::EditorUI_DragFloat && !NativeInput::GetMouseButton(Mouse::ButtonLeft)) // f == DraggedNumberPtr might lead to softlocks, if DragFloat() is not called on the float* 
 		{
 			CurrentWindow->m_InputEvent = EditorInputEvent::None;
 			CurrentWindow->GetWindow()->SetCursorLocked(false);
-			if (*DraggedFloatPtr == DraggedFloatBeginValue)
+
+			bool isValueTheSameAsbefore = false;
+			switch (type)
 			{
-				DraggedFloatStr = Util::FloatToString(*DraggedFloatPtr);
-				DragFloatTextField* overlay = CreateOverlay<DragFloatTextField>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, &DraggedFloatStr, lambda, false);
+			case ClassMember::Type::Integer32: isValueTheSameAsbefore = *(int32_t*)DraggedNumberPtr == DraggedInt32BeginValue; break;
+			case ClassMember::Type::Float: isValueTheSameAsbefore = *(float*)DraggedNumberPtr == DraggedFloatBeginValue; break;
+			default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+			}
+			if (isValueTheSameAsbefore)
+			{
+				DraggedNumberStr = label;
+				DragFloatTextField* overlay = CreateOverlay<DragFloatTextField>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, &DraggedNumberStr, lambda, type, false);
 			}
 			else
 			{
-				DraggedFloatPtr = nullptr;
+				DraggedNumberPtr = nullptr;
 			}
 		}
 
-		if (CurrentWindow->m_InputEvent == EditorInputEvent::EditorUI_DragFloat && f == DraggedFloatPtr)
-			*f += NativeInput::GetMouseDelta().x / 50.0f;
+		if (CurrentWindow->m_InputEvent == EditorInputEvent::EditorUI_DragFloat && n == DraggedNumberPtr)
+		{
+			switch (type)
+			{
+			case ClassMember::Type::Integer32: *(int32_t*)n += NativeInput::GetMouseDelta().x / 4; break;
+			case ClassMember::Type::Float: *(float*)n += NativeInput::GetMouseDelta().x / 50.0f; break;
+			default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+			}
+			
+		}
 
-		/*EditorUI::DrawRect(x, y, width, height, 4, Hovering ? Color(0.5f, 0.5f, 0.5f, 1.0f) : Color(0.3f, 0.3f, 0.3f, 1.0f));
-		EditorUI::DrawRect(x + 1, y + 1, width - 2, height - 2, 4, EditorPreferences::Get()->UiInputColor);*/
-
-		//EditorUI::Text(Util::FloatToString(*f), Font::Instance, x + 10, y, width * 0.75f, height, 28, Vec2(-1, 0), Color(1));
 		EditorUI::DrawTexturedRect(DragFloatTexture->GetTexture(), x + width - height, y + height * 0.05f, height * 0.9f, height * 0.9f, 0, Color(1.0f, 1.0f, 1.0f, 0.5f));
 	}
 

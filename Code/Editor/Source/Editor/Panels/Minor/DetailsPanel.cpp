@@ -104,6 +104,21 @@ namespace Suora
 		return reset;
 	}
 
+	DetailsPanel::Result DetailsPanel::DrawInt32(int32_t* i, const std::string& label, float& y, bool valueChanged)
+	{
+		y -= 34.0f;
+		DrawLabel(label, y, 35.0f);
+		const float dragIntWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 150.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 150.0f;
+		int32_t before = *i;
+		EditorUI::DragInt32(i, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, dragIntWidth, 25.0f);
+
+		if (valueChanged && DrawResetButton(y, 35.0f))
+		{
+			return Result::ValueReset;
+		}
+
+		return (before == *i) ? Result::None : Result::ValueChange;
+	}
 	DetailsPanel::Result DetailsPanel::DrawFloat(float* f, const std::string& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;

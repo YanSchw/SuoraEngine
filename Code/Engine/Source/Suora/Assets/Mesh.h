@@ -86,6 +86,7 @@ namespace Suora
 		int m_SubmeshIndex = -1;
 
 
+		friend class DetailsPanel;
 		friend class Decima;
 	};
 }
