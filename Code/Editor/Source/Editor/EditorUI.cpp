@@ -236,20 +236,20 @@ namespace Suora
 			GlassBuffer = Framebuffer::Create(specs);
 		}
 
-		s_ClassIcons[Node::StaticClass()]					= AssetManager::GetAsset<Texture2D>(SuoraID("ad168979-55cd-408e-afd2-a24cabf26922"));
-		s_ClassIcons[MeshNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("b14b065c-a2c0-4dc9-9272-ab0415ada141"));
-		s_ClassIcons[DecalNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("9d81a066-2336-42f5-bf35-7bb1c4c65d66"));
-		s_ClassIcons[PointLightNode::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("f789d2bf-dcda-4e30-b2d9-3db979b7c6da"));
-		s_ClassIcons[DirectionalLightNode::StaticClass()]	= AssetManager::GetAsset<Texture2D>(SuoraID("64738d74-08a9-4383-8659-620808d5269a"));
-		s_ClassIcons[CameraNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("8952ef88-cbd0-41ab-9d3c-d4c4b39a30f9"));
-		s_ClassIcons[BoxShapeNode::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("269931d5-7e60-4934-a89a-26b7993ae0f3"));
-		s_ClassIcons[SphereShapeNode::StaticClass()]		= AssetManager::GetAsset<Texture2D>(SuoraID("7e43f48b-3dc8-4eab-b91a-b4e2e7999190"));
-		s_ClassIcons[CapsuleShapeNode::StaticClass()]		= AssetManager::GetAsset<Texture2D>(SuoraID("b7221496-4fc6-4e08-9f23-655d5edfe820"));
-		s_ClassIcons[CharacterNode::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("0660326f-a8a2-4314-bc96-9b61bdbddae3"));
-		s_ClassIcons[PostProcessEffect::StaticClass()]		= AssetManager::GetAsset<Texture2D>(SuoraID("9bdeac52-f671-4e0a-9167-aeaa30c47711"));
-		s_ClassIcons[LevelNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("3578494c-3c74-4aa5-8d34-4d28959a21f5"));
-		s_ClassIcons[Component::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("3e254a4e-cc83-4254-a462-73739fce6d61"));
-		s_ClassIcons[FolderNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
+		s_ClassIcons[Node::StaticClass()]                   = AssetManager::GetAsset<Texture2D>(SuoraID("ad168979-55cd-408e-afd2-a24cabf26922"));
+		s_ClassIcons[MeshNode::StaticClass()]               = AssetManager::GetAsset<Texture2D>(SuoraID("b14b065c-a2c0-4dc9-9272-ab0415ada141"));
+		s_ClassIcons[DecalNode::StaticClass()]              = AssetManager::GetAsset<Texture2D>(SuoraID("9d81a066-2336-42f5-bf35-7bb1c4c65d66"));
+		s_ClassIcons[PointLightNode::StaticClass()]         = AssetManager::GetAsset<Texture2D>(SuoraID("f789d2bf-dcda-4e30-b2d9-3db979b7c6da"));
+		s_ClassIcons[DirectionalLightNode::StaticClass()]   = AssetManager::GetAsset<Texture2D>(SuoraID("64738d74-08a9-4383-8659-620808d5269a"));
+		s_ClassIcons[CameraNode::StaticClass()]             = AssetManager::GetAsset<Texture2D>(SuoraID("8952ef88-cbd0-41ab-9d3c-d4c4b39a30f9"));
+		s_ClassIcons[BoxShapeNode::StaticClass()]           = AssetManager::GetAsset<Texture2D>(SuoraID("269931d5-7e60-4934-a89a-26b7993ae0f3"));
+		s_ClassIcons[SphereShapeNode::StaticClass()]        = AssetManager::GetAsset<Texture2D>(SuoraID("7e43f48b-3dc8-4eab-b91a-b4e2e7999190"));
+		s_ClassIcons[CapsuleShapeNode::StaticClass()]       = AssetManager::GetAsset<Texture2D>(SuoraID("b7221496-4fc6-4e08-9f23-655d5edfe820"));
+		s_ClassIcons[CharacterNode::StaticClass()]          = AssetManager::GetAsset<Texture2D>(SuoraID("0660326f-a8a2-4314-bc96-9b61bdbddae3"));
+		s_ClassIcons[PostProcessEffect::StaticClass()]      = AssetManager::GetAsset<Texture2D>(SuoraID("0001ed8d-ef3a-4375-be4b-d03cfc4febfd"));
+		s_ClassIcons[LevelNode::StaticClass()]              = AssetManager::GetAsset<Texture2D>(SuoraID("3578494c-3c74-4aa5-8d34-4d28959a21f5"));
+		s_ClassIcons[Component::StaticClass()]              = AssetManager::GetAsset<Texture2D>(SuoraID("3e254a4e-cc83-4254-a462-73739fce6d61"));
+		s_ClassIcons[FolderNode::StaticClass()]             = AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
 		s_ClassIcons[FolderNode3D::StaticClass()]           = AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
 		s_ClassIcons[UIImage::StaticClass()]                = AssetManager::GetAsset<Texture2D>(SuoraID("26ed62e2-e39b-4028-aca2-7b116c74541f"));
 	}
