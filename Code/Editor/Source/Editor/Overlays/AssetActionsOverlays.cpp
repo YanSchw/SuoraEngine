@@ -1,4 +1,8 @@
 #include "AssetActionsOverlays.h"
+#include "Suora/Assets/ShaderGraph.h"
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 
 namespace Suora
 {
@@ -227,20 +231,108 @@ namespace Suora
 	void ImportMeshOverlay::Render(float deltaTime)
 	{
 		CreateAssetOverlay::Render(deltaTime);
+
+		EditorUI::Checkbox(&m_CreateMaterials, x + 15.0f, y + 15.0f, 25.0f, 25.0f);
+		EditorUI::Text("Create Materials", Font::Instance, x + 45.0f, y + 15.0f, 250.0f, 25.0f, 22.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
+		EditorUI::AssetDropdown((Asset**)&m_Shadergraph, ShaderGraph::StaticClass(), x + 15.0f, y + 50.0f, 250.0f, 35.0f);
 	}
 	std::string ImportMeshOverlay::GetAssetExtension()
 	{
 		return ".mesh";
 	}
+
 	void ImportMeshOverlay::CreateAsset()
 	{
 		Mesh* asset = AssetManager::CreateAsset(Mesh::StaticClass(), s_AssetName, m_Directory)->As<Mesh>();
 		asset->SetSourceAssetName(m_SourceFile.filename().string());
+		
+		if (m_CreateMaterials)
+		{
+			Assimp::Importer importer;
+			const aiScene* scene = importer.ReadFile(m_SourceFile.string(), 0);
+
+			std::unordered_map<aiMaterial*, Material*> materials;
+			for (int32_t i = 0; i < scene->mNumMeshes; i++)
+			{
+				aiMaterial* mat = scene->mMaterials[scene->mMeshes[i]->mMaterialIndex];
+				aiReturn ret;
+
+				Material* material = nullptr;
+				if (materials.find(mat) == materials.end())
+				{
+					material = AssetManager::CreateAsset(Material::StaticClass(), s_AssetName + "_" + std::to_string(i), m_Directory)->As<Material>();
+				}
+				else
+				{
+					material = materials.at(mat);
+				}
+				asset->m_Materials.Materials.Add(material);
+				material->SetShaderGraph(m_Shadergraph);
+
+				for (auto& It : material->m_UniformSlots)
+				{
+					if (It.m_Type == ShaderGraphDataType::Texture2D)
+					{
+						std::string label = Util::ToLower(It.m_Label);
+						if (label.find("base") != std::string::npos || label.find("albedo") != std::string::npos || label.find("diffuse") != std::string::npos)
+						{
+							aiString textureBaseColor;
+							ret = mat->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), textureBaseColor);
+							if (ret == AI_SUCCESS)
+							{
+								Array<Texture2D*> allTextures = AssetManager::GetAssets<Texture2D>();
+								for (int j = 0; j < allTextures.Size(); j++)
+								{
+									if (File::IsPathSubpathOf(m_Directory, allTextures[j]->m_Path))
+									{
+										if (allTextures[j]->GetSourceAssetName() == std::string(textureBaseColor.C_Str()))
+										{
+											It.m_Texture2D = allTextures[j];
+											break;
+										}
+									}
+								}
+							}
+						}
+						if (label.find("normal") != std::string::npos)
+						{
+							aiString textureNormal;
+							ret = mat->Get(AI_MATKEY_TEXTURE(aiTextureType_NORMALS, 0), textureNormal);
+							if (ret == AI_SUCCESS)
+							{
+								Array<Texture2D*> allTextures = AssetManager::GetAssets<Texture2D>();
+								for (int j = 0; j < allTextures.Size(); j++)
+								{
+									if (File::IsPathSubpathOf(m_Directory, allTextures[j]->m_Path))
+									{
+										if (allTextures[j]->GetSourceAssetName() == std::string(textureNormal.C_Str()))
+										{
+											It.m_Texture2D = allTextures[j];
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				Yaml::Node root;
+				material->Serialize(root);
+				std::string out;
+				Yaml::Serialize(root, out);
+				Platform::WriteToFile(material->m_Path.string(), out);
+
+				materials[mat] = material;
+			}
+		}
+		
 		Yaml::Node root;
 		asset->Serialize(root);
 		std::string out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(asset->m_Path.string(), out);
+
 	}
 
 }

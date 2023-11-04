@@ -135,6 +135,9 @@ namespace Suora
 
 		virtual void CreateAsset() override;
 
+		class ShaderGraph* m_Shadergraph = nullptr;
+		bool m_CreateMaterials = false;
+
 	private:
 		std::filesystem::path m_SourceFile;
 	};

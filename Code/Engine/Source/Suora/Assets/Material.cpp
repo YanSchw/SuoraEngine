@@ -100,6 +100,7 @@ namespace Suora
 	void Material::SetShaderGraph(ShaderGraph* shaderGraph)
 	{
 		m_ShaderGraph = shaderGraph;
+		m_UniformSlots = m_ShaderGraph->m_UniformSlots;
 	}
 	ShaderGraph* Material::GetShaderGraph() const
 	{

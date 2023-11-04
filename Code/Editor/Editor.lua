@@ -23,7 +23,8 @@ project "Editor"
 		"%{ENGINE_PATH}/Code/Engine/Source",
 		"%{ENGINE_PATH}/Code/Dependencies",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.assimp}"
 	}
 
 	links
