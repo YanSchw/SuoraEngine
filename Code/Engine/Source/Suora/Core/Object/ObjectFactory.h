@@ -34,9 +34,13 @@ namespace Suora
         inline static std::unordered_map<NativeClassID, Object * (*)(void)> s_ObjectAllocators;
 
         template<class T>
-        static Object* InternalAllocate() 
+        static Object* InternalAllocate()
         {
-            return (Object*) new T();
+            if constexpr (std::is_default_constructible<T>::value)
+            {
+                return (Object*) new T();
+            }
+            return nullptr;
         }
 
         friend struct Class;
