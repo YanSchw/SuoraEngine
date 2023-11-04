@@ -663,7 +663,7 @@ namespace Suora
 		}
 
 		if (CurrentWindow->m_InputEvent == EditorInputEvent::EditorUI_DragFloat && f == DraggedFloatPtr)
-			*f += NativeInput::GetMouseDelta().x / 10;
+			*f += NativeInput::GetMouseDelta().x / 50.0f;
 
 		/*EditorUI::DrawRect(x, y, width, height, 4, Hovering ? Color(0.5f, 0.5f, 0.5f, 1.0f) : Color(0.3f, 0.3f, 0.3f, 1.0f));
 		EditorUI::DrawRect(x + 1, y + 1, width - 2, height - 2, 4, EditorPreferences::Get()->UiInputColor);*/
