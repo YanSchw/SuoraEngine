@@ -9,6 +9,12 @@
 #include "Material.h"
 #include "Mesh.generated.h"
 
+struct aiScene;
+namespace Assimp
+{
+	class Importer;
+}
+
 namespace Suora
 {
 	class Material;
@@ -53,7 +59,7 @@ namespace Suora
 		void GroupClusters(MeshBuffer& buffer, std::vector<Ref<Cluster>> clusters);
 		void Clusterfication(MeshBuffer& buffer);
 
-
+		Vec3 m_ImportScale = Vec3(1.0f);
 		MaterialSlots m_Materials;
 
 		Array<Ref<Mesh>> m_Submeshes;
@@ -84,6 +90,8 @@ namespace Suora
 		bool m_IsMasterMesh = false;
 		Mesh* m_ParentMesh = nullptr;
 		int m_SubmeshIndex = -1;
+		Ref<Assimp::Importer> m_SubmeshImporter;
+		const aiScene* m_SubmeshScene = nullptr;
 
 
 		friend class DetailsPanel;

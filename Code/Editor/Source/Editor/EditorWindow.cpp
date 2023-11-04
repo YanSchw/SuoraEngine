@@ -472,7 +472,22 @@ namespace Suora
 		if (!std::filesystem::is_directory(toBeCopied))
 		{
 			Platform::CreateDirectory(directory);
-			std::filesystem::copy(toBeCopied, std::filesystem::path(directory).append(toBeCopied.filename().string()));
+			std::filesystem::path dstPath = std::filesystem::path(directory).append(toBeCopied.filename().string());
+			std::filesystem::copy(toBeCopied, dstPath);
+			
+			if (EditorPreferences::Get()->m_AutoImportTextures)
+			{
+				if (dstPath.extension().string() == ".jpg" || dstPath.extension().string() == ".png")
+				{
+					Texture2D* asset = AssetManager::CreateAsset(Texture2D::StaticClass(), dstPath.stem().string(), directory.string())->As<Texture2D>();
+					asset->SetSourceAssetName(dstPath.filename().string());
+					Yaml::Node root;
+					asset->Serialize(root);
+					std::string out;
+					Yaml::Serialize(root, out);
+					Platform::WriteToFile(asset->m_Path.string(), out);
+				}
+			}
 		}
 		else
 		{

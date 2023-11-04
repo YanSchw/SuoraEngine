@@ -39,6 +39,7 @@ namespace Suora
 		Color UiInputColor = Color(0.05882f, 0.05882f, 0.05882f, 1.0f);
 		Color UiTextColor = Color(0.75f, 0.75f, 0.75f, 1.0f);
 
+		bool m_AutoImportTextures = true;
 	};
 
 }
