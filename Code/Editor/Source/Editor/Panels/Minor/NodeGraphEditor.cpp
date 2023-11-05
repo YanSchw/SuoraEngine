@@ -255,8 +255,8 @@ namespace Suora
 		RenderCommand::Clear();
 		m_Framebuffer->Bind();
 
-		m_Zoom = Math::Lerp(m_Zoom, m_ZoomTarget, deltaTime * 25.0f);
-		m_CameraPos = Math::Lerp(m_CameraPos, m_CameraPosTarget, deltaTime * 50.0f);
+		m_Zoom = Math::LerpTowards(m_Zoom, m_ZoomTarget, deltaTime * 25.0f);
+		m_CameraPos = Math::LerpTowards(m_CameraPos, m_CameraPosTarget, deltaTime * 50.0f);
 		m_Graph->FixNodePins();
 		m_Graph->TickAllVisualNodes();
 

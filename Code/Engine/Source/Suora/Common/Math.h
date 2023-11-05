@@ -4,7 +4,7 @@
 #include <inttypes.h>
 #include <random>
 
-namespace Math
+struct Math
 {
 	// Global Consts
 	inline static constexpr float PI = 3.1415926535f;
@@ -32,6 +32,11 @@ namespace Math
 	inline static T Lerp(const T& a, const T& b, const V v)
 	{
 		return a + ((b - a) * v);
+	}
+	template<class T, class V>
+	inline static T LerpTowards(const T& a, const T& b, const V v)
+	{
+		return Lerp<T, V>(a, b, glm::clamp<V>(v, (V)0, (V)1));
 	}
 
 	inline static float Abs(float value)
