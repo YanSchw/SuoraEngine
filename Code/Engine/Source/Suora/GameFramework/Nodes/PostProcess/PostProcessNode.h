@@ -137,4 +137,22 @@ namespace Suora
 
 	};
 
+	class SSAO : public PostProcessEffect
+	{
+		SUORA_CLASS(5477844901);
+	public:
+		MEMBER() float m_Samples = 32.0f;
+		MEMBER() float m_Radius = 3.5f;
+		MEMBER() float m_Intensity = 0.25f; // 0.45f
+		MEMBER() float m_Alpha = 1.0f;
+		MEMBER() float m_NearGaussBellFactor = 25.0f;
+		MEMBER() Color m_AOColor = Color(0.0f, 0.0f, 0.0f, 1.0f);
+
+		virtual void Init() override;
+		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, Framebuffer& InGBuffer, CameraNode& Camera) override;
+	private:
+		Ref<Shader> m_Shader;
+
+	};
+
 }

@@ -150,4 +150,26 @@ namespace Suora
 		RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y));
 	}
 
+	void SSAO::Init()
+	{
+		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/SSAO.glsl");
+	}
+	void SSAO::Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, Framebuffer& InGBuffer, CameraNode& Camera)
+	{
+		m_Shader->Bind();
+		m_Shader->SetInt("u_Samples", m_Samples);
+		m_Shader->SetFloat("u_Radius", m_Radius);
+		m_Shader->SetFloat("u_Intensity", m_Intensity);
+		m_Shader->SetFloat("u_Alpha", m_Alpha);
+		m_Shader->SetFloat("u_NearGaussBellFactor", m_NearGaussBellFactor);
+		m_Shader->SetFloat("u_Near", Camera.GetPerspectiveNearClip());
+		m_Shader->SetFloat("u_Far", Camera.GetPerspectiveFarClip());
+		m_Shader->SetFloat2("u_Resolution", DstBuffer->GetSize());
+		m_Shader->SetFloat4("u_AOColor", m_AOColor);
+		m_Shader->SetInt("u_Depth", 6);
+		InGBuffer.BindDepthAttachmentToSlot(6);
+
+		RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y));
+	}
+
 }
