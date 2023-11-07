@@ -76,7 +76,7 @@ namespace Suora
 
 		if (!IsLoaded())
 		{
-			if (!m_AsyncTextureBuffer.get() && AssetManager::s_AssetStreamPool.Size() < ASSET_STREAM_COUNT_LIMIT)
+			if (!m_AsyncTextureBuffer.get() && AssetManager::s_AssetStreamPool.Size() < AssetManager::GetAssetStreamCountLimit())
 			{
 				AssetManager::s_AssetStreamPool.Add(this);
 				

@@ -1,15 +1,12 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <thread>
 #include <filesystem>
 #include "Asset.h"
 #include "Suora/Core/EngineSubSystem.h"
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Common/SuoraID.h"
 #include "Suora/Common/Array.h"
-
-#define ASSET_STREAM_COUNT_LIMIT 6
 
 namespace Suora
 {
@@ -95,29 +92,16 @@ namespace Suora
 			}
 			return array;
 		}
-		static Array<Asset*> GetAssetsByClass(Class type)
-		{
-			Array<Asset*> array;
-			for (Asset* asset : s_Assets)
-			{
-				if (Asset* a = Cast(asset, type)) array.Add(a);
-			}
-			return array;
-		}
-		static Asset* GetAssetByPath(const std::filesystem::path& path)
-		{
-			for (Asset* asset : s_Assets)
-			{
-				if (asset->m_Path == path) return asset;
-			}
-			return nullptr;
-		}
+		static Array<Asset*> GetAssetsByClass(Class type);
+		static Asset* GetAssetByPath(const std::filesystem::path& path);
 		static Asset* CreateAsset(const Class& assetClass, const std::string& name, const std::string& dir);
 		template<class T>
 		static T* CreateAsset(const std::string& name, const std::string& dir)
 		{
 			return CreateAsset(T::StaticClass(), name, dir)->As<T>();
 		}
+
+		static uint32_t GetAssetStreamCountLimit();
 
 		static std::string GetEngineAssetPath()
 		{

@@ -2,6 +2,7 @@
 #include "AssetManager.h"
 #include <unordered_map>
 #include <future>
+#include <thread>
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/Assets/SuoraProject.h"
 #include "Suora/Core/Engine.h"
@@ -255,6 +256,25 @@ namespace Suora
 		}
 	}
 
+	Array<Asset*> AssetManager::GetAssetsByClass(Class type)
+	{
+		Array<Asset*> array;
+		for (Asset* asset : s_Assets)
+		{
+			if (Asset* a = Cast(asset, type)) array.Add(a);
+		}
+		return array;
+	}
+
+	Asset* AssetManager::GetAssetByPath(const std::filesystem::path& path)
+	{
+		for (Asset* asset : s_Assets)
+		{
+			if (asset->m_Path == path) return asset;
+		}
+		return nullptr;
+	}
+
 	Asset* AssetManager::CreateAsset(const Class& assetClass, const std::string& name, const std::string& dir)
 	{
 		Asset* asset = New(assetClass)->As<Asset>();
@@ -265,6 +285,11 @@ namespace Suora
 		asset->m_UUID = SuoraID::Generate();
 
 		return asset;
+	}
+
+	uint32_t AssetManager::GetAssetStreamCountLimit()
+	{
+		return 2;
 	}
 
 }

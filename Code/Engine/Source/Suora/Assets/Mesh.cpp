@@ -422,7 +422,7 @@ namespace Suora
 
 		if (!m_VertexArray)
 		{
-			if (!m_AsyncMeshBuffer.get() && AssetManager::s_AssetStreamPool.Size() < ASSET_STREAM_COUNT_LIMIT)
+			if (!m_AsyncMeshBuffer.get() && AssetManager::s_AssetStreamPool.Size() < AssetManager::GetAssetStreamCountLimit())
 			{
 				AssetManager::s_AssetStreamPool.Add(this);
 				std::string filePath = GetSourceAssetPath().string();
