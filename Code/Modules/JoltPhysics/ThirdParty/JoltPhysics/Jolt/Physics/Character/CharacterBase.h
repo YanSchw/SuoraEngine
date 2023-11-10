@@ -81,7 +81,7 @@ public:
 	};
 
 	/// Debug function to convert enum values to string
-	static const char *					sToString(EGroundState inState);
+	static const char *					sToJoltString(EGroundState inState);
 
 	///@name Properties of the ground this character is standing on
 

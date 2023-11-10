@@ -103,7 +103,7 @@ private:
 		int						mArrayDepth = 0;
 		EOSDataType				mSourceType = EOSDataType::Invalid;
 		EOSDataType				mDestinationType = EOSDataType::Invalid;
-		String					mClassName;
+		JoltString					mClassName;
 		int						mIndex = -1;
 	};
 
@@ -134,7 +134,7 @@ private:
 	};
 
 	using IdentifierMap = UnorderedMap<Identifier, ObjectInfo>;
-	using ClassDescriptionMap = UnorderedMap<String, ClassDescription>;
+	using ClassDescriptionMap = UnorderedMap<JoltString, ClassDescription>;
 
 	ClassDescriptionMap			mClassDescriptionMap;
 	IdentifierMap				mIdentifierMap;											///< Links identifier to an object pointer

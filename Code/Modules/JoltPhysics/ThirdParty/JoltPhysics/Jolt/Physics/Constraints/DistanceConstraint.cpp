@@ -215,7 +215,7 @@ void DistanceConstraint::DrawConstraint(DebugRenderer *inRenderer) const
 	inRenderer->DrawMarker(mWorldSpacePosition2, Color::sWhite, 0.1f);
 
 	// Draw current length
-	inRenderer->DrawText3D(0.5_r * (mWorldSpacePosition1 + mWorldSpacePosition2), StringFormat("%.2f", (double)len));
+	inRenderer->DrawText3D(0.5_r * (mWorldSpacePosition1 + mWorldSpacePosition2), JoltStringFormat("%.2f", (double)len));
 }
 #endif // JPH_DEBUG_RENDERER
 

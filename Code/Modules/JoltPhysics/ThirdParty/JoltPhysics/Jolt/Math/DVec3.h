@@ -254,7 +254,7 @@ public:
 	/// Get vector that contains the sign of each element (returns 1 if positive, -1 if negative)
 	JPH_INLINE DVec3			GetSign() const;
 
-	/// To String
+	/// To JoltString
 	friend ostream &			operator << (ostream &inStream, DVec3Arg inV)
 	{
 		inStream << inV.mF64[0] << ", " << inV.mF64[1] << ", " << inV.mF64[2];

@@ -429,7 +429,7 @@ void TrackedVehicleController::Draw(DebugRenderer *inRenderer) const
 	mEngine.DrawRPM(inRenderer, rpm_meter_pos, rpm_meter_fwd, rpm_meter_up, mRPMMeterSize, mTransmission.mShiftDownRPM, mTransmission.mShiftUpRPM);
 
 	// Draw current vehicle state
-	String status = StringFormat("Forward: %.1f, LRatio: %.1f, RRatio: %.1f, Brake: %.1f\n"
+	JoltString status = JoltStringFormat("Forward: %.1f, LRatio: %.1f, RRatio: %.1f, Brake: %.1f\n"
 								 "Gear: %d, Clutch: %.1f, EngineRPM: %.0f, V: %.1f km/h",
 								 (double)mForwardInput, (double)mLeftRatio, (double)mRightRatio, (double)mBrakeInput,
 								 mTransmission.GetCurrentGear(), (double)mTransmission.GetClutchFriction(), (double)mEngine.GetCurrentRPM(), (double)body->GetLinearVelocity().Length() * 3.6);
@@ -443,7 +443,7 @@ void TrackedVehicleController::Draw(DebugRenderer *inRenderer) const
 		// Calculate where the suspension attaches to the body in world space
 		RVec3 ws_position = body->GetCenterOfMassPosition() + body->GetRotation() * (settings->mPosition - body->GetShape()->GetCenterOfMass());
 
-		DebugRenderer::sInstance->DrawText3D(ws_position, StringFormat("W: %.1f", (double)t.mAngularVelocity), Color::sWhite, constraint_size);
+		DebugRenderer::sInstance->DrawText3D(ws_position, JoltStringFormat("W: %.1f", (double)t.mAngularVelocity), Color::sWhite, constraint_size);
 	}
 
 	RMat44 body_transform = body->GetWorldTransform();
@@ -486,7 +486,7 @@ void TrackedVehicleController::Draw(DebugRenderer *inRenderer) const
 			inRenderer->DrawLine(w->GetContactPosition(), w->GetContactPosition() + w->GetContactLongitudinal(), Color::sRed);
 			inRenderer->DrawLine(w->GetContactPosition(), w->GetContactPosition() + w->GetContactLateral(), Color::sBlue);
 
-			DebugRenderer::sInstance->DrawText3D(w->GetContactPosition(), StringFormat("S: %.2f", (double)w->GetSuspensionLength()), Color::sWhite, constraint_size);
+			DebugRenderer::sInstance->DrawText3D(w->GetContactPosition(), JoltStringFormat("S: %.2f", (double)w->GetSuspensionLength()), Color::sWhite, constraint_size);
 		}
 	}
 }

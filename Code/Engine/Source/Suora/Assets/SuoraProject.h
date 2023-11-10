@@ -18,15 +18,15 @@ namespace Suora
 	public:
 		ProjectSettings();
 
-		void PreInitializeAsset(const std::string& str) override;
-		void InitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(const String& str) override;
+		void InitializeAsset(const String& str) override;
 		void Serialize(Yaml::Node& root) override;
 
-		std::string GetEnginePath() const;
-		void SetEnginePath(const std::string& path);
+		String GetEnginePath() const;
+		void SetEnginePath(const String& path);
 
 		static ProjectSettings* Get();
-		static std::string GetProjectName();
+		static String GetProjectName();
 
 		float m_TargetFramerate = 60.0f;
 		bool m_EnableDeferredRendering = true;
@@ -38,7 +38,7 @@ namespace Suora
 		Asset* m_EditorStartupAsset = nullptr;
 		bool m_IsNativeProject = true;
 	private:
-		std::string m_EnginePath = std::string();
+		String m_EnginePath = String();
 
 		inline static bool s_SeekingProjectSettings = false;
 		friend class AssetManager;

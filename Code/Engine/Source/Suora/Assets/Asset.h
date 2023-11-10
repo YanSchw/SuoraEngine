@@ -32,14 +32,14 @@ namespace Suora
 	{
 		SUORA_CLASS(43786347);
 	public:
-		std::string m_Name = "Missing Asset";
+		String m_Name = "Missing Asset";
 		SuoraID m_UUID;
 		FilePath m_Path;
 		std::filesystem::file_time_type m_LastWriteTime;
 		AssetFlags m_Flags = AssetFlags::None;
 
-		virtual void PreInitializeAsset(const std::string& str);
-		virtual void InitializeAsset(const std::string& str);
+		virtual void PreInitializeAsset(const String& str);
+		virtual void InitializeAsset(const String& str);
 		virtual void Serialize(Yaml::Node& root);
 
 		virtual bool IsLoaded() const
@@ -50,7 +50,7 @@ namespace Suora
 		virtual bool IsAssetReloadRequired() const;
 		virtual void ReloadAsset();
 
-		std::string GetAssetName() const
+		String GetAssetName() const
 		{
 			return m_Path.stem().string();
 		}
@@ -80,12 +80,12 @@ namespace Suora
 			return IsFlagSet(AssetFlags::Missing);
 		}
 
-		virtual std::vector<std::string> GetAssetExtensions() { return {}; }
-		static Class GetAssetClassByExtension(const std::string& ext);
-		static std::string GetAssetExtensionByClass(NativeClassID id);
+		virtual std::vector<String> GetAssetExtensions() { return {}; }
+		static Class GetAssetClassByExtension(const String& ext);
+		static String GetAssetExtensionByClass(NativeClassID id);
 	};
 
 }
 
 #define ASSET_EXTENSION(...) \
-virtual std::vector<std::string> GetAssetExtensions() override { return {__VA_ARGS__}; }
+virtual std::vector<String> GetAssetExtensions() override { return {__VA_ARGS__}; }

@@ -7,7 +7,7 @@
 namespace Suora 
 {
 
-	Ref<Shader> Shader::Create(const std::string& filepath)
+	Ref<Shader> Shader::Create(const String& filepath)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -19,7 +19,7 @@ namespace Suora
 		return nullptr;
 	}
 
-	Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+	Ref<Shader> Shader::Create(const String& name, const String& vertexSrc, const String& fragmentSrc)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -30,7 +30,7 @@ namespace Suora
 		SUORA_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
-	Shader* Shader::CreatePtr(const std::string& filepath)
+	Shader* Shader::CreatePtr(const String& filepath)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -42,7 +42,7 @@ namespace Suora
 		return nullptr;
 	}
 
-	Shader* Shader::CreatePtr(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+	Shader* Shader::CreatePtr(const String& name, const String& vertexSrc, const String& fragmentSrc)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -65,25 +65,25 @@ namespace Suora
 		return nullptr;
 	}
 
-	std::unordered_map<std::string, std::string> Shader::PreProcess(const std::string& source)
+	std::unordered_map<String, String> Shader::PreProcess(const String& source)
 	{
-		std::unordered_map<std::string, std::string> shaderSources;
+		std::unordered_map<String, String> shaderSources;
 
 		const char* typeToken = "#type";
 		size_t typeTokenLength = strlen(typeToken);
 		size_t pos = source.find(typeToken, 0); //Start of shader type declaration line
-		while (pos != std::string::npos)
+		while (pos != String::npos)
 		{
 			size_t eol = source.find_first_of("\r\n", pos); //End of shader type declaration line
-			SUORA_ASSERT(eol != std::string::npos, "Syntax error");
+			SUORA_ASSERT(eol != String::npos, "Syntax error");
 			size_t begin = pos + typeTokenLength + 1; //Start of shader type name (after "#type " keyword)
-			std::string type = source.substr(begin, eol - begin);
+			String type = source.substr(begin, eol - begin);
 
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
-			SUORA_ASSERT(nextLinePos != std::string::npos, "Syntax error");
+			SUORA_ASSERT(nextLinePos != String::npos, "Syntax error");
 			pos = source.find(typeToken, nextLinePos); //Start of next shader type declaration line
 
-			shaderSources[type] = (pos == std::string::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
+			shaderSources[type] = (pos == String::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
 		}
 
 		return shaderSources;

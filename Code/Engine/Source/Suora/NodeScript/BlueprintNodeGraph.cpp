@@ -13,7 +13,7 @@
 #define NODE_ID_DELEGATE 17
 #define NODE_ID_INPUT_EVENT 18
 
-static std::string ExtractFunctionName(std::string name)
+static String ExtractFunctionName(String name)
 {
 	int i = 2;
 	while (i > 0)
@@ -271,7 +271,7 @@ namespace Suora
 				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::PushConstant, { x }));
 				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::PushConstant, { y }));
 				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::PushConstant, { z }));
-				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::CallNativeFunction, { (int64_t)std::hash<std::string>{}("NodeScriptLibrary::MakeVector3(float, float, float)") }));
+				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::CallNativeFunction, { (int64_t)std::hash<String>{}("NodeScriptLibrary::MakeVector3(float, float, float)") }));
 			}
 			return true;
 		}
@@ -519,7 +519,7 @@ namespace Suora
 			if (It->m_Type == ClassMember::Type::Delegate)
 			{
 				Ref<VisualNode> event = CreateRef<VisualNode>();
-				if (isChild) event->m_Title = "Children/" + node->GetName() + std::string("/") + node->GetName() + std::string(" "); else event->m_Title = "Events/";
+				if (isChild) event->m_Title = "Children/" + node->GetName() + String("/") + node->GetName() + String(" "); else event->m_Title = "Events/";
 				event->m_Title += It->m_MemberName;
 
 				event->m_NodeID = NODE_ID_DELEGATE;

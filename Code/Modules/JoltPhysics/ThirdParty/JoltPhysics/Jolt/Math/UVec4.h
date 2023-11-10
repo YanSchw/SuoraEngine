@@ -199,7 +199,7 @@ public:
 	/// Shift vector components by 4 - Count floats to the left, so if Count = 1 the resulting vector is (W, 0, 0, 0), when Count = 3 the resulting vector is (Y, Z, W, 0)
 	JPH_INLINE UVec4			ShiftComponents4Minus(int inCount) const;
 
-	/// To String
+	/// To JoltString
 	friend ostream &			operator << (ostream &inStream, UVec4Arg inV)
 	{
 		inStream << inV.mU32[0] << ", " << inV.mU32[1] << ", " << inV.mU32[2] << ", " << inV.mU32[3];

@@ -77,12 +77,12 @@ namespace Suora
 				^ (std::hash<NativeClassID>()(cls.m_NativeClassID + 91282743) << 1); // 91282743 is a random number, replace with ScriptClass once implemented
 		}
 
-		std::string GetNativeClassName() const;
-		std::string GetClassName() const;
+		String GetNativeClassName() const;
+		String GetClassName() const;
 		const ClassReflector& GetClassReflector() const;
 
-		std::string ToString() const;
-		static Class FromString(const std::string& str);
+		String ToString() const;
+		static Class FromString(const String& str);
 
 		Object* GetClassDefaultObject(bool clear = false) const;
 

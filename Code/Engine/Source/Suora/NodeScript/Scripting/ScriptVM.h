@@ -14,10 +14,10 @@ namespace Suora
 
 	struct ScriptVar
 	{
-		std::string m_VarName = "Var";
+		String m_VarName = "Var";
 		ScriptDataType m_Type;
 		int64_t m_Value = 0;
-		std::string m_VarParams = "";
+		String m_VarParams = "";
 		
 		ScriptVar();
 	};
@@ -67,7 +67,7 @@ namespace Suora
 
 	struct ScriptClassInternal
 	{
-		std::string m_ClassName;
+		String m_ClassName;
 		std::vector<ScriptFunction> m_Functions;
 		std::vector<ScriptVar> m_ScriptVars = std::vector<ScriptVar>();
 

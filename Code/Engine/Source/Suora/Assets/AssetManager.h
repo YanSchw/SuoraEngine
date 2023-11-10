@@ -18,7 +18,7 @@ namespace Suora
 	{
 	private:
 		inline static Array<Asset*> s_Assets;
-		inline static std::string s_EngineAssetPath = "", s_ProjectAssetPath = "";
+		inline static String s_EngineAssetPath = "", s_ProjectAssetPath = "";
 		inline static uint32_t s_AssetHotReloadingIteratorIndex = 0;
 		inline static Array<Asset*> s_AssetStreamPool;
 
@@ -43,8 +43,8 @@ namespace Suora
 		}
 
 		static void RemoveAsset(Asset* asset);
-		static void RenameAsset(Asset* asset, const std::string& name);
-		static void LoadAsset(const std::string& path);
+		static void RenameAsset(Asset* asset, const String& name);
+		static void LoadAsset(const String& path);
 
 		template<class T>
 		static T* GetFirstAssetOfType()
@@ -71,7 +71,7 @@ namespace Suora
 			return Cast<T>(CreateMissingAsset(T::StaticClass(), id));
 		}
 		template<class T>
-		static T* GetAssetByName(const std::string& name)
+		static T* GetAssetByName(const String& name)
 		{
 			for (Asset* asset : s_Assets)
 			{
@@ -94,24 +94,24 @@ namespace Suora
 		}
 		static Array<Asset*> GetAssetsByClass(Class type);
 		static Asset* GetAssetByPath(const std::filesystem::path& path);
-		static Asset* CreateAsset(const Class& assetClass, const std::string& name, const std::string& dir);
+		static Asset* CreateAsset(const Class& assetClass, const String& name, const String& dir);
 		template<class T>
-		static T* CreateAsset(const std::string& name, const std::string& dir)
+		static T* CreateAsset(const String& name, const String& dir)
 		{
 			return CreateAsset(T::StaticClass(), name, dir)->As<T>();
 		}
 
 		static uint32_t GetAssetStreamCountLimit();
 
-		static std::string GetEngineAssetPath()
+		static String GetEngineAssetPath()
 		{
 			return s_EngineAssetPath;
 		}
-		static std::string GetProjectAssetPath()
+		static String GetProjectAssetPath()
 		{
 			return s_ProjectAssetPath;
 		}
-		static void SetProjectAssetPath(const std::string& path)
+		static void SetProjectAssetPath(const String& path)
 		{
 			s_ProjectAssetPath = path;
 		}

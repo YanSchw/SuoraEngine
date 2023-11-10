@@ -12,7 +12,7 @@ JPH_NAMESPACE_BEGIN
 ObjectStreamTextOut::ObjectStreamTextOut(ostream &inStream) :
 	ObjectStreamOut(inStream)
 {
-	WriteWord(StringFormat("TOS%2d.%02d", ObjectStream::sVersion, ObjectStream::sRevision));
+	WriteWord(JoltStringFormat("TOS%2d.%02d", ObjectStream::sVersion, ObjectStream::sRevision));
 }
 
 void ObjectStreamTextOut::WriteDataType(EOSDataType inType)
@@ -32,7 +32,7 @@ void ObjectStreamTextOut::WriteDataType(EOSDataType inType)
 	case EOSDataType::T_float:		WriteWord("float");			break;
 	case EOSDataType::T_double:		WriteWord("double");		break;
 	case EOSDataType::T_bool:		WriteWord("bool");			break;
-	case EOSDataType::T_String:		WriteWord("string");		break;
+	case EOSDataType::T_JoltString:		WriteWord("string");		break;
 	case EOSDataType::T_Float3:		WriteWord("float3");		break;
 	case EOSDataType::T_Double3:	WriteWord("double3");		break;
 	case EOSDataType::T_Vec3:		WriteWord("vec3");			break;
@@ -48,12 +48,12 @@ void ObjectStreamTextOut::WriteDataType(EOSDataType inType)
 
 void ObjectStreamTextOut::WriteName(const char *inName)
 {
-	WriteWord(String(inName) + " ");
+	WriteWord(JoltString(inName) + " ");
 }
 
 void ObjectStreamTextOut::WriteIdentifier(Identifier inIdentifier)
 {
-	WriteWord(StringFormat("%08X", inIdentifier));
+	WriteWord(JoltStringFormat("%08X", inIdentifier));
 }
 
 void ObjectStreamTextOut::WriteCount(uint32 inCount)
@@ -187,14 +187,14 @@ void ObjectStreamTextOut::WritePrimitiveData(const DMat44 &inPrimitive)
 	WritePrimitiveData(inPrimitive.GetTranslation());
 }
 
-void ObjectStreamTextOut::WritePrimitiveData(const String &inPrimitive)
+void ObjectStreamTextOut::WritePrimitiveData(const JoltString &inPrimitive)
 {
-	String temporary(inPrimitive);
-	StringReplace(temporary, "\\", "\\\\");
-	StringReplace(temporary, "\n", "\\n");
-	StringReplace(temporary, "\t", "\\t");
-	StringReplace(temporary, "\"", "\\\"");
-	WriteWord(String("\"") + temporary + String("\""));
+	JoltString temporary(inPrimitive);
+	JoltStringReplace(temporary, "\\", "\\\\");
+	JoltStringReplace(temporary, "\n", "\\n");
+	JoltStringReplace(temporary, "\t", "\\t");
+	JoltStringReplace(temporary, "\"", "\\\"");
+	WriteWord(JoltString("\"") + temporary + JoltString("\""));
 }
 
 void ObjectStreamTextOut::HintNextItem()

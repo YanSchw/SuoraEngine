@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include "Suora/Common/StringUtils.h"
 #include <inttypes.h>
 #include <glm/glm.hpp>
 
@@ -31,9 +31,9 @@ namespace Suora
 		return std::is_base_of<Object, std::remove_pointer_t<T>>::value ? ScriptDataType::ObjectPtr : ScriptDataType::None;
 	}
 
-	static ScriptDataType StringToScriptDataType(std::string str)
+	static ScriptDataType StringToScriptDataType(String str)
 	{
-		if (str.find("const") != std::string::npos && str.find("&") != std::string::npos)
+		if (str.find("const") != String::npos && str.find("&") != String::npos)
 		{
 			str.erase(str.find("const"), 5);
 			str.erase(str.find("&"), 1);
@@ -51,7 +51,7 @@ namespace Suora
 		if (str == "bool") return ScriptDataType::Bool;
 		return ScriptDataType::None;
 	}
-	static std::string ScriptDataTypeToLabel(ScriptDataType type)
+	static String ScriptDataTypeToLabel(ScriptDataType type)
 	{
 		switch (type)
 		{

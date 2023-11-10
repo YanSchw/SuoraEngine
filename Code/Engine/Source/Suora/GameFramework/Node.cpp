@@ -98,7 +98,7 @@ namespace Suora
 		return m_World;
 	}
 
-	bool Node::DoesNameExistInHierarchy(const std::string& name, Node* root, Node* exclude)
+	bool Node::DoesNameExistInHierarchy(const String& name, Node* root, Node* exclude)
 	{
 		if (!root) return false;
 		if (root->GetName() == name && root != exclude) return true;
@@ -144,7 +144,7 @@ namespace Suora
 		}
 	}
 
-	void Node::SetName(const std::string& name)
+	void Node::SetName(const String& name)
 	{
 		if (name.empty())
 		{
@@ -172,7 +172,7 @@ namespace Suora
 		}
 	}
 
-	std::string Node::GetName() const
+	String Node::GetName() const
 	{
 		return m_Name;
 	}
@@ -340,7 +340,7 @@ namespace Suora
 		return node;
 	}
 
-	Node* Node::GetChildByName(const std::string& name)
+	Node* Node::GetChildByName(const String& name)
 	{
 		if (GetName() == name) return this;
 
@@ -845,14 +845,14 @@ namespace Suora
 			return;
 		}
 
-		m_Anchor = Vec::FromString<Vec2>(root["m_Anchor"].As<std::string>());
-		m_IsWidthRelative = root["m_IsWidthRelative"].As<std::string>() == "true";
-		m_Width = std::stof(root["m_Width"].As<std::string>());
-		m_IsHeightRelative = root["m_IsHeightRelative"].As<std::string>() == "true";
-		m_Height = std::stof(root["m_Height"].As<std::string>());
-		m_Pivot = Vec::FromString<Vec2>(root["m_Pivot"].As<std::string>());
-		m_AbsolutePixelOffset = Vec::FromString<Vec3>(root["m_AbsolutePixelOffset"].As<std::string>());
-		m_EulerRotationAroundAnchor = Vec::FromString<Vec3>(root["m_EulerRotationAroundAnchor"].As<std::string>());
+		m_Anchor = Vec::FromString<Vec2>(root["m_Anchor"].As<String>());
+		m_IsWidthRelative = root["m_IsWidthRelative"].As<String>() == "true";
+		m_Width = std::stof(root["m_Width"].As<String>());
+		m_IsHeightRelative = root["m_IsHeightRelative"].As<String>() == "true";
+		m_Height = std::stof(root["m_Height"].As<String>());
+		m_Pivot = Vec::FromString<Vec2>(root["m_Pivot"].As<String>());
+		m_AbsolutePixelOffset = Vec::FromString<Vec3>(root["m_AbsolutePixelOffset"].As<String>());
+		m_EulerRotationAroundAnchor = Vec::FromString<Vec3>(root["m_EulerRotationAroundAnchor"].As<String>());
 	}
 
 	UINode* UINode::GetUITransform()

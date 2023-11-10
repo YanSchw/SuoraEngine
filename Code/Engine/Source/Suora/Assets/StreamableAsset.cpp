@@ -14,7 +14,7 @@ namespace Suora
 		return std::filesystem::exists(GetSourceAssetPath());
 	}
 
-	void StreamableAsset::PreInitializeAsset(const std::string& str)
+	void StreamableAsset::PreInitializeAsset(const String& str)
 	{
 		Super::PreInitializeAsset(str);
 
@@ -22,12 +22,12 @@ namespace Suora
 		Yaml::Parse(root, str);
 		Yaml::Node& streamable = root["StreamableAsset"];
 
-		m_SourceAssetName = streamable["m_SourceAssetName"].As<std::string>();
-		m_StreamMode = (AssetStreamMode)std::stoi(streamable["m_StreamMode"].As<std::string>());
+		m_SourceAssetName = streamable["m_SourceAssetName"].As<String>();
+		m_StreamMode = (AssetStreamMode)std::stoi(streamable["m_StreamMode"].As<String>());
 
 		m_LastWriteTimeOfSource = std::filesystem::last_write_time(GetSourceAssetPath());
 	}
-	void StreamableAsset::InitializeAsset(const std::string& str)
+	void StreamableAsset::InitializeAsset(const String& str)
 	{
 		Super::InitializeAsset(str);
 	}
@@ -59,11 +59,11 @@ namespace Suora
 		m_LastWriteTimeOfSource = std::filesystem::last_write_time(GetSourceAssetPath());
 	}
 
-	void StreamableAsset::SetSourceAssetName(const std::string& name)
+	void StreamableAsset::SetSourceAssetName(const String& name)
 	{
 		m_SourceAssetName = name;
 	}
-	std::string StreamableAsset::GetSourceAssetName() const
+	String StreamableAsset::GetSourceAssetName() const
 	{
 		return m_SourceAssetName;
 	}

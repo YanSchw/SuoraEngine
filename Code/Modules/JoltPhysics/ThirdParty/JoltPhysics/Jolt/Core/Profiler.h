@@ -103,7 +103,7 @@ private:
 	/// Helper class to freeze ProfileSamples per thread while processing them
 	struct ThreadSamples
 	{
-		String					mThreadName;
+		JoltString					mThreadName;
 		ProfileSample *			mSamplesBegin;
 		ProfileSample *			mSamplesEnd;
 	};
@@ -162,7 +162,7 @@ private:
 	std::chrono::high_resolution_clock::time_point mReferenceTime;									///< Time at the start of the frame
 	Array<ProfileThread *>		mThreads;															///< List of all active threads
 	bool						mDump = false;														///< When true, the samples are dumped next frame
-	String						mDumpTag;															///< When not empty, this overrides the auto incrementing number of the dump filename
+	JoltString						mDumpTag;															///< When not empty, this overrides the auto incrementing number of the dump filename
 };
 
 // Class that contains the information of a single scoped measurement
@@ -191,7 +191,7 @@ public:
 
 	static const uint cMaxSamples = 65536;
 
-	String						mThreadName;														///< Name of the thread that we're collecting information for
+	JoltString						mThreadName;														///< Name of the thread that we're collecting information for
 	ProfileSample				mSamples[cMaxSamples];												///< Buffer of samples
 	uint						mCurrentSample = 0;													///< Next position to write a sample to
 

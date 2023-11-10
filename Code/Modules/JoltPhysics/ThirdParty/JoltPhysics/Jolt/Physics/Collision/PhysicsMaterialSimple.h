@@ -30,7 +30,7 @@ protected:
 	virtual void							RestoreBinaryState(StreamIn &inStream) override;
 
 private:
-	String									mDebugName;							///< Name of the material, used for debugging purposes
+	JoltString									mDebugName;							///< Name of the material, used for debugging purposes
 	Color									mDebugColor = Color::sGrey;			///< Color of the material, used to render the shapes
 };
 

@@ -47,17 +47,17 @@ public:
 
 	/// Read a string from the binary stream (reads the number of characters and then the characters)
 	template <class Type, class Traits, class Allocator>
-	void				Read(std::basic_string<Type, Traits, Allocator> &outString)
+	void				Read(std::basic_string<Type, Traits, Allocator> &outJoltString)
 	{
 		typename std::basic_string<Type, Traits, Allocator>::size_type len = 0;
 		Read(len);
 		if (!IsEOF() && !IsFailed())
 		{
-			outString.resize(len);
-			ReadBytes(outString.data(), len * sizeof(Type));
+			outJoltString.resize(len);
+			ReadBytes(outJoltString.data(), len * sizeof(Type));
 		}
 		else
-			outString.clear();
+			outJoltString.clear();
 	}
 
 	/// Read a Vec3 (don't read W)

@@ -1,5 +1,6 @@
 #pragma once
 #include <ostream>
+#include "Suora/Common/StringUtils.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
@@ -30,8 +31,8 @@ namespace Suora
         static const Vec3 Forward;
         static const Vec3 One;
         
-        template<class T> static std::string ToString(const T& vec);
-        template<class T> static T FromString(const std::string& str);
+        template<class T> static String ToString(const T& vec);
+        template<class T> static T FromString(const String& str);
     };
 
     struct Rotator

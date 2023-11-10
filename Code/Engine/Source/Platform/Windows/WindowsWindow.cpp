@@ -288,7 +288,7 @@ namespace Suora
 		glfwSetDropCallback(m_Window, [](GLFWwindow* window, int count, const char** paths)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			Array<std::string> args;
+			Array<String> args;
 			for (int i = 0; i < count; i++)
 			{
 				args.Add(paths[i]);
@@ -453,7 +453,7 @@ namespace Suora
 		return GLFW_CURSOR_DISABLED == glfwGetInputMode(m_Window, GLFW_CURSOR);
 	}
 
-	void WindowsWindow::SetTitle(const std::string& title)
+	void WindowsWindow::SetTitle(const String& title)
 	{
 		glfwSetWindowTitle(m_Window, title.c_str());
 	}

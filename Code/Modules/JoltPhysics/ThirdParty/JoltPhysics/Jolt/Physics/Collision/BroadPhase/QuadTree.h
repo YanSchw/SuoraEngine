@@ -336,7 +336,7 @@ private:
 		uint64					mCollectorTicks = 0;
 	};
 
-	using LayerToStats = UnorderedMap<String, Stat>;
+	using LayerToStats = UnorderedMap<JoltString, Stat>;
 
 	/// Sum up all the ticks in a layer
 	uint64						GetTicks100Pct(const LayerToStats &inLayer) const;

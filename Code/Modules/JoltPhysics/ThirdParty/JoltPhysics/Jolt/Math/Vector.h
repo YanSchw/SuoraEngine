@@ -193,7 +193,7 @@ public:
 		return *this / Length();
 	}
 
-	/// To String
+	/// To JoltString
 	friend ostream &			operator << (ostream &inStream, const Vector &inV)
 	{
 		inStream << "[";

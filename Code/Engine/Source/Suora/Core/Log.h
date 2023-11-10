@@ -7,7 +7,7 @@
 #include <spdlog/spdlog.h>
 #pragma warning(pop)
 
-#include <string>
+#include "Suora/Common/StringUtils.h"
 
 namespace Suora 
 {
@@ -43,7 +43,7 @@ namespace Suora
 
 		static Ref<spdlog::logger>& GetLogger(LogCategory category);
 	private:
-		static std::string CategoryToString(const LogCategory category);
+		static String CategoryToString(const LogCategory category);
 
 	};
 

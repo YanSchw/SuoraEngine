@@ -43,8 +43,8 @@ namespace Suora
 	public:
 		Mesh();
 		~Mesh();
-		void PreInitializeAsset(const std::string& str) override;
-		void InitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(const String& str) override;
+		void InitializeAsset(const String& str) override;
 		virtual void ReloadAsset() override;
 		virtual uint32_t GetAssetFileSize() override;
 		VertexArray* GetVertexArray();
@@ -53,7 +53,7 @@ namespace Suora
 		static void Decimate_Edge(MeshBuffer& buffer, uint32_t N);
 		static void Decimate_ClusterEdge(MeshBuffer& buffer);
 		static void Decimate_Cluster(const MeshBuffer& meshBuffer, const Ref<Cluster>& cluster);
-		Ref<MeshBuffer> Async_LoadMeshBuffer(const std::string& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i);
+		Ref<MeshBuffer> Async_LoadMeshBuffer(const String& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i);
 		void Serialize(Yaml::Node& root) override;
 		void PostProcessCluster(MeshBuffer& buffer, Ref<Cluster> cluster, int32_t& id);
 		void GroupClusters(MeshBuffer& buffer, std::vector<Ref<Cluster>> clusters);
@@ -84,7 +84,7 @@ namespace Suora
 		static Mesh* Cube;
 		static Mesh* Sphere;
 
-		static Array<std::string> GetSupportedSourceAssetExtensions();
+		static Array<String> GetSupportedSourceAssetExtensions();
 
 	private:
 		bool m_IsMasterMesh = false;

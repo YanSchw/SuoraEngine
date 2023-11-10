@@ -16,13 +16,13 @@ namespace Suora
 	/** For asynchronous Texture loading */
 	struct TextureBuffer_stbi
 	{
-		std::string m_Path;
+		String m_Path;
 		int m_Width, m_Height, m_Channels;
 
 		typedef unsigned char stbi_uc;
 		stbi_uc* m_Data = nullptr;
 
-		TextureBuffer_stbi(const std::string& path);
+		TextureBuffer_stbi(const String& path);
 		~TextureBuffer_stbi();
 
 	};
@@ -33,9 +33,9 @@ namespace Suora
 	public:
 
 		static Ref<Texture> Create(uint32_t width, uint32_t height);
-		static Ref<Texture> Create(const std::string& path);
+		static Ref<Texture> Create(const String& path);
 		static Texture* CreatePtr(uint32_t width, uint32_t height);
-		static Texture* CreatePtr(const std::string& path);
+		static Texture* CreatePtr(const String& path);
 		static Texture* CreatePtr(TextureBuffer_stbi& buffer);
 		static Texture* GetOrCreateDefaultTexture();
 
@@ -57,7 +57,7 @@ namespace Suora
 	{
 	public:
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height);
-		static Ref<Texture2D> Create(const std::string& path);
+		static Ref<Texture2D> Create(const String& path);
 	};*/
 
 }

@@ -46,7 +46,7 @@ namespace Suora
 			Yaml::Node& cat = root["Category_" + std::to_string(i++)];
 			if (cat.IsNone()) break;
 			Ref<InputCategory> Category = Ref<InputCategory>(new InputCategory());
-			Category->m_CategoryName = cat["m_CategoryName"].As<std::string>();
+			Category->m_CategoryName = cat["m_CategoryName"].As<String>();
 			m_Categories.Add(Category);
 
 			int64_t j = 0;
@@ -55,8 +55,8 @@ namespace Suora
 				Yaml::Node& action = cat["Action_" + std::to_string(j++)];
 				if (action.IsNone()) break;
 				Ref<InputAction> Action = Ref<InputAction>(new InputAction());
-				Action->m_ActionName = action["m_ActionName"].As<std::string>();
-				Action->m_ActionType = (InputActionType)std::stoi(action["m_ActionType"].As<std::string>());
+				Action->m_ActionName = action["m_ActionName"].As<String>();
+				Action->m_ActionType = (InputActionType)std::stoi(action["m_ActionType"].As<String>());
 				Category->m_Actions.Add(Action);
 
 				int64_t k = 0;
@@ -64,9 +64,9 @@ namespace Suora
 				{
 					Yaml::Node& binding = action["Binding_" + std::to_string(k++)];
 					if (binding.IsNone()) break;
-					Ref<InputBinding> Binding = Ref<InputBinding>(New(Class::FromString(binding["Class"].As<std::string>()))->As<InputBinding>());
-					Binding->m_Label = binding["m_Label"].As<std::string>();
-					Binding->m_TargetActionType = (InputActionType)std::stoi(binding["m_TargetActionType"].As<std::string>());
+					Ref<InputBinding> Binding = Ref<InputBinding>(New(Class::FromString(binding["Class"].As<String>()))->As<InputBinding>());
+					Binding->m_Label = binding["m_Label"].As<String>();
+					Binding->m_TargetActionType = (InputActionType)std::stoi(binding["m_TargetActionType"].As<String>());
 					Action->m_Bindings.Add(Binding);
 
 					Binding->Deserialize(binding);
@@ -75,7 +75,7 @@ namespace Suora
 		}
 	}
 
-	InputCategory* InputSettings::GetCategory(const std::string& label) const
+	InputCategory* InputSettings::GetCategory(const String& label) const
 	{
 		for (const auto& It : m_Categories)
 		{
@@ -280,7 +280,7 @@ namespace Suora
 		}
 	}
 
-	void InputModule::BindInputScriptEvent(Node* node, const std::string& label, InputScriptEventFlags flags, size_t scriptFunctionHash)
+	void InputModule::BindInputScriptEvent(Node* node, const String& label, InputScriptEventFlags flags, size_t scriptFunctionHash)
 	{
 		if (!IsBlueprintInstanceRegistered(node))
 		{
@@ -312,9 +312,9 @@ namespace Suora
 		
 	}
 
-	Ref<InputAction> InputModule::GetInputActionByLabel(const std::string& label)
+	Ref<InputAction> InputModule::GetInputActionByLabel(const String& label)
 	{
-		std::vector<std::string> Category_Action = StringUtil::SplitString(label, '/');
+		std::vector<String> Category_Action = StringUtil::SplitString(label, '/');
 		if (Category_Action.size() != 2) { return nullptr; }
 		InputCategory* Category = ProjectSettings::Get()->m_InputSettings->GetCategory(Category_Action[0]);
 		if (!Category) { return nullptr; }
@@ -323,7 +323,7 @@ namespace Suora
 		return Action;
 	}
 
-	Ref<InputDispatcher> InputModule::GetInputDispatcherByLabel(const std::string& label)
+	Ref<InputDispatcher> InputModule::GetInputDispatcherByLabel(const String& label)
 	{
 		if (s_RegisteredInputDispatchers.find(label) == s_RegisteredInputDispatchers.end())
 		{
@@ -349,7 +349,7 @@ namespace Suora
 		{
 #define ADD_INPUTDISPATCHER_KEY(_key_)\
 			Ref<InputDispatcher> _key_ = Ref<InputDispatcher>(new InputDispatcher());\
-			_key_->m_Label = std::string("Keyboard/") + #_key_;\
+			_key_->m_Label = String("Keyboard/") + #_key_;\
 			_key_->m_ActionSpecifier = InputActionType::Action;\
 			_key_->m_BoolLambda = []()\
 			{\
@@ -464,7 +464,7 @@ namespace Suora
 	{
 		Super::Deserialize(root);
 
-		m_Dispatcher = InputModule::GetInputDispatcherByLabel(root["m_Dispatcher"].As<std::string>());
+		m_Dispatcher = InputModule::GetInputDispatcherByLabel(root["m_Dispatcher"].As<String>());
 	}
 	void InputBinding_DirectAxis::Serialize(Yaml::Node& root)
 	{
@@ -476,7 +476,7 @@ namespace Suora
 	{
 		Super::Deserialize(root);
 
-		m_Dispatcher = InputModule::GetInputDispatcherByLabel(root["m_Dispatcher"].As<std::string>());
+		m_Dispatcher = InputModule::GetInputDispatcherByLabel(root["m_Dispatcher"].As<String>());
 	}
 	void InputBinding_DirectAxis2D::Serialize(Yaml::Node& root)
 	{
@@ -488,7 +488,7 @@ namespace Suora
 	{
 		Super::Deserialize(root);
 
-		m_Dispatcher = InputModule::GetInputDispatcherByLabel(root["m_Dispatcher"].As<std::string>());
+		m_Dispatcher = InputModule::GetInputDispatcherByLabel(root["m_Dispatcher"].As<String>());
 	}
 
 	void InputBinding_DirectionalActionMapping::Serialize(Yaml::Node& root)
@@ -505,10 +505,10 @@ namespace Suora
 	{
 		Super::Deserialize(root);
 
-		m_DispatcherPos = InputModule::GetInputDispatcherByLabel(root["m_DispatcherPos"].As<std::string>());
-		m_DispatcherNeg = InputModule::GetInputDispatcherByLabel(root["m_DispatcherNeg"].As<std::string>());
-		PosValue = std::stof(root["PosValue"].As<std::string>());
-		NegValue = std::stof(root["NegValue"].As<std::string>());
+		m_DispatcherPos = InputModule::GetInputDispatcherByLabel(root["m_DispatcherPos"].As<String>());
+		m_DispatcherNeg = InputModule::GetInputDispatcherByLabel(root["m_DispatcherNeg"].As<String>());
+		PosValue = std::stof(root["PosValue"].As<String>());
+		NegValue = std::stof(root["NegValue"].As<String>());
 	}
 
 	void InputBinding_BidirectionalActionMapping::Serialize(Yaml::Node& root)
@@ -526,14 +526,14 @@ namespace Suora
 	{
 		Super::Deserialize(root);
 
-		m_DispatcherUp = InputModule::GetInputDispatcherByLabel(root["m_DispatcherUp"].As<std::string>());
-		m_DispatcherDown = InputModule::GetInputDispatcherByLabel(root["m_DispatcherDown"].As<std::string>());
-		m_DispatcherLeft = InputModule::GetInputDispatcherByLabel(root["m_DispatcherLeft"].As<std::string>());
-		m_DispatcherRight = InputModule::GetInputDispatcherByLabel(root["m_DispatcherRight"].As<std::string>());
-		m_Normalize = root["m_Normalize"].As<std::string>() == "true";
+		m_DispatcherUp = InputModule::GetInputDispatcherByLabel(root["m_DispatcherUp"].As<String>());
+		m_DispatcherDown = InputModule::GetInputDispatcherByLabel(root["m_DispatcherDown"].As<String>());
+		m_DispatcherLeft = InputModule::GetInputDispatcherByLabel(root["m_DispatcherLeft"].As<String>());
+		m_DispatcherRight = InputModule::GetInputDispatcherByLabel(root["m_DispatcherRight"].As<String>());
+		m_Normalize = root["m_Normalize"].As<String>() == "true";
 	}
 
-	Ref<InputAction> InputCategory::GetAction(const std::string& label) const
+	Ref<InputAction> InputCategory::GetAction(const String& label) const
 	{
 		for (const auto& It : m_Actions)
 		{

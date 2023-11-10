@@ -139,7 +139,7 @@ public:
 	/// Works identical to Mat44::Decompose
 	JPH_INLINE DMat44			Decompose(Vec3 &outScale) const							{ return DMat44(GetRotation().Decompose(outScale), mCol3); }
 
-	/// To String
+	/// To JoltString
 	friend ostream &			operator << (ostream &inStream, DMat44Arg inM)
 	{
 		inStream << inM.mCol[0] << ", " << inM.mCol[1] << ", " << inM.mCol[2] << ", " << inM.mCol3;

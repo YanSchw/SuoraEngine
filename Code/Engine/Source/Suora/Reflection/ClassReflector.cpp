@@ -81,15 +81,15 @@ namespace Suora
 		}
 	}
 
-	std::string ClassReflector::GetClassName(const Class& cls)
+	String ClassReflector::GetClassName(const Class& cls)
 	{
 		return ClassReflector::GetByClass(cls).m_ClassName;
 	}
 
-	void ClassMember_Delegate::FeedSignature(const std::string& args)
+	void ClassMember_Delegate::FeedSignature(const String& args)
 	{
-		std::string sub = args.substr(9, args.size() - 10);
-		std::vector<std::string> arg = StringUtil::SplitString(sub, ',');
+		String sub = args.substr(9, args.size() - 10);
+		std::vector<String> arg = StringUtil::SplitString(sub, ',');
 		for (auto& It : arg)
 		{
 			if (It != "TDelegate::NoParams")

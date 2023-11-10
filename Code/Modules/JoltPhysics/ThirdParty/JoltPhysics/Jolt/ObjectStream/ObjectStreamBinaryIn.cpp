@@ -22,7 +22,7 @@ bool ObjectStreamBinaryIn::ReadDataType(EOSDataType &outType)
 	return true;
 }
 
-bool ObjectStreamBinaryIn::ReadName(String &outName)
+bool ObjectStreamBinaryIn::ReadName(JoltString &outName)
 {
 	return ReadPrimitiveData(outName);
 }
@@ -117,7 +117,7 @@ bool ObjectStreamBinaryIn::ReadPrimitiveData(bool &outPrimitive)
 	return true;
 }
 
-bool ObjectStreamBinaryIn::ReadPrimitiveData(String &outPrimitive)
+bool ObjectStreamBinaryIn::ReadPrimitiveData(JoltString &outPrimitive)
 {
 	// Read length or ID of string
 	uint32 len;
@@ -134,8 +134,8 @@ bool ObjectStreamBinaryIn::ReadPrimitiveData(String &outPrimitive)
 	// Check if it is an ID in the string table
 	if (len & 0x80000000)
 	{
-		StringTable::iterator i = mStringTable.find(len);
-		if (i == mStringTable.end())
+		JoltStringTable::iterator i = mJoltStringTable.find(len);
+		if (i == mJoltStringTable.end())
 			return false;
 		outPrimitive = i->second;
 		return true;
@@ -149,8 +149,8 @@ bool ObjectStreamBinaryIn::ReadPrimitiveData(String &outPrimitive)
 	outPrimitive = data;
 
 	// Insert string in table
-	mStringTable.try_emplace(mNextStringID, outPrimitive);
-	mNextStringID++;
+	mJoltStringTable.try_emplace(mNextJoltStringID, outPrimitive);
+	mNextJoltStringID++;
 	return true;
 }
 

@@ -98,7 +98,7 @@ namespace Suora
 		return s_Loggers[(uint32_t)category];
 	}
 
-	std::string Log::CategoryToString(const LogCategory category)
+	String Log::CategoryToString(const LogCategory category)
 	{
 		switch (category)
 		{
@@ -116,7 +116,7 @@ namespace Suora
 			return "[None]";
 		}
 
-		return std::string();
+		return String();
 	}
 
 }

@@ -43,23 +43,23 @@ namespace Suora
 		}
 	}
 
-	void Mesh::PreInitializeAsset(const std::string& str)
+	void Mesh::PreInitializeAsset(const String& str)
 	{
 		Super::PreInitializeAsset(str);
 
 		Yaml::Node root;
 		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<std::string>();
-		m_IsDecimaMesh = root["Mesh"]["m_IsDecimaMesh"].As<std::string>() == "true";
+		m_UUID = root["UUID"].As<String>();
+		m_IsDecimaMesh = root["Mesh"]["m_IsDecimaMesh"].As<String>() == "true";
 		m_BoundingSphereRadius = root["Mesh"]["m_BoundingSphereRadius"].As<float>();
 		m_NegativeY_Bounds = root["Mesh"]["m_NegativeY_Bounds"].As<float>();
 		if (!root["Mesh"]["m_ImportScale"].IsNone())
 		{
-			m_ImportScale = Vec::FromString<Vec3>(root["Mesh"]["m_ImportScale"].As<std::string>());
+			m_ImportScale = Vec::FromString<Vec3>(root["Mesh"]["m_ImportScale"].As<String>());
 		}
 	}
 
-	void Mesh::InitializeAsset(const std::string& str)
+	void Mesh::InitializeAsset(const String& str)
 	{
 		Super::InitializeAsset(str);
 
@@ -69,15 +69,15 @@ namespace Suora
 
 		// Materials
 		{
-			m_Materials.OverwritteMaterials = mesh["Materials"]["Overwrite"].As<std::string>() == "true";
+			m_Materials.OverwritteMaterials = mesh["Materials"]["Overwrite"].As<String>() == "true";
 			m_Materials.Materials.Clear();
 			int i = 0;
 			while (true)
 			{
 				Yaml::Node& material = mesh["Materials"][std::to_string(i)];
 				if (material.IsNone()) break;
-				m_Materials.Materials.Add((material.As<std::string>() != "0")
-					? AssetManager::GetAsset<Material>(material.As<std::string>())
+				m_Materials.Materials.Add((material.As<String>() != "0")
+					? AssetManager::GetAsset<Material>(material.As<String>())
 					: nullptr);
 				i++;
 			}
@@ -425,7 +425,7 @@ namespace Suora
 			if (!m_AsyncMeshBuffer.get() && AssetManager::s_AssetStreamPool.Size() < AssetManager::GetAssetStreamCountLimit())
 			{
 				AssetManager::s_AssetStreamPool.Add(this);
-				std::string filePath = GetSourceAssetPath().string();
+				String filePath = GetSourceAssetPath().string();
 				
 				m_AsyncMeshBuffer = CreateRef<std::future<Ref<MeshBuffer>>>(std::async(std::launch::async, &Mesh::Async_LoadMeshBuffer, this, filePath, m_MeshBuffer.Vertices, m_MeshBuffer.Indices));
 			}
@@ -468,7 +468,7 @@ namespace Suora
 		}
 	}
 
-	Ref<MeshBuffer> Mesh::Async_LoadMeshBuffer(const std::string& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i)
+	Ref<MeshBuffer> Mesh::Async_LoadMeshBuffer(const String& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i)
 	{
 		Ref<MeshBuffer> buffer = CreateRef<MeshBuffer>(v, i);
 
@@ -917,7 +917,7 @@ namespace Suora
 		GroupClusters(buffer, leafCluster);
 	}
 
-	Array<std::string> Mesh::GetSupportedSourceAssetExtensions()
+	Array<String> Mesh::GetSupportedSourceAssetExtensions()
 	{
 		return {".obj", ".fbx", ".gltf"};
 	}

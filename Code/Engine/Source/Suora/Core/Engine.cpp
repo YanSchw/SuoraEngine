@@ -88,7 +88,7 @@ namespace Suora
 		return m_PhysicsEngine.get();
 	}
 
-	std::string Engine::GetRootPath() const
+	String Engine::GetRootPath() const
 	{
 		return m_RootPath.string();
 	}

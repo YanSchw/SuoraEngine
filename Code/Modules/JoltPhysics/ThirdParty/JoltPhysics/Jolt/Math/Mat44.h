@@ -222,7 +222,7 @@ public:
 	JPH_INLINE Mat44			ToMat44() const											{ return *this; }
 #endif // !JPH_DOUBLE_PRECISION
 
-	/// To String
+	/// To JoltString
 	friend ostream &			operator << (ostream &inStream, Mat44Arg inM)
 	{
 		inStream << inM.mCol[0] << ", " << inM.mCol[1] << ", " << inM.mCol[2] << ", " << inM.mCol[3];

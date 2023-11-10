@@ -548,7 +548,7 @@ private:
 		{
 			RVec3 edge_start = cDrawScale * (mOffset + mPositions[outEdges[i].mStartIdx]);
 			DebugRenderer::sInstance->DrawArrow(edge_start, cDrawScale * (mOffset + mPositions[outEdges[(i + 1) % outEdges.size()].mStartIdx]), Color::sYellow, 0.01f);
-			DebugRenderer::sInstance->DrawText3D(edge_start, ConvertToString(outEdges[i].mStartIdx), Color::sWhite);
+			DebugRenderer::sInstance->DrawText3D(edge_start, ConvertToJoltString(outEdges[i].mStartIdx), Color::sWhite);
 		}
 
 		// Draw the state with the facing triangles removed

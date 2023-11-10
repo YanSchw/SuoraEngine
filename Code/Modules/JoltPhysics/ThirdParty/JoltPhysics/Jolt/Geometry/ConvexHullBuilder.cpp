@@ -625,7 +625,7 @@ void ConvexHullBuilder::AddPoint(Face *inFacingFace, int inIdx, float inCoplanar
 #ifdef JPH_CONVEX_BUILDER_DEBUG
 	// Draw point to be added
 	DebugRenderer::sInstance->DrawMarker(cDrawScale * (mOffset + pos), Color::sYellow, 0.1f);
-	DebugRenderer::sInstance->DrawText3D(cDrawScale * (mOffset + pos), ConvertToString(inIdx), Color::sWhite);
+	DebugRenderer::sInstance->DrawText3D(cDrawScale * (mOffset + pos), ConvertToJoltString(inIdx), Color::sWhite);
 #endif
 
 #ifdef JPH_ENABLE_ASSERTS
@@ -1427,7 +1427,7 @@ void ConvexHullBuilder::DrawWireFace(const Face *inFace, ColorArg inColor) const
 		const Edge *next = e->mNextEdge;
 		RVec3 cur = cDrawScale * (mOffset + mPositions[next->mStartIdx]);
 		DebugRenderer::sInstance->DrawArrow(prev, cur, inColor, 0.01f);
-		DebugRenderer::sInstance->DrawText3D(prev, ConvertToString(e->mStartIdx), inColor);
+		DebugRenderer::sInstance->DrawText3D(prev, ConvertToJoltString(e->mStartIdx), inColor);
 		e = next;
 		prev = cur;
 	} while (e != inFace->mFirstEdge);
@@ -1450,13 +1450,13 @@ void ConvexHullBuilder::DumpShape() const
 	int shape_no = sShapeNo++;
 
 	std::ofstream f;
-	f.open(StringFormat("dumped_shape%d.cpp", shape_no).c_str(), std::ofstream::out | std::ofstream::trunc);
+	f.open(JoltStringFormat("dumped_shape%d.cpp", shape_no).c_str(), std::ofstream::out | std::ofstream::trunc);
 	if (!f.is_open())
 		return;
 
 	f << "{\n";
 	for (Vec3 v : mPositions)
-		f << StringFormat("\tVec3(%.9gf, %.9gf, %.9gf),\n", (double)v.GetX(), (double)v.GetY(), (double)v.GetZ());
+		f << JoltStringFormat("\tVec3(%.9gf, %.9gf, %.9gf),\n", (double)v.GetX(), (double)v.GetY(), (double)v.GetZ());
 	f << "},\n";
 }
 

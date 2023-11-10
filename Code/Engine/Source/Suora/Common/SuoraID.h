@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include "Suora/Common/StringUtils.h"
 #include <random>
 #include <sstream>
 #include <inttypes.h>
@@ -12,7 +12,8 @@ namespace uuid
     static std::uniform_int_distribution<> dis(0, 15);
     static std::uniform_int_distribution<> dis2(8, 11);
 
-    static std::string generate_uuid_v4() {
+    static Suora::String generate_uuid_v4()
+    {
         std::stringstream ss;
         int i;
         ss << std::hex;
@@ -46,13 +47,13 @@ namespace Suora
     struct SuoraID
     {
     private:
-        std::string str;
+        String str;
     public:
         SuoraID()
         {
             str = "INVALID";
         }
-        SuoraID(const std::string& id)
+        SuoraID(const String& id)
         {
             str = id;
         }
@@ -62,7 +63,7 @@ namespace Suora
             return str == other.str;
         }
 
-        const std::string& GetString() const
+        const String& GetString() const
         {
             return str;
         }

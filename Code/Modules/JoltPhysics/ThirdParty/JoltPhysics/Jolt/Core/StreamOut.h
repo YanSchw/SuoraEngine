@@ -39,12 +39,12 @@ public:
 
 	/// Write a string to the binary stream (writes the number of characters and then the characters)
 	template <class Type, class Traits, class Allocator>
-	void				Write(const std::basic_string<Type, Traits, Allocator> &inString)
+	void				Write(const std::basic_string<Type, Traits, Allocator> &inJoltString)
 	{
-		typename std::basic_string<Type, Traits, Allocator>::size_type len = inString.size();
+		typename std::basic_string<Type, Traits, Allocator>::size_type len = inJoltString.size();
 		Write(len);
 		if (!IsFailed())
-			WriteBytes(inString.data(), len * sizeof(Type));
+			WriteBytes(inJoltString.data(), len * sizeof(Type));
 	}
 
 	/// Write a Vec3 (don't write W)

@@ -100,12 +100,12 @@ namespace Suora
 		return subClasses;
 	}
 
-	std::string Class::GetNativeClassName() const
+	String Class::GetNativeClassName() const
 	{
 		return ClassReflector::GetClassName(*this);
 	}
 
-	std::string Class::GetClassName() const
+	String Class::GetClassName() const
 	{
 		switch (GetClassType())
 		{
@@ -128,9 +128,9 @@ namespace Suora
 		return ClassReflector::GetByClass(*this);
 	}
 
-	std::string Class::ToString() const
+	String Class::ToString() const
 	{
-		std::string str = IsNative() ? "Native$" : "Node$";
+		String str = IsNative() ? "Native$" : "Node$";
 
 		if (IsNative())
 		{
@@ -144,17 +144,17 @@ namespace Suora
 		return str;
 	}
 
-	Class Class::FromString(const std::string& str)
+	Class Class::FromString(const String& str)
 	{
-		if (str.find("Native$") != std::string::npos)
+		if (str.find("Native$") != String::npos)
 		{
-			const std::string substr = str.substr(7, str.size() - 7);
+			const String substr = str.substr(7, str.size() - 7);
 			const NativeClassID id = std::stoll(substr);
 			return Class(id);
 		}
-		if (str.find("Node$") != std::string::npos)
+		if (str.find("Node$") != String::npos)
 		{
-			const std::string uid = str.substr(5, str.size() - 5);
+			const String uid = str.substr(5, str.size() - 5);
 			return Class(AssetManager::GetAsset<Blueprint>(uid));
 		}
 

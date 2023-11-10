@@ -14,7 +14,7 @@ namespace Suora
 
 	struct CmdArg
 	{
-		std::string Arg;
+		String Arg;
 	}; 
 	struct CmdArgs
 	{

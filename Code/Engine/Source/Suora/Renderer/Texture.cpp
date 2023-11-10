@@ -10,7 +10,7 @@
 namespace Suora 
 {
 
-	TextureBuffer_stbi::TextureBuffer_stbi(const std::string& path)
+	TextureBuffer_stbi::TextureBuffer_stbi(const String& path)
 	{
 		stbi_set_flip_vertically_on_load(1);
 		{
@@ -36,7 +36,7 @@ namespace Suora
 		return nullptr;
 	}
 
-	Ref<Texture> Texture::Create(const std::string& path)
+	Ref<Texture> Texture::Create(const String& path)
 	{
 		switch (RendererAPI::GetAPI())
 		{
@@ -60,7 +60,7 @@ namespace Suora
 		return nullptr;
 	}
 
-	Texture* Texture::CreatePtr(const std::string& path)
+	Texture* Texture::CreatePtr(const String& path)
 	{
 		switch (RendererAPI::GetAPI())
 		{

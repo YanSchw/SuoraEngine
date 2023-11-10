@@ -42,7 +42,7 @@ namespace Suora
 
         return std::to_string(f);
     }
-    String StringUtil::Int32ToString(int32 i)
+    String StringUtil::Int32ToString(int32_t i)
     {
         return FloatToString((float)i);
     }
@@ -68,9 +68,9 @@ namespace Suora
 
         return str.size() > 0 ? std::stof(str) : 0.0f;
     }
-    int32 StringUtil::StringToInt32(const String& str)
+    int32_t StringUtil::StringToInt32(const String& str)
     {
-        return (int32)StringToFloat(str);
+        return (int32_t)StringToFloat(str);
     }
 
     String StringUtil::ToLower(String str)
@@ -95,7 +95,7 @@ namespace Suora
     {
         if (str.size() < 1) return str;
 
-        for (int64 it = str.size() - 1; it >= 1; it--)
+        for (int64_t it = str.size() - 1; it >= 1; it--)
         {
             if (str[it] >= 'A' && str[it] <= 'Z' && str[it - 1] >= 'a' && str[it - 1] <= 'z' && str[it - 1] != ' ')
             {

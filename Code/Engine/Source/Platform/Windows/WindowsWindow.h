@@ -31,7 +31,7 @@ namespace Suora
 		Cursor GetCursor() override;
 		void SetCursorLocked(bool locked) override;
 		bool IsCursorLocked() override;
-		void SetTitle(const std::string& title) override;
+		void SetTitle(const String& title) override;
 		bool IsWindowResizing();
 
 		virtual void* GetNativeWindow() const { return m_Window; }
@@ -60,7 +60,7 @@ namespace Suora
 
 		struct WindowData
 		{
-			std::string Title;
+			String Title;
 			unsigned int Width = 192, Height = 108;
 			bool VSync = false;
 			Window* m_Window = nullptr;

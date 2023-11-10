@@ -160,7 +160,7 @@ enum
     PUSH_VAR_TO_STACK_7(__VA_ARGS__);
 
 #define NODESCRIPT_EVENT_DISPATCH(HASH, ...) { \
-	static size_t __function_hash = std::hash<std::string>{}(HASH);\
+	static size_t __function_hash = std::hash<String>{}(HASH);\
 	static Suora::NativeFunctionHashCheck _check_func = Suora::NativeFunctionHashCheck(HASH);\
 	ScriptStack __stack;\
 	CONCATENATE(PUSH_VAR_TO_STACK_,VA_NARGS(__VA_ARGS__))(__VA_ARGS__);\

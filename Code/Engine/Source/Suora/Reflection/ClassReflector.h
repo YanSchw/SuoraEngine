@@ -32,13 +32,13 @@ namespace Suora
 			Delegate
 		};
 
-		std::string m_MemberName = "";
+		String m_MemberName = "";
 		size_t m_MemberOffset = 0;
 		size_t m_TypeSize = 0;
 		Type m_Type = Type::None;
 
 		ClassMember() { }
-		ClassMember(const std::string& memberName, size_t memberOffset, size_t size, Type type)
+		ClassMember(const String& memberName, size_t memberOffset, size_t size, Type type)
 			: m_MemberName(memberName), m_MemberOffset(memberOffset), m_TypeSize(size), m_Type(type)
 		{
 		}
@@ -54,7 +54,7 @@ namespace Suora
 		template<class T>
 		static ClassMember::Type GetPrimitiveTypeEnumByTemplate();
 		template<class T>
-		static Ref<ClassMember> CreatePrimitive(class Object* obj, T* ptr, const std::string& name)
+		static Ref<ClassMember> CreatePrimitive(class Object* obj, T* ptr, const String& name)
 		{
 			return Ref<ClassMember>(new ClassMember(name, ClassMember::OffsetOf(obj, ptr), sizeof(T), ClassMember::GetPrimitiveTypeEnumByTemplate<T>()));
 		}
@@ -64,7 +64,7 @@ namespace Suora
 	{
 		Ref<ClassMember> m_ArraySubMember;
 
-		ClassMember_ArrayList(const std::string& memberName, size_t memberOffset, size_t size, Type type)
+		ClassMember_ArrayList(const String& memberName, size_t memberOffset, size_t size, Type type)
 			: ClassMember(memberName, memberOffset, size, type)
 		{
 		}
@@ -73,20 +73,20 @@ namespace Suora
 	{
 		Class m_AssetClass = Class::None;
 
-		ClassMember_AssetPtr(const std::string& memberName, size_t memberOffset, size_t size, Type type)
+		ClassMember_AssetPtr(const String& memberName, size_t memberOffset, size_t size, Type type)
 			: ClassMember(memberName, memberOffset, size, type)
 		{
 		}
 	};
 	struct ClassMember_Delegate : public ClassMember
 	{
-		ClassMember_Delegate(const std::string& memberName, size_t memberOffset, size_t size, Type type)
+		ClassMember_Delegate(const String& memberName, size_t memberOffset, size_t size, Type type)
 			: ClassMember(memberName, memberOffset, size, type)
 		{
 		}
-		void FeedSignature(const std::string& args);
+		void FeedSignature(const String& args);
 
-		Array<std::string> m_StrArgs;
+		Array<String> m_StrArgs;
 		Array<ScriptDataType> m_Args;
 	};
 
@@ -96,33 +96,33 @@ namespace Suora
 	struct ClassReflector
 	{
 		Array<Ref<ClassMember>> m_ClassMembers;
-		std::string m_ClassName;
+		String m_ClassName;
 		Class m_NativeParentClass = Class::None;
 		size_t m_ClassSize = 0;
 
-		void AddObjectPointer(class Object* obj, class Object** ptr, const std::string& name)
+		void AddObjectPointer(class Object* obj, class Object** ptr, const String& name)
 		{
 			AddMember<ClassMember>(name, ClassMember::OffsetOf(obj, ptr), sizeof(Object*), ClassMember::Type::ObjectPtr);
 		}
-		void AddAssetPointer(class Object* obj, class Asset** ptr, const std::string& name, NativeClassID assetClassID)
+		void AddAssetPointer(class Object* obj, class Asset** ptr, const String& name, NativeClassID assetClassID)
 		{
 			ClassMember_AssetPtr* assetPtr = AddMember<ClassMember_AssetPtr>(name, ClassMember::OffsetOf(obj, ptr), sizeof(Asset*), ClassMember::Type::AssetPtr);
 			assetPtr->m_AssetClass = Class(assetClassID);
 		}
 		template<class ... Args>
-		void AddDelegate(class Object* obj, TDelegate* d, const std::string& name, const std::string& args)
+		void AddDelegate(class Object* obj, TDelegate* d, const String& name, const String& args)
 		{
 			ClassMember_Delegate* delegate = AddMember<ClassMember_Delegate>(name, ClassMember::OffsetOf(obj, d), sizeof(TDelegate), ClassMember::Type::Delegate);
 			delegate->FeedSignature(args);
 		}
 		
 		template<class T>
-		void AddPrimitive(class Object* obj, T* ptr, const std::string& name)
+		void AddPrimitive(class Object* obj, T* ptr, const String& name)
 		{
 			AddMember<ClassMember>(name, ClassMember::OffsetOf(obj, ptr), sizeof(T), ClassMember::GetPrimitiveTypeEnumByTemplate<T>());
 		}
 
-		ClassMember_ArrayList* AddArrayList(class Object* obj, void* array, size_t size, const std::string& name)
+		ClassMember_ArrayList* AddArrayList(class Object* obj, void* array, size_t size, const String& name)
 		{
 			if (obj)
 			{
@@ -134,14 +134,14 @@ namespace Suora
 		}
 
 		template<class T>
-		T* AddMember(const std::string& name, size_t offset, size_t size, ClassMember::Type type)
+		T* AddMember(const String& name, size_t offset, size_t size, ClassMember::Type type)
 		{
 			Ref<T> member = Ref<T>(new T(name, offset, size, type));
 			m_ClassMembers.Add(member);
 			return member.get();
 		}
 
-		void SetClassName(const std::string& name)
+		void SetClassName(const String& name)
 		{
 			m_ClassName = name;
 		}
@@ -160,7 +160,7 @@ namespace Suora
 		inline static std::unordered_map<NativeClassID, ClassReflector*> m_Reflectors;
 	public:
 		static const ClassReflector& GetByClass(const Class& cls);
-		static std::string GetClassName(const Class& cls);
+		static String GetClassName(const Class& cls);
 
 		friend struct Class;
 	};

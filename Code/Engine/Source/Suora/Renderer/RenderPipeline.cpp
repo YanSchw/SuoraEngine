@@ -128,7 +128,7 @@ namespace Suora
 	}
 
 
-	void RenderPipeline::RenderFramebufferIntoFramebuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const glm::ivec4& rect, const std::string& uniformName, int attachmentIndex, bool shouldClear)
+	void RenderPipeline::RenderFramebufferIntoFramebuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const glm::ivec4& rect, const String& uniformName, int attachmentIndex, bool shouldClear)
 	{
 		target.Bind();
 		if (shouldClear) RenderCommand::Clear();
@@ -141,7 +141,7 @@ namespace Suora
 		RenderCommand::DrawIndexed(GetFullscreenQuad());
 	}
 
-	void RenderPipeline::BlitDepthBuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const std::string& uniformName)
+	void RenderPipeline::BlitDepthBuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const String& uniformName)
 	{
 		target.Bind();
 		RenderCommand::Clear();

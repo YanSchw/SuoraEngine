@@ -33,7 +33,7 @@ namespace Suora
 		UpdateFlag m_UpdateFlags = UpdateFlag::NeverUpdate;
 		bool m_Initialized = false;
 		bool m_Replicated = false;
-		std::string m_Name = "New Node";
+		String m_Name = "New Node";
 		bool m_Enabled = true, m_EnabledInHierarchy = true;
 		bool m_WasBeginCalled = false;
 		bool m_IsPendingKill = false;
@@ -63,13 +63,13 @@ namespace Suora
 		World* GetWorld() const;
 
 	private:
-		static bool DoesNameExistInHierarchy(const std::string& name, Node* root, Node* exclude = nullptr);
+		static bool DoesNameExistInHierarchy(const String& name, Node* root, Node* exclude = nullptr);
 
 		/** Before: m_Name was "MyNodeName [13]  ->  After: m_Name is "MyNodeName [14]" */
 		void IncrementNameIndex();
 	public:
-		void SetName(const std::string& name);
-		std::string GetName() const;
+		void SetName(const String& name);
+		String GetName() const;
 
 		FUNCTION(Callable)
 		Node* Duplicate();
@@ -112,13 +112,13 @@ namespace Suora
 			return CreateChild(T::StaticClass())->As<T>();
 		}
 		template<class T>
-		T* CreateChild(const std::string& name)
+		T* CreateChild(const String& name)
 		{
 			T* child = CreateChild(T::StaticClass())->As<T>();
 			child->SetName(name);
 			return child;
 		}
-		Node* GetChildByName(const std::string& name);
+		Node* GetChildByName(const String& name);
 		Node* GetChildNodeOfClass(const Class& cls, bool includeSelf = false);
 		template<class T>
 		T* GetChildNodeOfClass(bool includeSelf = false)
@@ -226,7 +226,7 @@ namespace Suora
 		static Node* Deserialize(Yaml::Node& root, const bool isRootNode);
 		void ResetProperty(const ClassMember& member);
 
-		Array<std::string> m_OverwrittenProperties;
+		Array<String> m_OverwrittenProperties;
 
 
 		friend class Component;

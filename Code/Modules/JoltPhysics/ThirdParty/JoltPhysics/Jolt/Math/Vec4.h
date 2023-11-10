@@ -259,7 +259,7 @@ public:
 	/// Calculate the arc tangent of y / x using the signs of the arguments to determine the correct quadrant (returns value in the range [-PI, PI])
 	inline static Vec4			sATan2(Vec4Arg inY, Vec4Arg inX);
 
-	/// To String
+	/// To JoltString
 	friend ostream &			operator << (ostream &inStream, Vec4Arg inV)
 	{
 		inStream << inV.mF32[0] << ", " << inV.mF32[1] << ", " << inV.mF32[2] << ", " << inV.mF32[3];

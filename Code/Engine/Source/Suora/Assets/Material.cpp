@@ -19,16 +19,16 @@ namespace Suora
 
 	}
 
-	void Material::PreInitializeAsset(const std::string& str)
+	void Material::PreInitializeAsset(const String& str)
 	{
 		Super::PreInitializeAsset(str);
 
 		Yaml::Node root;
 		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<std::string>();
+		m_UUID = root["UUID"].As<String>();
 	}
 
-	void Material::InitializeAsset(const std::string& str)
+	void Material::InitializeAsset(const String& str)
 	{
 		Super::InitializeAsset(str);
 
@@ -38,7 +38,7 @@ namespace Suora
 
 		if (!this->IsA<ShaderGraph>())
 		{
-			SuoraID uuid = SuoraID(material["ShaderGraph"].As<std::string>());
+			SuoraID uuid = SuoraID(material["ShaderGraph"].As<String>());
 			// TODO: Fix the Asset Asignment !
 			m_ShaderGraph = uuid.GetString() != "NULL" ? AssetManager::GetAsset<ShaderGraph>(uuid) : nullptr;
 		}
@@ -50,17 +50,17 @@ namespace Suora
 			if (uniform.IsNone()) break;
 
 			const ShaderGraphDataType type = (ShaderGraphDataType)uniform["m_Type"].As<int64_t>();
-			const std::string label = uniform["m_Label"].As<std::string>();
+			const String label = uniform["m_Label"].As<String>();
 			switch (type)
 			{
 			case ShaderGraphDataType::Float:
 				m_UniformSlots.Add(UniformSlot(type, label, uniform["m_Float"].As<float>()));
 				break;
 			case ShaderGraphDataType::Vec3:
-				m_UniformSlots.Add(UniformSlot(type, label, Vec::FromString<Vec3>(uniform["m_Vec3"].As<std::string>())));
+				m_UniformSlots.Add(UniformSlot(type, label, Vec::FromString<Vec3>(uniform["m_Vec3"].As<String>())));
 				break;
 			case ShaderGraphDataType::Texture2D:
-				m_UniformSlots.Add(UniformSlot(type, label, AssetManager::GetAsset<Texture2D>(uniform["m_Texture2D"].As<std::string>())));
+				m_UniformSlots.Add(UniformSlot(type, label, AssetManager::GetAsset<Texture2D>(uniform["m_Texture2D"].As<String>())));
 				break;
 			case ShaderGraphDataType::None:
 			default:
@@ -68,7 +68,7 @@ namespace Suora
 			}
 		}
 
-		std::string str_BackfaceCulling = material["m_BackfaceCulling"].As<std::string>();
+		String str_BackfaceCulling = material["m_BackfaceCulling"].As<String>();
 		if (str_BackfaceCulling == "true" || str_BackfaceCulling == "false") m_BackfaceCulling = (str_BackfaceCulling == "true");
 	}
 
@@ -166,7 +166,7 @@ namespace Suora
 		}
 
 	}
-	UniformSlot* Material::GetUniformSlot(const std::string& label)
+	UniformSlot* Material::GetUniformSlot(const String& label)
 	{
 		for (auto& It : m_UniformSlots)
 		{

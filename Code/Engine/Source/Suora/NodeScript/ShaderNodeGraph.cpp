@@ -257,7 +257,7 @@ namespace Suora
 
 	}
 
-	ShaderGraphDataType ShaderNodeGraph::StringToShaderGraphDataType(std::string str)
+	ShaderGraphDataType ShaderNodeGraph::StringToShaderGraphDataType(String str)
 	{
 		for (int i = str.size() - 1; i >= 0; i--)
 		{
@@ -269,7 +269,7 @@ namespace Suora
 		if (str == "vec4") return ShaderGraphDataType::Vec4;
 		return ShaderGraphDataType::None;
 	}
-	std::string ShaderNodeGraph::ShaderGraphDataTypeToLabel(ShaderGraphDataType type)
+	String ShaderNodeGraph::ShaderGraphDataTypeToLabel(ShaderGraphDataType type)
 	{
 		switch (type)
 		{
@@ -283,7 +283,7 @@ namespace Suora
 			return "None";
 		}
 	}
-	std::string ShaderNodeGraph::ShaderGraphDataTypeToString(ShaderGraphDataType type)
+	String ShaderNodeGraph::ShaderGraphDataTypeToString(ShaderGraphDataType type)
 	{
 		switch (type)
 		{
@@ -315,7 +315,7 @@ namespace Suora
 
 	/*********************************************************************/
 
-	std::string ShaderGraphCompiler::CompileShaderNode(VisualNode& node, VisualNodePin& pin, bool vertex, bool& error)
+	String ShaderGraphCompiler::CompileShaderNode(VisualNode& node, VisualNodePin& pin, bool vertex, bool& error)
 	{
 		int outPinIndex = node.m_OutputPins.IndexOf(pin);
 
@@ -416,7 +416,7 @@ namespace Suora
 		return "";
 	}
 
-	std::string ShaderGraphCompiler::CompilePin(VisualNodePin& pin, bool vertex, bool& error)
+	String ShaderGraphCompiler::CompilePin(VisualNodePin& pin, bool vertex, bool& error)
 	{
 		return (pin.Target ? CompileShaderNode(*(pin.Target->GetNode()), *(pin.Target), vertex, error) : (std::to_string(StringUtil::StringToFloat(pin.m_AdditionalData))/*pin.m_AdditionalData != "" ? pin.m_AdditionalData : "0.0"*/));
 	}

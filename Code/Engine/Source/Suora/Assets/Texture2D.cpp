@@ -26,18 +26,18 @@ namespace Suora
 		}
 	}
 
-	Array<std::string> Texture2D::GetSupportedSourceAssetExtensions()
+	Array<String> Texture2D::GetSupportedSourceAssetExtensions()
 	{
 		return {".png", ".jpg"};
 	}
 
-	void Texture2D::PreInitializeAsset(const std::string& str)
+	void Texture2D::PreInitializeAsset(const String& str)
 	{
 		Super::PreInitializeAsset(str);
 
 		Yaml::Node root;
 		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<std::string>();
+		m_UUID = root["UUID"].As<String>();
 
 	}
 
@@ -97,7 +97,7 @@ namespace Suora
 		return m_Texture;
 	}
 
-	Ref<TextureBuffer_stbi> Texture2D::Async_LoadTexture(const std::string& path)
+	Ref<TextureBuffer_stbi> Texture2D::Async_LoadTexture(const String& path)
 	{
 		return CreateRef<TextureBuffer_stbi>(path);
 	}

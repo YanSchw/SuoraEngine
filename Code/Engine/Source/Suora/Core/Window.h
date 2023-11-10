@@ -21,13 +21,13 @@ namespace Suora
 
 	struct WindowProps
 	{
-		std::string Title;
+		String Title;
 		uint32_t Width;
 		uint32_t Height;
 		bool isDecorated;
 		bool hasTitlebar;
 
-		WindowProps(const std::string& title = "",
+		WindowProps(const String& title = "",
 			        uint32_t width = 1280,
 			        uint32_t height = 720,
 					bool _isDecorated = true,
@@ -58,7 +58,7 @@ namespace Suora
 		virtual void SetCursorLocked(bool locked) = 0;
 		virtual bool IsCursorLocked() = 0;
 		virtual bool IsVSync() const = 0;
-		virtual void SetTitle(const std::string& title) = 0;
+		virtual void SetTitle(const String& title) = 0;
 
 		virtual void* GetNativeWindow() const = 0;
 		virtual void* GetGraphicsContext() const = 0;
@@ -82,7 +82,7 @@ namespace Suora
 
 		Texture2D* m_WindowIconOverride = nullptr;
 
-		Delegate<Array<std::string>> m_OnDesktopFilesDropped;
+		Delegate<Array<String>> m_OnDesktopFilesDropped;
 	};
 
 

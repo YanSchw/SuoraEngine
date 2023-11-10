@@ -98,8 +98,8 @@ namespace Suora
 		inline Ref<Shader> GetFullscreenPassShader() const { return m_FullscreenPassShader; }
 		static Ref<Shader> GetFullscreenPassShaderStatic();
 
-		static void RenderFramebufferIntoFramebuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const glm::ivec4& rect, const std::string& uniformName = "u_Texture", int attachmentIndex = 0, bool shouldClear = false);
-		static void BlitDepthBuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const std::string& uniformName = "u_Texture");
+		static void RenderFramebufferIntoFramebuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const glm::ivec4& rect, const String& uniformName = "u_Texture", int attachmentIndex = 0, bool shouldClear = false);
+		static void BlitDepthBuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const String& uniformName = "u_Texture");
 		static void SetFullscreenViewport(Framebuffer& buffer);
 
 		static void ClearDepth(uint32_t x, uint32_t y, uint32_t width, uint32_t height);

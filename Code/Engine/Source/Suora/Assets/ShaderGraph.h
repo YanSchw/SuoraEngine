@@ -23,8 +23,8 @@ namespace Suora
 
 	struct BaseShaderInput
 	{
-		std::string m_Label;
-		std::string m_DefaultSource;
+		String m_Label;
+		String m_DefaultSource;
 		ShaderGraphDataType m_Type = ShaderGraphDataType::None;
 		bool m_InVertexShader = false;
 	};
@@ -37,10 +37,10 @@ namespace Suora
 	public:
 		ShaderGraph();
 		~ShaderGraph();
-		void PreInitializeAsset(const std::string& str) override;
-		void InitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(const String& str) override;
+		void InitializeAsset(const String& str) override;
 		void Serialize(Yaml::Node& root) override;
-		std::string GetBaseShaderPath() const;
+		String GetBaseShaderPath() const;
 		Shader* GetShaderViaType(MaterialType type);
 		Shader* GetShader();
 		Shader* GetDepthShader();
@@ -51,13 +51,13 @@ namespace Suora
 		inline bool IsFlagSet(ShaderGraphFlags flag) const;
 
 		Array<BaseShaderInput> m_BaseShaderInputs;
-		void LoadBaseShaderInput(BaseShaderInput& input, int64_t& begin, int64_t& end, const std::string& str);
-		void LoadBaseShaderInputs(const std::string& path);
-		void GenerateShaderInput(std::string& str, int64_t begin, VisualNode* master, bool vertex, bool& error);
+		void LoadBaseShaderInput(BaseShaderInput& input, int64_t& begin, int64_t& end, const String& str);
+		void LoadBaseShaderInputs(const String& path);
+		void GenerateShaderInput(String& str, int64_t begin, VisualNode* master, bool vertex, bool& error);
 		void GenerateShaderGraphSource(ShaderNodeGraph& graph);
 
-		std::string m_BaseShader;
-		std::string m_ShaderSource;
+		String m_BaseShader;
+		String m_ShaderSource;
 		Ref<Shader> m_Shader, m_DepthShader, m_FlatWhiteShader, m_IDShader;
 		ShaderGraphFlags m_Flags = ShaderGraphFlags::None;
 	};

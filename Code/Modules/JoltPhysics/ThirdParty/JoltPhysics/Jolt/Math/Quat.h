@@ -232,7 +232,7 @@ public:
 	/// Store 3 as floats to memory (X, Y and Z component)
 	JPH_INLINE void				StoreFloat3(Float3 *outV) const;
 
-	/// To String
+	/// To JoltString
 	friend ostream &			operator << (ostream &inStream, QuatArg inQ)					{ inStream << inQ.mValue; return inStream; }
 
 	/// 4 vector that stores [x, y, z, w] parts of the quaternion

@@ -15,7 +15,7 @@ ObjectStreamTextIn::ObjectStreamTextIn(istream &inStream) :
 
 bool ObjectStreamTextIn::ReadDataType(EOSDataType &outType)
 {
-	String token;
+	JoltString token;
 	if (ReadWord(token))
 	{
 		transform(token.begin(), token.end(), token.begin(), [](char inValue) { return (char)tolower(inValue); });
@@ -46,7 +46,7 @@ bool ObjectStreamTextIn::ReadDataType(EOSDataType &outType)
 		else if (token == "bool")
 			outType  = EOSDataType::T_bool;
 		else if (token == "string")
-			outType  = EOSDataType::T_String;
+			outType  = EOSDataType::T_JoltString;
 		else if (token == "float3")
 			outType  = EOSDataType::T_Float3;
 		else if (token == "double3")
@@ -73,14 +73,14 @@ bool ObjectStreamTextIn::ReadDataType(EOSDataType &outType)
 	return false;
 }
 
-bool ObjectStreamTextIn::ReadName(String &outName)
+bool ObjectStreamTextIn::ReadName(JoltString &outName)
 {
 	return ReadWord(outName);
 }
 
 bool ObjectStreamTextIn::ReadIdentifier(Identifier &outIdentifier)
 {
-	String token;
+	JoltString token;
 	if (!ReadWord(token))
 		return false;
 	outIdentifier = (uint32)std::strtoul(token.c_str(), nullptr, 16);
@@ -99,11 +99,11 @@ bool ObjectStreamTextIn::ReadCount(uint32 &outCount)
 
 bool ObjectStreamTextIn::ReadPrimitiveData(uint8 &outPrimitive)
 {
-	String token;
+	JoltString token;
 	if (!ReadWord(token))
 		return false;
 	uint32 temporary;
-	IStringStream stream(token);
+	IJoltStringStream stream(token);
 	stream >> temporary;
 	if (!stream.fail())
 	{
@@ -115,11 +115,11 @@ bool ObjectStreamTextIn::ReadPrimitiveData(uint8 &outPrimitive)
 
 bool ObjectStreamTextIn::ReadPrimitiveData(uint16 &outPrimitive)
 {
-	String token;
+	JoltString token;
 	if (!ReadWord(token))
 		return false;
 	uint32 temporary;
-	IStringStream stream(token);
+	IJoltStringStream stream(token);
 	stream >> temporary;
 	if (!stream.fail())
 	{
@@ -131,57 +131,57 @@ bool ObjectStreamTextIn::ReadPrimitiveData(uint16 &outPrimitive)
 
 bool ObjectStreamTextIn::ReadPrimitiveData(int &outPrimitive)
 {
-	String token;
+	JoltString token;
 	if (!ReadWord(token))
 		return false;
-	IStringStream stream(token);
+	IJoltStringStream stream(token);
 	stream >> outPrimitive;
 	return !stream.fail();
 }
 
 bool ObjectStreamTextIn::ReadPrimitiveData(uint32 &outPrimitive)
 {
-	String token;
+	JoltString token;
 	if (!ReadWord(token))
 		return false;
-	IStringStream stream(token);
+	IJoltStringStream stream(token);
 	stream >> outPrimitive;
 	return !stream.fail();
 }
 
 bool ObjectStreamTextIn::ReadPrimitiveData(uint64 &outPrimitive)
 {
-	String token;
+	JoltString token;
 	if (!ReadWord(token))
 		return false;
-	IStringStream stream(token);
+	IJoltStringStream stream(token);
 	stream >> outPrimitive;
 	return !stream.fail();
 }
 
 bool ObjectStreamTextIn::ReadPrimitiveData(float &outPrimitive)
 {
-	String token;
+	JoltString token;
 	if (!ReadWord(token))
 		return false;
-	IStringStream stream(token);
+	IJoltStringStream stream(token);
 	stream >> outPrimitive;
 	return !stream.fail();
 }
 
 bool ObjectStreamTextIn::ReadPrimitiveData(double &outPrimitive)
 {
-	String token;
+	JoltString token;
 	if (!ReadWord(token))
 		return false;
-	IStringStream stream(token);
+	IJoltStringStream stream(token);
 	stream >> outPrimitive;
 	return !stream.fail();
 }
 
 bool ObjectStreamTextIn::ReadPrimitiveData(bool &outPrimitive)
 {
-	String token;
+	JoltString token;
 	if (!ReadWord(token))
 		return false;
 	transform(token.begin(), token.end(), token.begin(), [](char inValue) { return (char)tolower(inValue); });
@@ -189,7 +189,7 @@ bool ObjectStreamTextIn::ReadPrimitiveData(bool &outPrimitive)
 	return outPrimitive || token == "false";
 }
 
-bool ObjectStreamTextIn::ReadPrimitiveData(String &outPrimitive)
+bool ObjectStreamTextIn::ReadPrimitiveData(JoltString &outPrimitive)
 {
 	outPrimitive.clear();
 
@@ -210,7 +210,7 @@ bool ObjectStreamTextIn::ReadPrimitiveData(String &outPrimitive)
 		return false;
 
 	// Read string and interpret special characters
-	String result;
+	JoltString result;
 	bool escaped = false;
 	for (;;)
 	{
@@ -358,7 +358,7 @@ bool ObjectStreamTextIn::ReadChar(char &outChar)
 	return !mStream.eof();
 }
 
-bool ObjectStreamTextIn::ReadWord(String &outWord)
+bool ObjectStreamTextIn::ReadWord(JoltString &outWord)
 {
 	outWord.clear();
 

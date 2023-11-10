@@ -244,7 +244,7 @@ int main(int argc, char** argv)
 
 			// Determine motion quality
 			EMotionQuality motion_quality = mq == 0? EMotionQuality::Discrete : EMotionQuality::LinearCast;
-			String motion_quality_str = mq == 0? "Discrete" : "LinearCast";
+			JoltString motion_quality_str = mq == 0? "Discrete" : "LinearCast";
 
 			// Determine which thread counts to test
 			Array<uint> thread_permutations;
@@ -289,7 +289,7 @@ int main(int argc, char** argv)
 				physics_system.OptimizeBroadPhase();
 
 				// A tag used to identify the test
-				String tag = ToLower(motion_quality_str) + "_th" + ConvertToString(num_threads + 1);
+				JoltString tag = ToLower(motion_quality_str) + "_th" + ConvertToJoltString(num_threads + 1);
 
 			#ifdef JPH_DEBUG_RENDERER
 				// Open renderer output
@@ -353,7 +353,7 @@ int main(int argc, char** argv)
 					// Dump profile information every 100 iterations
 					if (enable_profiler && iterations % 100 == 0)
 					{
-						JPH_PROFILE_DUMP(tag + "_it" + ConvertToString(iterations));
+						JPH_PROFILE_DUMP(tag + "_it" + ConvertToJoltString(iterations));
 					}
 
 					if (record_state)

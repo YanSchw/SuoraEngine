@@ -12,7 +12,7 @@ JPH_SUPPRESS_WARNINGS_STD_END
 
 JPH_NAMESPACE_BEGIN
 
-String StringFormat(const char *inFMT, ...)
+JoltString JoltStringFormat(const char *inFMT, ...)
 {
 	char buffer[1024];
 
@@ -22,25 +22,25 @@ String StringFormat(const char *inFMT, ...)
 	vsnprintf(buffer, sizeof(buffer), inFMT, list);
 	va_end(list);
 
-	return String(buffer);
+	return JoltString(buffer);
 }
 
-void StringReplace(String &ioString, const string_view &inSearch, const string_view &inReplace)
+void JoltStringReplace(JoltString &ioJoltString, const string_view &inSearch, const string_view &inReplace)
 {
 	size_t index = 0;
 	for (;;)
 	{
-		 index = ioString.find(inSearch, index);
-		 if (index == String::npos)
+		 index = ioJoltString.find(inSearch, index);
+		 if (index == JoltString::npos)
 			 break;
 
-		 ioString.replace(index, inSearch.size(), inReplace);
+		 ioJoltString.replace(index, inSearch.size(), inReplace);
 
 		 index += inReplace.size();
 	}
 }
 
-void StringToVector(const string_view &inString, Array<String> &outVector, const string_view &inDelimiter, bool inClearVector)
+void JoltStringToVector(const string_view &inJoltString, Array<JoltString> &outVector, const string_view &inDelimiter, bool inClearVector)
 {
 	JPH_ASSERT(inDelimiter.size() > 0);
 
@@ -49,15 +49,15 @@ void StringToVector(const string_view &inString, Array<String> &outVector, const
 		outVector.clear();
 
 	// No string? no elements
-	if (inString.empty())
+	if (inJoltString.empty())
 		return;
 
 	// Start with initial string
-	String s(inString);
+	JoltString s(inJoltString);
 
 	// Add to vector while we have a delimiter
 	size_t i;
-	while (!s.empty() && (i = s.find(inDelimiter)) != String::npos)
+	while (!s.empty() && (i = s.find(inDelimiter)) != JoltString::npos)
 	{
 		outVector.push_back(s.substr(0, i));
 		s.erase(0, i + inDelimiter.length());
@@ -67,27 +67,27 @@ void StringToVector(const string_view &inString, Array<String> &outVector, const
 	outVector.push_back(s);
 }
 
-void VectorToString(const Array<String> &inVector, String &outString, const string_view &inDelimiter)
+void VectorToJoltString(const Array<JoltString> &inVector, JoltString &outJoltString, const string_view &inDelimiter)
 {
 	// Ensure string empty
-	outString.clear();
+	outJoltString.clear();
 
-	for (const String &s : inVector)
+	for (const JoltString &s : inVector)
 	{
 		// Add delimiter if not first element
-		if (!outString.empty())
-			outString.append(inDelimiter);
+		if (!outJoltString.empty())
+			outJoltString.append(inDelimiter);
 
 		// Add element
-		outString.append(s);
+		outJoltString.append(s);
 	}
 }
 
-String ToLower(const string_view &inString)
+JoltString ToLower(const string_view &inJoltString)
 {
-	String out;
-	out.reserve(inString.length());
-	for (char c : inString)
+	JoltString out;
+	out.reserve(inJoltString.length());
+	for (char c : inJoltString)
 		out.push_back((char)tolower(c));
 	return out;
 }

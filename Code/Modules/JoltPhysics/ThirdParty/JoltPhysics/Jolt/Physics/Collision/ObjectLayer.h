@@ -38,7 +38,7 @@ public:
 
 #ifdef JPH_TRACK_BROADPHASE_STATS
 	/// Get a string that describes this filter for stat tracking purposes
-	virtual String			GetDescription() const
+	virtual JoltString			GetDescription() const
 	{
 		return "No Description";
 	}

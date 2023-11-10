@@ -20,9 +20,9 @@ namespace Suora
 		Texture2D();
 		~Texture2D();
 
-		static Array<std::string> GetSupportedSourceAssetExtensions();
+		static Array<String> GetSupportedSourceAssetExtensions();
 
-		void PreInitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(const String& str) override;
 		virtual uint32_t GetAssetFileSize() override;
 
 		void Serialize(Yaml::Node& root) override;
@@ -35,7 +35,7 @@ namespace Suora
 		}
 
 		Texture* GetTexture();
-		Ref<TextureBuffer_stbi> Async_LoadTexture(const std::string& path);
+		Ref<TextureBuffer_stbi> Async_LoadTexture(const String& path);
 
 		Ref<std::future<Ref<TextureBuffer_stbi>>> m_AsyncTextureBuffer;
 
