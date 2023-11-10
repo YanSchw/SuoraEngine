@@ -132,7 +132,7 @@ namespace Suora
 		if (pin.PinID == (int64_t)ShaderGraphDataType::Float && pin.IsReceivingPin && !pin.Target)
 		{
 			while (m_TempDragFloatFields.Size() <= PinIndex) m_TempDragFloatFields.Add(0.0f);
-			const float temp = Util::StringToFloat(pin.m_AdditionalData);
+			const float temp = StringUtil::StringToFloat(pin.m_AdditionalData);
 			m_TempDragFloatFields[PinIndex] = temp;
 			EditorUI::DragFloat(&m_TempDragFloatFields[PinIndex], node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + (GetNodeGraphFont()->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom)), y + 2.0f, 100.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](std::string str) { pin.m_AdditionalData = str; });
 			if (m_TempDragFloatFields[PinIndex] != temp)

@@ -211,7 +211,7 @@ namespace Suora
 			{
 				for (int32_t i = 0; i < Name.Size(); i++)
 				{
-					std::vector<std::string> indicies = Util::SplitString(Indicies[i], '/');
+					std::vector<std::string> indicies = StringUtil::SplitString(Indicies[i], '/');
 					Node* node = affetedNode;
 					while (node && !indicies.empty())
 					{

@@ -178,8 +178,8 @@ namespace Suora
 				// open the Solution in VisualStudio
 				{
 					std::string fullPath = projectRootPath.string();
-					while (fullPath.find("\\") != std::string::npos) Util::ReplaceSequence(fullPath, "\\", "/");
-					std::vector<std::string> splitPath = Util::SplitString(fullPath, '/');
+					while (fullPath.find("\\") != std::string::npos) StringUtil::ReplaceSequence(fullPath, "\\", "/");
+					std::vector<std::string> splitPath = StringUtil::SplitString(fullPath, '/');
 					std::string projectName = splitPath[splitPath.size() - 1];
 					std::string solutionPath = projectRootPath.string() + "/" + projectName + ".sln";
 					Platform::OpenFileExternally(solutionPath);

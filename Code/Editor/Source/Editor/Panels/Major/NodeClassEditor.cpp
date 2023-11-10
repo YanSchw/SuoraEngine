@@ -55,8 +55,8 @@ namespace Suora
 			// Float Input
 			if (pin.PinID == (int64_t)ScriptDataType::Float && pin.IsReceivingPin && !pin.Target)
 			{
-				if (m_PinFloat.find(&pin) == m_PinFloat.end()) m_PinFloat[&pin] = Util::StringToFloat(pin.m_AdditionalData);
-				const float temp = Util::StringToFloat(pin.m_AdditionalData);
+				if (m_PinFloat.find(&pin) == m_PinFloat.end()) m_PinFloat[&pin] = StringUtil::StringToFloat(pin.m_AdditionalData);
+				const float temp = StringUtil::StringToFloat(pin.m_AdditionalData);
 				EditorUI::DragFloat(&m_PinFloat[&pin], node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + (GetNodeGraphFont()->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom)), y + 2.0f, 100.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](std::string str) { pin.m_AdditionalData = str; });
 				if (m_PinFloat[&pin] != temp)
 				{

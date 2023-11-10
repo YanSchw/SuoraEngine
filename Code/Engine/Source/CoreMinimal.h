@@ -9,10 +9,9 @@
 #include "Suora/Reflection/SubclassOf.h"
 #include "Suora/Reflection/New.h"
 
-#include "Suora/Common/VectorUtils.h"
+#include "Suora/Common/Common.h"
 #include "Suora/Common/Delegate.h"
 #include "Suora/Common/Math.h"
-#include "Suora/Common/Array.h"
 
 #include "Suora/Core/Object/Object.h"
 #include "Suora/Core/Object/Pointer.h"

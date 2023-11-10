@@ -89,7 +89,7 @@ namespace Suora
 	void ClassMember_Delegate::FeedSignature(const std::string& args)
 	{
 		std::string sub = args.substr(9, args.size() - 10);
-		std::vector<std::string> arg = Util::SplitString(sub, ',');
+		std::vector<std::string> arg = StringUtil::SplitString(sub, ',');
 		for (auto& It : arg)
 		{
 			if (It != "TDelegate::NoParams")

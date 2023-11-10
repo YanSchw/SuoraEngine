@@ -192,7 +192,7 @@ void main(void)\n\
 	void ShaderGraph::LoadBaseShaderInputs(const std::string& path)
 	{
 		std::string str = Platform::ReadFromFile(path);
-		Util::RemoveCommentsFromString(str);
+		StringUtil::RemoveCommentsFromString(str);
 		int64_t begin = 0, end = 0;
 		m_BaseShaderInputs.Clear();
 		while (true)
@@ -288,7 +288,7 @@ void main(void)\n\
 		}
 
 		std::string src = Platform::ReadFromFile(GetBaseShaderPath());
-		Util::RemoveCommentsFromString(src);
+		StringUtil::RemoveCommentsFromString(src);
 
 		// Uniforms
 		Array<UniformSlot> oldSlots = m_UniformSlots;
@@ -338,13 +338,13 @@ void main(void)\n\
 		}
 
 		// Proccess BaseShader
-		while (src.find("$VERT_INPUTS") != std::string::npos) Util::ReplaceSequence(src, "$VERT_INPUTS", "" + uniforms);
-		while (src.find("$FRAG_INPUTS") != std::string::npos) Util::ReplaceSequence(src, "$FRAG_INPUTS", "" + uniforms);
+		while (src.find("$VERT_INPUTS") != std::string::npos) StringUtil::ReplaceSequence(src, "$VERT_INPUTS", "" + uniforms);
+		while (src.find("$FRAG_INPUTS") != std::string::npos) StringUtil::ReplaceSequence(src, "$FRAG_INPUTS", "" + uniforms);
 
 		while (src.find("$DEFERRED") != std::string::npos)
 		{
 			// This removes the $Symbol, but marks the generated Source with a comment
-			Util::ReplaceSequence(src, "$DEFERRED", "/* DEFERRED */");
+			StringUtil::ReplaceSequence(src, "$DEFERRED", "/* DEFERRED */");
 			m_Flags = m_Flags | ShaderGraphFlags::Deferred;
 		}
 

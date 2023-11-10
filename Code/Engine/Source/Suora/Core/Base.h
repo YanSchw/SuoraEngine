@@ -68,3 +68,4 @@ namespace Suora
 
 #include "Suora/Core/Log.h"
 #include "Suora/Core/Assert.h"
+#include "Suora/Core/PlatformTypes.h"

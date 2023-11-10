@@ -83,7 +83,7 @@ namespace Suora
 				}
 				for (SelectionOverlayEntry& entry : m_Entries)
 				{
-					if (Util::ToLower(entry.Label).find(Util::ToLower(s_SearchLabel)) != std::string::npos)
+					if (StringUtil::ToLower(entry.Label).find(StringUtil::ToLower(s_SearchLabel)) != std::string::npos)
 					{
 						m_DisplayEntries.Add(entry);
 					}
@@ -152,7 +152,7 @@ namespace Suora
 					w -= 25.0f;
 					if (w + m_ScrollY <= y || w + m_ScrollY >= y + height - 40.0f) { i++; continue; }
 					params.ButtonColor = (m_SelectedItem == i) ? EditorPreferences::Get()->UiHighlightColor : EditorPreferences::Get()->UiBackgroundColor;
-					std::vector<std::string> strs = Util::SplitString(entry->Label, '/');
+					std::vector<std::string> strs = StringUtil::SplitString(entry->Label, '/');
 					if (EditorUI::Button(strs[strs.size() - 1], _x + 5.0f, w + m_ScrollY, _width, 25.0f, params) || (NativeInput::GetKey(Key::Enter) && m_SelectedItem == i))
 					{
 						entry->Lambda();
@@ -172,7 +172,7 @@ namespace Suora
 				Array<SelectionOverlayEntry*> PlainEntries;
 				for (SelectionOverlayEntry& entry : m_DisplayEntries)
 				{
-					std::vector<std::string> strs = Util::SplitString(entry.Label, '/');
+					std::vector<std::string> strs = StringUtil::SplitString(entry.Label, '/');
 					if (strs.size() == 1) PlainEntries.Add(&entry);
 					else
 					{

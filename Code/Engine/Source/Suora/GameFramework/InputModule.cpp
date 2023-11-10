@@ -314,7 +314,7 @@ namespace Suora
 
 	Ref<InputAction> InputModule::GetInputActionByLabel(const std::string& label)
 	{
-		std::vector<std::string> Category_Action = Util::SplitString(label, '/');
+		std::vector<std::string> Category_Action = StringUtil::SplitString(label, '/');
 		if (Category_Action.size() != 2) { return nullptr; }
 		InputCategory* Category = ProjectSettings::Get()->m_InputSettings->GetCategory(Category_Action[0]);
 		if (!Category) { return nullptr; }

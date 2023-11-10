@@ -122,7 +122,7 @@ namespace Suora::Tools
 			return;
 		}
 
-		Util::RemoveCommentsFromString(str);
+		StringUtil::RemoveCommentsFromString(str);
 		// TODO: Remove Comments from file. AND Remove \n and \t etc.
 		if (str.find("SUORA_CLASS") != std::string::npos && path.stem() != "Object")
 		{

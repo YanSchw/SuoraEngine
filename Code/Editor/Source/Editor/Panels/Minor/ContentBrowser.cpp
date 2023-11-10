@@ -191,7 +191,7 @@ namespace Suora
 
 		if (EditorUI::_GetOverlays().Size() == 0)
 		{
-			Params.TooltipText = asset->GetAssetName() + " (" + asset->GetClass().GetNativeClassName() + ")" + "\n" + "Asset-UUID: " + asset->m_UUID.GetString() + "\n" + asset->m_Path.string() + "\n" + "Filesize: " + Util::FloatToString((float)(asset->GetAssetFileSize()) / 1024.f) + " kB";
+			Params.TooltipText = asset->GetAssetName() + " (" + asset->GetClass().GetNativeClassName() + ")" + "\n" + "Asset-UUID: " + asset->m_UUID.GetString() + "\n" + asset->m_Path.string() + "\n" + "Filesize: " + StringUtil::FloatToString((float)(asset->GetAssetFileSize()) / 1024.f) + " kB";
 		}
 		else
 		{
@@ -243,7 +243,7 @@ namespace Suora
 		EditorUI::Text(asset->GetAssetName(), Font::Instance, x, y, size.x, size.y - size.x, 22, Vec2(-0.75f, 0.75f), (index == m_SelectedElement) ? EditorPreferences::Get()->UiBackgroundColor : EditorPreferences::Get()->UiTextColor);
 
 		// Asset Type
-		EditorUI::Text(Util::SmartToUpperCase(asset->GetNativeClass().GetNativeClassName(), true), Font::Instance, x, y, size.x, size.y - size.x, 18.0f, Vec2(0.92f, -0.92f), (index == m_SelectedElement) ? EditorPreferences::Get()->UiForgroundColor : EditorPreferences::Get()->UiHighlightColor);
+		EditorUI::Text(StringUtil::SmartToUpperCase(asset->GetNativeClass().GetNativeClassName(), true), Font::Instance, x, y, size.x, size.y - size.x, 18.0f, Vec2(0.92f, -0.92f), (index == m_SelectedElement) ? EditorPreferences::Get()->UiForgroundColor : EditorPreferences::Get()->UiHighlightColor);
 
 		/// Asset Preview
 		EditorUI::DrawAssetPreview(asset, asset->GetNativeClass(), rectX, rectY, rectWidth, rectHeight);

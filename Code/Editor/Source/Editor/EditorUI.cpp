@@ -620,8 +620,8 @@ namespace Suora
 				if (NativeInput::GetKeyDown(Key::Tab)) DraggedNumberTabulatePtr = DraggedNumberPtr;
 				switch (m_Type)
 				{
-				case ClassMember::Type::Integer32: *(int32_t*)DraggedNumberPtr = Util::StringToInt32(DraggedNumberStr); break;
-				case ClassMember::Type::Float: *(float*)DraggedNumberPtr = Util::StringToFloat(DraggedNumberStr); break;
+				case ClassMember::Type::Integer32: *(int32_t*)DraggedNumberPtr = StringUtil::StringToInt32(DraggedNumberStr); break;
+				case ClassMember::Type::Float: *(float*)DraggedNumberPtr = StringUtil::StringToFloat(DraggedNumberStr); break;
 				default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
 				}
 				DraggedNumberPtr = nullptr;
@@ -631,8 +631,8 @@ namespace Suora
 		std::string label;
 		switch (type)
 		{
-		case ClassMember::Type::Integer32: label = Util::Int32ToString(*(int32_t*)n); break;
-		case ClassMember::Type::Float: label = Util::FloatToString(*(float*)n); break;
+		case ClassMember::Type::Integer32: label = StringUtil::Int32ToString(*(int32_t*)n); break;
+		case ClassMember::Type::Float: label = StringUtil::FloatToString(*(float*)n); break;
 		default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
 		}
 
@@ -764,12 +764,12 @@ namespace Suora
 		}
 		void PullAssetEntries(const std::string& label)
 		{
-			const std::string lowerLabel = Util::ToLower(label);
+			const std::string lowerLabel = StringUtil::ToLower(label);
 			m_Entries.Clear();
 			Array<Asset*> assets = AssetManager::GetAssetsByClass(m_AssetClass);
 			for (Asset* asset : assets)
 			{
-				if (Util::ToLower(asset->GetAssetName()).find(lowerLabel) != std::string::npos) m_Entries.Add(asset);
+				if (StringUtil::ToLower(asset->GetAssetName()).find(lowerLabel) != std::string::npos) m_Entries.Add(asset);
 			}
 		}
 		virtual void Render(float deltaTime) override
@@ -1057,8 +1057,8 @@ namespace Suora
 			state = !state;
 		}
 		const float imageSize = 20.0f; //25.0f;
-		Text(Util::SmartToUpperCase(category, false), Font::Instance, x + imageSize + 10 + 2, y - 2, width - height - 10, height, params.TextSize, Vec2(-1.0f, 0.0f), Color(0, 0, 0, 0.25f));
-		Text(Util::SmartToUpperCase(category, false), Font::Instance, x + imageSize + 10, y, width - height - 10, height, params.TextSize, Vec2(-1.0f, 0.0f), Color(1.0f));
+		Text(StringUtil::SmartToUpperCase(category, false), Font::Instance, x + imageSize + 10 + 2, y - 2, width - height - 10, height, params.TextSize, Vec2(-1.0f, 0.0f), Color(0, 0, 0, 0.25f));
+		Text(StringUtil::SmartToUpperCase(category, false), Font::Instance, x + imageSize + 10, y, width - height - 10, height, params.TextSize, Vec2(-1.0f, 0.0f), Color(1.0f));
 		EditorUI::DrawTexturedRect(state ? ArrowDown->GetTexture() : ArrowRight->GetTexture(), x + (imageSize / 4.0f) + 2.0f, y + (height - imageSize) / 2.0f - 2.0f, imageSize, imageSize, 0.0f, Color(0.0f, 0.0f, 0.0f, 0.2f));
 		EditorUI::DrawTexturedRect(state ? ArrowDown->GetTexture() : ArrowRight->GetTexture(), x + (imageSize / 4.0f), y + (height - imageSize) / 2.0f, imageSize, imageSize, 0.0f, Color(1.0f));
 		return state;

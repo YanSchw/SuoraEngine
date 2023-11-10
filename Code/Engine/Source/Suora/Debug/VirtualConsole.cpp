@@ -44,7 +44,7 @@ namespace Suora
 
 	void VirtualConsole::PushMessage(ConsoleMessage msg)
 	{
-		while (Util::ReplaceSequence(msg.m_Message, "\r", ""));
+		while (StringUtil::ReplaceSequence(msg.m_Message, "\r", ""));
 		m_Messages.push_back(msg);
 	}
 	void VirtualConsole::IssueCommand(const std::string& cmd)

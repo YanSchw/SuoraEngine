@@ -274,7 +274,7 @@ namespace Suora
 	void VisualNodeGraph::VisualNodePinFromString(const std::string& str, VisualNodePin& a)
 	{
 		SUORA_ASSERT(a.IsReceivingPin, "Pin A must be a receiving Pin!");
-		std::vector<std::string> strs = Util::SplitString(str, '/');
+		std::vector<std::string> strs = StringUtil::SplitString(str, '/');
 
 		Ref<VisualNode> node = m_Nodes[std::stoi(strs[0])];
 		const bool isInput = strs[1] == "Input";

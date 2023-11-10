@@ -418,7 +418,7 @@ namespace Suora
 
 	std::string ShaderGraphCompiler::CompilePin(VisualNodePin& pin, bool vertex, bool& error)
 	{
-		return (pin.Target ? CompileShaderNode(*(pin.Target->GetNode()), *(pin.Target), vertex, error) : (std::to_string(Util::StringToFloat(pin.m_AdditionalData))/*pin.m_AdditionalData != "" ? pin.m_AdditionalData : "0.0"*/));
+		return (pin.Target ? CompileShaderNode(*(pin.Target->GetNode()), *(pin.Target), vertex, error) : (std::to_string(StringUtil::StringToFloat(pin.m_AdditionalData))/*pin.m_AdditionalData != "" ? pin.m_AdditionalData : "0.0"*/));
 	}
 
 }

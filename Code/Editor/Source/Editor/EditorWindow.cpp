@@ -283,7 +283,7 @@ namespace Suora
 		if (EditorUI::tooltipFrames <= 0.2f) EditorUI::tooltipAlpha = Math::Lerp<float>(EditorUI::tooltipAlpha, 1, 25.f * deltaTime);
 		else  EditorUI::tooltipAlpha = Math::Lerp<float>(EditorUI::tooltipAlpha, 0, 35.f * deltaTime);
 
-		std::vector<std::string> lines = Util::SplitString(EditorUI::tooltipText, '\n');
+		std::vector<std::string> lines = StringUtil::SplitString(EditorUI::tooltipText, '\n');
 
 		float x = NativeInput::GetMousePosition().x + 15 + (1 - EditorUI::tooltipAlpha) * 30.f;
 		float height = 25.0f + 25.0f * lines.size();

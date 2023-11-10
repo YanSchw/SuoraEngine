@@ -273,7 +273,7 @@ namespace Suora
 				{
 					if (It.m_Type == ShaderGraphDataType::Texture2D)
 					{
-						std::string label = Util::ToLower(It.m_Label);
+						std::string label = StringUtil::ToLower(It.m_Label);
 						if (label.find("base") != std::string::npos || label.find("albedo") != std::string::npos || label.find("diffuse") != std::string::npos)
 						{
 							aiString textureBaseColor;

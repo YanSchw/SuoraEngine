@@ -16,7 +16,8 @@ project "SuoraBuildTool"
 	{
 		"%{ENGINE_PATH}/Code/Dependencies/spdlog/include",
 		"%{ENGINE_PATH}/Code/Engine/Source",
-		"%{ENGINE_PATH}/Code/Dependencies"
+		"%{ENGINE_PATH}/Code/Dependencies",
+		"%{ENGINE_PATH}/Code/Dependencies/glm/glm/**.hpp",
 	}
 
 	links

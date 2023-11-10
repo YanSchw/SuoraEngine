@@ -254,7 +254,7 @@ namespace Suora
 			}
 			if (pin.PinID == (int64_t)ScriptDataType::Float)
 			{
-				const int64_t f = ScriptStack::ConvertToStack<float>(Util::StringToFloat(pin.m_AdditionalData));
+				const int64_t f = ScriptStack::ConvertToStack<float>(StringUtil::StringToFloat(pin.m_AdditionalData));
 				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::PushConstant, { f }));
 			}
 			if (pin.PinID == (int64_t)ScriptDataType::Bool)
@@ -335,7 +335,7 @@ namespace Suora
 				event->AddOutputPin("Exec", Color(1.0f), 1, true, 30.0f);
 				for (FunctionParam& param : func->m_Params)
 				{
-					event->AddOutputPin(Util::SmartToUpperCase(param.m_Name, false), GetScriptDataTypeColor(StringToScriptDataType(param.m_Type)), (int64_t)StringToScriptDataType(param.m_Type), false);
+					event->AddOutputPin(StringUtil::SmartToUpperCase(param.m_Name, false), GetScriptDataTypeColor(StringToScriptDataType(param.m_Type)), (int64_t)StringToScriptDataType(param.m_Type), false);
 				}
 
 				AddSupportedNode(event);
@@ -366,7 +366,7 @@ namespace Suora
 				}
 				for (FunctionParam& param : func->m_Params)
 				{
-					function->AddInputPin(Util::SmartToUpperCase(param.m_Name, false), GetScriptDataTypeColor(StringToScriptDataType(param.m_Type)), (int64_t)StringToScriptDataType(param.m_Type), true);
+					function->AddInputPin(StringUtil::SmartToUpperCase(param.m_Name, false), GetScriptDataTypeColor(StringToScriptDataType(param.m_Type)), (int64_t)StringToScriptDataType(param.m_Type), true);
 				}
 				if (func->m_ReturnType != "void")
 				{
@@ -443,7 +443,7 @@ namespace Suora
 								// Do not add a None-Existing DataType to the Node! e.g. DelegateNoParams
 								//if (delegate->m_Args[i] == ScriptDataType::None) continue;
 
-								node->AddOutputPin(Util::SmartToUpperCase(delegate->m_StrArgs[i], false), GetScriptDataTypeColor(delegate->m_Args[i]), (int64_t)delegate->m_Args[i], false);
+								node->AddOutputPin(StringUtil::SmartToUpperCase(delegate->m_StrArgs[i], false), GetScriptDataTypeColor(delegate->m_Args[i]), (int64_t)delegate->m_Args[i], false);
 								VisualNodePin& pin = node->m_OutputPins[node->m_OutputPins.Last()];
 								if (pin.PinID == (int64_t)ScriptDataType::ObjectPtr)
 								{
