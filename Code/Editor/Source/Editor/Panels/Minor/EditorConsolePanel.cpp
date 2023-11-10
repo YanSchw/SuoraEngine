@@ -82,7 +82,7 @@ namespace Suora
 
 		EditorUI::Button("", 0, GetHeight() - 35.0f, GetWidth(), 35.0f, PanelButtonParam);
 
-		EditorUI::TextField(&s_InputCommand, 5.0f, GetHeight() - 30.0f, GetWidth() - 250.0f, 25.0f, EditorUI::TextFieldButtonParams(), [](std::string cmd)
+		EditorUI::TextField(&s_InputCommand, 5.0f, GetHeight() - 30.0f, GetWidth() - 250.0f, 25.0f, EditorUI::TextFieldButtonParams(), [](String cmd)
 		{
 			if (NativeInput::GetKeyDown(Key::Enter))
 			{

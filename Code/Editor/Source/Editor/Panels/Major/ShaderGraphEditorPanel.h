@@ -54,7 +54,7 @@ namespace Suora
 		void SaveAsset() override;
 	private:
 		bool m_InitResetCamera = false;
-		std::string m_LastBaseShader;
+		String m_LastBaseShader;
 	};
 
 }

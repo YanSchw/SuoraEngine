@@ -69,7 +69,7 @@ namespace Suora
 		EditorUI::Text("Asset Name", Font::Instance, x + width - 280.0f, y + 85.0f, 265.0f, 20.0f, 26.0f, Vec2(-1.0f, 0.0f), Color(1));
 		EditorUI::TextField(&s_AssetName, x + width - 280.0f, y + 55.0f, 265.0f, 30.0f);
 
-		const std::string assetPath = m_Directory + s_AssetName + GetAssetExtension();
+		const String assetPath = m_Directory + s_AssetName + GetAssetExtension();
 		EditorUI::Text(assetPath, Font::Instance, x, y + 1.0f, width, 15.0f, 18.0f, Vec2(0.95f, 0.0f), Color(0.8f));
 
 		if (EditorUI::Button("Cancel", x + width - 140.0f, y + 15.0f, 125.0f, 30.0f))
@@ -86,7 +86,7 @@ namespace Suora
 		}
 	}
 
-	std::string CreateAssetOverlay::GetAssetExtension()
+	String CreateAssetOverlay::GetAssetExtension()
 	{
 		return ".asset";
 	}
@@ -101,7 +101,7 @@ namespace Suora
 		CreateAssetOverlay::Render(deltaTime);
 	}
 
-	std::string CreateSimpleAssetOverlay::GetAssetExtension()
+	String CreateSimpleAssetOverlay::GetAssetExtension()
 	{
 		return Asset::GetAssetExtensionByClass(m_AssetClass.GetNativeClassID());
 	}
@@ -112,7 +112,7 @@ namespace Suora
 		m_Lambda(asset);
 		Yaml::Node root;
 		asset->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(asset->m_Path.string(), out);
 	}
@@ -172,7 +172,7 @@ namespace Suora
 		blueprint->InitComposition(m_ParentClass);
 		Yaml::Node root;
 		blueprint->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(blueprint->m_Path.string(), out);
 	}
@@ -196,7 +196,7 @@ namespace Suora
 		level->InitComposition(m_ParentClass);
 		Yaml::Node root;
 		level->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(level->m_Path.string(), out);
 	}
@@ -213,7 +213,7 @@ namespace Suora
 		EditorUI::DrawTexturedRect(m_PreviewTexture, x + 50.0f, y + 50.0f, 250.0f, 250.0f, 0.0f, Color(1.0f));
 
 	}
-	std::string ImportTexture2DOverlay::GetAssetExtension()
+	String ImportTexture2DOverlay::GetAssetExtension()
 	{
 		return ".texture";
 	}
@@ -223,7 +223,7 @@ namespace Suora
 		asset->SetSourceAssetName(m_SourceFile.filename().string());
 		Yaml::Node root;
 		asset->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(asset->m_Path.string(), out);
 	}
@@ -236,7 +236,7 @@ namespace Suora
 		EditorUI::Text("Create Materials", Font::Instance, x + 45.0f, y + 15.0f, 250.0f, 25.0f, 22.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
 		EditorUI::AssetDropdown((Asset**)&m_Shadergraph, ShaderGraph::StaticClass(), x + 15.0f, y + 50.0f, 250.0f, 35.0f);
 	}
-	std::string ImportMeshOverlay::GetAssetExtension()
+	String ImportMeshOverlay::GetAssetExtension()
 	{
 		return ".mesh";
 	}
@@ -273,8 +273,8 @@ namespace Suora
 				{
 					if (It.m_Type == ShaderGraphDataType::Texture2D)
 					{
-						std::string label = StringUtil::ToLower(It.m_Label);
-						if (label.find("base") != std::string::npos || label.find("albedo") != std::string::npos || label.find("diffuse") != std::string::npos)
+						String label = StringUtil::ToLower(It.m_Label);
+						if (label.find("base") != String::npos || label.find("albedo") != String::npos || label.find("diffuse") != String::npos)
 						{
 							aiString textureBaseColor;
 							ret = mat->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), textureBaseColor);
@@ -285,7 +285,7 @@ namespace Suora
 								{
 									if (File::IsPathSubpathOf(m_Directory, allTextures[j]->m_Path))
 									{
-										if (allTextures[j]->GetSourceAssetName() == std::string(textureBaseColor.C_Str()))
+										if (allTextures[j]->GetSourceAssetName() == String(textureBaseColor.C_Str()))
 										{
 											It.m_Texture2D = allTextures[j];
 											break;
@@ -294,7 +294,7 @@ namespace Suora
 								}
 							}
 						}
-						if (label.find("normal") != std::string::npos)
+						if (label.find("normal") != String::npos)
 						{
 							aiString textureNormal;
 							ret = mat->Get(AI_MATKEY_TEXTURE(aiTextureType_NORMALS, 0), textureNormal);
@@ -305,7 +305,7 @@ namespace Suora
 								{
 									if (File::IsPathSubpathOf(m_Directory, allTextures[j]->m_Path))
 									{
-										if (allTextures[j]->GetSourceAssetName() == std::string(textureNormal.C_Str()))
+										if (allTextures[j]->GetSourceAssetName() == String(textureNormal.C_Str()))
 										{
 											It.m_Texture2D = allTextures[j];
 											break;
@@ -319,7 +319,7 @@ namespace Suora
 
 				Yaml::Node root;
 				material->Serialize(root);
-				std::string out;
+				String out;
 				Yaml::Serialize(root, out);
 				Platform::WriteToFile(material->m_Path.string(), out);
 
@@ -329,7 +329,7 @@ namespace Suora
 		
 		Yaml::Node root;
 		asset->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(asset->m_Path.string(), out);
 

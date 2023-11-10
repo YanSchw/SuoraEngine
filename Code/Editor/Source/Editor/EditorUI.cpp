@@ -394,7 +394,7 @@ namespace Suora
 		DrawRect(x + width - thickness, y, thickness, height, 0, color);
 	}
 
-	void EditorUI::Text(const std::string& text, Font* font, float x, float y, float width, float height, float size, const Vec2& orientation, const Color& color, const Array<Color>& colors)
+	void EditorUI::Text(const String& text, Font* font, float x, float y, float width, float height, float size, const Vec2& orientation, const Color& color, const Array<Color>& colors)
 	{
 		RenderCommand::SetViewport(x, y, width, height);
 		if (!font->m_IsAtlasLoaded)
@@ -486,7 +486,7 @@ namespace Suora
 		delete[] iBase;
 	}
 
-	bool EditorUI::Button(const std::string& text, float x, float y, float width, float height, ButtonParams params)
+	bool EditorUI::Button(const String& text, float x, float y, float width, float height, ButtonParams params)
 	{
 		bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height && (GetHoveredOverlay() == s_CurrentProcessedOverlay);
 		const bool ButtonClicked = Hovering && (params.OverrideActivationEvent ? params.OverrittenActivationEvent() : NativeInput::GetMouseButtonDown(Mouse::ButtonLeft)) && CurrentWindow->m_InputEvent == params.InputMode && !WasInputConsumed() && !CurrentWindow->GetWindow()->IsCursorLocked();
@@ -547,7 +547,7 @@ namespace Suora
 		return inDrag && Buffer.x == x && Buffer.y == y && Buffer.width == width && Buffer.height == height && glm::distance(Pos, GetInput()) > offset;
 	}
 
-	bool EditorUI::DropDown(const std::vector<std::pair<std::string, std::function<void(void)>>>& options, int index, float x, float y, float width, float height)
+	bool EditorUI::DropDown(const std::vector<std::pair<String, std::function<void(void)>>>& options, int index, float x, float y, float width, float height)
 	{
 		if (Button(options[index].first, x, y, width, height))
 		{
@@ -571,7 +571,7 @@ namespace Suora
 			TextFieldCharBuffer.Add(keyCode);
 		}
 	}
-	void EditorUI::TextField(std::string* str, float x, float y, float width, float height, ButtonParams params, const std::function<void(std::string)>& lambda)
+	void EditorUI::TextField(String* str, float x, float y, float width, float height, ButtonParams params, const std::function<void(String)>& lambda)
 	{
 		if (EditorUI::Button(*str, x, y, width, height, params) && !TextField_Str && CurrentWindow->m_InputEvent == EditorInputEvent::None)
 		{
@@ -588,7 +588,7 @@ namespace Suora
 
 	}
 
-	void EditorUI::_SetTextFieldStringPtr(std::string* str, float x, float y, float width, float height, bool needsFlag)
+	void EditorUI::_SetTextFieldStringPtr(String* str, float x, float y, float width, float height, bool needsFlag)
 	{
 		TextField_StrFlag = true;
 		TextField_Str = str;
@@ -597,20 +597,20 @@ namespace Suora
 		overlay->needsFlag = needsFlag;
 	}
 
-	void EditorUI::DragInt32(int32_t* i, float x, float y, float width, float height, const std::function<void(std::string)>& lambda)
+	void EditorUI::DragInt32(int32_t* i, float x, float y, float width, float height, const std::function<void(String)>& lambda)
 	{
 		DragNumber(i, ClassMember::Type::Integer32, x, y, width, height, lambda);
 	}
-	void EditorUI::DragFloat(float* f, float x, float y, float width, float height, const std::function<void(std::string)>& lambda)
+	void EditorUI::DragFloat(float* f, float x, float y, float width, float height, const std::function<void(String)>& lambda)
 	{
 		DragNumber(f, ClassMember::Type::Float, x, y, width, height, lambda);
 	}
-	void EditorUI::DragNumber(void* n, ClassMember::Type type, float x, float y, float width, float height, const std::function<void(std::string)>& lambda)
+	void EditorUI::DragNumber(void* n, ClassMember::Type type, float x, float y, float width, float height, const std::function<void(String)>& lambda)
 	{
 		struct DragFloatTextField : public TextFieldOverlay
 		{
 			ClassMember::Type m_Type;
-			DragFloatTextField(std::string* str, const std::function<void(std::string)>& lambda, ClassMember::Type type, bool needsFlag = true) : TextFieldOverlay(str, 26.0f, lambda, needsFlag)
+			DragFloatTextField(String* str, const std::function<void(String)>& lambda, ClassMember::Type type, bool needsFlag = true) : TextFieldOverlay(str, 26.0f, lambda, needsFlag)
 			{
 				m_Type = type;
 				CursorSelectionOffset = str->size();
@@ -628,7 +628,7 @@ namespace Suora
 			}
 		};
 
-		std::string label;
+		String label;
 		switch (type)
 		{
 		case ClassMember::Type::Integer32: label = StringUtil::Int32ToString(*(int32_t*)n); break;
@@ -746,7 +746,7 @@ namespace Suora
 	static bool	   AssetDropDownDone = false;
 	struct AssetDropDownOverlay : public EditorUI::Overlay
 	{
-		inline static std::string s_SearchLabel, s_LastSearchLabel;
+		inline static String s_SearchLabel, s_LastSearchLabel;
 		Array<Asset*> m_Entries;
 		Class m_AssetClass = Class::None;
 		float m_ScrollY = 0.0f;
@@ -762,14 +762,14 @@ namespace Suora
 			m_Entries.Clear();
 			m_Entries = AssetManager::GetAssetsByClass(m_AssetClass);
 		}
-		void PullAssetEntries(const std::string& label)
+		void PullAssetEntries(const String& label)
 		{
-			const std::string lowerLabel = StringUtil::ToLower(label);
+			const String lowerLabel = StringUtil::ToLower(label);
 			m_Entries.Clear();
 			Array<Asset*> assets = AssetManager::GetAssetsByClass(m_AssetClass);
 			for (Asset* asset : assets)
 			{
-				if (StringUtil::ToLower(asset->GetAssetName()).find(lowerLabel) != std::string::npos) m_Entries.Add(asset);
+				if (StringUtil::ToLower(asset->GetAssetName()).find(lowerLabel) != String::npos) m_Entries.Add(asset);
 			}
 		}
 		virtual void Render(float deltaTime) override
@@ -840,7 +840,7 @@ namespace Suora
 	{
 		SuoraVerify(asset);
 		Array<Asset*> assets = AssetManager::GetAssetsByClass(assetClass);
-		std::vector<std::string> assetsPaths;
+		std::vector<String> assetsPaths;
 		assetsPaths.push_back("None");
 		for (int j = 0; j < assets.Size(); j++) assetsPaths.push_back(assets[j]->m_Name);
 
@@ -854,7 +854,7 @@ namespace Suora
 		int i = assets.IndexOf((Asset*)asset);
 		if (i == -1) i = 0; else i++;
 
-		std::string assetName = (*asset) ? (*asset)->GetAssetName() : "None";
+		String assetName = (*asset) ? (*asset)->GetAssetName() : "None";
 		ButtonParams DropDownParams;
 		if (*asset && (*asset)->IsFlagSet(AssetFlags::Missing))
 		{
@@ -959,7 +959,7 @@ namespace Suora
 		SelectionOverlay* overlay = CreateOverlay<SelectionOverlay>(NativeInput::GetMousePosition().x,  CurrentWindow->GetWindow()->GetHeight() - NativeInput::GetMousePosition().y - 400.0f, 400.0f, 400.0f);
 		for (Class& cls : subClasses)
 		{
-			std::string className = cls.GetClassName();
+			String className = cls.GetClassName();
 			Class level = cls;
 			while (level != base)
 			{
@@ -1047,7 +1047,7 @@ namespace Suora
 		return nullptr;
 	}
 
-	bool EditorUI::CategoryShutter(int64_t id, const std::string& category, float x, float& y, float width, float height, ButtonParams params)
+	bool EditorUI::CategoryShutter(int64_t id, const String& category, float x, float& y, float width, float height, ButtonParams params)
 	{
 		y += 1.0f;
 		if (CategoryShutterStates.find(id) == CategoryShutterStates.end()) CategoryShutterStates[id] = true;
@@ -1104,7 +1104,7 @@ namespace Suora
 		(*scrollCurrent) = Math::Clamp((*scrollCurrent), scrollUp * -1, scrollDown);
 	}
 
-	void EditorUI::Tooltip(const std::string& text, float x, float y, float width, float height)
+	void EditorUI::Tooltip(const String& text, float x, float y, float width, float height)
 	{
 		bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height;
 		if (Hovering)
@@ -1114,7 +1114,7 @@ namespace Suora
 		}
 	}
 
-	void EditorUI::Tooltip(const std::string& text)
+	void EditorUI::Tooltip(const String& text)
 	{
 		tooltipFrames = 0;
 		tooltipText = text;

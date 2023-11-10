@@ -128,7 +128,7 @@ namespace Suora
 
 		Yaml::Node root;
 		m_Mesh->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(m_Mesh->m_Path.string(), out);
 	}

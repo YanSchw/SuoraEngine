@@ -36,21 +36,21 @@ namespace Suora
 		void DrawClassMember(float& x, float& y, Node* obj, ClassMember* member, int memberIndex);
 
 		/** UI Utility */
-		bool DrawHeaderShutter(void* data, const std::string& label, float x, float& y, bool valueChanged, bool& reset);
-		void DrawLabel(const std::string& label, float y, float height);
-		bool DrawButton(const std::string& label, const std::string& buttonLabel, float& y);
-		void DrawDropDown(const std::string& label, const std::vector<std::pair<std::string, std::function<void(void)>>>& options, int index, float& y);
+		bool DrawHeaderShutter(void* data, const String& label, float x, float& y, bool valueChanged, bool& reset);
+		void DrawLabel(const String& label, float y, float height);
+		bool DrawButton(const String& label, const String& buttonLabel, float& y);
+		void DrawDropDown(const String& label, const std::vector<std::pair<String, std::function<void(void)>>>& options, int index, float& y);
 		bool DrawResetButton(float y, float height);
-		Result DrawInt32(int32_t* i, const std::string& label, float& y, bool valueChanged);
-		Result DrawFloat(float* f, const std::string& label, float& y, bool valueChanged);
-		Result DrawBool(bool* b, const std::string& label, float& y, bool valueChanged);
-		Result DrawVec3(Vec3* v, const std::string& label, float& y, bool valueChanged);
-		Result DrawVec4(Vec4* v, const std::string& label, float& y, bool valueChanged);
-		Result DrawAsset(Asset** asset, const Class& cls, const std::string& label, float& y, bool valueChanged);
+		Result DrawInt32(int32_t* i, const String& label, float& y, bool valueChanged);
+		Result DrawFloat(float* f, const String& label, float& y, bool valueChanged);
+		Result DrawBool(bool* b, const String& label, float& y, bool valueChanged);
+		Result DrawVec3(Vec3* v, const String& label, float& y, bool valueChanged);
+		Result DrawVec4(Vec4* v, const String& label, float& y, bool valueChanged);
+		Result DrawAsset(Asset** asset, const Class& cls, const String& label, float& y, bool valueChanged);
 		Result DrawMaterialSlots(MaterialSlots* materials, float& y, bool valueChanged);
-		Result DrawClass(Class* cls, const std::string& label, float& y, bool valueChanged);
-		Result DrawSubclassOf(TSubclassOf* cls, const std::string& label, float& y, bool valueChanged);
-		Result DrawDelegate(TDelegate* delegate, const std::string& label, float& y);
+		Result DrawClass(Class* cls, const String& label, float& y, bool valueChanged);
+		Result DrawSubclassOf(TSubclassOf* cls, const String& label, float& y, bool valueChanged);
+		Result DrawDelegate(TDelegate* delegate, const String& label, float& y);
 
 		// Transform Util
 		void* Transform_LastNode = nullptr;

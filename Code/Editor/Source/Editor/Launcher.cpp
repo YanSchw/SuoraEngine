@@ -121,7 +121,7 @@ namespace Suora
 		return m_EditorWindow->GetWindow();
 	}
 
-	void Launcher::OpenProject(const std::string& path, bool isNativeProject)
+	void Launcher::OpenProject(const String& path, bool isNativeProject)
 	{
 		if (!std::filesystem::exists(path))
 		{
@@ -130,14 +130,14 @@ namespace Suora
 
 		/*** Always Update the EnginePath of the ProjectSettings ***/
 		{
-			const std::string str = Platform::ReadFromFile(path);
+			const String str = Platform::ReadFromFile(path);
 			Yaml::Node root;
 			Yaml::Parse(root, str);
 			Yaml::Node& settings = root["Settings"];
 			{
 				settings["Engine"]["Path"] = std::filesystem::path(AssetManager::GetEngineAssetPath()).parent_path().string();
 			}
-			std::string out;
+			String out;
 			Yaml::Serialize(root, out);
 			Platform::WriteToFile(path, out);
 		}
@@ -170,18 +170,18 @@ namespace Suora
 			{
 #ifdef SUORA_PLATFORM_WINDOWS
 				std::filesystem::current_path(projectRootPath);
-				std::string cmdRunSuoraBuildTool = "call " + projectRootPath.string() + "/Scripts/SuoraBuildTool.exe";
+				String cmdRunSuoraBuildTool = "call " + projectRootPath.string() + "/Scripts/SuoraBuildTool.exe";
 				system(cmdRunSuoraBuildTool.c_str());
-				std::string cmdGenerateSolution = "call " + projectRootPath.string() + "/Scripts/GenerateSolution.bat";
+				String cmdGenerateSolution = "call " + projectRootPath.string() + "/Scripts/GenerateSolution.bat";
 				system(cmdGenerateSolution.c_str());
 
 				// open the Solution in VisualStudio
 				{
-					std::string fullPath = projectRootPath.string();
-					while (fullPath.find("\\") != std::string::npos) StringUtil::ReplaceSequence(fullPath, "\\", "/");
-					std::vector<std::string> splitPath = StringUtil::SplitString(fullPath, '/');
-					std::string projectName = splitPath[splitPath.size() - 1];
-					std::string solutionPath = projectRootPath.string() + "/" + projectName + ".sln";
+					String fullPath = projectRootPath.string();
+					while (fullPath.find("\\") != String::npos) StringUtil::ReplaceSequence(fullPath, "\\", "/");
+					std::vector<String> splitPath = StringUtil::SplitString(fullPath, '/');
+					String projectName = splitPath[splitPath.size() - 1];
+					String solutionPath = projectRootPath.string() + "/" + projectName + ".sln";
 					Platform::OpenFileExternally(solutionPath);
 				}
 #endif
@@ -202,7 +202,7 @@ namespace Suora
 		}
 	}
 
-	void Launcher::CreateProject(const std::string& projectName, std::filesystem::path projectPath, Ref<TemplateProject> templateProject)
+	void Launcher::CreateProject(const String& projectName, std::filesystem::path projectPath, Ref<TemplateProject> templateProject)
 	{
 		if (projectName == "")
 		{
@@ -232,7 +232,7 @@ namespace Suora
 		std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(projectPath);
 		for (auto file : entries)
 		{
-			const std::string ext = File::GetFileExtension(file);
+			const String ext = File::GetFileExtension(file);
 			if (ext == ".suora")
 			{
 				projectSettingsPath = std::filesystem::path(file.path()).parent_path().append(projectName + ".suora");
@@ -246,7 +246,7 @@ namespace Suora
 			EditorPreferences::Get()->m_AllCachedProjectPaths.Add(projectSettingsPath.string());
 
 			Yaml::Node out;
-			std::string str;
+			String str;
 			AssetManager::GetFirstAssetOfType<EditorPreferences>()->Serialize(out);
 			Yaml::Serialize(out, str);
 			Platform::WriteToFile(AssetManager::GetFirstAssetOfType<EditorPreferences>()->m_Path.string(), str);
@@ -274,7 +274,7 @@ namespace Suora
 
 		if (EditorUI::Button("Add Project", GetWindow()->GetWidth() - 175.0f, 35.0f, 125, 33.0f))
 		{
-			std::optional<std::string> path = Platform::OpenFileDialog({".suora"});
+			std::optional<String> path = Platform::OpenFileDialog({".suora"});
 			
 			if (path.has_value() && EndsWith(path.value(), ".suora"))
 			{
@@ -282,7 +282,7 @@ namespace Suora
 			}
 			{
 				Yaml::Node out;
-				std::string str;
+				String str;
 				AssetManager::GetFirstAssetOfType<EditorPreferences>()->Serialize(out);
 				Yaml::Serialize(out, str);
 				Platform::WriteToFile(AssetManager::GetFirstAssetOfType<EditorPreferences>()->m_Path.string(), str);
@@ -308,7 +308,7 @@ namespace Suora
 			if (!std::filesystem::exists(projectPath))
 			{
 				// This Project does exits anymore. So remove it, lets try again next frame...
-				EditorPreferences::Get()->m_AllCachedProjectPaths.Remove((std::string)It);
+				EditorPreferences::Get()->m_AllCachedProjectPaths.Remove((String)It);
 				return;
 			}
 			if (m_CachedProjects.find(It) == m_CachedProjects.end())
@@ -322,11 +322,11 @@ namespace Suora
 			if (EditorUI::Button("", x + (GetWindow()->GetWidth() - x) * 0.1f, y, (GetWindow()->GetWidth() - x) * 0.75f, 60.0f * ui - 1))
 			{
 				// Now check, if Project isNative
-				const std::string str = Platform::ReadFromFile(It);
+				const String str = Platform::ReadFromFile(It);
 				Yaml::Node root;
 				Yaml::Parse(root, str);
 				Yaml::Node& settings = root["Settings"];
-				bool isNative = settings["Engine"]["m_IsNativeProject"].As<std::string>() == "true";
+				bool isNative = settings["Engine"]["m_IsNativeProject"].As<String>() == "true";
 
 				OpenProject(It, isNative);
 			}
@@ -421,7 +421,7 @@ namespace Suora
 			ProjectPathButtonParams.TextOrientation = Vec2(-1.0f, 0.0f);
 			if (EditorUI::Button(m_ProjectPath.string(), x + (GetWindow()->GetWidth() - x) * 0.6f + 20.0f, _y - 40.0f, (GetWindow()->GetWidth() - x) * 0.4f - 40.0f, 40.0f, ProjectPathButtonParams))
 			{
-				std::optional<std::string> path = Platform::ChoosePathDialog();
+				std::optional<String> path = Platform::ChoosePathDialog();
 				if (path.has_value()) m_ProjectPath = path.value();
 			}
 
@@ -438,16 +438,16 @@ namespace Suora
 
 	}
 
-	void Launcher::AnalyzeProjectOnDisk(const std::string& projectPath)
+	void Launcher::AnalyzeProjectOnDisk(const String& projectPath)
 	{
 		m_CachedProjects[projectPath] = CachedProjectInfo();
 		Yaml::Node root;
 		Yaml::Parse(root, Platform::ReadFromFile(projectPath));
 		Yaml::Node& settings = root["Settings"];
 
-		m_CachedProjects[projectPath].m_Version += settings["Engine"]["VersionMajor"].As<std::string>() + ".";
-		m_CachedProjects[projectPath].m_Version += settings["Engine"]["VersionMinor"].As<std::string>() + ".";
-		m_CachedProjects[projectPath].m_Version += settings["Engine"]["VersionPatch"].As<std::string>();
+		m_CachedProjects[projectPath].m_Version += settings["Engine"]["VersionMajor"].As<String>() + ".";
+		m_CachedProjects[projectPath].m_Version += settings["Engine"]["VersionMinor"].As<String>() + ".";
+		m_CachedProjects[projectPath].m_Version += settings["Engine"]["VersionPatch"].As<String>();
 	}
 
 }

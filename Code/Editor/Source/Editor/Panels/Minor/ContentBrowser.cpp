@@ -17,7 +17,7 @@
 namespace Suora
 {
 
-	static bool IsPathDirectSubpathOf(const std::string& directory, const FilePath& file)
+	static bool IsPathDirectSubpathOf(const String& directory, const FilePath& file)
 	{
 		return file.parent_path() == std::filesystem::path(directory);
 	}
@@ -93,7 +93,7 @@ namespace Suora
 		{
 			float width = GetMajorTab()->GetEditorWindow()->GetWindow()->GetWidth();
 			float height = GetMajorTab()->GetEditorWindow()->GetWindow()->GetHeight();
-			std::string currentPath = m_CurrentPath;
+			String currentPath = m_CurrentPath;
 
 			std::vector<EditorUI::ContextMenuElement> Texture2DImports;
 			std::vector<EditorUI::ContextMenuElement> MeshImports;
@@ -102,8 +102,8 @@ namespace Suora
 			{
 				if (!file.is_directory())
 				{
-					Array<std::string> textureExtensions = Texture2D::GetSupportedSourceAssetExtensions();
-					Array<std::string> meshExtensions = Mesh::GetSupportedSourceAssetExtensions();
+					Array<String> textureExtensions = Texture2D::GetSupportedSourceAssetExtensions();
+					Array<String> meshExtensions = Mesh::GetSupportedSourceAssetExtensions();
 					for (auto ext : textureExtensions)
 					{
 						if (File::GetFileExtension(file) == ext)
@@ -309,7 +309,7 @@ namespace Suora
 				continue;
 			}
 
-			const std::string label = path.stem().string();
+			const String label = path.stem().string();
 			const float strWidth = Font::Instance->GetStringWidth(label, 32.0f) * 0.8f;
 
 			if (EditorUI::Button(label, x_, GetHeight() - 35, strWidth, 30, _HdrParams))
@@ -390,12 +390,12 @@ namespace Suora
 		return false;
 	}
 
-	std::string ContentBrowser::GetRootPath()
+	String ContentBrowser::GetRootPath()
 	{
 		return m_CurrentMode == PathMode::ProjectPath ? AssetManager::GetProjectAssetPath() : AssetManager::GetEngineAssetPath();
 	}
 
-	std::string ContentBrowser::GetCurrentDirectory() const
+	String ContentBrowser::GetCurrentDirectory() const
 	{
 		return m_CurrentPath;
 	}

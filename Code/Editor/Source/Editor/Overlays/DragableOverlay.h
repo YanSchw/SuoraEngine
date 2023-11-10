@@ -7,7 +7,7 @@ namespace Suora
 
 	struct DragableOverlay : public EditorUI::Overlay
 	{
-		DragableOverlay(const std::string& title) 
+		DragableOverlay(const String& title) 
 			: m_Title(title)
 		{
 			EditorUI::CurrentWindow->m_InputEvent = EditorInputEvent::EditorUI_Overlay;
@@ -18,7 +18,7 @@ namespace Suora
 		void CenterOverlay();
 
 	private:
-		std::string m_Title;
+		String m_Title;
 		float m_HeaderHeight = 30.0f;
 		bool m_Dragged = false;
 	};

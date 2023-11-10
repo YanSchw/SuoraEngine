@@ -8,14 +8,14 @@ namespace Suora
 
 	struct CreateNewFolderOverlay : public DragableOverlay
 	{
-		CreateNewFolderOverlay(const std::string& directory)
+		CreateNewFolderOverlay(const String& directory)
 			: DragableOverlay("Create an Empty Folder"), m_Directory(directory)
 		{
 			s_FolderName = "Empty";
 		}
 
-		inline static std::string s_FolderName;
-		std::string m_Directory;
+		inline static String s_FolderName;
+		String m_Directory;
 
 		virtual void Render(float deltaTime) override;
 		void CreateFolder();
@@ -23,13 +23,13 @@ namespace Suora
 
 	struct RenameAssetOverlay : public DragableOverlay
 	{
-		RenameAssetOverlay(Asset* asset, const std::string& name)
+		RenameAssetOverlay(Asset* asset, const String& name)
 			: DragableOverlay("Rename Asset"), m_Asset(asset)
 		{
 			s_Name = name;
 		}
 
-		inline static std::string s_Name;
+		inline static String s_Name;
 		Asset* m_Asset = nullptr;
 
 		virtual void Render(float deltaTime) override;
@@ -37,18 +37,18 @@ namespace Suora
 
 	struct CreateAssetOverlay : public DragableOverlay
 	{
-		CreateAssetOverlay(const std::string& directory, const std::string& title, const std::string& defaultAssetName)
+		CreateAssetOverlay(const String& directory, const String& title, const String& defaultAssetName)
 			: DragableOverlay(title), m_Directory(directory)
 		{
 			s_AssetName = defaultAssetName;
 		}
 
-		inline static std::string s_AssetName;
-		std::string m_Directory;
+		inline static String s_AssetName;
+		String m_Directory;
 
 		virtual void Init();
 		virtual void Render(float deltaTime) override;
-		virtual std::string GetAssetExtension();
+		virtual String GetAssetExtension();
 
 		virtual void CreateAsset();
 	private:
@@ -56,7 +56,7 @@ namespace Suora
 	};
 	struct CreateSimpleAssetOverlay : public CreateAssetOverlay
 	{
-		CreateSimpleAssetOverlay(const std::string& directory, const std::string& title, const std::string& defaultAssetName, const Class& assetClass, const std::function<void(Asset*)>& lambda)
+		CreateSimpleAssetOverlay(const String& directory, const String& title, const String& defaultAssetName, const Class& assetClass, const std::function<void(Asset*)>& lambda)
 			: CreateAssetOverlay(directory, title, defaultAssetName), m_AssetClass(assetClass), m_Lambda(lambda)
 		{
 		}
@@ -64,13 +64,13 @@ namespace Suora
 		std::function<void(Asset*)> m_Lambda;
 
 		void Render(float deltaTime) override;
-		std::string GetAssetExtension() override;
+		String GetAssetExtension() override;
 		void CreateAsset() override;
 	};
 
 	struct CreateClassOverlay : public CreateAssetOverlay
 	{
-		CreateClassOverlay(const std::string& directory)
+		CreateClassOverlay(const String& directory)
 			: CreateAssetOverlay(directory, "Create a new Blueprint Class", "MyBlueprint")
 		{
 		}
@@ -82,14 +82,14 @@ namespace Suora
 		void CreateAsset() override;
 
 
-		virtual std::string GetAssetExtension() override
+		virtual String GetAssetExtension() override
 		{
 			return ".node";
 		}
 	};
 	struct CreateLevelOverlay : public CreateAssetOverlay
 	{
-		CreateLevelOverlay(const std::string& directory)
+		CreateLevelOverlay(const String& directory)
 			: CreateAssetOverlay(directory, "Create a new Level", "MyLevel")
 		{
 		}
@@ -99,7 +99,7 @@ namespace Suora
 		void Render(float deltaTime) override;
 		void CreateAsset() override;
 
-		virtual std::string GetAssetExtension() override
+		virtual String GetAssetExtension() override
 		{
 			return ".level";
 		}
@@ -107,14 +107,14 @@ namespace Suora
 
 	struct ImportTexture2DOverlay : public CreateAssetOverlay
 	{
-		ImportTexture2DOverlay(const std::filesystem::path& filePath, const std::string& directory)
+		ImportTexture2DOverlay(const std::filesystem::path& filePath, const String& directory)
 			: CreateAssetOverlay(directory, "Import " + filePath.string(), filePath.stem().string())
 		{
 			m_SourceFile = filePath;
 		}
 
 		virtual void Render(float deltaTime) override;
-		virtual std::string GetAssetExtension() override;
+		virtual String GetAssetExtension() override;
 
 		virtual void CreateAsset() override;
 
@@ -124,14 +124,14 @@ namespace Suora
 	};
 	struct ImportMeshOverlay : public CreateAssetOverlay
 	{
-		ImportMeshOverlay(const std::filesystem::path& filePath, const std::string& directory)
+		ImportMeshOverlay(const std::filesystem::path& filePath, const String& directory)
 			: CreateAssetOverlay(directory, "Import " + filePath.string(), filePath.stem().string())
 		{
 			m_SourceFile = filePath;
 		}
 
 		virtual void Render(float deltaTime) override;
-		virtual std::string GetAssetExtension() override;
+		virtual String GetAssetExtension() override;
 
 		virtual void CreateAsset() override;
 

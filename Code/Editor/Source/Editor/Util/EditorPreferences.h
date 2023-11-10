@@ -21,15 +21,15 @@ namespace Suora
 
 		static EditorPreferences* Get();
 
-		void PreInitializeAsset(const std::string& str) override;
-		void InitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(const String& str) override;
+		void InitializeAsset(const String& str) override;
 		void Serialize(Yaml::Node& root) override;
 
 		uint32_t GetAssetFileSize() override;
 
 		EditorPreferences();
 
-		Array<std::string> m_AllCachedProjectPaths;
+		Array<String> m_AllCachedProjectPaths;
 		float UiScale = 1;
 		Color UiColor = Color(0.14717647f, 0.14717647f, 0.15217647f, 1.0f); //Color(0.2f, 0.2f, 0.21f, 1.0f); //Color(0.26f, 0.27f, 0.29f, 1);
 		Color UiForgroundColor = Color(0.2f, 0.20392157f, 0.211764706f, 1.0f); // Color(0.18531372f, 0.18531372f, 0.18531372f, 1.0f);

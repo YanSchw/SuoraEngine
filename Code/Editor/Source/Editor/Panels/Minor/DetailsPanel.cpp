@@ -46,7 +46,7 @@ namespace Suora
 		return PanelButtonParam;
 	}
 
-	bool DetailsPanel::DrawHeaderShutter(void* data, const std::string& label, float x, float& y, bool valueChanged, bool& reset)
+	bool DetailsPanel::DrawHeaderShutter(void* data, const String& label, float x, float& y, bool valueChanged, bool& reset)
 	{
 		y -= 34.0f;
 		DrawLabel("", y, 35.0f);
@@ -54,7 +54,7 @@ namespace Suora
 		return (EditorUI::CategoryShutter((int64_t)data, label, x, y, GetDetailWidth() - x - 35.0f, 35.0f, ShutterPanelParams()));
 	}
 
-	void DetailsPanel::DrawLabel(const std::string& label, float y, float height)
+	void DetailsPanel::DrawLabel(const String& label, float y, float height)
 	{
 		static EditorUI::ButtonParams params;
 		params.ButtonRoundness = 0.0f;
@@ -73,7 +73,7 @@ namespace Suora
 	}
 
 
-	bool DetailsPanel::DrawButton(const std::string& label, const std::string& buttonLabel, float& y)
+	bool DetailsPanel::DrawButton(const String& label, const String& buttonLabel, float& y)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -81,7 +81,7 @@ namespace Suora
 		return EditorUI::Button(buttonLabel, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, 150.0f, 25.0f);
 	}
 
-	void DetailsPanel::DrawDropDown(const std::string& label, const std::vector<std::pair<std::string, std::function<void(void)>>>& options, int index, float& y)
+	void DetailsPanel::DrawDropDown(const String& label, const std::vector<std::pair<String, std::function<void(void)>>>& options, int index, float& y)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -104,7 +104,7 @@ namespace Suora
 		return reset;
 	}
 
-	DetailsPanel::Result DetailsPanel::DrawInt32(int32_t* i, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawInt32(int32_t* i, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -119,7 +119,7 @@ namespace Suora
 
 		return (before == *i) ? Result::None : Result::ValueChange;
 	}
-	DetailsPanel::Result DetailsPanel::DrawFloat(float* f, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawFloat(float* f, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -134,7 +134,7 @@ namespace Suora
 
 		return (before == *f) ? Result::None : Result::ValueChange;
 	}
-	DetailsPanel::Result DetailsPanel::DrawBool(bool* b, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawBool(bool* b, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -152,7 +152,7 @@ namespace Suora
 
 		return Result::None;
 	}
-	DetailsPanel::Result DetailsPanel::DrawVec3(Vec3* v, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawVec3(Vec3* v, const String& label, float& y, bool valueChanged)
 	{
 		Vec3 temp = *v;
 
@@ -169,7 +169,7 @@ namespace Suora
 		return (temp != *v) ? Result::ValueChange : Result::None;
 	}
 	static std::unordered_map<Vec4*, int> _Vec4_ColorPickerResults;
-	DetailsPanel::Result DetailsPanel::DrawVec4(Vec4* v, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawVec4(Vec4* v, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -192,7 +192,7 @@ namespace Suora
 
 		return Result::None;
 	}
-	DetailsPanel::Result DetailsPanel::DrawAsset(Asset** asset, const Class& cls, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawAsset(Asset** asset, const Class& cls, const String& label, float& y, bool valueChanged)
 	{
 		y -= 59.0f;
 		DrawLabel(label, y, 60.0f);
@@ -239,7 +239,7 @@ namespace Suora
 
 		return reset ? Result::ValueReset : (valueChanged ? Result::ValueChange : Result::None);
 	}
-	DetailsPanel::Result DetailsPanel::DrawClass(Class* cls, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawClass(Class* cls, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -257,7 +257,7 @@ namespace Suora
 
 		return Result::None;
 	}
-	DetailsPanel::Result DetailsPanel::DrawSubclassOf(TSubclassOf* cls, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawSubclassOf(TSubclassOf* cls, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -276,7 +276,7 @@ namespace Suora
 		return Result::None;
 	}
 
-	DetailsPanel::Result DetailsPanel::DrawDelegate(TDelegate* delegate, const std::string& label, float& y)
+	DetailsPanel::Result DetailsPanel::DrawDelegate(TDelegate* delegate, const String& label, float& y)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -289,7 +289,7 @@ namespace Suora
 		return Result::None;
 	}
 
-	static void DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue = 0, const std::function<void(std::string)>& lambda = nullptr)
+	static void DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue = 0, const std::function<void(String)>& lambda = nullptr)
 	{
 		EditorUI::ButtonParams params;
 		params.TextColor = Vec4(0, 0, 0, 1);
@@ -486,7 +486,7 @@ namespace Suora
 			skipFirstDerivative = true;
 			y -= 35;
 			static bool readTransform = true;
-			static std::function<void(std::string)> disableReadTransform = [](std::string s) { readTransform = false; };
+			static std::function<void(String)> disableReadTransform = [](String s) { readTransform = false; };
 			if (readTransform) // Doesn't work with writing values in the TextBox!
 			{
 				Transform_Pos = node3D->GetLocalPosition();
@@ -608,12 +608,12 @@ namespace Suora
 			if (EditorUI::CategoryShutter(0, "Shader", 0, y, GetDetailWidth(), 35.0f, ShutterPanelParams()))
 			{
 				int i = 0;
-				std::vector<std::pair<std::string, std::function<void(void)>>> options;
+				std::vector<std::pair<String, std::function<void(void)>>> options;
 				std::filesystem::path directory = AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/ShadergraphBase/";
 				std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(directory);
 				for (int j = 0; j < entries.size(); j++)
 				{
-					const std::string name = entries[j].path().filename().string();
+					const String name = entries[j].path().filename().string();
 					if (name == material->As<ShaderGraph>()->m_BaseShader) i = j;
 					options.push_back({ name, [name, material]() { material->As<ShaderGraph>()->m_BaseShader = name; } });
 				}
@@ -710,7 +710,7 @@ namespace Suora
 				if (graph.IsNone()) break;
 
 				y -= 35.0f;
-				DrawLabel(graphs[std::to_string(i)]["Label"].As<std::string>(), y, 35.0f);
+				DrawLabel(graphs[std::to_string(i)]["Label"].As<String>(), y, 35.0f);
 				if (EditorUI::Button("Edit Graph", GetDetailWidth() * m_Seperator + 50.0f, y + 5.0f, 120.0f, 25.0f, EditorUI::ButtonParams::Highlight()))
 				{
 					NodeClassEditor* editor = GetMajorTab()->As<NodeClassEditor>();
@@ -743,7 +743,7 @@ namespace Suora
 				typeParams.ButtonRoundness = 22.5f / 2.0f;
 				typeParams.TextDropShadow = true;
 
-				std::string Label = ScriptDataTypeToLabel(var.m_Type);
+				String Label = ScriptDataTypeToLabel(var.m_Type);
 				if (var.m_Type == ScriptDataType::ObjectPtr || var.m_Type == ScriptDataType::Class)
 					Label = Class::FromString(var.m_VarParams).GetClassName();
 				if (EditorUI::Button(Label, GetDetailWidth() * m_Seperator + 50.0f, y + 5.0f, 120.0f, 25.0f, typeParams))

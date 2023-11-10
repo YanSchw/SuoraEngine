@@ -75,7 +75,7 @@ namespace Suora
 
 		Yaml::Node root;
 		m_Material->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(m_Material->m_Path.string(), out);
 	}

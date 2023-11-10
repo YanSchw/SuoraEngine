@@ -15,7 +15,7 @@ namespace Suora
 	{
 		Ptr<MajorTab> m_MajorTab;
 	public:
-		std::string Name = "MinorTab";
+		String Name = "MinorTab";
 		Ref<Framebuffer> m_Framebuffer;
 		uint32_t Width = 100, Height = 100;
 		Texture2D* m_IconTexture = nullptr;

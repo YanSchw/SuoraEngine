@@ -45,14 +45,14 @@ namespace Suora
 		{
 			struct SelectionOverlayEntry
 			{
-				std::string Label = "Entry";
-				Array<std::string> Tags;
+				String Label = "Entry";
+				Array<String> Tags;
 				std::function<void(void)> Lambda;
-				SelectionOverlayEntry(const std::string& label, const Array<std::string>& tags, const std::function<void(void)>& lambda)
+				SelectionOverlayEntry(const String& label, const Array<String>& tags, const std::function<void(void)>& lambda)
 					: Label(label), Tags(tags), Lambda(lambda) { }
 			};
 
-			inline static std::string s_SearchLabel, s_LastSearchLabel;
+			inline static String s_SearchLabel, s_LastSearchLabel;
 			Array<SelectionOverlayEntry> m_Entries, m_DisplayEntries;
 			float m_ScrollY = 0.0f;
 			int32_t m_SelectedItem = 0;
@@ -83,16 +83,16 @@ namespace Suora
 				}
 				for (SelectionOverlayEntry& entry : m_Entries)
 				{
-					if (StringUtil::ToLower(entry.Label).find(StringUtil::ToLower(s_SearchLabel)) != std::string::npos)
+					if (StringUtil::ToLower(entry.Label).find(StringUtil::ToLower(s_SearchLabel)) != String::npos)
 					{
 						m_DisplayEntries.Add(entry);
 					}
 				}
 			}
-			std::unordered_map<std::string, bool> m_SearchCategoryClicked;
+			std::unordered_map<String, bool> m_SearchCategoryClicked;
 			struct SearchCategory
 			{
-				std::string Label = "";
+				String Label = "";
 				Array<Ref<SearchCategory>> SubCategories;
 				Array<SelectionOverlayEntry*> SubEntries;
 			};
@@ -152,7 +152,7 @@ namespace Suora
 					w -= 25.0f;
 					if (w + m_ScrollY <= y || w + m_ScrollY >= y + height - 40.0f) { i++; continue; }
 					params.ButtonColor = (m_SelectedItem == i) ? EditorPreferences::Get()->UiHighlightColor : EditorPreferences::Get()->UiBackgroundColor;
-					std::vector<std::string> strs = StringUtil::SplitString(entry->Label, '/');
+					std::vector<String> strs = StringUtil::SplitString(entry->Label, '/');
 					if (EditorUI::Button(strs[strs.size() - 1], _x + 5.0f, w + m_ScrollY, _width, 25.0f, params) || (NativeInput::GetKey(Key::Enter) && m_SelectedItem == i))
 					{
 						entry->Lambda();
@@ -172,7 +172,7 @@ namespace Suora
 				Array<SelectionOverlayEntry*> PlainEntries;
 				for (SelectionOverlayEntry& entry : m_DisplayEntries)
 				{
-					std::vector<std::string> strs = StringUtil::SplitString(entry.Label, '/');
+					std::vector<String> strs = StringUtil::SplitString(entry.Label, '/');
 					if (strs.size() == 1) PlainEntries.Add(&entry);
 					else
 					{
@@ -289,7 +289,7 @@ namespace Suora
 			bool OverrideActivationEvent = false;
 			std::function<bool(void)> OverrittenActivationEvent;
 
-			std::string TooltipText = "";
+			String TooltipText = "";
 
 			float ButtonRoundness = 4;
 			bool ButtonDropShadow = false;
@@ -431,28 +431,28 @@ namespace Suora
 		inline static Ref<Shader> UiShader, TextShader;
 		inline static Ref<Framebuffer> GlassBuffer;
 	public:
-		static void Text(const std::string& text, Font* font, float x, float y, float width, float height, float size, const Vec2& orientation, const Color& color, const Array<Color>& colors = {});
+		static void Text(const String& text, Font* font, float x, float y, float width, float height, float size, const Vec2& orientation, const Color& color, const Array<Color>& colors = {});
 	public:
-		static bool Button(const std::string& text, float x, float y, float width, float height, ButtonParams params = ButtonParams());
+		static bool Button(const String& text, float x, float y, float width, float height, ButtonParams params = ButtonParams());
 
 		static bool DragSource(float x, float y, float width, float height, float offset, EditorInputEvent input = EditorInputEvent::None);
 	public:
-		static bool DropDown(const std::vector<std::pair<std::string, std::function<void(void)>>>& options, int index, float x, float y, float width, float height);
+		static bool DropDown(const std::vector<std::pair<String, std::function<void(void)>>>& options, int index, float x, float y, float width, float height);
 
 	private:
-		inline static std::string* TextField_Str = nullptr;
+		inline static String* TextField_Str = nullptr;
 		inline static Array<char> TextFieldCharBuffer;
 		inline static bool TextField_StrFlag = false;
 		static void TextFieldCharInput(char keyCode);
 	public:
 		struct TextFieldOverlay : public Overlay
 		{
-			std::string* Str = nullptr;
+			String* Str = nullptr;
 			float m_TextSize = 32.0f;
 			int64_t Cursor = 0, CursorSelectionOffset = 0;
-			std::function<void(std::string)> LambdaCallback;
+			std::function<void(String)> LambdaCallback;
 			bool needsFlag = true;
-			TextFieldOverlay(std::string* str, float textSize, const std::function<void(std::string)>& lambda = nullptr, bool needsFlag = true) : Str(str), m_TextSize(textSize), LambdaCallback(lambda), needsFlag(needsFlag)
+			TextFieldOverlay(String* str, float textSize, const std::function<void(String)>& lambda = nullptr, bool needsFlag = true) : Str(str), m_TextSize(textSize), LambdaCallback(lambda), needsFlag(needsFlag)
 			{
 				TextField_StrFlag = true;
 				TextField_Str = str;
@@ -518,7 +518,7 @@ namespace Suora
 				else if (NativeInput::GetKeyDown(Key::Right) && NativeInput::GetKey(Key::LeftControl)) { CursorSelectionOffset++; if (Cursor + CursorSelectionOffset > Str->length()) CursorSelectionOffset--; }
 
 				{ // Cursor
-					std::string cursor = *Str; cursor.append(" ");
+					String cursor = *Str; cursor.append(" ");
 					cursor[Cursor] = '|';
 					Array<Color> cols; for (int i = 0; i < cursor.size(); i++) cols.Add(Color(i == Cursor ? 1 : 0));
 					Text(cursor, Font::Instance, x - 3.0f + 5.0f, y, width, height, m_TextSize, Vec2(-1.0f, 0.0f), Color(1), cols);
@@ -549,19 +549,19 @@ namespace Suora
 			Params.HoverCursor = Cursor::IBeam;
 			return Params;
 		}
-		static void TextField(std::string* str, float x, float y, float width, float height, ButtonParams params = TextFieldButtonParams(), const std::function<void(std::string)>& lambda = nullptr);
-		static void _SetTextFieldStringPtr(std::string* str, float x, float y, float width, float height, bool needsFlag = true);
+		static void TextField(String* str, float x, float y, float width, float height, ButtonParams params = TextFieldButtonParams(), const std::function<void(String)>& lambda = nullptr);
+		static void _SetTextFieldStringPtr(String* str, float x, float y, float width, float height, bool needsFlag = true);
 
 	private:
 		inline static void* DraggedNumberPtr = nullptr;
 		inline static int32_t DraggedInt32BeginValue = 0;
 		inline static float DraggedFloatBeginValue = 0.0f;
-		inline static std::string DraggedNumberStr = "";
+		inline static String DraggedNumberStr = "";
 		inline static void* DraggedNumberTabulatePtr = nullptr; inline static bool DraggedNumberTabulateNext = false;
 	public:
-		static void DragInt32(int32_t* i, float x, float y, float width, float height, const std::function<void(std::string)>& lambda = nullptr);
-		static void DragFloat(float* f, float x, float y, float width, float height, const std::function<void(std::string)>& lambda = nullptr);
-		static void DragNumber(void* n, ClassMember::Type type, float x, float y, float width, float height, const std::function<void(std::string)>& lambda = nullptr);
+		static void DragInt32(int32_t* i, float x, float y, float width, float height, const std::function<void(String)>& lambda = nullptr);
+		static void DragFloat(float* f, float x, float y, float width, float height, const std::function<void(String)>& lambda = nullptr);
+		static void DragNumber(void* n, ClassMember::Type type, float x, float y, float width, float height, const std::function<void(String)>& lambda = nullptr);
 
 	private:
 		inline static float* SliderFloat_F = nullptr;
@@ -600,7 +600,7 @@ namespace Suora
 	private:
 		inline static std::unordered_map<int64_t, bool> CategoryShutterStates;
 	public:
-		static bool CategoryShutter(int64_t id, const std::string& category, float x, float& y, float width, float height, ButtonParams params = ButtonParams());
+		static bool CategoryShutter(int64_t id, const String& category, float x, float& y, float width, float height, ButtonParams params = ButtonParams());
 
 		// Scrollbars
 	private:
@@ -610,11 +610,11 @@ namespace Suora
 		static void ScrollbarVertical(float x, float y, float width, float height, float rectX, float rectY, float rectWidth, float rectHeight, float scrollUp, float scrollDown, float* scrollCurrent);
 
 		// Tooltip
-		inline static std::string tooltipText = "Hello, World!";
+		inline static String tooltipText = "Hello, World!";
 		inline static float tooltipAlpha = 0;
 		inline static float tooltipFrames = 0;
-		static void Tooltip(const std::string& text, float x, float y, float width, float height);
-		static void Tooltip(const std::string& text);
+		static void Tooltip(const String& text, float x, float y, float width, float height);
+		static void Tooltip(const String& text);
 
 		static void ColorPicker(Color* color, float x, float y, float width, float height, ButtonParams params = ButtonParams(), const std::function<void(void)>& OnColorChange = {}, const std::function<void(void)>& OnColorReset = {});
 
@@ -622,11 +622,11 @@ namespace Suora
 		{
 			std::vector<ContextMenuElement> SubElements;
 			std::function<void(void)> Lambda;
-			std::string Label;
+			String Label;
 			Texture2D* Image = nullptr;
 
 			ContextMenuElement() = default;
-			ContextMenuElement(const std::vector<ContextMenuElement>& subElements, const std::function<void(void)>& lambda, const std::string& label, Texture2D* image)
+			ContextMenuElement(const std::vector<ContextMenuElement>& subElements, const std::function<void(void)>& lambda, const String& label, Texture2D* image)
 				: SubElements(subElements), Lambda(lambda), Label(label), Image(image) { }
 		};
 		static void CreateContextMenu(const std::vector<ContextMenuElement>& elements);

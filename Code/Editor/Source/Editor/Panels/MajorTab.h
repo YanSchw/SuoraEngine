@@ -26,7 +26,7 @@ namespace Suora
 		SUORA_CLASS(689754);
 
 	public:
-		std::string m_Name = "MajorTab";
+		String m_Name = "MajorTab";
 
 		Ptr<Asset> m_Asset = nullptr;
 

@@ -364,7 +364,7 @@ namespace Suora
 
 			if (node->GetParent())
 			{
-				std::string className = ClassReflector::GetClassName(node->GetNativeClass());
+				String className = ClassReflector::GetClassName(node->GetNativeClass());
 				bool isNativeClass = true;
 				if (INodeScriptObject* obj = node->GetInterface<INodeScriptObject>())
 				{

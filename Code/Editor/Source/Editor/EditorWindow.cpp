@@ -42,7 +42,7 @@ namespace Suora
 		m_Window->Maximize();
 		m_Window->SetVSync(false);
 		m_Window->m_WindowIconOverride = AssetManager::GetAsset<Texture2D>(SuoraID("059f71bb-7ad3-47a0-be84-6dfc910f7ca3"));
-		m_Window->m_OnDesktopFilesDropped.Register([this](Array<std::string> paths) { this->HandleAssetFileDrop(paths); });
+		m_Window->m_OnDesktopFilesDropped.Register([this](Array<String> paths) { this->HandleAssetFileDrop(paths); });
 
 		if (!TextureInit)
 		{
@@ -283,14 +283,14 @@ namespace Suora
 		if (EditorUI::tooltipFrames <= 0.2f) EditorUI::tooltipAlpha = Math::Lerp<float>(EditorUI::tooltipAlpha, 1, 25.f * deltaTime);
 		else  EditorUI::tooltipAlpha = Math::Lerp<float>(EditorUI::tooltipAlpha, 0, 35.f * deltaTime);
 
-		std::vector<std::string> lines = StringUtil::SplitString(EditorUI::tooltipText, '\n');
+		std::vector<String> lines = StringUtil::SplitString(EditorUI::tooltipText, '\n');
 
 		float x = NativeInput::GetMousePosition().x + 15 + (1 - EditorUI::tooltipAlpha) * 30.f;
 		float height = 25.0f + 25.0f * lines.size();
 		float y = m_Window->GetHeight() - NativeInput::GetMousePosition().y - (height * 0.5f) - (1 - EditorUI::tooltipAlpha) * 10;
 		float width = 0.f;
 
-		for (const std::string& line : lines)
+		for (const String& line : lines)
 		{
 			const float currentWidth = Font::Instance->GetStringWidth(line, 22.0f) * 0.55f;
 			if (currentWidth > width) width = currentWidth;
@@ -380,17 +380,17 @@ namespace Suora
 				m_ConsoleLogs = VirtualConsole::GetLogMessages().size();
 				m_ConsoleWarnings = VirtualConsole::GetWarnMessages().size();
 				m_ConsoleErrors = VirtualConsole::GetErrorMessages().size();
-				const std::string textErrors = m_ConsoleErrors >= 10 ? std::to_string(m_ConsoleErrors) : "0" + std::to_string(m_ConsoleErrors);
+				const String textErrors = m_ConsoleErrors >= 10 ? std::to_string(m_ConsoleErrors) : "0" + std::to_string(m_ConsoleErrors);
 				const Color colorErrors = m_ConsoleErrors > 0 ? Color(0.6745098f, 0.2078431f, 0.2745098f, 1) : EditorPreferences::Get()->UiBackgroundColor * 0.5f;
 				EditorUI::Text(textErrors, Font::Instance, 150.0f * ui + 10.0f * ui, 3.0f, 25.0f * ui, 9.0f * ui, 18.0f, Vec2(), colorErrors);
 				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("7224f801-1370-4f82-ac37-0cecf2cc35b9"))->GetTexture(), 150.0f * ui + 13.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorErrors);
 
-				const std::string textWarnings = m_ConsoleWarnings >= 10 ? std::to_string(m_ConsoleWarnings) : "0" + std::to_string(m_ConsoleWarnings);
+				const String textWarnings = m_ConsoleWarnings >= 10 ? std::to_string(m_ConsoleWarnings) : "0" + std::to_string(m_ConsoleWarnings);
 				const Color colorWarnings = m_ConsoleWarnings > 0 ? Color(0.7764706f, 0.6941176f, 0.2431373f, 1) : EditorPreferences::Get()->UiBackgroundColor * 0.5f;
 				EditorUI::Text(textWarnings, Font::Instance, 150.0f * ui + 40.0f * ui, 3.0f, 25.0f * ui, 9.0f * ui, 18.0f, Vec2(), colorWarnings);
 				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("cf027e56-ead0-4e61-ac31-b3d9125a03d9"))->GetTexture(), 150.0f * ui + 43.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorWarnings);
 
-				const std::string textLogs = m_ConsoleLogs >= 10 ? std::to_string(m_ConsoleLogs) : "0" + std::to_string(m_ConsoleLogs);
+				const String textLogs = m_ConsoleLogs >= 10 ? std::to_string(m_ConsoleLogs) : "0" + std::to_string(m_ConsoleLogs);
 				const Color colorLogs = m_ConsoleLogs > 0 ? Color(1) : EditorPreferences::Get()->UiBackgroundColor * 0.5f;
 				EditorUI::Text(textLogs, Font::Instance, 150.0f * ui + 70.0f * ui, 3.0f, 25.0f * ui, 9.0f * ui, 18.0f, Vec2(), colorLogs);
 				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("b3758660-1e0a-4a6a-9223-1a25966bdefd"))->GetTexture(), 150.0f * ui + 73.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorLogs);
@@ -416,7 +416,7 @@ namespace Suora
 		}
 
 		// Draw Stats
-		EditorUI::Text(std::string("FPS: ").append(std::to_string(Engine::GetFramerate())), Font::Instance, m_Window->GetWidth() - 160, 0, 150, 35.0f * ui, 20.0f, Vec2(1, +1), Color(1));
+		EditorUI::Text(String("FPS: ").append(std::to_string(Engine::GetFramerate())), Font::Instance, m_Window->GetWidth() - 160, 0, 150, 35.0f * ui, 20.0f, Vec2(1, +1), Color(1));
 		EditorUI::Text(std::to_string(deltaTime * 1000.0f) + "ms", Font::Instance, m_Window->GetWidth() - 160, 0, 150, 35.0f * ui, 20.0f, Vec2(1, -1), Color(1));
 	}
 
@@ -483,7 +483,7 @@ namespace Suora
 					asset->SetSourceAssetName(dstPath.filename().string());
 					Yaml::Node root;
 					asset->Serialize(root);
-					std::string out;
+					String out;
 					Yaml::Serialize(root, out);
 					Platform::WriteToFile(asset->m_Path.string(), out);
 				}
@@ -498,7 +498,7 @@ namespace Suora
 		}
 	}
 
-	void EditorWindow::HandleAssetFileDrop(Array<std::string> paths)
+	void EditorWindow::HandleAssetFileDrop(Array<String> paths)
 	{
 		m_HeroToolOpened = true;
 		m_SelectedHeroTool = 0;

@@ -14,6 +14,6 @@ namespace Suora
 		static class Texture* GetLogLevelIcon(const LogLevel level);
 	private:
 		float m_ScrollY = 0.0f;
-		inline static std::string s_InputCommand;
+		inline static String s_InputCommand;
 	};
 }

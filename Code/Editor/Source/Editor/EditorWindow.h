@@ -66,7 +66,7 @@ namespace Suora
 		static EditorWindow* GetCurrent() { return s_Current; }
 
 		void CopyAssetFilesToDirectory(const std::filesystem::path& directory, const std::filesystem::path& toBeCopied);
-		void HandleAssetFileDrop(Array<std::string> paths);
+		void HandleAssetFileDrop(Array<String> paths);
 		void ForceOpenContentDrawer();
 
 		EditorInputEvent m_InputEvent = EditorInputEvent::None;
