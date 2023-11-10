@@ -58,7 +58,6 @@ namespace Suora
 	{
 		s_Instance = this;
 		m_FullscreenPassShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/FullscreenPass.glsl");
-		m_AddShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Add.glsl");
 		m_DepthBlitShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/DepthBlit.glsl");
 		m_ToneMapping = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/ToneMapping.glsl");
 		m_FXAA = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
@@ -69,24 +68,7 @@ namespace Suora
 		m_DeferredSkyShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_Sky.glsl");
 		m_DeferredSkyLightShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_SkyLight.glsl");
 		m_DeferredComposite = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Deferred/Deferred_Composite.glsl");
-		{
-			FramebufferSpecification spec;
-			spec.Width = m_InternalResolution.x;
-			spec.Height = m_InternalResolution.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
-			m_TemporaryAddBuffer = Framebuffer::Create(spec);
-		}
-		{
-			FramebufferSpecification spec;
-			spec.Width = m_InternalResolution.x;
-			spec.Height = m_InternalResolution.y;
-			for (int32_t i = 0; i < (int32_t) GBuffer::GBufferSlotCount; i++)
-			{
-				spec.Attachments.Attachments.push_back(GBufferSlotToBufferParams((GBuffer)i));
-			}
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-			m_GBuffer = Framebuffer::Create(spec);
-		}
+		
 		m_DecimaInstance = CreateRef<Decima>();
 	}
 
@@ -96,14 +78,11 @@ namespace Suora
 		return pipeline ? pipeline->GetFullscreenPassShader() : nullptr;
 	}
 
-	void RenderPipeline::Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
+	void RenderPipeline::Render(Framebuffer& buffer, World& world, CameraNode& camera, RenderingParams& params)
 	{
 		SUORA_ASSERT(buffer.GetSpecification().Attachments.Attachments[0].TextureFormat == FramebufferTextureFormat::RGBA8);
 
-		if (!Ilum::IsInIlumPass())
-		{
-			s_LastCameraPos = camera.GetPosition();
-		}
+		params.ValidateBuffers();
 
 		if (!Ilum::IsInIlumPass())
 		{
@@ -113,34 +92,34 @@ namespace Suora
 		if (!Ilum::IsInIlumPass())
 		{
 			for (int i = 0; i < 1; i++)
-			world.GetIlumContext()->Tick(Engine::Get()->GetDeltaTime(), gbuffer, camera, world);
+			world.GetIlumContext()->Tick(Engine::Get()->GetDeltaTime(), *params.GetGBuffer(), camera, world);
 		}
-		SetFullscreenViewport(gbuffer);
+		SetFullscreenViewport(*params.GetGBuffer());
 
 		if (params.EnableDeferredRendering)
 		{
-			DeferredPass(world, camera, gbuffer, params);
+			DeferredPass(world, camera, params);
 		}
 		else
 		{
-			GetForwardReadyBuffer(gbuffer.GetSize())->Bind();
+			params.GetForwardReadyBuffer()->Bind();
 			RenderCommand::SetClearColor(camera.GetClearColor());
 			RenderCommand::Clear();
 		}
 
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Blend);
 
-		ForwardPass(world, camera, gbuffer, params);
+		ForwardPass(world, camera, params);
 
 		if (!Ilum::IsInIlumPass())
 		{
-			PostProcessPass(world, camera, gbuffer, params);
+			PostProcessPass(world, camera, params);
 
-			UserInterfacePass(world, glm::orthoLH(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), *GetFinalFramebuffer(gbuffer.GetSize()), params);
+			UserInterfacePass(world, glm::orthoLH(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), *params.GetFinalBuffer(), params);
 		}
 
 		// Output Final Buffer
-		RenderFramebufferIntoFramebuffer(*GetFinalFramebuffer(gbuffer.GetSize()), buffer, *m_FullscreenPassShader, BufferToRect(buffer), "u_Texture", 0, true);
+		RenderFramebufferIntoFramebuffer(*params.GetFinalBuffer(), buffer, *m_FullscreenPassShader, BufferToRect(buffer), "u_Texture", 0, true);
 
 		if (!Ilum::IsInIlumPass())
 		{
@@ -162,16 +141,6 @@ namespace Suora
 		RenderCommand::DrawIndexed(GetFullscreenQuad());
 	}
 
-	void RenderPipeline::AddFramebufferToFramebuffer(Framebuffer& src, Framebuffer& target, int attachmentIndex)
-	{
-		s_Instance->m_FullscreenPassShader->Bind();
-		RenderFramebufferIntoFramebuffer(target, *s_Instance->m_TemporaryAddBuffer, *s_Instance->m_FullscreenPassShader, glm::ivec4(0, 0, target.GetSpecification().Width, target.GetSpecification().Height), "u_Texture", 0);
-
-		s_Instance->m_AddShader->Bind();
-		s_Instance->m_TemporaryAddBuffer->BindColorAttachmentByIndex(0, 1); s_Instance->m_AddShader->SetInt("u_TempSampler", 1);
-		RenderFramebufferIntoFramebuffer(src, target, *s_Instance->m_AddShader, glm::ivec4(0, 0, target.GetSpecification().Width, target.GetSpecification().Height), "u_Texture", attachmentIndex);
-	}
-
 	void RenderPipeline::BlitDepthBuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const std::string& uniformName)
 	{
 		target.Bind();
@@ -184,15 +153,6 @@ namespace Suora
 		RenderCommand::SetViewport(0, 0, target.GetSpecification().Width, target.GetSpecification().Height);
 		GetFullscreenQuad()->Bind();
 		RenderCommand::DrawIndexed(GetFullscreenQuad());
-	}
-
-	glm::ivec2 RenderPipeline::GetInternalResolution()
-	{
-		return Engine::Get()->GetRenderPipeline()->m_InternalResolution;
-	}
-	void RenderPipeline::SetInternalResolution(const glm::ivec2& resolution)
-	{
-		Engine::Get()->GetRenderPipeline()->m_InternalResolution = resolution;
 	}
 
 	void RenderPipeline::SetFullscreenViewport(Framebuffer& buffer)
@@ -235,27 +195,27 @@ namespace Suora
 		}
 	}
 
-	void RenderPipeline::DeferredPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
+	void RenderPipeline::DeferredPass(World& world, CameraNode& camera, RenderingParams& params)
 	{
 		RenderCommand::SetClearColor(Color(0,0,0,1));
-		RenderGBuffer(world, camera, gbuffer, params);
+		RenderGBuffer(world, camera, params);
 
-		DecalPass(world, camera, gbuffer);
+		DecalPass(world, camera, params);
 
-		DeferredSkyPass(world, camera, gbuffer);
+		DeferredSkyPass(world, camera, params);
 
-		DeferredLightPass(GetDeferredLitBuffer(gbuffer.GetSize()), gbuffer, world, &camera, Ilum::IsInIlumPass());
+		DeferredLightPass(params.GetDeferredLitBuffer(), params, world, &camera, Ilum::IsInIlumPass());
 
-		DeferredCompositePass(world, camera, gbuffer);
+		DeferredCompositePass(world, camera, params);
 
 	}
 
-	void RenderPipeline::RenderGBuffer(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
+	void RenderPipeline::RenderGBuffer(World& world, CameraNode& camera, RenderingParams& params)
 	{
-		gbuffer.Bind();
+		params.GetGBuffer()->Bind();
 		RenderCommand::Clear();
 		RenderCommand::SetAlphaBlending(false);
-		SetFullscreenViewport(gbuffer);
+		SetFullscreenViewport(*params.GetGBuffer());
 		RenderCommand::SetWireframeMode(params.DrawWireframe);
 
 		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
@@ -271,13 +231,13 @@ namespace Suora
 		RenderCommand::SetWireframeMode(false);
 	}
 
-	void RenderPipeline::DecalPass(World& world, CameraNode& camera, Framebuffer& gbuffer)
+	void RenderPipeline::DecalPass(World& world, CameraNode& camera, RenderingParams& params)
 	{
 		Array<DecalNode*> decals = world.FindNodesByClass<DecalNode>();
 		if (decals.Size() == 0) return;
-		SetFullscreenViewport(gbuffer);
-		RenderFramebufferIntoFramebuffer(gbuffer, *GetDeferredDecalBuffer(gbuffer.GetSize()), *m_DeferredDecalPreparation, glm::ivec4(0, 0, gbuffer.GetSize().x, gbuffer.GetSize().y), "u_WorldPos", (int)GBuffer::WorldPosition);
-		gbuffer.Bind();
+		SetFullscreenViewport(*params.GetGBuffer());
+		RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *params.GetDeferredDecalBuffer(), *m_DeferredDecalPreparation, BufferToRect(*params.GetGBuffer()), "u_WorldPos", (int)GBuffer::WorldPosition);
+		params.GetGBuffer()->Bind();
 
 		for (DecalNode* node : decals)
 		{
@@ -288,7 +248,7 @@ namespace Suora
 			node->material->GetShaderGraph()->GetShader()->SetInt("u_DecalCount", 1);
 			node->material->GetShaderGraph()->GetShader()->SetMat4("u_DecalViewMatrix[0]", node->m_Projection->GetProjectionMatrix() * glm::inverse(node->GetTransformMatrix()));
 			node->material->GetShaderGraph()->GetShader()->SetInt("u_OG_WorldPos", 3);
-			GetDeferredDecalBuffer(gbuffer.GetSize())->BindColorAttachmentByIndex(0, 3);
+			params.GetDeferredDecalBuffer()->BindColorAttachmentByIndex(0, 3);
 
 			RenderCommand::SetDepthTest(false);
 			GetFullscreenQuad()->Bind();
@@ -297,11 +257,11 @@ namespace Suora
 		}
 	}
 
-	void RenderPipeline::DeferredSkyPass(World& world, CameraNode& camera, Framebuffer& gbuffer)
+	void RenderPipeline::DeferredSkyPass(World& world, CameraNode& camera, RenderingParams& params)
 	{
-		gbuffer.Bind();
+		params.GetGBuffer()->Bind();
 		RenderCommand::SetAlphaBlending(false);
-		SetFullscreenViewport(gbuffer);
+		SetFullscreenViewport(*params.GetGBuffer());
 
 		Array<SkyLightNode*> skies = world.FindNodesByClass<SkyLightNode>();
 		Array<DirectionalLightNode*> lights = world.FindNodesByClass<DirectionalLightNode>();
@@ -319,7 +279,7 @@ namespace Suora
 				{
 					m_DeferredSkyShader->SetFloat3("u_LightDirection", lights[i]->GetTransform()->GetForwardVector());
 				}
-				m_DeferredSkyShader->SetFloat2("u_Resolution", m_InternalResolution);
+				m_DeferredSkyShader->SetFloat2("u_Resolution", params.Resolution);
 				RenderCommand::SetDepthTest(true);
 				GetFullscreenQuad()->Bind();
 				RenderCommand::DrawIndexed(GetFullscreenQuad());
@@ -327,7 +287,7 @@ namespace Suora
 		}
 	}
 
-	void RenderPipeline::DeferredLightPass(Ref<Framebuffer> target, Framebuffer& gBuffer, World& world, CameraNode* camera, bool lowQuality, int quadTick, bool volumetric)
+	void RenderPipeline::DeferredLightPass(Ref<Framebuffer> target, RenderingParams& params, World& world, CameraNode* camera, bool lowQuality, int quadTick, bool volumetric)
 	{
 		RenderCommand::SetClearColor(glm::vec4(0.0f));
 		target->Bind();
@@ -342,9 +302,9 @@ namespace Suora
 													(glm::ivec4(target->GetSpecification().Width / 2, target->GetSpecification().Height / 2, target->GetSpecification().Width / 2, target->GetSpecification().Height / 2));
 			RenderCommand::SetViewport(rect.x, rect.y, rect.z, rect.w);
 		}
-		else SetFullscreenViewport(gBuffer);
+		else SetFullscreenViewport(*params.GetGBuffer());
 
-		RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_FullscreenPassShader, BufferToRect(gBuffer), "u_Texture", (int)GBuffer::Emissive);
+		RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *target, *m_FullscreenPassShader, BufferToRect(*params.GetGBuffer()), "u_Texture", (int)GBuffer::Emissive);
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Additive);
 
 
@@ -360,7 +320,7 @@ namespace Suora
 				{
 					m_DeferredSkyLightShader->SetFloat("u_Intensity", sky->m_Intensity);
 					m_DeferredSkyLightShader->SetFloat3("u_Color", sky->m_Color);
-					RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredSkyLightShader, BufferToRect(gBuffer), "u_BaseColor", (int)GBuffer::BaseColor, false);
+					RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *target, *m_DeferredSkyLightShader, BufferToRect(*params.GetGBuffer()), "u_BaseColor", (int)GBuffer::BaseColor, false);
 				}
 			}
 
@@ -396,16 +356,16 @@ namespace Suora
 					index++;
 				}
 
-				m_DeferredDirectionalLightShader->SetInt("u_BaseColor", (int)GBuffer::BaseColor); gBuffer.BindColorAttachmentByIndex((int)GBuffer::BaseColor, (int)GBuffer::BaseColor);
-				m_DeferredDirectionalLightShader->SetInt("u_Roughness", (int)GBuffer::Roughness); gBuffer.BindColorAttachmentByIndex((int)GBuffer::Roughness, (int)GBuffer::Roughness);
-				m_DeferredDirectionalLightShader->SetInt("u_Metallness", (int)GBuffer::Metallic); gBuffer.BindColorAttachmentByIndex((int)GBuffer::Metallic, (int)GBuffer::Metallic);
-				m_DeferredDirectionalLightShader->SetInt("u_WorldNormal", (int)GBuffer::WorldNormal); gBuffer.BindColorAttachmentByIndex((int)GBuffer::WorldNormal, (int)GBuffer::WorldNormal);
-				m_DeferredDirectionalLightShader->SetInt("u_WorldPos", (int)GBuffer::WorldPosition); gBuffer.BindColorAttachmentByIndex((int)GBuffer::WorldPosition, (int)GBuffer::WorldPosition);
+				m_DeferredDirectionalLightShader->SetInt("u_BaseColor", (int)GBuffer::BaseColor); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::BaseColor, (int)GBuffer::BaseColor);
+				m_DeferredDirectionalLightShader->SetInt("u_Roughness", (int)GBuffer::Roughness); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::Roughness, (int)GBuffer::Roughness);
+				m_DeferredDirectionalLightShader->SetInt("u_Metallness", (int)GBuffer::Metallic); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::Metallic, (int)GBuffer::Metallic);
+				m_DeferredDirectionalLightShader->SetInt("u_WorldNormal", (int)GBuffer::WorldNormal); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::WorldNormal, (int)GBuffer::WorldNormal);
+				m_DeferredDirectionalLightShader->SetInt("u_WorldPos", (int)GBuffer::WorldPosition); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::WorldPosition, (int)GBuffer::WorldPosition);
 				m_DeferredDirectionalLightShader->SetInt("u_CascadeCount", lights[i]->m_Cascades.Size()); 
 				m_DeferredDirectionalLightShader->SetInt("u_CascadeBeginIndex", lowQuality ? lights[i]->m_Cascades.Last() : 0);
 
 
-				RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredDirectionalLightShader, BufferToRect(gBuffer), "u_BaseColor", (int)GBuffer::BaseColor, false);
+				RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *target, *m_DeferredDirectionalLightShader, BufferToRect(*params.GetGBuffer()), "u_BaseColor", (int)GBuffer::BaseColor, false);
 			}
 		}
 
@@ -443,38 +403,38 @@ namespace Suora
 			m_DeferredPointLightShader->SetBool("u_Volumetric", volumetric);
 
 			m_DeferredPointLightShader->SetFloat3("u_ViewPos", camera->GetTransform()->GetPosition());
-			m_DeferredPointLightShader->SetInt("u_WorldNormal", 1); gBuffer.BindColorAttachmentByIndex((int)GBuffer::WorldNormal, 1);
-			m_DeferredPointLightShader->SetInt("u_Roughness", 2); gBuffer.BindColorAttachmentByIndex((int)GBuffer::Roughness, 2);
-			m_DeferredPointLightShader->SetInt("u_BaseColor", 3); gBuffer.BindColorAttachmentByIndex((int)GBuffer::BaseColor, 3);
-			m_DeferredPointLightShader->SetInt("u_Metallic", 4); gBuffer.BindColorAttachmentByIndex((int)GBuffer::Metallic, 4);
+			m_DeferredPointLightShader->SetInt("u_WorldNormal", 1); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::WorldNormal, 1);
+			m_DeferredPointLightShader->SetInt("u_Roughness", 2); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::Roughness, 2);
+			m_DeferredPointLightShader->SetInt("u_BaseColor", 3); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::BaseColor, 3);
+			m_DeferredPointLightShader->SetInt("u_Metallic", 4); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::Metallic, 4);
 			m_DeferredPointLightShader->SetInt("u_ShadowAtlas", 5); if (PointLightNode::s_ShadowAtlas) PointLightNode::s_ShadowAtlas->BindDepthAttachmentToSlot(5);
 
-			RenderFramebufferIntoFramebuffer(gBuffer, *target, *m_DeferredPointLightShader, BufferToRect(gBuffer), "u_WorldPos", (int)GBuffer::WorldPosition, false);
+			RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *target, *m_DeferredPointLightShader, BufferToRect(*params.GetGBuffer()), "u_WorldPos", (int)GBuffer::WorldPosition, false);
 		}
 
 
 		/* ----- Indirect Ilumination ----- */
 		if (!lowQuality)
 		{
-			world.GetIlumContext()->ApplyIlumination(gBuffer, *camera, world, *target);
+			world.GetIlumContext()->ApplyIlumination(*params.GetGBuffer(), *camera, world, *target);
 		}
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Disable);
 	}
 
-	void RenderPipeline::DeferredCompositePass(World& world, CameraNode& camera, Framebuffer& gbuffer)
+	void RenderPipeline::DeferredCompositePass(World& world, CameraNode& camera, RenderingParams& params)
 	{
-		BlitDepthBuffer(gbuffer, *GetForwardReadyBuffer(gbuffer.GetSize()), *m_DepthBlitShader);
+		BlitDepthBuffer(*params.GetGBuffer(), *params.GetForwardReadyBuffer(), *m_DepthBlitShader);
 		
 		m_DeferredComposite->Bind();
 		m_DeferredComposite->SetFloat3("u_View", camera.GetForwardVector());
 		m_DeferredComposite->SetFloat3("u_ViewPos", camera.GetPosition());
 		m_DeferredComposite->SetFloat4("u_ForwardClearColor", camera.GetClearColor());
 		// BaseColor = 0
-		gbuffer.BindColorAttachmentByIndex((int)GBuffer::Metallic, 1); m_DeferredComposite->SetInt("u_Metallic", 1);
-		GetDeferredLitBuffer(gbuffer.GetSize())->BindColorAttachmentByIndex(0, 2); m_DeferredComposite->SetInt("u_Radiance", 2);
-		gbuffer.BindColorAttachmentByIndex((int)GBuffer::WorldNormal, 5); m_DeferredComposite->SetInt("u_WorldNormal", 5);
-		gbuffer.BindColorAttachmentByIndex((int)GBuffer::WorldPosition, 13); m_DeferredComposite->SetInt("u_WorldPosition", 13);
-		gbuffer.BindColorAttachmentByIndex((int)GBuffer::Roughness, 6); m_DeferredComposite->SetInt("u_Roughness", 6);
+		params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::Metallic, 1); m_DeferredComposite->SetInt("u_Metallic", 1);
+		params.GetDeferredLitBuffer()->BindColorAttachmentByIndex(0, 2); m_DeferredComposite->SetInt("u_Radiance", 2);
+		params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::WorldNormal, 5); m_DeferredComposite->SetInt("u_WorldNormal", 5);
+		params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::WorldPosition, 13); m_DeferredComposite->SetInt("u_WorldPosition", 13);
+		params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::Roughness, 6); m_DeferredComposite->SetInt("u_Roughness", 6);
 		Texture2D* texture = (world.FindNodesByClass<SkyLightNode>().Size() != 0) ? world.FindNodesByClass<SkyLightNode>()[0]->m_SkyTexture : AssetManager::GetAsset<Texture2D>(SuoraID("a6d871d8-52c5-43cc-ba73-191acfe2b7e5"));
 		if (texture)
 		{
@@ -493,12 +453,12 @@ namespace Suora
 			m_DeferredComposite->SetInt("u_IlumSeed", dt(mt));
 		}
 
-		RenderFramebufferIntoFramebuffer(gbuffer, *GetForwardReadyBuffer(gbuffer.GetSize()), *m_DeferredComposite, BufferToRect(gbuffer), "u_BaseColor", (int)GBuffer::BaseColor, false);
+		RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *params.GetForwardReadyBuffer(), *m_DeferredComposite, BufferToRect(*params.GetGBuffer()), "u_BaseColor", (int)GBuffer::BaseColor, false);
 	}
 
-	void RenderPipeline::ForwardPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
+	void RenderPipeline::ForwardPass(World& world, CameraNode& camera, RenderingParams& params)
 	{
-		SetFullscreenViewport(gbuffer);
+		SetFullscreenViewport(*params.GetGBuffer());
 
 		RenderCommand::SetWireframeMode(params.DrawWireframe);
 
@@ -514,24 +474,24 @@ namespace Suora
 
 		RenderCommand::SetWireframeMode(false);
 
-		RenderFramebufferIntoFramebuffer(*GetForwardReadyBuffer(gbuffer.GetSize()), *GetFinalFramebuffer(gbuffer.GetSize()), *m_FullscreenPassShader, BufferToRect(gbuffer));
+		RenderFramebufferIntoFramebuffer(*params.GetForwardReadyBuffer(), *params.GetFinalBuffer(), *m_FullscreenPassShader, BufferToRect(*params.GetGBuffer()));
 	}
 
-	void RenderPipeline::PostProcessPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params)
+	void RenderPipeline::PostProcessPass(World& world, CameraNode& camera, RenderingParams& params)
 	{
-		SetFullscreenViewport(gbuffer);
+		SetFullscreenViewport(*params.GetGBuffer());
 
 		bool resultIsInTempBuffer = false;
-		Ref<Framebuffer> forwardBuffer = GetForwardReadyBuffer(gbuffer.GetSize());
-		Ref<Framebuffer> postProcessTempBuffer = GetPostProcessTempBuffer(gbuffer.GetSize());
+		Ref<Framebuffer> forwardBuffer = params.GetForwardReadyBuffer();
+		Ref<Framebuffer> postProcessTempBuffer = params.GetPostProcessTempBuffer();
 			
 		// FXAA
 		{
 			if (params.AntiAliasingMode == AntiAliasing::FXAA)
 			{
 				m_FXAA->Bind();
-				m_FXAA->SetFloat2("u_Resolution", RenderPipeline::GetInternalResolution());
-				RenderFramebufferIntoFramebuffer(*forwardBuffer, *postProcessTempBuffer, *m_FXAA, BufferToRect(gbuffer));
+				m_FXAA->SetFloat2("u_Resolution", params.Resolution);
+				RenderFramebufferIntoFramebuffer(*forwardBuffer, *postProcessTempBuffer, *m_FXAA, BufferToRect(*params.GetGBuffer()));
 				resultIsInTempBuffer = true;
 			}
 		}
@@ -547,12 +507,12 @@ namespace Suora
 					effect->m_Initialized = true;
 				}
 				effect->Process((resultIsInTempBuffer ? postProcessTempBuffer : forwardBuffer), 
-								(resultIsInTempBuffer ? forwardBuffer : postProcessTempBuffer), gbuffer, camera);
+								(resultIsInTempBuffer ? forwardBuffer : postProcessTempBuffer), params, camera);
 				resultIsInTempBuffer = !resultIsInTempBuffer;
 			}
 		}
 
-		RenderFramebufferIntoFramebuffer(*(resultIsInTempBuffer ? postProcessTempBuffer : forwardBuffer), *GetFinalFramebuffer(gbuffer.GetSize()), *GetFullscreenPassShader(), BufferToRect(gbuffer));
+		RenderFramebufferIntoFramebuffer(*(resultIsInTempBuffer ? postProcessTempBuffer : forwardBuffer), *params.GetFinalBuffer(), *GetFullscreenPassShader(), BufferToRect(*params.GetGBuffer()));
 	}
 
 	void RenderPipeline::UserInterfacePass(World& world, const glm::mat4& view, Framebuffer& target, RenderingParams& params)
@@ -603,77 +563,75 @@ namespace Suora
 		return s_FullscreenQuadVAO;
 	}
 
-	Ref<Framebuffer> RenderPipeline::GetDeferredLitBuffer(const glm::ivec2& size)
-	{
-		if (m_DeferredLitBuffer.find(size) == m_DeferredLitBuffer.end())
-		{
-			FramebufferSpecification spec;
-			spec.Width = size.x;
-			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
-			m_DeferredLitBuffer[size] = Framebuffer::Create(spec);
-		}
-		return m_DeferredLitBuffer[size];
-	}
-	Ref<Framebuffer> RenderPipeline::GetDeferredDecalBuffer(const glm::ivec2& size)
-	{
-		if (m_DeferredDecalBuffer.find(size) == m_DeferredDecalBuffer.end())
-		{
-			FramebufferSpecification spec;
-			spec.Width = size.x;
-			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(GBufferSlotToBufferParams(GBuffer::WorldPosition));
-			m_DeferredDecalBuffer[size] = Framebuffer::Create(spec);
-		}
-		return m_DeferredDecalBuffer[size];
-	}
-
-	Ref<Framebuffer> RenderPipeline::GetForwardReadyBuffer(const glm::ivec2& size)
-	{
-		if (m_ForwardReadyBuffer.find(size) == m_ForwardReadyBuffer.end())
-		{
-			FramebufferSpecification spec;
-			spec.Width = size.x;
-			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-			m_ForwardReadyBuffer[size] = Framebuffer::Create(spec);
-		}
-		return m_ForwardReadyBuffer[size];
-	}
-
-	Ref<Framebuffer> RenderPipeline::GetPostProcessTempBuffer(const glm::ivec2& size)
-	{
-		if (m_PostProcessTempBuffer.find(size) == m_PostProcessTempBuffer.end())
-		{
-			FramebufferSpecification spec;
-			spec.Width = size.x;
-			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
-			m_PostProcessTempBuffer[size] = Framebuffer::Create(spec);
-		}
-		return m_PostProcessTempBuffer[size];
-	}
-
-	Ref<Framebuffer> RenderPipeline::GetFinalFramebuffer(const glm::ivec2& size)
-	{
-		if (m_FinalFramebuffer.find(size) == m_FinalFramebuffer.end())
-		{
-			FramebufferSpecification spec;
-			spec.Width = size.x;
-			spec.Height = size.y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-			m_FinalFramebuffer[size] = Framebuffer::Create(spec);
-		}
-		return m_FinalFramebuffer[size];
-	}
 
 	RenderingParams::RenderingParams()
 	{
 		if (ProjectSettings::Get())
 		{
 			EnableDeferredRendering = ProjectSettings::Get()->m_EnableDeferredRendering;
+		}
+	}
+
+	void RenderingParams::ValidateBuffers()
+	{
+		if (!m_InitializedBuffers)
+		{
+			m_InitializedBuffers = true;
+
+			{
+				FramebufferSpecification spec;
+				spec.Width = Resolution.x; spec.Height = Resolution.y;
+				for (int32_t i = 0; i < (int32_t)GBuffer::GBufferSlotCount; i++)
+				{
+					spec.Attachments.Attachments.push_back(RenderPipeline::GBufferSlotToBufferParams((GBuffer)i));
+				}
+				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
+				m_GBuffer = Framebuffer::Create(spec);
+			}
+			{
+				FramebufferSpecification spec;
+				spec.Width = Resolution.x; spec.Height = Resolution.y;
+				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
+				m_DeferredLitBuffer = Framebuffer::Create(spec);
+			}
+			{
+				FramebufferSpecification spec;
+				spec.Width = Resolution.x; spec.Height = Resolution.y;
+				spec.Attachments.Attachments.push_back(RenderPipeline::GBufferSlotToBufferParams(GBuffer::WorldPosition));
+				m_DeferredDecalBuffer = Framebuffer::Create(spec);
+			}
+			{
+				FramebufferSpecification spec;
+				spec.Width = Resolution.x; spec.Height = Resolution.y;
+				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
+				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
+				m_ForwardReadyBuffer = Framebuffer::Create(spec);
+			}
+			{
+				FramebufferSpecification spec;
+				spec.Width = Resolution.x; spec.Height = Resolution.y;
+				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
+				m_PostProcessTempBuffer = Framebuffer::Create(spec);
+			}
+			{
+				FramebufferSpecification spec;
+				spec.Width = Resolution.x; spec.Height = Resolution.y;
+				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB16F);
+				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
+				m_FinalBuffer = Framebuffer::Create(spec);
+			}
+		}
+
+		if (Resolution != LastResolution)
+		{
+			LastResolution = Resolution;
+
+			m_GBuffer->Resize(Resolution);
+			m_DeferredLitBuffer->Resize(Resolution);
+			m_DeferredDecalBuffer->Resize(Resolution);
+			m_ForwardReadyBuffer->Resize(Resolution);
+			m_PostProcessTempBuffer->Resize(Resolution);
+			m_FinalBuffer->Resize(Resolution);
 		}
 	}
 

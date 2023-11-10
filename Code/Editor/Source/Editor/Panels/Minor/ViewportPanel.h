@@ -1,5 +1,6 @@
 #pragma once
 #include "../MinorTab.h"
+#include "Suora/Renderer/RenderPipeline.h"
 #include <Suora.h>
 
 #define _ENUM_BODY_6476475
@@ -60,6 +61,7 @@ namespace Suora
 		Node* AssetDragDropNode = nullptr;
 		bool AssetDragDropValidation = false;
 
+		RenderingParams m_RParams;
 		bool m_DrawDebugGizmos = false;
 		bool m_DrawDebugGizmosDuringPlay = false;
 		bool m_DrawWireframe = false;

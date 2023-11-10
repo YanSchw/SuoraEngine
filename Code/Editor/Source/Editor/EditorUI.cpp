@@ -35,26 +35,15 @@ namespace Suora
 	struct AssetPreview
 	{
 		Ref<Framebuffer> m_Preview;
-		Ref<Framebuffer> m_GBuffer;
 		uint32_t m_LastDraw = -10000;
 		bool m_Init = false;
 		bool m_Done = false;
 		inline static RenderPipeline* s_Pipeline = nullptr;
+		inline static RenderingParams s_RParams;
 		Ref<World> m_World = nullptr;
 		
 		AssetPreview()
 		{
-			{
-				FramebufferSpecification spec;
-				spec.Width = 128;
-				spec.Height = 128;
-				for (int32_t i = 0; i < (int32_t)GBuffer::GBufferSlotCount; i++)
-				{
-					spec.Attachments.Attachments.push_back(RenderPipeline::GBufferSlotToBufferParams((GBuffer)i));
-				}
-				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-				m_GBuffer = Framebuffer::Create(spec);
-			}
 			{
 				FramebufferSpecification spec;
 				spec.Width = 128;
@@ -151,25 +140,23 @@ namespace Suora
 			if (!m_Preview) return;
 			m_Preview->Bind();
 
-			RenderingParams RParams;
 			if (asset->IsA<Material>())
 			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer, RParams);
+				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
 				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
 			}
 			if (asset->IsA<Mesh>())
 			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer, RParams);
+				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
 				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
 			}
 			if (asset->IsA<Blueprint>())
 			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer, RParams);
+				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
 				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
 			}
 			m_Done = true;
 			m_Init = false;
-			m_GBuffer = nullptr;
 			m_World = nullptr;
 
 			m_Preview->Unbind();

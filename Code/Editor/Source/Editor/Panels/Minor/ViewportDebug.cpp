@@ -152,11 +152,11 @@ namespace Suora
 	void ViewportPanel::DrawDebugView(Framebuffer& buffer, World& world, CameraNode& camera)
 	{
 		// Default Render Final Scene
-		RenderingParams RParams;
-		RParams.DrawWireframe = m_DrawWireframe;
-		Engine::Get()->GetRenderPipeline()->Render(buffer, world, camera, RParams);
+		m_RParams.DrawWireframe = m_DrawWireframe;
+		m_RParams.Resolution = iVec2(GetWidth(), GetHeight());
+		Engine::Get()->GetRenderPipeline()->Render(buffer, world, camera, m_RParams);
 
-#define _GBUFFER_RENDER(GBufferSlot, _shader) RenderPipeline::RenderFramebufferIntoFramebuffer(	*Engine::Get()->GetRenderPipeline()->GetGBuffer(), \
+#define _GBUFFER_RENDER(GBufferSlot, _shader) RenderPipeline::RenderFramebufferIntoFramebuffer(	*m_RParams.GetGBuffer(), \
 			buffer,\
 			*_shader,\
 			glm::ivec4(0, 0, GetWidth(), GetHeight()),\
@@ -183,14 +183,14 @@ namespace Suora
 		} return;
 		case DebugView::DeferredLightPass:
 		{
-			auto GBufferSize = Engine::Get()->GetRenderPipeline()->GetGBuffer()->GetSize();
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*Engine::Get()->GetRenderPipeline()->GetDeferredLitBuffer(GBufferSize),
+			auto GBufferSize = m_RParams.GetGBuffer()->GetSize();
+			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_RParams.GetDeferredLitBuffer(),
 				buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, GetWidth(), GetHeight()), "u_Texture", 0, false);
 		} return;
 		case DebugView::ForwardReadyBuffer:
 		{
-			auto GBufferSize = Engine::Get()->GetRenderPipeline()->GetGBuffer()->GetSize();
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*Engine::Get()->GetRenderPipeline()->GetForwardReadyBuffer(GBufferSize),
+			auto GBufferSize = m_RParams.GetGBuffer()->GetSize();
+			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_RParams.GetForwardReadyBuffer(),
 				buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, GetWidth(), GetHeight()), "u_Texture", 0, false);
 		} return;
 		case DebugView::Ilum_Surfels:

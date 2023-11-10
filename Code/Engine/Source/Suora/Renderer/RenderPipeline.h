@@ -49,13 +49,36 @@ namespace Suora
 		FXAA
 	};
 
+	/** RenderingParams also known as RenderingCache stores persistent RenderingInformation to be utilized by RenderPipeline */
 	struct RenderingParams
 	{
 		RenderingParams();
 
+		Ref<Framebuffer> GetGBuffer() const { return m_GBuffer; }
+		Ref<Framebuffer> GetDeferredLitBuffer() const { return m_DeferredLitBuffer; }
+		Ref<Framebuffer> GetDeferredDecalBuffer() const { return m_DeferredDecalBuffer; }
+		Ref<Framebuffer> GetForwardReadyBuffer() const { return m_ForwardReadyBuffer; }
+		Ref<Framebuffer> GetPostProcessTempBuffer() const { return m_PostProcessTempBuffer; }
+		Ref<Framebuffer> GetFinalBuffer() const { return m_FinalBuffer; }
+
 		bool DrawWireframe = false;
 		bool EnableDeferredRendering = true;
 		AntiAliasing AntiAliasingMode = AntiAliasing::FXAA;
+		iVec2 Resolution = iVec2(1920, 1080);
+
+	private:
+		iVec2 LastResolution = Resolution;
+		bool m_InitializedBuffers = false;
+		Ref<Framebuffer> m_GBuffer;
+		Ref<Framebuffer> m_DeferredLitBuffer;
+		Ref<Framebuffer> m_DeferredDecalBuffer;
+		Ref<Framebuffer> m_ForwardReadyBuffer;
+		Ref<Framebuffer> m_PostProcessTempBuffer;
+		Ref<Framebuffer> m_FinalBuffer;
+
+		void ValidateBuffers();
+
+		friend class RenderPipeline;
 	};
 
 	/** All Rendering is maintained here */
@@ -69,36 +92,31 @@ namespace Suora
 		~RenderPipeline();
 		virtual void Initialize();
 
-		void Render(Framebuffer& buffer, World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
-		virtual void Render(Framebuffer& buffer, World& world, CameraNode& camera, RenderingParams& params)
-		{
-			Render(buffer, world, camera, *GetGBuffer(), params);
-		}
+		void Render(Framebuffer& buffer, World& world, CameraNode& camera, RenderingParams& params);
+		
 		inline static Ref<VertexArray> __GetFullscreenQuad() { return GetFullscreenQuad(); }
 		inline Ref<Shader> GetFullscreenPassShader() const { return m_FullscreenPassShader; }
 		static Ref<Shader> GetFullscreenPassShaderStatic();
 
 		static void RenderFramebufferIntoFramebuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const glm::ivec4& rect, const std::string& uniformName = "u_Texture", int attachmentIndex = 0, bool shouldClear = false);
-		static void AddFramebufferToFramebuffer(Framebuffer& src, Framebuffer& target, int attachmentIndex = 0);
 		static void BlitDepthBuffer(Framebuffer& src, Framebuffer& target, Shader& shader, const std::string& uniformName = "u_Texture");
 		static void SetFullscreenViewport(Framebuffer& buffer);
-		static Ref<Framebuffer> GetGBuffer() { return s_Instance->m_GBuffer; }
 
 		static void ClearDepth(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
 	protected:
 		void ShadowPass(World& world, CameraNode& camera);
 
-		void DeferredPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
-		void RenderGBuffer(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
-		void DecalPass(World& world, CameraNode& camera, Framebuffer& gbuffer);
-		void DeferredSkyPass(World& world, CameraNode& camera, Framebuffer& gbuffer);
-		void DeferredLightPass(Ref<Framebuffer> target, Framebuffer& gBuffer, World& world, CameraNode* camera, bool lowQuality = false, int quadTick = 0, bool volumetric = false);
-		void DeferredCompositePass(World& world, CameraNode& camera, Framebuffer& gbuffer);
+		void DeferredPass(World& world, CameraNode& camera, RenderingParams& params);
+		void RenderGBuffer(World& world, CameraNode& camera, RenderingParams& params);
+		void DecalPass(World& world, CameraNode& camera, RenderingParams& params);
+		void DeferredSkyPass(World& world, CameraNode& camera, RenderingParams& params);
+		void DeferredLightPass(Ref<Framebuffer> target, RenderingParams& params, World& world, CameraNode* camera, bool lowQuality = false, int quadTick = 0, bool volumetric = false);
+		void DeferredCompositePass(World& world, CameraNode& camera, RenderingParams& params);
 
-		void ForwardPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
+		void ForwardPass(World& world, CameraNode& camera, RenderingParams& params);
 
-		void PostProcessPass(World& world, CameraNode& camera, Framebuffer& gbuffer, RenderingParams& params);
+		void PostProcessPass(World& world, CameraNode& camera, RenderingParams& params);
 
 		void UserInterfacePass(World& world, const glm::mat4& view, Framebuffer& target, RenderingParams& params);
 
@@ -106,19 +124,11 @@ namespace Suora
 		static Ref<VertexArray> GetFullscreenQuad();
 
 		Ref<Shader> m_FullscreenPassShader;
-		Ref<Shader> m_AddShader;
 		Ref<Shader> m_DepthBlitShader;
 		Ref<Shader> m_ToneMapping;
 		Ref<Shader> m_FXAA;
-		Ref<Framebuffer> m_TemporaryAddBuffer;
 
 		// Deferred
-		Ref<Framebuffer> m_GBuffer;
-		//Ref<Framebuffer> m_DeferredTempLitBuffer;
-		std::unordered_map<glm::ivec2, Ref<Framebuffer>, IVec2Hasher> m_DeferredLitBuffer;
-		Ref<Framebuffer> GetDeferredLitBuffer(const glm::ivec2& size);
-		std::unordered_map<glm::ivec2, Ref<Framebuffer>, IVec2Hasher> m_DeferredDecalBuffer;
-		Ref<Framebuffer> GetDeferredDecalBuffer(const glm::ivec2& size);
 		Ref<Shader> m_DeferredDecalPreparation;
 		Ref<Shader> m_DeferredDirectionalLightShader;
 		Ref<Shader> m_DeferredPointLightShader;
@@ -128,29 +138,11 @@ namespace Suora
 		Ref<Shader> m_DeferredComposite;
 
 		// Forward
-		std::unordered_map<glm::ivec2, Ref<Framebuffer>, IVec2Hasher> m_ForwardReadyBuffer;
-		Ref<Framebuffer> GetForwardReadyBuffer(const glm::ivec2& size);
-
-		std::unordered_map<glm::ivec2, Ref<Framebuffer>, IVec2Hasher> m_PostProcessTempBuffer;
-		Ref<Framebuffer> GetPostProcessTempBuffer(const glm::ivec2& size);
 
 		Ref<Decima> m_DecimaInstance;
 		std::thread m_DecimaThread;
 
-		std::unordered_map<glm::ivec2, Ref<Framebuffer>, IVec2Hasher> m_FinalFramebuffer;
-		Ref<Framebuffer> GetFinalFramebuffer(const glm::ivec2& size);
-
 		inline static Ptr<RenderPipeline> s_Instance;
-
-		inline static Vec3 s_LastCameraPos = Vec3();
-
-
-	public:
-		static glm::ivec2 GetInternalResolution();
-		static void SetInternalResolution(const glm::ivec2& resolution);
-
-	protected:
-		glm::ivec2 m_InternalResolution = glm::vec2(1920, 1080) * 1.0f;
 
 		friend class Ilum;
 		friend class Decima;

@@ -17,6 +17,7 @@ namespace Suora
 	class Runtime : public Application
 	{
 	public:
+		RenderingParams m_RParams;
 		Ref<Framebuffer> m_Framebuffer;
 		Ref<Window> m_StandaloneWindow;
 
@@ -80,8 +81,7 @@ namespace Suora
 						camera->SetAspectRatio((float)m_StandaloneWindow->GetWidth() / (float)m_StandaloneWindow->GetHeight());
 						camera->SetPerspectiveFarClip(camera->GetPerspectiveFarClip());
 
-						RenderingParams RParams;
-						Engine::Get()->GetRenderPipeline()->Render(*m_Framebuffer.get(), *world, *camera, RParams);
+						Engine::Get()->GetRenderPipeline()->Render(*m_Framebuffer.get(), *world, *camera, m_RParams);
 					}
 				}
 			}

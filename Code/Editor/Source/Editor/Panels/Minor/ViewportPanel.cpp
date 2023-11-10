@@ -89,8 +89,8 @@ namespace Suora
 
 	void ViewportPanel::DrawSelectionOutline(Node3D* node, const Color& color)
 	{
-		if (m_SelectionOutlineFramebuffer->GetSize() != RenderPipeline::GetInternalResolution())
-			m_SelectionOutlineFramebuffer->Resize(RenderPipeline::GetInternalResolution());
+		if (m_SelectionOutlineFramebuffer->GetSize() != m_RParams.Resolution)
+			m_SelectionOutlineFramebuffer->Resize(m_RParams.Resolution);
 		m_SelectionOutlineFramebuffer->Bind();
 		RenderCommand::SetViewport(0, 0, m_SelectionOutlineFramebuffer->GetSize().x, m_SelectionOutlineFramebuffer->GetSize().y);
 		RenderCommand::SetClearColor(Color(0.0f));
@@ -189,10 +189,10 @@ namespace Suora
 					}
 				}
 				// Update Position each Frame
-				RenderPipeline::GetGBuffer()->Bind();
+				m_RParams.GetGBuffer()->Bind();
 				
-				const Vec2 ScreenPos = Vec2(EditorUI::GetInput().x / GetWidth() * (RenderPipeline::GetInternalResolution().x), EditorUI::GetInput().y / GetHeight() * (RenderPipeline::GetInternalResolution().y));
-				const Vec3 Position = RenderPipeline::GetGBuffer()->ReadPixel_RGB32F(ScreenPos, (int)GBuffer::WorldPosition);
+				const Vec2 ScreenPos = Vec2(EditorUI::GetInput().x / GetWidth() * (m_RParams.Resolution.x), EditorUI::GetInput().y / GetHeight() * (m_RParams.Resolution.y));
+				const Vec3 Position = m_RParams.GetGBuffer()->ReadPixel_RGB32F(ScreenPos, (int)GBuffer::WorldPosition);
 				if (AssetDragDropNode && AssetDragDropNode->IsA<Node3D>()) AssetDragDropNode->As<Node3D>()->SetPosition(Position);
 
 				if (NativeInput::GetMouseButtonUp(Mouse::ButtonLeft) && AssetDragDropNode)
@@ -322,7 +322,7 @@ namespace Suora
 		{
 			m_SelectionOutlineFramebuffer->Bind();
 			RenderCommand::Clear();
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_SelectionOutlineFramebuffer, *m_Framebuffer, *m_SelectionOutlineShader, glm::ivec4(0, 0, RenderPipeline::GetInternalResolution().x, RenderPipeline::GetInternalResolution().y), "u_Texture", 0, false);
+			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_SelectionOutlineFramebuffer, *m_Framebuffer, *m_SelectionOutlineShader, glm::ivec4(0, 0, m_RParams.Resolution.x, m_RParams.Resolution.y), "u_Texture", 0, false);
 			m_Framebuffer->Bind();
 			EditorUI::ButtonParams Params;
 			Params.ButtonColor = EditorPreferences::Get()->UiColor;
