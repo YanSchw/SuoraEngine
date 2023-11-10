@@ -2,7 +2,7 @@
 #include "HeaderTool.h"
 
 #include "Suora/Common/Filesystem.h"
-#include "Suora/Common/Common.h"
+#include "Suora/Common/StringUtils.h"
 
 #include <iostream>
 #include <fstream>

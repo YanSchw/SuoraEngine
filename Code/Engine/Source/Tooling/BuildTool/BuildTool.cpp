@@ -2,7 +2,7 @@
 #include "BuildTool.h"
 
 #include "Suora/Common/Filesystem.h"
-#include "Suora/Common/Common.h"
+#include "Suora/Common/StringUtils.h"
 #include "Suora/Serialization/Yaml.h"
 
 #ifndef BUILDTOOL_IMPL

@@ -7,6 +7,7 @@
 #include "Tooling/HeaderTool/HeaderTool.h"
 #define BUILDTOOL_IMPL
 #include "Tooling/BuildTool/BuildTool.h"
+#include "Suora/Common/StringUtils.cpp"
 
 
 class SuoraBuildTool
