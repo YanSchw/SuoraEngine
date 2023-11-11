@@ -27,6 +27,13 @@ namespace Suora
 		RecalculateProjection();
 	}
 
+	void CameraNode::TickTransform(bool inWorldSpace)
+	{
+		Super::TickTransform(inWorldSpace);
+
+		m_ViewProjection = GetProjectionMatrix() * glm::inverse(GetTransformMatrix());
+	}
+
 	void CameraNode::SetPerspective(float verticalFOV, float nearClip, float farClip)
 	{
 		m_ProjectionType = ProjectionType::Perspective;
@@ -187,6 +194,8 @@ namespace Suora
 			m_Projection = glm::orthoLH(orthoLeft, orthoRight,
 				orthoBottom, orthoTop, m_OrthographicNear, m_OrthographicFar);
 		}
+
+		TickTransform(true);
 	}
 
 }

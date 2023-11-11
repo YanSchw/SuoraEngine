@@ -17,6 +17,8 @@ namespace Suora
 
 		void Begin() override;
 
+		virtual void TickTransform(bool inWorldSpace) override;
+
 		FUNCTION(Callable)
 		void SetPerspective(float verticalFOV, float nearClip, float farClip);
 		FUNCTION(Callable)
@@ -70,6 +72,7 @@ namespace Suora
 		void RecalculateProjection();
 
 		const glm::mat4& GetProjectionMatrix() const { return m_Projection; }
+		const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjection; }
 
 		void SetAutoPossess(bool autoPossess) { m_AutoPossess = autoPossess; }
 		bool IsAutoPossessed() const { return m_AutoPossess; }
@@ -80,6 +83,7 @@ namespace Suora
 
 	protected:
 		glm::mat4 m_Projection = glm::mat4(1.0f);
+		glm::mat4 m_ViewProjection = glm::mat4(1.0f);
 
 	private:
 		ProjectionType m_ProjectionType = ProjectionType::Perspective;

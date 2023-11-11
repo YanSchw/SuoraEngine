@@ -71,11 +71,7 @@ namespace Suora
 		material->ApplyUniforms(type);
 		material->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_Transform", transform);
 
-		// Projection matrix : 90° Field of View, 16:9 ratio, display range : 0.01 unit <-> 100 units
-		//glm::mat4 Projection = glm::perspectiveLH(glm::radians(camera->GetPerspectiveVerticalFOV()), camera->GetAspectRatio(), 0.01f, 100.0f);
-
-		glm::mat4 viewProj = camera->GetProjectionMatrix() /*Projection*/ * glm::inverse(camera->GetTransformMatrix());
-		material->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_ViewProjection", viewProj);
+		material->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_ViewProjection", camera->GetViewProjectionMatrix());
 
 		const glm::mat4 normalMat = glm::transpose(glm::inverse(glm::mat3(glm::inverse(camera->GetTransformMatrix()) * transform)));
 		material->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_NormalMatrix", normalMat);
