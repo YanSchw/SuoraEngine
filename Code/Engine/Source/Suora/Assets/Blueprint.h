@@ -6,7 +6,7 @@ namespace Suora
 {
 	struct ScriptClassInternal;
 	class DetailsPanel;
-	enum class InputScriptEventFlags : uint64_t;
+	enum class InputActionKind : uint32_t;
 
 	class Blueprint : public Asset
 	{
@@ -36,8 +36,8 @@ namespace Suora
 		{
 			String Label;
 			size_t ScriptFunctionHash;
-			InputScriptEventFlags Flags;
-			InputEventBind(const String& label, size_t hash, InputScriptEventFlags flags)
+			InputActionKind Flags;
+			InputEventBind(const String& label, size_t hash, InputActionKind flags)
 				: Label(label), ScriptFunctionHash(hash), Flags(flags)
 			{
 			}

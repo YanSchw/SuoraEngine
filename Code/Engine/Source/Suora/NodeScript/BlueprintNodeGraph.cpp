@@ -125,19 +125,19 @@ namespace Suora
 						{
 							size_t hash = hashCounter++;
 							CompileEvent(blueprint, *event, *execPressed, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputScriptEventFlags::ButtonPressed));
+							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputActionKind::Pressed));
 						}
 						if (execReleased)
 						{
 							size_t hash = hashCounter++;
 							CompileEvent(blueprint, *event, *execReleased, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputScriptEventFlags::ButtonReleased));
+							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputActionKind::Released));
 						}
 						if (execHelt)
 						{
 							size_t hash = hashCounter++;
 							CompileEvent(blueprint, *event, *execHelt, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputScriptEventFlags::ButtonHelt));
+							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputActionKind::Held));
 						}
 					}
 					else

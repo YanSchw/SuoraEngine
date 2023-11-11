@@ -55,7 +55,7 @@ namespace Suora
 			{
 				Yaml::Node& input = node["m_InputEventsToBeBound"][std::to_string(i++)];
 				if (input.IsNone()) break;
-				m_InputEventsToBeBound.Add(InputEventBind(input["Label"].As<String>(), input["ScriptFunctionHash"].As<size_t>(), (InputScriptEventFlags)input["Flags"].As<uint64_t>()));
+				m_InputEventsToBeBound.Add(InputEventBind(input["Label"].As<String>(), input["ScriptFunctionHash"].As<size_t>(), (InputActionKind)input["Flags"].As<uint64_t>()));
 			}
 		}
 

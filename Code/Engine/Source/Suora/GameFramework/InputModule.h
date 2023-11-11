@@ -5,6 +5,7 @@
 #include "Suora/Core/Object/Object.h"
 #include "Suora/Common/VectorUtils.h"
 #include "Suora/Common/Array.h"
+#include "Suora/Common/Map.h"
 #include "Suora/Reflection/ClassReflector.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/SuoraProject.h"
@@ -51,7 +52,7 @@ namespace Suora
 		Axis,		// float
 		Axis2D		// Vec2
 	};
-	enum class InputActionParam : uint32_t
+	enum class InputActionKind : uint32_t
 	{
 		Pressed,
 		Released,
@@ -102,18 +103,6 @@ namespace Suora
 		std::function<Vec2(void)> m_Vec2Lambda = []() { return Vec2(0.0f); };
 	};
 
-	enum class InputScriptEventFlags : uint64_t
-	{
-		None = 0,
-		ButtonPressed = 1,
-		ButtonReleased = 2,
-		ButtonHelt = 4
-	};
-	inline InputScriptEventFlags operator|(InputScriptEventFlags a, InputScriptEventFlags b)
-	{
-		return static_cast<InputScriptEventFlags>(static_cast<uint64_t>(a) | static_cast<uint64_t>(b));
-	}
-
 	/** Runtime Binding of InputActions to Nodes */
 	class InputModule
 	{
@@ -127,7 +116,7 @@ namespace Suora
 			Ptr<Object> m_Lifetime;
 			Array<Ref<InputAction>> m_ActionInput;
 			std::vector<std::function<void(void)>> m_ActionFunctions;
-			Array<InputActionParam> m_ActionEvent;
+			Array<InputActionKind> m_ActionEvent;
 			std::vector<bool> m_ActionLastFrameInput;
 			std::vector<bool> m_ActionCurrentFrameInput;
 
@@ -160,7 +149,7 @@ namespace Suora
 		void ProcessInputForBlueprintInstance(class Node* node);
 
 		template<typename R, typename T, typename U>
-		void BindAction(const String& label, InputActionParam event, U instance, R(T::* f)(void))
+		void BindAction(const String& label, InputActionKind event, U instance, R(T::* f)(void))
 		{
 			if (!IsObjectRegistered(instance))
 			{
@@ -223,7 +212,7 @@ namespace Suora
 			m_ObjectBindings[instance]->m_Axis2DFunctions.push_back([instance, f](const Vec2& value) { (instance->*f)(value); });
 		}
 
-		void BindInputScriptEvent(class Node* node, const String& label, InputScriptEventFlags flags, size_t scriptFunctionHash);
+		void BindInputScriptEvent(class Node* node, const String& label, InputActionKind flags, size_t scriptFunctionHash);
 
 		Ref<InputAction> GetInputActionByLabel(const String& label);
 		static Ref<InputDispatcher> GetInputDispatcherByLabel(const String& label);
@@ -231,8 +220,8 @@ namespace Suora
 	public:
 		bool m_LockInputCursor = false;
 	private:
-		std::unordered_map<Object*, Ref<ObjectBinding>> m_ObjectBindings;
-		std::unordered_map<class Node*, Ref<BlueprintInstanceBinding>> m_BlueprintInstanceBindings;
+		Map<Object*, Ref<ObjectBinding>> m_ObjectBindings;
+		Map<class Node*, Ref<BlueprintInstanceBinding>> m_BlueprintInstanceBindings;
 
 		inline static std::unordered_map<String, Ref<InputDispatcher>> s_RegisteredInputDispatchers;
 		friend void DrawInputDispatcherDropDown(Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height);

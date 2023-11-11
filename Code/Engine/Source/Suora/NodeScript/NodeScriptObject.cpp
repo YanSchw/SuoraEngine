@@ -10,8 +10,6 @@
 namespace Suora
 {
 
-	enum class InputScriptEventFlags : uint64_t;
-
 	INodeScriptObject::~INodeScriptObject()
 	{
 		if (m_World && m_World->GetGameInstance() && m_World->GetGameInstance()->GetInputModule() && m_BlueprintLinks.Size() > 0)

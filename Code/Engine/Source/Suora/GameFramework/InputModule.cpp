@@ -159,7 +159,7 @@ namespace Suora
 			}
 			for (auto& It : toRemove)
 			{
-				m_ObjectBindings.erase(It);
+				m_ObjectBindings.Remove(It);
 			}
 		}
 		{
@@ -182,7 +182,7 @@ namespace Suora
 			}
 			for (auto& It : toRemove)
 			{
-				m_BlueprintInstanceBindings.erase(It);
+				m_BlueprintInstanceBindings.Remove(It);
 			}
 		}
 	}
@@ -194,7 +194,7 @@ namespace Suora
 
 	bool InputModule::IsObjectRegistered(Object* obj) const
 	{
-		return m_ObjectBindings.find(obj) != m_ObjectBindings.end();
+		return m_ObjectBindings.ContainsKey(obj);
 	}
 
 	void InputModule::ProcessInputForObject(Object* obj)
@@ -206,15 +206,15 @@ namespace Suora
 			Binding->m_ActionLastFrameInput[i] = Binding->m_ActionCurrentFrameInput[i];
 			Binding->m_ActionCurrentFrameInput[i] = Binding->m_ActionInput[i]->GetValue<bool>();
 			
-			if (Binding->m_ActionEvent[i] == InputActionParam::Pressed && !Binding->m_ActionLastFrameInput[i] && Binding->m_ActionCurrentFrameInput[i])
+			if (Binding->m_ActionEvent[i] == InputActionKind::Pressed && !Binding->m_ActionLastFrameInput[i] && Binding->m_ActionCurrentFrameInput[i])
 			{
 				Binding->m_ActionFunctions[i]();
 			}
-			else if (Binding->m_ActionEvent[i] == InputActionParam::Released && Binding->m_ActionLastFrameInput[i] && !Binding->m_ActionCurrentFrameInput[i])
+			else if (Binding->m_ActionEvent[i] == InputActionKind::Released && Binding->m_ActionLastFrameInput[i] && !Binding->m_ActionCurrentFrameInput[i])
 			{
 				Binding->m_ActionFunctions[i]();
 			}
-			else if (Binding->m_ActionEvent[i] == InputActionParam::Held && Binding->m_ActionCurrentFrameInput[i])
+			else if (Binding->m_ActionEvent[i] == InputActionKind::Held && Binding->m_ActionCurrentFrameInput[i])
 			{
 				Binding->m_ActionFunctions[i]();
 			}
@@ -237,12 +237,12 @@ namespace Suora
 
 	void InputModule::UnregisterBlueprintInstance(Node* node)
 	{
-		m_BlueprintInstanceBindings.erase(node);
+		m_BlueprintInstanceBindings.Remove(node);
 	}
 
 	bool InputModule::IsBlueprintInstanceRegistered(Node* node) const
 	{
-		return m_BlueprintInstanceBindings.find(node) != m_BlueprintInstanceBindings.end();
+		return m_BlueprintInstanceBindings.ContainsKey(node);
 	}
 
 	void InputModule::ProcessInputForBlueprintInstance(Node* node)
@@ -253,15 +253,15 @@ namespace Suora
 
 		for (int32_t i = 0; i < Binding->m_ActionInput.Size(); i++)
 		{
-			if (Binding->m_ActionEvent[i] == InputActionParam::Pressed && !Binding->m_ActionLastFrameInput[i] && Binding->m_ActionCurrentFrameInput[i])
+			if (Binding->m_ActionEvent[i] == InputActionKind::Pressed && !Binding->m_ActionLastFrameInput[i] && Binding->m_ActionCurrentFrameInput[i])
 			{
 				node->__NodeEventDispatch(Binding->m_ActionFunctionScriptHashes[i]);
 			}
-			else if (Binding->m_ActionEvent[i] == InputActionParam::Released && Binding->m_ActionLastFrameInput[i] && !Binding->m_ActionCurrentFrameInput[i])
+			else if (Binding->m_ActionEvent[i] == InputActionKind::Released && Binding->m_ActionLastFrameInput[i] && !Binding->m_ActionCurrentFrameInput[i])
 			{
 				node->__NodeEventDispatch(Binding->m_ActionFunctionScriptHashes[i]);
 			}
-			else if (Binding->m_ActionEvent[i] == InputActionParam::Held && Binding->m_ActionCurrentFrameInput[i])
+			else if (Binding->m_ActionEvent[i] == InputActionKind::Held && Binding->m_ActionCurrentFrameInput[i])
 			{
 				node->__NodeEventDispatch(Binding->m_ActionFunctionScriptHashes[i]);
 			}
@@ -280,7 +280,7 @@ namespace Suora
 		}
 	}
 
-	void InputModule::BindInputScriptEvent(Node* node, const String& label, InputScriptEventFlags flags, size_t scriptFunctionHash)
+	void InputModule::BindInputScriptEvent(Node* node, const String& label, InputActionKind flags, size_t scriptFunctionHash)
 	{
 		if (!IsBlueprintInstanceRegistered(node))
 		{
@@ -292,16 +292,10 @@ namespace Suora
 
 		if (Action->m_ActionType == InputActionType::Action)
 		{
-			InputActionParam event = InputActionParam::Pressed;
-
-			if (((uint64_t)flags & (uint64_t)InputScriptEventFlags::ButtonPressed) != 0) event = InputActionParam::Pressed;
-			if (((uint64_t)flags & (uint64_t)InputScriptEventFlags::ButtonReleased) != 0) event = InputActionParam::Released;
-			if (((uint64_t)flags & (uint64_t)InputScriptEventFlags::ButtonHelt) != 0) event = InputActionParam::Held;
-
 			m_BlueprintInstanceBindings[node]->m_ActionInput.Add(Action);
 			m_BlueprintInstanceBindings[node]->m_ActionFunctions.push_back(nullptr); // Just to keep everything inline. Not used for Blueprints
 			m_BlueprintInstanceBindings[node]->m_ActionFunctionScriptHashes.push_back(scriptFunctionHash);
-			m_BlueprintInstanceBindings[node]->m_ActionEvent.Add(event);
+			m_BlueprintInstanceBindings[node]->m_ActionEvent.Add(flags);
 			m_BlueprintInstanceBindings[node]->m_ActionLastFrameInput.push_back(false);
 			m_BlueprintInstanceBindings[node]->m_ActionCurrentFrameInput.push_back(false);
 		}
@@ -353,7 +347,7 @@ namespace Suora
 			_key_->m_ActionSpecifier = InputActionType::Action;\
 			_key_->m_BoolLambda = []()\
 			{\
-				return NativeInput::GetKey(Key::_key_);\
+				return NativeInput::IsKeyPressed(Key::_key_);\
 			};\
 			InputModule::AddInputDispatcher(_key_)
 

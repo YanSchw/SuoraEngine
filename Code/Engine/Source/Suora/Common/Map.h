@@ -21,6 +21,10 @@ namespace Suora
 			m_Map.erase(key);
 		}
 
+		V& operator[](const K& key)
+		{
+			return m_Map[key];
+		}
 		V& operator[](K&& key)
 		{
 			return m_Map[key];
@@ -30,6 +34,14 @@ namespace Suora
 			return m_Map.at(key);
 		}
 
+		// Iterators
+
+		typename std::unordered_map<K, V>::iterator begin() { return m_Map.begin(); }
+		typename std::unordered_map<K, V>::const_iterator begin() const { return m_Map.begin(); }
+		typename std::unordered_map<K, V>::const_iterator cbegin() const { return m_Map.cbegin(); }
+		typename std::unordered_map<K, V>::iterator end() { return m_Map.end(); }
+		typename std::unordered_map<K, V>::const_iterator end() const { return m_Map.end(); }
+		typename std::unordered_map<K, V>::const_iterator cend() const { return m_Map.cend(); }
 	};
 
 }
