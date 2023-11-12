@@ -9,6 +9,7 @@
 
 namespace Suora
 {
+	inline static std::vector<Class> s_NativeClasses;
 	const Class Class::None = Class((NativeClassID) 0);
 
 	bool Class::Inherits(const Class& base) const
@@ -47,6 +48,7 @@ namespace Suora
 	void Class::GenerateNativeClassReflector(const Class& cls)
 	{
 		ClassReflector::GetByClass(cls);
+		s_NativeClasses.push_back(cls);
 	}
 
 	Array<Class> Class::GetInheritanceTree() const

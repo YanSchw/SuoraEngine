@@ -254,7 +254,6 @@ private:\n\
 	Internal()\n\
 	{\n\
 	\tClass::GenerateNativeClassReflector(StaticClass());\n\
-	\tClass::s_NativeClasses.push_back(StaticClass());\n\
 	}\n" + helperFunctions + "\n\n" + functionRegistors +
 "};\n\
 struct InternalAlloc\n\

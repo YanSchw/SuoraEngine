@@ -1,7 +1,7 @@
 #pragma once
 #include "inttypes.h"
 #include "Suora/Common/Array.h"
-#include <string>
+#include "Suora/Common/StringUtils.h"
 #include <unordered_map>
 
 namespace Suora
@@ -86,7 +86,6 @@ namespace Suora
 
 		Object* GetClassDefaultObject(bool clear = false) const;
 
-		inline static std::vector<Class> s_NativeClasses;
 	};
 
 }
