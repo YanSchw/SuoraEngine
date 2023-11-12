@@ -463,12 +463,12 @@ namespace Suora
 		RenderCommand::SetWireframeMode(params.DrawWireframe);
 
 		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
+		int32_t meshID = 0;
 		for (MeshNode* meshNode : meshes)
 		{
-			if (meshNode->mesh && meshNode->GetMaterials().Materials.Size() > 0 && meshNode->GetMaterials().Materials[0] && meshNode->GetMaterials().Materials[0]->GetShaderGraph() && meshNode->GetMaterials().Materials[0]->GetShaderGraph()->m_BaseShader != "DeferredLit.glsl")
+			if (meshNode->mesh && meshNode->GetMaterials().Materials.Size() > 0 && meshNode->GetMaterials().Materials[0] && meshNode->GetMaterials().Materials[0]->GetShaderGraph() && !meshNode->GetMaterials().Materials[0]->IsDeferred())
 			{
-				if (camera.IsInFrustum(meshNode->GetPosition(), 1.5f * meshNode->GetBoundingSphereRadius()))
-					Renderer3D::DrawMesh(&camera, meshNode->GetTransformMatrix(), *meshNode->mesh, meshNode->GetMaterials());
+				Renderer3D::DrawMeshNode(&camera, meshNode, MaterialType::Material, ++meshID);
 			}
 		}
 
