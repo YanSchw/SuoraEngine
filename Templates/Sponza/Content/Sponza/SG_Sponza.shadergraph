@@ -1,0 +1,576 @@
+Material: 
+  ShaderGraph: "80206651-33d6-4f5a-bf1d-ddf5f50b9e43"
+  Uniform_0: 
+    m_Float: 0.000000
+    m_Label: BaseColor
+    m_Texture2D: "fa5204b8-378c-48c7-b925-200046334736"
+    m_Type: 5
+    m_Vec3: 0.000000/0.000000/0.000000
+  Uniform_1: 
+    m_Float: 0.000000
+    m_Label: Normal
+    m_Texture2D: "16b120de-1115-4aac-b622-035e118a2da4"
+    m_Type: 5
+    m_Vec3: 0.000000/0.000000/0.000000
+  m_BackfaceCulling: true
+NodeGraph: 
+  Node_0: 
+    Color: 
+      a: 1.000000
+      b: 0.570000
+      g: 0.640000
+      r: 0.800000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: World Position Offset
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: Base Color
+      PinHeight: 25.000000
+      PinID: 3
+      Target: 3/Output/1
+      m_AdditionalData: 
+
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Opacity
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    Input_3: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: Normal
+      PinHeight: 25.000000
+      PinID: 3
+      Target: 6/Output/0
+      m_AdditionalData: 
+
+    Input_4: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Metallic
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+    Input_5: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Roughness
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+    Input_6: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: Emissive Color
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+    NodeID: 1
+    Position: 
+      x: 140.000000
+      y: 0.000000
+    Size: 
+      x: 300.000000
+      y: 260.000061
+    Title: Master
+  Node_1: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.490000
+      r: 0.900000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Name
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: BaseColor
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Type
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 5
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Default
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 
+
+    NodeID: 2
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.900000
+      IsReceivingPin: false
+      Label: Uniform
+      PinHeight: 25.000000
+      PinID: 5
+      Target: NULL
+      m_AdditionalData: 
+
+    Position: 
+      x: "-530.992310"
+      y: 82.229012
+    Size: 
+      x: 225.000000
+      y: 200.000061
+    Title: Uniform
+  Node_2: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.490000
+      r: 0.900000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Name
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: Normal
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Type
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 5
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Default
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 
+
+    NodeID: 2
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.900000
+      IsReceivingPin: false
+      Label: Uniform
+      PinHeight: 25.000000
+      PinID: 5
+      Target: NULL
+      m_AdditionalData: 
+
+    Position: 
+      x: "-531.000000"
+      y: "-295.000000"
+    Size: 
+      x: 225.000000
+      y: 200.000000
+    Title: Uniform
+  Node_3: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.440000
+      r: 0.600000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.900000
+      IsReceivingPin: true
+      Label: Texture2D
+      PinHeight: 25.000000
+      PinID: 5
+      Target: 1/Output/0
+      m_AdditionalData: 
+
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.200000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: UV
+      PinHeight: 25.000000
+      PinID: 2
+      Target: 5/Output/0
+      m_AdditionalData: 
+
+    NodeID: 102
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.480000
+        g: 0.590000
+        r: 0.520000
+      IsReceivingPin: false
+      Label: RGBA
+      PinHeight: 25.000000
+      PinID: 4
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_1: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: false
+      Label: RGB
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_2: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: R
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_3: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: G
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_4: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: B
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_5: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: A
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    Position: 
+      x: "-211.000000"
+      y: 35.000000
+    Size: 
+      x: 215.000000
+      y: 230.000061
+    Title: Sample Texture2D
+  Node_4: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.440000
+      r: 0.600000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.900000
+      IsReceivingPin: true
+      Label: Texture2D
+      PinHeight: 25.000000
+      PinID: 5
+      Target: 2/Output/0
+      m_AdditionalData: 
+
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.200000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: UV
+      PinHeight: 25.000000
+      PinID: 2
+      Target: 5/Output/0
+      m_AdditionalData: 
+
+    NodeID: 102
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.480000
+        g: 0.590000
+        r: 0.520000
+      IsReceivingPin: false
+      Label: RGBA
+      PinHeight: 25.000000
+      PinID: 4
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_1: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: false
+      Label: RGB
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_2: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: R
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_3: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: G
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_4: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: B
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    Output_5: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: A
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    Position: 
+      x: "-194.000015"
+      y: "-264.999969"
+    Size: 
+      x: 215.000000
+      y: 229.999969
+    Title: Sample Texture2D
+  Node_5: 
+    Color: 
+      a: 1.000000
+      b: 0.360000
+      g: 0.870000
+      r: 0.520000
+    NodeID: 103
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.200000
+        r: 0.400000
+      IsReceivingPin: false
+      Label: Vec2
+      PinHeight: 25.000000
+      PinID: 2
+      Target: NULL
+      m_AdditionalData: 
+
+    Position: 
+      x: "-534.000000"
+      y: "-115.000000"
+    Size: 
+      x: 215.000000
+      y: 80.000000
+    Title: UV
+  Node_6: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.440000
+      r: 0.600000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: RGB
+      PinHeight: 25.000000
+      PinID: 3
+      Target: 4/Output/1
+      m_AdditionalData: 
+
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Scale
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 1.0
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Flip
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+
+    NodeID: 105
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: false
+      Label: Normal
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+
+    Position: 
+      x: 65.000000
+      y: "-251.000000"
+    Size: 
+      x: 215.000000
+      y: 140.000000
+    Title: Sample Normal
+UUID: "80206651-33d6-4f5a-bf1d-ddf5f50b9e43"
+m_BaseShader: DeferredLit.glsl
