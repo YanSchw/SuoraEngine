@@ -29,7 +29,7 @@ namespace Suora
 	};
 	struct RaycastParams
 	{
-		Array<class CollisionNode*> IgnoredCollisionNodes;
+		Array<class ShapeNode*> IgnoredCollisionNodes;
 	};
 
 	struct LocalUpdateChunk
