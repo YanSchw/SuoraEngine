@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include "Util/Icon.h"
 #include "Util/EditorPreferences.h"
 #include "Suora/Assets/Font.h"
 #include "EditorWindow.h"
@@ -120,7 +121,7 @@ namespace Suora
 							EditorUI::ButtonParams _TxtParam = EditorUI::ButtonParams::Invisible();
 							_TxtParam.TextOrientation = Vec2(-0.95f, 0.0f);
 							EditorUI::Button(entry->Label, _x + 5.0f + 25.0f, w + m_ScrollY, _width, 25.0f, _TxtParam);
-							EditorUI::DrawTexturedRect(m_SearchCategoryClicked[entry->Label] ? AssetManager::GetAsset<Texture2D>(SuoraID("8742cec8-9ee5-4645-b036-577146904b41"))->GetTexture() : AssetManager::GetAsset<Texture2D>(SuoraID("970c3d0e-c5b0-4a2e-a548-661d9b00d977"))->GetTexture(), _x + 5.0f, w + m_ScrollY, 25.0f, 25.0f, 0.0f, Color(1.0f));
+							EditorUI::DrawTexturedRect(m_SearchCategoryClicked[entry->Label] ? Icon::ArrowDown : Icon::ArrowRight, _x + 5.0f, w + m_ScrollY, 25.0f, 25.0f, 0.0f, Color(1.0f));
 						}
 					}
 					i++; 

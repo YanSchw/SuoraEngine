@@ -14,6 +14,7 @@
 #include "Panels/Major/ShaderGraphEditorPanel.h"
 #include "Suora/Debug/VirtualConsole.h"
 #include "Util/EditorPreferences.h"
+#include "Util/Icon.h"
 #include "EditorUI.h"
 #include "Launcher.h"
 #include <Suora.h>
@@ -362,9 +363,7 @@ namespace Suora
 				}
 				m_SelectedHeroTool = 0;
 			}
-			Texture* openIcon = AssetManager::GetAsset<Texture2D>(SuoraID("98548865-889f-4705-abe7-37a83fdd652d"))->GetTexture();
-			Texture* closeIcon = AssetManager::GetAsset<Texture2D>(SuoraID("8742cec8-9ee5-4645-b036-577146904b41"))->GetTexture();
-			EditorUI::DrawTexturedRect(m_HeroToolOpened ? closeIcon : openIcon, 5.0f * ui, 5.0f * ui, 25.0f * ui, 25.0f * ui, 0.0f, Color(1.0f));
+			EditorUI::DrawTexturedRect(m_HeroToolOpened ? Icon::ArrowDown : Icon::ArrowUp, 5.0f * ui, 5.0f * ui, 25.0f * ui, 25.0f * ui, 0.0f, Color(1.0f));
 			EditorUI::Text("ContentDrawer", Font::Instance, 35.0f * ui + 3.0f, 0.0f, (150.0f - 35.0f) * ui, 35.0f * ui - 1, 24.0f, Vec2(-1, 0), Color(1));
 
 			// Console
@@ -383,17 +382,17 @@ namespace Suora
 				const String textErrors = m_ConsoleErrors >= 10 ? std::to_string(m_ConsoleErrors) : "0" + std::to_string(m_ConsoleErrors);
 				const Color colorErrors = m_ConsoleErrors > 0 ? Color(0.6745098f, 0.2078431f, 0.2745098f, 1) : EditorPreferences::Get()->UiBackgroundColor * 0.5f;
 				EditorUI::Text(textErrors, Font::Instance, 150.0f * ui + 10.0f * ui, 3.0f, 25.0f * ui, 9.0f * ui, 18.0f, Vec2(), colorErrors);
-				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("7224f801-1370-4f82-ac37-0cecf2cc35b9"))->GetTexture(), 150.0f * ui + 13.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorErrors);
+				EditorUI::DrawTexturedRect(Icon::Error, 150.0f * ui + 13.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorErrors);
 
 				const String textWarnings = m_ConsoleWarnings >= 10 ? std::to_string(m_ConsoleWarnings) : "0" + std::to_string(m_ConsoleWarnings);
 				const Color colorWarnings = m_ConsoleWarnings > 0 ? Color(0.7764706f, 0.6941176f, 0.2431373f, 1) : EditorPreferences::Get()->UiBackgroundColor * 0.5f;
 				EditorUI::Text(textWarnings, Font::Instance, 150.0f * ui + 40.0f * ui, 3.0f, 25.0f * ui, 9.0f * ui, 18.0f, Vec2(), colorWarnings);
-				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("cf027e56-ead0-4e61-ac31-b3d9125a03d9"))->GetTexture(), 150.0f * ui + 43.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorWarnings);
+				EditorUI::DrawTexturedRect(Icon::Warning, 150.0f * ui + 43.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorWarnings);
 
 				const String textLogs = m_ConsoleLogs >= 10 ? std::to_string(m_ConsoleLogs) : "0" + std::to_string(m_ConsoleLogs);
 				const Color colorLogs = m_ConsoleLogs > 0 ? Color(1) : EditorPreferences::Get()->UiBackgroundColor * 0.5f;
 				EditorUI::Text(textLogs, Font::Instance, 150.0f * ui + 70.0f * ui, 3.0f, 25.0f * ui, 9.0f * ui, 18.0f, Vec2(), colorLogs);
-				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("b3758660-1e0a-4a6a-9223-1a25966bdefd"))->GetTexture(), 150.0f * ui + 73.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorLogs);
+				EditorUI::DrawTexturedRect(Icon::Info, 150.0f * ui + 73.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorLogs);
 			}
 
 			SideBarParams.ButtonColorHover = SideBarParams.ButtonColor;
