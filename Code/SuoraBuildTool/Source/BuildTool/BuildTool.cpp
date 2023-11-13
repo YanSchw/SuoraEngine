@@ -1,13 +1,9 @@
-#include "Precompiled.h"
 #include "BuildTool.h"
 
-#include "Suora/Common/Filesystem.h"
-#include "Suora/Common/StringUtils.h"
-#include "Suora/Serialization/Yaml.h"
-
-#ifndef BUILDTOOL_IMPL
-#include "Platform/Platform.h"
-#endif
+#include "Common/Filesystem.h"
+#include "Common/StringUtils.h"
+#include "Common/Platform.h"
+#include "ThirdParty/Yaml/Yaml.h"
 
 namespace Suora::Tools
 {

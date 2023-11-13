@@ -9,19 +9,22 @@ project "SuoraBuildTool"
 
 	files
 	{
-		"Source/SuoraBuildTool.cpp"
+		"Source/***.h",
+		"Source/***.cpp",
 	}
 
 	includedirs
 	{
-		"%{ENGINE_PATH}/Code/Dependencies/spdlog/include",
-		"%{ENGINE_PATH}/Code/Engine/Source",
-		"%{ENGINE_PATH}/Code/Dependencies",
-		"%{ENGINE_PATH}/Code/Dependencies/glm/glm/**.hpp",
+		"Source",
+		"Source/ThirdParty/spdlog/include"
 	}
 
 	links
 	{
+	}
+	defines
+	{
+		"SPDLOG_COMPILED_LIB"
 	}
 
 	filter "system:windows"

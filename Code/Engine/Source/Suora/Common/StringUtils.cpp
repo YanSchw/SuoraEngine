@@ -1,6 +1,7 @@
 #include "Precompiled.h"
 #include "StringUtils.h"
 #include "Array.h"
+#include <sstream>
 
 namespace Suora
 {

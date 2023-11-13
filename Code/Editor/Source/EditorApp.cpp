@@ -9,8 +9,6 @@
 #include "Editor/EditorWindow.h"
 #include "Editor/EditorUI.h"
 #include "Editor/Util/EditorPreferences.h"
-// HeaderTool
-#include "Tooling/HeaderTool/HeaderTool.h"
 
 extern void Modules_Init();
 

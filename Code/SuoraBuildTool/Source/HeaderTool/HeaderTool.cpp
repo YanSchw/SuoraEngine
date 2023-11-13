@@ -1,8 +1,9 @@
-#include "Precompiled.h"
 #include "HeaderTool.h"
 
-#include "Suora/Common/Filesystem.h"
-#include "Suora/Common/StringUtils.h"
+#include "Common/Log.h"
+#include "Common/Filesystem.h"
+#include "Common/StringUtils.h"
+#include "Common/Platform.h"
 
 #include <iostream>
 #include <fstream>
@@ -11,44 +12,12 @@ static std::mutex PrintMutex;
 static std::mutex AccessHeaderMutex;
 static std::mutex GenerateClassMutex;
 
-#define PRINT(...) \
-{\
-std::lock_guard<std::mutex> lock(PrintMutex);\
-std::cout << __VA_ARGS__ << std::endl;\
-}
-
-struct Platform
-{
-	static float GetTime()
-	{
-		auto currentTime = std::chrono::steady_clock::now();
-		return currentTime.time_since_epoch().count() / 1000000000.0f;
-	}
-	static void WriteToFile(const std::string& filePath, const std::string& content)
-	{
-		std::ofstream writer;
-		writer.open(filePath);
-
-		writer << content;
-
-		writer.close();
-	}
-	static std::string ReadFromFile(const std::string& filePath)
-	{
-		std::ifstream reader(filePath);
-		std::string str((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
-		reader.close();
-
-		return str;
-	}
-};
-
 namespace Suora::Tools
 {
 	void HeaderTool::FetchHeaders(const std::string& path)
 	{
 		m_InitialTime = Platform::GetTime();
-		PRINT("Parsing Headers in: " << path);
+		BUILD_INFO("Parsing Headers in: {0}", path);
 		std::vector<std::filesystem::directory_entry> entries = File::GetAllAbsoluteEntriesOfPath(path);
 		for (auto& file : entries)
 		{
@@ -100,16 +69,16 @@ namespace Suora::Tools
 				bWasAnyFileWritten = true;
 				const std::string str = "#pragma once\n";
 				Platform::WriteToFile(it.first.m_GeneratedHeaderPath, str + it.second + "\n\n\n");
-				PRINT("Writing Header: " << it.first.m_GeneratedHeaderPath);
+				BUILD_DEBUG("Generated: {0}", it.first.m_GeneratedHeaderPath);
 			}
 		}
 
 		if (!bWasAnyFileWritten)
 		{
-			PRINT("No new Headers were generated!");
+			BUILD_INFO("No new Headers were generated!");
 		}
 
-		PRINT("Done in " << (Platform::GetTime() - m_InitialTime) << " seconds.");
+		BUILD_INFO("Done in {0} seconds.", Platform::GetTime() - m_InitialTime);
 	}
 
 	void HeaderTool::ParseSingleHeader(const std::filesystem::path& path)

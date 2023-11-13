@@ -1,14 +1,13 @@
-//#include <Suora/Core/Log.h>
-//#include <Suora/Core/Log.cpp>
-#include "Suora/Serialization/Yaml.cpp"
+
 #include <filesystem>
 #include <iostream>
-#define HEADERTOOL_IMPL
-#include "Tooling/HeaderTool/HeaderTool.h"
-#define BUILDTOOL_IMPL
-#include "Tooling/BuildTool/BuildTool.h"
-#include "Suora/Common/StringUtils.cpp"
 
+#include "HeaderTool/HeaderTool.h"
+#include "BuildTool/BuildTool.h"
+#include "Common/Platform.h"
+#include "ThirdParty/Yaml/Yaml.h"
+#include "Common/Filesystem.h"
+#include "Common/Log.h"
 
 class SuoraBuildTool
 {
@@ -52,11 +51,11 @@ public:
 		headerTool.FetchHeaders(projectCodePath.string());
 		headerTool.ParseHeaders(projectCodePath.string(), true);
 
-		std::cout << "Generating Modules..." << std::endl;
+		BUILD_INFO("Generating Modules...");
 		Tools::BuildTool buildTool;
 		Tools::BuildTool::BuildCollection collection;
 		buildTool.GenerateModules(std::filesystem::path(projectCodePath).parent_path(), collection);
-		std::cout << "Generated AllModules!" << std::endl;
+		BUILD_INFO("Generated AllModules!");
 
 		if (enginePath != "")
 		{
@@ -64,7 +63,7 @@ public:
 			buildTool.GenerateBatchScriptForPremake5Solution(projectCodePath.parent_path(), enginePath);
 		}
 
-		std::cout << "Done!" << std::endl;
+		BUILD_DEBUG("Done!");
 	}
 
 };
