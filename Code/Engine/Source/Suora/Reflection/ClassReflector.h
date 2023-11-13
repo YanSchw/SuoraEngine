@@ -1,6 +1,5 @@
 #pragma once
-#include <vector>
-#include <string>
+#include "Suora/Common/StringUtils.h"
 #include "Class.h"
 #include "Suora/Common/Array.h"
 

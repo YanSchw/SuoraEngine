@@ -1,6 +1,7 @@
 #pragma once
 #include "Suora/Core/Object/Object.h"
 #include "Suora/Core/Update.h"
+#include "Suora/Common/StringUtils.h"
 #include "Suora/Common/VectorUtils.h"
 #include "Node.generated.h"
 
