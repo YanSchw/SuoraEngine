@@ -20,7 +20,7 @@ namespace Suora
 	class Node3D;
 	class UINode;
 	class LevelNode;
-	class InputModule;
+	class PlayerInputNode;
 
 	/** Baseclass for all Nodes in the GameFramework */
 	class Node : public Object
@@ -100,10 +100,6 @@ namespace Suora
 		FUNCTION(Callable, Pure)
 		bool IsReplicated() const;
 		/**/
-
-		/** InputModule */
-		void ProcessInput();
-		virtual void SetupInputModule(InputModule* input) { }
 
 		// Child Nodes
 		Node* CreateChild(const Class& cls);

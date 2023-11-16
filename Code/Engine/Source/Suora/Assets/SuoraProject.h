@@ -5,7 +5,6 @@
 namespace Suora
 {
 	class Level;
-	class InputSettings;
 	class BaseRenderPipeline;
 	class GameInstance;
 	class Texture2D;
@@ -32,7 +31,6 @@ namespace Suora
 		bool m_EnableDeferredRendering = true;
 		SubclassOf<GameInstance> m_GameInstanceClass;
 		Level* m_DefaultLevel = nullptr;
-		Ref<InputSettings> m_InputSettings = nullptr;
 		Texture2D* m_ProjectIconTexture = nullptr;
 
 		Asset* m_EditorStartupAsset = nullptr;

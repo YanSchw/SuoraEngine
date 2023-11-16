@@ -24,10 +24,6 @@ namespace Suora
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_Framebuffer = Framebuffer::Create(spec);
 		}
-		if (!m_InputModule)
-		{
-			m_InputModule = Ref<InputModule>(new InputModule());
-		}
 	}
 	GameInstance::~GameInstance()
 	{
@@ -83,12 +79,6 @@ namespace Suora
 
 	void GameInstance::Update(float deltaTime)
 	{
-		m_InputModule->Tick();
-
-		for (auto& It : m_InputModule->m_BlueprintInstanceBindings)
-		{
-			m_InputModule->ProcessInputForBlueprintInstance(It.first->As<Node>());
-		}
 
 		if (m_CurrentWorld)
 		{
@@ -104,11 +94,6 @@ namespace Suora
 	Framebuffer* GameInstance::GetFinalFramebuffer() const
 	{
 		return m_Framebuffer.get();
-	}
-
-	InputModule* GameInstance::GetInputModule() const
-	{
-		return m_InputModule.get();
 	}
 
 }

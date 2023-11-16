@@ -5,7 +5,6 @@
 namespace Suora
 {
 	class Blueprint;
-	class InputModule;
 	class Framebuffer;
 	class Level;
 	class World;
@@ -33,13 +32,11 @@ namespace Suora
 
 		Engine* GetEngine() const { return m_Engine; }
 		Framebuffer* GetFinalFramebuffer() const;
-		InputModule* GetInputModule() const;
 	private:
 		Engine* m_Engine = nullptr;
 		Array<World*> m_Worlds;
 		Ptr<World> m_CurrentWorld;
 		Ref<Framebuffer> m_Framebuffer;
-		Ref<InputModule> m_InputModule;
 
 		friend class Engine;
 	};

@@ -29,9 +29,14 @@ namespace Suora
 		{
 			return m_Map[key];
 		}
-		V& At(const K& key)
+		const V& At(const K& key)
 		{
 			return m_Map.at(key);
+		}
+
+		void Clear()
+		{
+			m_Map.clear();
 		}
 
 		// Iterators

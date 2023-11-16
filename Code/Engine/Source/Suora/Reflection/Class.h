@@ -87,6 +87,11 @@ namespace Suora
 
 	};
 
+	struct ClassInternal
+	{
+		inline static std::vector<Class> s_NativeClasses;
+	};
+
 }
 
 // For use in std::unordered_map

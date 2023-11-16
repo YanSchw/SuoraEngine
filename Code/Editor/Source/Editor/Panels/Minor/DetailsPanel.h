@@ -1,5 +1,6 @@
 #pragma once
-#include "../MinorTab.h"
+#include "Editor/Panels/MinorTab.h"
+#include "Suora/GameFramework/InputModule.h"
 #include <Suora.h>
 #include <unordered_map>
 
@@ -21,7 +22,6 @@ namespace Suora
 		using Super = MinorTab;
 	public:
 		Ptr<Object> m_Data = nullptr;
-		//DetailViewType m_ViewType = DetailViewType::None;
 		float m_Seperator = 0.35f;
 		float m_ScrollY = 0.0f;
 		float m_ResetSeperator = 35.0f;
@@ -65,7 +65,10 @@ namespace Suora
 		void ViewBlueprintClass(float& y, Blueprint* blueprint);
 		void ViewProjectSettings(float& y, ProjectSettings* settings);
 		void ViewEditorPreferences(float& y, EditorPreferences* settings);
+		void ViewInputMapping(float& y, class InputMapping* input);
 
+		void DrawInputDispatcherDropDown(const String& label, Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height);
+		
 		bool m_ScrollbarNeeded = false;
 		float GetScrollbarWidth() const;
 

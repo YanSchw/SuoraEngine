@@ -12,7 +12,6 @@ namespace Suora
 
 	ProjectSettings::ProjectSettings()
 	{
-		m_InputSettings = Ref<InputSettings>(new InputSettings());
 	}
 
 	void ProjectSettings::PreInitializeAsset(const String& str)
@@ -55,9 +54,6 @@ namespace Suora
 		m_GameInstanceClass = gameInstanceClass != Class::None ? gameInstanceClass : GameInstance::StaticClass();
 		m_DefaultLevel = settings["Game"]["m_DefaultLevel"].IsNone() ? nullptr : AssetManager::GetAsset<Level>(SuoraID(settings["Game"]["m_DefaultLevel"].As<String>()));
 
-		m_InputSettings = Ref<InputSettings>(new InputSettings());
-		m_InputSettings->Deserialize(settings["InputSettings"]);
-
 		m_ProjectIconTexture = settings["Game"]["m_ProjectIconTexture"].As<String>() != "NULL" ? AssetManager::GetAsset<Texture2D>(SuoraID(settings["Game"]["m_ProjectIconTexture"].As<String>())) : nullptr;
 	}
 
@@ -80,8 +76,6 @@ namespace Suora
 
 		settings["Game"]["m_GameInstanceClass"] = m_GameInstanceClass.GetClass().ToString();
 		settings["Game"]["m_DefaultLevel"] = m_DefaultLevel ? m_DefaultLevel->m_UUID.GetString() : "0";
-
-		m_InputSettings->Serialize(settings["InputSettings"]);
 
 		settings["Game"]["m_ProjectIconTexture"] = m_ProjectIconTexture ? m_ProjectIconTexture->m_UUID.GetString() : "NULL";
 	}

@@ -19,6 +19,7 @@ project "Editor"
 
 	includedirs
 	{
+		"%{ENGINE_PATH}/Code/Editor/Source",
 		"%{ENGINE_PATH}/Code/Dependencies/spdlog/include",
 		"%{ENGINE_PATH}/Code/Engine/Source",
 		"%{ENGINE_PATH}/Code/Dependencies",

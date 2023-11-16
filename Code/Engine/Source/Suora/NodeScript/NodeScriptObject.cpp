@@ -12,16 +12,12 @@ namespace Suora
 
 	INodeScriptObject::~INodeScriptObject()
 	{
-		if (m_World && m_World->GetGameInstance() && m_World->GetGameInstance()->GetInputModule() && m_BlueprintLinks.Size() > 0)
-		{
-			m_World->GetGameInstance()->GetInputModule()->UnregisterBlueprintInstance(GetRootObject()->As<Node>());
-		}
 	}
 
 	void INodeScriptObject::InitializeBlueprintInstance(World& world)
 	{
 		m_World = &world;
-		if (world.GetGameInstance() && world.GetGameInstance()->GetInputModule() && m_BlueprintLinks.Size() > 0)
+		/*if (world.GetGameInstance() && world.GetGameInstance()->GetInputModule() && m_BlueprintLinks.Size() > 0)
 		{
 			bool bBind = false;
 			for (Blueprint* blueprint : m_BlueprintLinks)
@@ -39,7 +35,7 @@ namespace Suora
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	bool INodeScriptObject::TryDispatchNodeEvent(size_t hash, ScriptStack& stack)

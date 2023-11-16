@@ -7,8 +7,10 @@
 #include "Suora/Common/Array.h"
 #include "Suora/Common/Map.h"
 #include "Suora/Reflection/ClassReflector.h"
+#include "Suora/Assets/Asset.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/SuoraProject.h"
+#include "Node.h"
 #include "InputModule.generated.h"
 
 namespace Yaml
@@ -17,33 +19,9 @@ namespace Yaml
 }
 namespace Suora
 {
-	class InputCategory;
-	class InputAction; 
+	class InputMapping; 
 	struct InputDispatcher;
 	enum class InputActionType : uint32_t;
-	
-	extern void DrawInputDispatcherDropDown(Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height);
-
-	/** For Project Settings */
-	class InputSettings
-	{
-	public:
-		Array<Ref<InputCategory>> m_Categories;
-		void Serialize(Yaml::Node& root);
-		void Deserialize(Yaml::Node& root);
-
-		InputCategory* GetCategory(const String& label) const;
-	};
-
-	/** For categoring all InputActions */
-	class InputCategory
-	{
-	public:
-		String m_CategoryName = "New InputCategory";
-		Array<Ref<InputAction>> m_Actions;
-
-		Ref<InputAction> GetAction(const String& label) const;
-	};
 
 	enum class InputActionType : uint32_t
 	{
@@ -56,19 +34,18 @@ namespace Suora
 	{
 		Pressed,
 		Released,
-		Held
+		Repeat
 	};
 
-	class InputAction;
+	class InputMapping;
 	struct InputActionDispatcher;
 
-	/** InputBindings for an InputAction */
+	/** InputBindings for an InputMapping */
 	class InputBinding : public Object
 	{
 		SUORA_CLASS(5486349);
 	public:
 		InputActionType m_TargetActionType = InputActionType::None;
-		String m_Label = "Binding";
 	protected:
 		virtual bool GetActionValue() { return false; }
 		virtual float GetAxisValue() { return 0.0f; }
@@ -78,15 +55,21 @@ namespace Suora
 		virtual void Deserialize(Yaml::Node& root) { }
 
 		friend class InputSettings;
-		friend class InputAction;
+		friend class InputMapping;
 	};
 
 
-	/** Unique InputAction */
-	class InputAction
+	/** Unique InputMapping */
+	class InputMapping : public Asset
 	{
+		SUORA_CLASS(78954453879);
+		ASSET_EXTENSION(".input");
 	public:
-		String m_ActionName = "Action";
+		void PreInitializeAsset(const String& str) override;
+		void InitializeAsset(const String& str) override;
+		void Serialize(Yaml::Node& root) override;
+
+		String m_Label = "Action";
 		InputActionType m_ActionType = InputActionType::Action;
 		Array<Ref<InputBinding>> m_Bindings;
 
@@ -103,27 +86,29 @@ namespace Suora
 		std::function<Vec2(void)> m_Vec2Lambda = []() { return Vec2(0.0f); };
 	};
 
-	/** Runtime Binding of InputActions to Nodes */
-	class InputModule
+	/** Runtime Binding of InputMappings to Nodes */
+	class PlayerInputNode : public Node
 	{
+		SUORA_CLASS(875943221);
+
 		struct ObjectBinding
 		{
 			ObjectBinding(Object* obj)
 				: m_Lifetime(obj)
 			{
 			}
-
 			Ptr<Object> m_Lifetime;
-			Array<Ref<InputAction>> m_ActionInput;
+
+			Array<InputMapping*> m_ActionInput;
 			std::vector<std::function<void(void)>> m_ActionFunctions;
 			Array<InputActionKind> m_ActionEvent;
 			std::vector<bool> m_ActionLastFrameInput;
 			std::vector<bool> m_ActionCurrentFrameInput;
 
-			Array<Ref<InputAction>> m_AxisInput;
+			Array<InputMapping*> m_AxisInput;
 			std::vector<std::function<void(float)>> m_AxisFunctions;
 
-			Array<Ref<InputAction>> m_Axis2DInput;
+			Array<InputMapping*> m_Axis2DInput;
 			std::vector<std::function<void(const Vec2&)>> m_Axis2DFunctions;
 		};
 		struct BlueprintInstanceBinding : public ObjectBinding
@@ -138,7 +123,8 @@ namespace Suora
 			std::vector<size_t> m_Axis2DFunctionScriptHashes;
 		};
 	public:
-		InputModule();
+		PlayerInputNode();
+		void WorldUpdate(float deltaTime);
 		void Tick();
 		void RegisterObject(Object* obj);
 		bool IsObjectRegistered(Object* obj) const;
@@ -156,14 +142,8 @@ namespace Suora
 				RegisterObject(instance);
 			}
 
-			/*std::vector<String> Category_Action = Util::SplitString(label, '/');
-			if (Category_Action.size() != 2) { SuoraError("Could not bind InputAction: {0}", label); return; }
-			InputCategory* Category = ProjectSettings::Get()->m_InputSettings->GetCategory(Category_Action[0]);
-			if (!Category) { SuoraError("Could not bind InputAction: {0}", label); return; }
-			InputAction* Action = Category->GetAction(Category_Action[1]);
-			if (!Action) { SuoraError("Could not bind InputAction: {0}", label); return; }*/
-			Ref<InputAction> Action = GetInputActionByLabel(label);
-			if (!Action) { SuoraError("Could not bind InputAction: {0}", label); return; }
+			InputMapping* Action = GetInputMappingByLabel(label);
+			if (!Action) { return; }
 
 			m_ObjectBindings[instance]->m_ActionInput.Add(Action);
 			m_ObjectBindings[instance]->m_ActionFunctions.push_back([instance, f]() { (instance->*f)(); });
@@ -179,14 +159,8 @@ namespace Suora
 				RegisterObject(instance);
 			}
 
-			/*std::vector<String> Category_Action = Util::SplitString(label, '/');
-			if (Category_Action.size() != 2) { SuoraError("Could not bind InputAction: {0}", label); return; }
-			InputCategory* Category = ProjectSettings::Get()->m_InputSettings->GetCategory(Category_Action[0]);
-			if (!Category) { SuoraError("Could not bind InputAction: {0}", label); return; }
-			InputAction* Action = Category->GetAction(Category_Action[1]);
-			if (!Action) { SuoraError("Could not bind InputAction: {0}", label); return; }*/
-			Ref<InputAction> Action = GetInputActionByLabel(label);
-			if (!Action) { SuoraError("Could not bind InputAction: {0}", label); return; }
+			InputMapping* Action = GetInputMappingByLabel(label);
+			if (!Action) { return; }
 
 			m_ObjectBindings[instance]->m_AxisInput.Add(Action);
 			m_ObjectBindings[instance]->m_AxisFunctions.push_back([instance, f](float value) { (instance->*f)(value); });
@@ -199,14 +173,8 @@ namespace Suora
 				RegisterObject(instance);
 			}
 
-			/*std::vector<String> Category_Action = Util::SplitString(label, '/');
-			if (Category_Action.size() != 2) { SuoraError("Could not bind InputAction: {0}", label); return; }
-			InputCategory* Category = ProjectSettings::Get()->m_InputSettings->GetCategory(Category_Action[0]);
-			if (!Category) { SuoraError("Could not bind InputAction: {0}", label); return; }
-			InputAction* Action = Category->GetAction(Category_Action[1]);
-			if (!Action) { SuoraError("Could not bind InputAction: {0}", label); return; }*/
-			Ref<InputAction> Action = GetInputActionByLabel(label);
-			if (!Action) { SuoraError("Could not bind InputAction: {0}", label); return; }
+			InputMapping* Action = GetInputMappingByLabel(label);
+			if (!Action) { return; }
 
 			m_ObjectBindings[instance]->m_Axis2DInput.Add(Action);
 			m_ObjectBindings[instance]->m_Axis2DFunctions.push_back([instance, f](const Vec2& value) { (instance->*f)(value); });
@@ -214,20 +182,21 @@ namespace Suora
 
 		void BindInputScriptEvent(class Node* node, const String& label, InputActionKind flags, size_t scriptFunctionHash);
 
-		Ref<InputAction> GetInputActionByLabel(const String& label);
+		static InputMapping* GetInputMappingByLabel(const String& label);
 		static Ref<InputDispatcher> GetInputDispatcherByLabel(const String& label);
 		static void AddInputDispatcher(const Ref<InputDispatcher>& dispatcher);
-	public:
-		bool m_LockInputCursor = false;
-	private:
-		Map<Object*, Ref<ObjectBinding>> m_ObjectBindings;
-		Map<class Node*, Ref<BlueprintInstanceBinding>> m_BlueprintInstanceBindings;
 
+	public:
+		inline static bool m_LockInputCursor = false;
+
+	private:
+		std::unordered_map<Object*, Ref<ObjectBinding>> m_ObjectBindings;
+		Map<Node*, Ref<BlueprintInstanceBinding>> m_BlueprintInstanceBindings;
 		inline static std::unordered_map<String, Ref<InputDispatcher>> s_RegisteredInputDispatchers;
-		friend void DrawInputDispatcherDropDown(Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height);
+
+		friend class DetailsPanel;
 		friend class GameInstance;
 	};
-
 
 }
 

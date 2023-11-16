@@ -137,7 +137,7 @@ namespace Suora
 						{
 							size_t hash = hashCounter++;
 							CompileEvent(blueprint, *event, *execHelt, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputActionKind::Held));
+							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputActionKind::Repeat));
 						}
 					}
 					else
@@ -377,7 +377,7 @@ namespace Suora
 			}
 		}
 
-		Ref<InputSettings> inputSettings = ProjectSettings::Get()->m_InputSettings;
+		/*Ref<InputSettings> inputSettings = ProjectSettings::Get()->m_InputSettings;
 		if (inputSettings)
 		{
 			for (auto& Category : inputSettings->m_Categories)
@@ -396,7 +396,7 @@ namespace Suora
 					AddSupportedNode(inputEvent);
 				}
 			}
-		}
+		}*/
 
 		Node* node = m_BlueprintClass->CreateInstance(true)->As<Node>();
 		RecursiveNodeDelegates(node, false);
@@ -466,7 +466,7 @@ namespace Suora
 			}
 			else if (node->m_NodeID == NODE_ID_INPUT_EVENT)
 			{
-				Ref<InputSettings> inputSettings = ProjectSettings::Get()->m_InputSettings;
+				/*Ref<InputSettings> inputSettings = ProjectSettings::Get()->m_InputSettings;
 				if (inputSettings)
 				{
 					for (auto& Category : inputSettings->m_Categories)
@@ -504,7 +504,7 @@ namespace Suora
 							}
 						}
 					}
-				}
+				}*/
 			}
 		}
 	}

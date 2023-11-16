@@ -279,7 +279,7 @@ namespace Suora
 			allowEditorCameraUpdate = false;
 			if (GetMajorTab()->IsA<NodeClassEditor>() && GetMajorTab()->As<NodeClassEditor>()->m_CurrentPlayState == PlayState::Playing)
 			{
-				GetMajorTab()->GetEditorWindow()->GetWindow()->SetCursorLocked(Engine::Get()->GetGameInstance()->GetInputModule()->m_LockInputCursor);
+				GetMajorTab()->GetEditorWindow()->GetWindow()->SetCursorLocked(PlayerInputNode::m_LockInputCursor);
 			}
 		}
 

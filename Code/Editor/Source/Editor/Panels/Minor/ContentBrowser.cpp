@@ -9,8 +9,10 @@
 #include "../Major/MeshEditorPanel.h"
 #include "../Major/NodeClassEditor.h"
 #include "../Major/SettingsTabs.h"
+#include "../Major/InputMappingPanel.h"
 #include "Suora/Assets/ShaderGraph.h"
 #include "Suora/Assets/Blueprint.h"
+#include "Suora/GameFramework/InputModule.h"
 
 #define ITEM_CORNER 4.0f
 
@@ -129,6 +131,7 @@ namespace Suora
 													EditorUI::ContextMenuElement{{ MeshImports }, []() {}, "Mesh", nullptr },
 													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateSimpleAssetOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath, "Create a new ShaderGraph", "MyShaderGraph", ShaderGraph::StaticClass(), [](Asset* shader) { shader->As<ShaderGraph>()->m_BaseShader = "DeferredLit.glsl"; }); }, "ShaderGraph", nullptr},
 													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateSimpleAssetOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath, "Create a new Material", "MyMaterial", Material::StaticClass(), [](Asset* material) {}); }, "Material", nullptr},
+													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateSimpleAssetOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath, "Create a new InputMapping", "MyInputMapping", InputMapping::StaticClass(), [](Asset* input) {}); }, "InputMapping", nullptr}
 												}, []() {}, "Create Asset", nullptr },
 										  EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateNewFolderOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath); }, "Create Empty Folder", nullptr },
 										  EditorUI::ContextMenuElement{{}, [&]() { Platform::ShowInExplorer(m_CurrentPath); }, "Show in Explorer", nullptr} });
@@ -360,6 +363,10 @@ namespace Suora
 		else if (asset->IsA<EditorPreferences>())
 		{
 			EditorWindow::GetCurrent()->AddMajorTab<EditorPreferencesMajorTab>((EditorPreferences*)asset);
+		}
+		else if (asset->IsA<InputMapping>())
+		{
+			EditorWindow::GetCurrent()->AddMajorTab<InputMappingPanel>((InputMapping*)asset);
 		}
 	}
 

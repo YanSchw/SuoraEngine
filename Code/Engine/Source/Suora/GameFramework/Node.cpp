@@ -308,22 +308,6 @@ namespace Suora
 		return m_Replicated;
 	}
 
-	void Node::ProcessInput()
-	{
-		LOCAL_UPDATE_LOCK();
-		InputModule* input = Engine::Get()->GetGameInstance()->GetInputModule();
-
-		if (input->IsObjectRegistered(this))
-		{
-			input->ProcessInputForObject(this);
-		}
-		else
-		{
-			input->RegisterObject(this);
-			SetupInputModule(input);
-		}
-	}
-
 	Node* Node::CreateChild(const Class& cls)
 	{
 		Node* node = (Node*)New(cls);
