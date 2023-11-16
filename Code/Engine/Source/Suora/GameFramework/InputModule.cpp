@@ -111,9 +111,6 @@ namespace Suora
 
 		for (int32_t i = 0; i < Binding->m_ActionInput.Size(); i++)
 		{
-			Binding->m_ActionLastFrameInput[i] = Binding->m_ActionCurrentFrameInput[i];
-			Binding->m_ActionCurrentFrameInput[i] = Binding->m_ActionInput[i]->GetValue<bool>();
-			
 			if (Binding->m_ActionEvent[i] == InputActionKind::Pressed && !Binding->m_ActionLastFrameInput[i] && Binding->m_ActionCurrentFrameInput[i])
 			{
 				Binding->m_ActionFunctions[i]();
@@ -126,6 +123,9 @@ namespace Suora
 			{
 				Binding->m_ActionFunctions[i]();
 			}
+
+			Binding->m_ActionLastFrameInput[i] = Binding->m_ActionCurrentFrameInput[i];
+			Binding->m_ActionCurrentFrameInput[i] = Binding->m_ActionInput[i]->GetValue<bool>();
 		}
 		for (int32_t i = 0; i < Binding->m_AxisInput.Size(); i++)
 		{
