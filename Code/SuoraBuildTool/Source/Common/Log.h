@@ -17,3 +17,4 @@ public:
 
 #define BUILD_INFO(...) BUILD_LOG(::spdlog::level::level_enum::info, __VA_ARGS__)
 #define BUILD_DEBUG(...) BUILD_LOG(::spdlog::level::level_enum::debug, __VA_ARGS__)
+#define BUILD_ERROR(...) BUILD_LOG(::spdlog::level::level_enum::err, __VA_ARGS__)

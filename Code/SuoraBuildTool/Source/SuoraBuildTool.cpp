@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <iostream>
 
+#include "SuoraBuildToolParams.h"
 #include "HeaderTool/HeaderTool.h"
 #include "BuildTool/BuildTool.h"
 #include "Common/Platform.h"
@@ -13,7 +14,7 @@ class SuoraBuildTool
 {
 public:
 
-	static void ProccessHeaders()
+	static void ProccessHeaders(SuoraBuildToolParams& params)
 	{
 		using namespace Suora;
 
@@ -46,10 +47,10 @@ public:
 		if (enginePath != "")
 		{
 			headerTool.FetchHeaders(enginePath + "/Code");
-			headerTool.ParseHeaders(enginePath + "/Code", true);
+			headerTool.ParseHeaders(enginePath + "/Code", params.CacheHeaderWriteTimes);
 		}
 		headerTool.FetchHeaders(projectCodePath.string());
-		headerTool.ParseHeaders(projectCodePath.string(), true);
+		headerTool.ParseHeaders(projectCodePath.string(), params.CacheHeaderWriteTimes);
 
 		BUILD_INFO("Generating Modules...");
 		Tools::BuildTool buildTool;
@@ -68,9 +69,29 @@ public:
 
 };
 
-int main()
+int main(int argc, char** argv)
 {
-	SuoraBuildTool::ProccessHeaders();
+	SuoraBuildToolParams params;
+
+	for (int i = 1; i < argc; i++)
+	{
+		std::string str = argv[i];
+		if (str == "-?")
+		{
+			BUILD_DEBUG("[-donotcache] to regenerate all Headers.");
+		}
+		else if (str == "-donotcache")
+		{
+			params.CacheHeaderWriteTimes = false;
+		}
+		else
+		{
+			BUILD_ERROR("Could not parse argument {0}!", str);
+			return EXIT_FAILURE;
+		}
+	}
+
+	SuoraBuildTool::ProccessHeaders(params);
 
 	return EXIT_SUCCESS;
 }
