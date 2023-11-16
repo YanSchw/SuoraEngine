@@ -78,7 +78,12 @@ int main(int argc, char** argv)
 		std::string str = argv[i];
 		if (str == "-?")
 		{
+			BUILD_DEBUG("[-v] | [-version] to show the Engine Version SuoraBuildTool supports.");
 			BUILD_DEBUG("[-donotcache] to regenerate all Headers.");
+		}
+		else if (str == "-v" || str == "-version")
+		{
+			BUILD_DEBUG("This compilation of SuoraBuildTool targets SuoraEngine Version 0.8.0");
 		}
 		else if (str == "-donotcache")
 		{
