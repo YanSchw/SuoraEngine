@@ -40,7 +40,11 @@ namespace Suora
 		{
 			return m_Data.emplace_back(item);
 		}
-		void Add(T item)
+		void Add(T&& item)
+		{
+			m_Data.push_back(item);
+		}
+		void Add(const T& item)
 		{
 			m_Data.push_back(item);
 		}
