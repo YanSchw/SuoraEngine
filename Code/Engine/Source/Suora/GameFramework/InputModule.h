@@ -129,10 +129,6 @@ namespace Suora
 		void RegisterObject(Object* obj);
 		bool IsObjectRegistered(Object* obj) const;
 		void ProcessInputForObject(Object* obj);
-		void RegisterBlueprintInstance(class Node* node, bool pawnOnly);
-		void UnregisterBlueprintInstance(class Node* node);
-		bool IsBlueprintInstanceRegistered(class Node* node) const;
-		void ProcessInputForBlueprintInstance(class Node* node);
 
 		template<typename R, typename T, typename U>
 		void BindAction(const String& label, InputActionKind event, U instance, R(T::* f)(void))
@@ -180,8 +176,6 @@ namespace Suora
 			m_ObjectBindings[instance]->m_Axis2DFunctions.push_back([instance, f](const Vec2& value) { (instance->*f)(value); });
 		}
 
-		void BindInputScriptEvent(class Node* node, const String& label, InputActionKind flags, size_t scriptFunctionHash);
-
 		static InputMapping* GetInputMappingByLabel(const String& label);
 		static Ref<InputDispatcher> GetInputDispatcherByLabel(const String& label);
 		static void AddInputDispatcher(const Ref<InputDispatcher>& dispatcher);
@@ -190,8 +184,8 @@ namespace Suora
 		inline static bool m_LockInputCursor = false;
 
 	private:
-		std::unordered_map<Object*, Ref<ObjectBinding>> m_ObjectBindings;
-		Map<Node*, Ref<BlueprintInstanceBinding>> m_BlueprintInstanceBindings;
+		Map<Object*, Ref<ObjectBinding>> m_ObjectBindings;
+
 		inline static std::unordered_map<String, Ref<InputDispatcher>> s_RegisteredInputDispatchers;
 
 		friend class DetailsPanel;

@@ -11,7 +11,6 @@
 #define NODE_ID_NATIVE_FUNC 15
 #define NODE_ID_NATIVE_PURE 16
 #define NODE_ID_DELEGATE 17
-#define NODE_ID_INPUT_EVENT 18
 
 static String ExtractFunctionName(String name)
 {
@@ -111,38 +110,6 @@ namespace Suora
 						size_t hash = hashCounter++;
 						CompileEvent(blueprint, *event, *exec, graph, hash);
 						blueprint.m_DelegateEventsToBindDuringGameplay.Add(Blueprint::DelegateEventBind(event->m_InputPins[0].m_AdditionalData, event->m_InputPins[1].m_AdditionalData, hash));
-					}
-				}
-				else if (event->m_NodeID == NODE_ID_INPUT_EVENT)
-				{
-					if (event->m_InputPins[2].m_AdditionalData == "Action")
-					{
-						VisualNodePin* execPressed = nullptr;	if (event->m_OutputPins[0].Target) execPressed = &event->m_OutputPins[0];
-						VisualNodePin* execReleased = nullptr;	if (event->m_OutputPins[1].Target) execPressed = &event->m_OutputPins[1];
-						VisualNodePin* execHelt = nullptr;		if (event->m_OutputPins[2].Target) execPressed = &event->m_OutputPins[2];
-
-						if (execPressed)
-						{
-							size_t hash = hashCounter++;
-							CompileEvent(blueprint, *event, *execPressed, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputActionKind::Pressed));
-						}
-						if (execReleased)
-						{
-							size_t hash = hashCounter++;
-							CompileEvent(blueprint, *event, *execReleased, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputActionKind::Released));
-						}
-						if (execHelt)
-						{
-							size_t hash = hashCounter++;
-							CompileEvent(blueprint, *event, *execHelt, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputActionKind::Repeat));
-						}
-					}
-					else
-					{
-						SuoraVerify(false, "Missing Implementation!");
 					}
 				}
 			}
@@ -377,27 +344,6 @@ namespace Suora
 			}
 		}
 
-		/*Ref<InputSettings> inputSettings = ProjectSettings::Get()->m_InputSettings;
-		if (inputSettings)
-		{
-			for (auto& Category : inputSettings->m_Categories)
-			{
-				for (auto& Action : Category->m_Actions)
-				{
-					Ref<VisualNode> inputEvent = CreateRef<VisualNode>();
-					inputEvent->m_Title = "Input Actions/" + Category->m_CategoryName + "/" + Action->m_ActionName;
-					inputEvent->m_NodeID = NODE_ID_INPUT_EVENT;
-					inputEvent->m_Color = Color(100 / 255.0f, 19 / 255.0f, 13 / 255.0f, 1.0f);
-					inputEvent->m_Size = { 185, 105 };
-					inputEvent->AddInputPin("CategoryName", Color(1.0f), 0, false, 0.0f); inputEvent->m_InputPins[0].m_AdditionalData = Category->m_CategoryName;
-					inputEvent->AddInputPin("ActionName", Color(1.0f), 0, false, 0.0f); inputEvent->m_InputPins[1].m_AdditionalData = Action->m_ActionName;
-					inputEvent->AddInputPin("ActionType", Color(1.0f), 0, false, 0.0f);
-
-					AddSupportedNode(inputEvent);
-				}
-			}
-		}*/
-
 		Node* node = m_BlueprintClass->CreateInstance(true)->As<Node>();
 		RecursiveNodeDelegates(node, false);
 		delete node;
@@ -463,48 +409,6 @@ namespace Suora
 						}
 					}
 				}
-			}
-			else if (node->m_NodeID == NODE_ID_INPUT_EVENT)
-			{
-				/*Ref<InputSettings> inputSettings = ProjectSettings::Get()->m_InputSettings;
-				if (inputSettings)
-				{
-					for (auto& Category : inputSettings->m_Categories)
-					{
-						for (auto& Action : Category->m_Actions)
-						{
-							if (node->m_InputPins[0].m_AdditionalData == Category->m_CategoryName && node->m_InputPins[1].m_AdditionalData == Action->m_ActionName)
-							{
-								if (Action->m_ActionType == InputActionType::Action)
-								{
-									node->m_InputPins[2].m_AdditionalData = "Action";
-									bool bRefresh = false;
-									if (node->m_OutputPins.Size() != 3)
-									{
-										bRefresh = true;
-									}
-									else
-									{
-										if (node->m_OutputPins[0].PinID != 1) bRefresh = true;
-										if (node->m_OutputPins[1].PinID != 1) bRefresh = true;
-										if (node->m_OutputPins[2].PinID != 1) bRefresh = true;
-									}
-									if (bRefresh)
-									{
-										node->m_OutputPins.Clear();
-										node->AddOutputPin("Pressed", Color(1.0f), 1, true, 30.0f);
-										node->AddOutputPin("Released", Color(1.0f), 1, true, 30.0f);
-										node->AddOutputPin("Helt", Color(1.0f), 1, true, 30.0f);
-									}
-								}
-								else
-								{
-									SuoraVerify(false, "Missing Implementation!");
-								}
-							}
-						}
-					}
-				}*/
 			}
 		}
 	}

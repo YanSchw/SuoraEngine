@@ -8,72 +8,6 @@
 
 namespace Suora
 {
-	/*
-	void InputSettings::Serialize(Yaml::Node& root)
-	{
-		root = Yaml::Node();
-		int64_t i = 0;
-		for (auto& Category : m_Categories)
-		{
-			Yaml::Node& cat = root["Category_" + std::to_string(i++)];
-			cat["m_CategoryName"] = Category->m_CategoryName;
-
-			int64_t j = 0;
-			for (auto& Action : Category->m_Actions)
-			{
-				Yaml::Node& action = cat["Action_" + std::to_string(j++)];
-				action["m_ActionName"] = Action->m_ActionName;
-				action["m_ActionType"] = std::to_string((uint8_t)Action->m_ActionType);
-
-				int64_t k = 0;
-				for (auto& Binding : Action->m_Bindings)
-				{
-					Yaml::Node& binding = action["Binding_" + std::to_string(k++)];
-					binding["Class"] = Binding->GetClass().ToString();
-					binding["m_Label"] = Binding->m_Label;
-					binding["m_TargetActionType"] = std::to_string((uint8_t)Binding->m_TargetActionType);
-					Binding->Serialize(binding);
-				}
-			}
-		}
-	}
-	
-	void InputSettings::Deserialize(Yaml::Node& root)
-	{
-		int64_t i = 0;
-		while (true)
-		{
-			Yaml::Node& cat = root["Category_" + std::to_string(i++)];
-			if (cat.IsNone()) break;
-			Ref<InputCategory> Category = Ref<InputCategory>(new InputCategory());
-			Category->m_CategoryName = cat["m_CategoryName"].As<String>();
-			m_Categories.Add(Category);
-
-			int64_t j = 0;
-			while (true)
-			{
-				Yaml::Node& action = cat["Action_" + std::to_string(j++)];
-				if (action.IsNone()) break;
-				Ref<InputMapping> Action = Ref<InputMapping>(new InputMapping());
-				Action->m_ActionName = action["m_ActionName"].As<String>();
-				Action->m_ActionType = (InputActionType)std::stoi(action["m_ActionType"].As<String>());
-				Category->m_Actions.Add(Action);
-
-				int64_t k = 0;
-				while (true)
-				{
-					Yaml::Node& binding = action["Binding_" + std::to_string(k++)];
-					if (binding.IsNone()) break;
-					Ref<InputBinding> Binding = Ref<InputBinding>(New(Class::FromString(binding["Class"].As<String>()))->As<InputBinding>());
-					Binding->m_Label = binding["m_Label"].As<String>();
-					Binding->m_TargetActionType = (InputActionType)std::stoi(binding["m_TargetActionType"].As<String>());
-					Action->m_Bindings.Add(Binding);
-
-					Binding->Deserialize(binding);
-				}
-			}
-		}
-	}*/
 
 	template<>
 	bool InputMapping::GetValue<bool>()
@@ -152,31 +86,7 @@ namespace Suora
 
 			for (auto& It : toRemove)
 			{
-				m_ObjectBindings.erase(It);
-			}
-		}
-		{
-			Array<Node*> toRemove;
-
-			for (auto& It : m_BlueprintInstanceBindings)
-			{
-				if (It.second->m_Lifetime)
-				{
-					for (int64_t i = It.second->m_ActionInput.Last(); i >= 0; i--)
-					{
-						It.second->m_ActionLastFrameInput[i] = It.second->m_ActionCurrentFrameInput[i];
-						It.second->m_ActionCurrentFrameInput[i] = It.second->m_ActionInput[i]->GetValue<bool>();
-					}
-					ProcessInputForBlueprintInstance(It.first);
-				}
-				else
-				{
-					toRemove.Add(It.first);
-				}
-			}
-			for (auto& It : toRemove)
-			{
-				m_BlueprintInstanceBindings.Remove(It);
+				m_ObjectBindings.Remove(It);
 			}
 		}
 	}
@@ -188,7 +98,7 @@ namespace Suora
 
 	bool PlayerInputNode::IsObjectRegistered(Object* obj) const
 	{
-		return m_ObjectBindings.find(obj) != m_ObjectBindings.end();
+		return m_ObjectBindings.ContainsKey(obj);
 	}
 
 	void PlayerInputNode::ProcessInputForObject(Object* obj)
@@ -201,7 +111,6 @@ namespace Suora
 
 		for (int32_t i = 0; i < Binding->m_ActionInput.Size(); i++)
 		{
-			SUORA_INFO(LogCategory::Gameplay, "{0}: {1}", Binding->m_ActionInput[i]->GetAssetName(), Binding->m_ActionCurrentFrameInput[i]);
 			Binding->m_ActionLastFrameInput[i] = Binding->m_ActionCurrentFrameInput[i];
 			Binding->m_ActionCurrentFrameInput[i] = Binding->m_ActionInput[i]->GetValue<bool>();
 			
@@ -226,83 +135,6 @@ namespace Suora
 		{
 			Binding->m_Axis2DFunctions[i](Binding->m_Axis2DInput[i]->GetValue<Vec2>());
 		}
-	}
-
-	void PlayerInputNode::RegisterBlueprintInstance(Node* node, bool pawnOnly)
-	{
-		m_BlueprintInstanceBindings[node] = Ref<BlueprintInstanceBinding>(new BlueprintInstanceBinding(node));
-		m_BlueprintInstanceBindings[node]->m_IsPawnOnly = pawnOnly;
-	}
-
-	void PlayerInputNode::UnregisterBlueprintInstance(Node* node)
-	{
-		m_BlueprintInstanceBindings.Remove(node);
-	}
-
-	bool PlayerInputNode::IsBlueprintInstanceRegistered(Node* node) const
-	{
-		return m_BlueprintInstanceBindings.ContainsKey(node);
-	}
-
-	void PlayerInputNode::ProcessInputForBlueprintInstance(Node* node)
-	{
-		Ref<BlueprintInstanceBinding> Binding = m_BlueprintInstanceBindings[node];
-
-		if (Binding->m_IsPawnOnly && !node->IsPossessed()) return;
-
-		for (int32_t i = 0; i < Binding->m_ActionInput.Size(); i++)
-		{
-			if (Binding->m_ActionEvent[i] == InputActionKind::Pressed && !Binding->m_ActionLastFrameInput[i] && Binding->m_ActionCurrentFrameInput[i])
-			{
-				node->__NodeEventDispatch(Binding->m_ActionFunctionScriptHashes[i]);
-			}
-			else if (Binding->m_ActionEvent[i] == InputActionKind::Released && Binding->m_ActionLastFrameInput[i] && !Binding->m_ActionCurrentFrameInput[i])
-			{
-				node->__NodeEventDispatch(Binding->m_ActionFunctionScriptHashes[i]);
-			}
-			else if (Binding->m_ActionEvent[i] == InputActionKind::Repeat && Binding->m_ActionCurrentFrameInput[i])
-			{
-				node->__NodeEventDispatch(Binding->m_ActionFunctionScriptHashes[i]);
-			}
-		}
-		for (int32_t i = 0; i < Binding->m_AxisInput.Size(); i++)
-		{
-			ScriptStack stack;
-			stack.ConvertToStack<float>(Binding->m_AxisInput[i]->GetValue<float>());
-			node->__NodeEventDispatch(Binding->m_AxisFunctionScriptHashes[i], stack);
-		}
-		for (int32_t i = 0; i < Binding->m_Axis2DInput.Size(); i++)
-		{
-			ScriptStack stack;
-			stack.ConvertToStack<Vec2>(Binding->m_AxisInput[i]->GetValue<Vec2>());
-			node->__NodeEventDispatch(Binding->m_Axis2DFunctionScriptHashes[i], stack);
-		}
-	}
-
-	void PlayerInputNode::BindInputScriptEvent(Node* node, const String& label, InputActionKind flags, size_t scriptFunctionHash)
-	{
-		if (!IsBlueprintInstanceRegistered(node))
-		{
-			SuoraVerify(false, "Blueprint Instance has to be registered first!");
-		}
-		InputMapping* Action = GetInputMappingByLabel(label);
-
-		if (!Action) { SuoraError("Could not bind BlueprintInputEvent to InputAction '{0}'", label); return; }
-
-		if (Action->m_ActionType == InputActionType::Action)
-		{
-			m_BlueprintInstanceBindings[node]->m_ActionInput.Add(Action);
-			m_BlueprintInstanceBindings[node]->m_ActionFunctions.push_back(nullptr); // Just to keep everything inline. Not used for Blueprints
-			m_BlueprintInstanceBindings[node]->m_ActionFunctionScriptHashes.push_back(scriptFunctionHash);
-			m_BlueprintInstanceBindings[node]->m_ActionEvent.Add(flags);
-			m_BlueprintInstanceBindings[node]->m_ActionLastFrameInput.push_back(false);
-			m_BlueprintInstanceBindings[node]->m_ActionCurrentFrameInput.push_back(false);
-		}
-		else
-		{
-			SuoraVerify(false, "Missing Implementation");
-		}
-		
 	}
 
 	InputMapping* PlayerInputNode::GetInputMappingByLabel(const String& label)
