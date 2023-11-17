@@ -1,6 +1,6 @@
 #pragma once
 #include "Suora/GameFramework/Node.h"
-#include <glm/glm.hpp>
+#include "Suora/Common/VectorUtils.h"
 #include "CameraNode.generated.h"
 
 namespace Suora
@@ -61,7 +61,7 @@ namespace Suora
 		ProjectionType GetProjectionType() const { return m_ProjectionType; }
 		void SetProjectionType(ProjectionType type) { m_ProjectionType = type; RecalculateProjection(); }
 
-		glm::vec3 ScreenPosToWorldDirection(const glm::vec2& pos, float windowWidth, float windowHeight) const;
+		Vec3 ScreenPosToWorldDirection(const Vec2& pos, float windowWidth, float windowHeight) const;
 
 		FUNCTION(Callable, Pure)
 		bool IsInFrustum(const Vec3& pos, float radius) const;

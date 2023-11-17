@@ -58,7 +58,7 @@ namespace Suora
 
 
 	// https://stackoverflow.com/questions/29997209/opengl-c-mouse-ray-picking-glmunproject
-	glm::vec3 CameraNode::ScreenPosToWorldDirection(const glm::vec2& pos, float windowWidth, float windowHeight) const
+	Vec3 CameraNode::ScreenPosToWorldDirection(const Vec2& pos, float windowWidth, float windowHeight) const
 	{
 		// these positions must be in range [-1, 1] (!!!), not [0, width] and [0, height]
 		const float mouseX = pos.x / (windowWidth * 0.5f) - 1.0f;
@@ -68,10 +68,10 @@ namespace Suora
 		glm::mat4 view = glm::lookAt(glm::vec3(0.0f), GetForwardVector(), GetUpVector());
 
 		glm::mat4 invVP = glm::inverse(proj * view);
-		glm::vec4 screenPos = glm::vec4(mouseX, -mouseY, 1.0f, 1.0f);
-		glm::vec4 worldPos = invVP * screenPos;
+		Vec4 screenPos = glm::vec4(mouseX, -mouseY, 1.0f, 1.0f);
+		Vec4 worldPos = invVP * screenPos;
 
-		glm::vec3 dir = glm::normalize(glm::vec3(worldPos));
+		Vec3 dir = glm::normalize(glm::vec3(worldPos));
 
 		return dir * -1.0f;
 	}

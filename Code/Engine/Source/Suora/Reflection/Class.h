@@ -87,9 +87,10 @@ namespace Suora
 
 	};
 
-	struct ClassInternal
+	class ClassInternal
 	{
 		inline static std::vector<Class> s_NativeClasses;
+		friend struct Class;
 	};
 
 }
