@@ -61,6 +61,9 @@ namespace Suora
 		Node* AssetDragDropNode = nullptr;
 		bool AssetDragDropValidation = false;
 
+		RenderingParams m_CameraPreviewRParams;
+		Ref<Framebuffer> m_CameraPreviewBuffer;
+
 		RenderingParams m_RParams;
 		bool m_DrawDebugGizmos = false;
 		bool m_DrawDebugGizmosDuringPlay = false;

@@ -3,6 +3,7 @@
 #include <string>
 #include <filesystem>
 #include "Asset.h"
+#include "Suora/Core/Object/Object.h"
 #include "Suora/Core/EngineSubSystem.h"
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Common/SuoraID.h"
@@ -95,10 +96,11 @@ namespace Suora
 		static Array<Asset*> GetAssetsByClass(Class type);
 		static Asset* GetAssetByPath(const std::filesystem::path& path);
 		static Asset* CreateAsset(const Class& assetClass, const String& name, const String& dir);
+
 		template<class T>
 		static T* CreateAsset(const String& name, const String& dir)
 		{
-			return CreateAsset(T::StaticClass(), name, dir)->As<T>();
+			return dynamic_cast<T*>(CreateAsset(T::StaticClass(), name, dir));
 		}
 
 		static uint32_t GetAssetStreamCountLimit();

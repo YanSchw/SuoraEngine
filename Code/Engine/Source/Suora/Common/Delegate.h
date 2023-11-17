@@ -45,44 +45,25 @@ namespace Suora
 	class Delegate
 	{
 	public:
-		Delegate()
-		{
-		}
-		/*std::function<void(Args...)> Func;*/
+		Delegate() = default;
 
-		/*Delegate(void(*Function)(Args...))
-		{
-			Func = std::bind(Function, Args...);
-		}*/
-
-		/*void operator()(Args... args)
-		{
-			Func(args);
-		}*/
 	private:
 		TDelegate m_Delegate;
 		std::vector<std::function<void(Args...)>> Functions;
 
-		/*void Bind(void* Object, void(*Function)(Args... args))
-		{
-			Register([Object](auto&& ...args) { return Function(args...); });
-		}*/
-
 	public:
 		// Bind Member-Functions
-		template<typename R, typename T, typename U, typename... Args>
-		void Attach(R(T::* f)(Args...), U p)
+		template<typename R, typename T, typename U, typename... Params>
+		void Attach(R(T::* f)(Params...), U p)
 		{
-			std::function<R(Args...)> function = [p, f](Args... args)->R { return (p->*f)(args...); };
+			std::function<R(Params...)> function = [p, f](Params... args)->R { return (p->*f)(args...); };
 			Register(function);
 		};
 
 		template<class T>
 		void Bind(T* Object, void(T::* Function)(Args...))
 		{
-			//auto x = sizeof...(Args);
-			//std::cout << x << std::endl;
-			auto f = std::bind(Function, Object, std::make_integer_sequence< sizeof...(Args) >{});
+			auto f = std::bind(Function, Object, std::make_integer_sequence<int, sizeof...(Args)>{});
 			Register(f);
 		}
 
@@ -116,19 +97,19 @@ namespace Suora
 		}
 
 
-		template <class... Args>
-		void Execute(Args&&... args)
+		template <class... Params>
+		void Execute(Params&&... args)
 		{
 			for (auto i = 0; i < Functions.size(); i++)
 			{
-				Functions[i](std::forward<Args>(args)...);
+				Functions[i](std::forward<Params>(args)...);
 			}
 			for (int i = m_Delegate.Bindings.Last(); i >= 0; i--)
 			{
 				if (m_Delegate.Bindings[i].NodeBinding)
 				{
 					ScriptStack stack;
-					FeedArgs<Args...>(stack, args...);
+					FeedArgs<Params...>(stack, args...);
 					stack.Invert();
 					m_Delegate.DispatchToScriptEngine(m_Delegate.Bindings[i].NodeBinding, stack, m_Delegate.Bindings[i].ScriptFunctionHash);
 				}
@@ -138,10 +119,10 @@ namespace Suora
 				}
 			}
 		}
-		template <class... Args>
-		void operator()(Args&&... args)
+		template <class... Params>
+		void operator()(Params&&... args)
 		{
-			Execute(std::forward<Args>(args)...);
+			Execute(std::forward<Params>(args)...);
 		}
 
 		bool IsBound() const

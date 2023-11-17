@@ -80,6 +80,13 @@ namespace Suora
 			m_SelectionOutlineFramebuffer = Framebuffer::Create(spec);
 			m_SelectionOutlineShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/SelectionOutline.glsl");
 		}
+		{
+			FramebufferSpecification spec;
+			spec.Width = 256;
+			spec.Height = 144;
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
+			m_CameraPreviewBuffer = Framebuffer::Create(spec);
+		}
 	}
 
 	ViewportPanel::~ViewportPanel()
@@ -293,19 +300,16 @@ namespace Suora
 
 			if (CameraNode* camera = node->As<CameraNode>())
 			{
-				FramebufferSpecification Params;
-				Params.Width = 256;
-				Params.Height = 144;
-				Params.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
-				Params.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-				Ref<Framebuffer> TempView = Framebuffer::Create(Params);
-				RenderingParams RParams;
-				RParams.DrawWireframe = m_DrawWireframe;
-				Engine::Get()->GetRenderPipeline()->Render(*TempView, *m_World, *camera, RParams);
+				m_CameraPreviewRParams.Resolution = iVec2(GetWidth()/10, GetHeight()/10);
+				m_CameraPreviewRParams.DrawWireframe = m_DrawWireframe;
+				m_CameraPreviewBuffer->Resize(m_CameraPreviewRParams.Resolution);
+				Engine::Get()->GetRenderPipeline()->Render(*m_CameraPreviewBuffer, *m_World, *camera, m_CameraPreviewRParams);
 
 				m_Framebuffer->Bind();
-				EditorUI::DrawRect(GetWidth() - 20.0f - (float)Params.Width - 2.0f, 20.0f - 2.0f, (float)Params.Width + 4.0f, (float)Params.Height + 4.0f, 4.0f, Math::Lerp<Color>(EditorPreferences::Get()->UiHighlightColor, Color(0, 0, 0, 1), 0.25f));
-				RenderPipeline::RenderFramebufferIntoFramebuffer(*TempView, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(GetWidth() - 20.0f - Params.Width, 20.0f, Params.Width, Params.Height), "u_Texture", 0, false);
+				const float PreviewWidth = m_CameraPreviewRParams.Resolution.x;
+				const float PreviewHeight = m_CameraPreviewRParams.Resolution.y;
+				EditorUI::DrawRect(GetWidth() - 20.0f - (float)PreviewWidth - 2.0f, 20.0f - 2.0f, (float)PreviewWidth + 4.0f, (float)PreviewHeight + 4.0f, 4.0f, Math::Lerp<Color>(EditorPreferences::Get()->UiHighlightColor, Color(0, 0, 0, 1), 0.25f));
+				RenderPipeline::RenderFramebufferIntoFramebuffer(*m_CameraPreviewBuffer, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(GetWidth() - 20.0f - PreviewWidth, 20.0f, PreviewWidth, PreviewHeight), "u_Texture", 0, false);
 			}
 		}
 

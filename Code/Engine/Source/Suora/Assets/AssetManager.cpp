@@ -289,7 +289,8 @@ namespace Suora
 
 	uint32_t AssetManager::GetAssetStreamCountLimit()
 	{
-		return 2;
+		const uint32_t avail = std::thread::hardware_concurrency();
+		return avail - 3;
 	}
 
 }

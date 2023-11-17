@@ -33,12 +33,11 @@ namespace Suora
 
 		String m_MemberName = "";
 		size_t m_MemberOffset = 0;
-		size_t m_TypeSize = 0;
 		Type m_Type = Type::None;
 
-		ClassMember() { }
-		ClassMember(const String& memberName, size_t memberOffset, size_t size, Type type)
-			: m_MemberName(memberName), m_MemberOffset(memberOffset), m_TypeSize(size), m_Type(type)
+		ClassMember() = default;
+		ClassMember(const String& memberName, size_t memberOffset, Type type)
+			: m_MemberName(memberName), m_MemberOffset(memberOffset), m_Type(type)
 		{
 		}
 		template<class T>
@@ -55,7 +54,7 @@ namespace Suora
 		template<class T>
 		static Ref<ClassMember> CreatePrimitive(class Object* obj, T* ptr, const String& name)
 		{
-			return Ref<ClassMember>(new ClassMember(name, ClassMember::OffsetOf(obj, ptr), sizeof(T), ClassMember::GetPrimitiveTypeEnumByTemplate<T>()));
+			return Ref<ClassMember>(new ClassMember(name, ClassMember::OffsetOf(obj, ptr), ClassMember::GetPrimitiveTypeEnumByTemplate<T>()));
 		}
 	};
 
@@ -63,8 +62,8 @@ namespace Suora
 	{
 		Ref<ClassMember> m_ArraySubMember;
 
-		ClassMember_ArrayList(const String& memberName, size_t memberOffset, size_t size, Type type)
-			: ClassMember(memberName, memberOffset, size, type)
+		ClassMember_ArrayList(const String& memberName, size_t memberOffset, Type type)
+			: ClassMember(memberName, memberOffset, type)
 		{
 		}
 	}; 
@@ -72,15 +71,15 @@ namespace Suora
 	{
 		Class m_AssetClass = Class::None;
 
-		ClassMember_AssetPtr(const String& memberName, size_t memberOffset, size_t size, Type type)
-			: ClassMember(memberName, memberOffset, size, type)
+		ClassMember_AssetPtr(const String& memberName, size_t memberOffset, Type type)
+			: ClassMember(memberName, memberOffset, type)
 		{
 		}
 	};
 	struct ClassMember_Delegate : public ClassMember
 	{
-		ClassMember_Delegate(const String& memberName, size_t memberOffset, size_t size, Type type)
-			: ClassMember(memberName, memberOffset, size, type)
+		ClassMember_Delegate(const String& memberName, size_t memberOffset, Type type)
+			: ClassMember(memberName, memberOffset, type)
 		{
 		}
 		void FeedSignature(const String& args);
@@ -101,41 +100,41 @@ namespace Suora
 
 		void AddObjectPointer(class Object* obj, class Object** ptr, const String& name)
 		{
-			AddMember<ClassMember>(name, ClassMember::OffsetOf(obj, ptr), sizeof(Object*), ClassMember::Type::ObjectPtr);
+			AddMember<ClassMember>(name, ClassMember::OffsetOf(obj, ptr), ClassMember::Type::ObjectPtr);
 		}
 		void AddAssetPointer(class Object* obj, class Asset** ptr, const String& name, NativeClassID assetClassID)
 		{
-			ClassMember_AssetPtr* assetPtr = AddMember<ClassMember_AssetPtr>(name, ClassMember::OffsetOf(obj, ptr), sizeof(Asset*), ClassMember::Type::AssetPtr);
+			ClassMember_AssetPtr* assetPtr = AddMember<ClassMember_AssetPtr>(name, ClassMember::OffsetOf(obj, ptr), ClassMember::Type::AssetPtr);
 			assetPtr->m_AssetClass = Class(assetClassID);
 		}
 		template<class ... Args>
 		void AddDelegate(class Object* obj, TDelegate* d, const String& name, const String& args)
 		{
-			ClassMember_Delegate* delegate = AddMember<ClassMember_Delegate>(name, ClassMember::OffsetOf(obj, d), sizeof(TDelegate), ClassMember::Type::Delegate);
+			ClassMember_Delegate* delegate = AddMember<ClassMember_Delegate>(name, ClassMember::OffsetOf(obj, d), ClassMember::Type::Delegate);
 			delegate->FeedSignature(args);
 		}
 		
 		template<class T>
 		void AddPrimitive(class Object* obj, T* ptr, const String& name)
 		{
-			AddMember<ClassMember>(name, ClassMember::OffsetOf(obj, ptr), sizeof(T), ClassMember::GetPrimitiveTypeEnumByTemplate<T>());
+			AddMember<ClassMember>(name, ClassMember::OffsetOf(obj, ptr), ClassMember::GetPrimitiveTypeEnumByTemplate<T>());
 		}
 
-		ClassMember_ArrayList* AddArrayList(class Object* obj, void* array, size_t size, const String& name)
+		ClassMember_ArrayList* AddArrayList(class Object* obj, void* array, const String& name)
 		{
 			if (obj)
 			{
 				size_t offset = size_t(array) - size_t(obj);
-				ClassMember_ArrayList* member = AddMember<ClassMember_ArrayList>(name, offset, size, ClassMember::Type::ArrayList);
+				ClassMember_ArrayList* member = AddMember<ClassMember_ArrayList>(name, offset, ClassMember::Type::ArrayList);
 				return member;
 			}
 			return nullptr;
 		}
 
 		template<class T>
-		T* AddMember(const String& name, size_t offset, size_t size, ClassMember::Type type)
+		T* AddMember(const String& name, size_t offset, ClassMember::Type type)
 		{
-			Ref<T> member = Ref<T>(new T(name, offset, size, type));
+			Ref<T> member = Ref<T>(new T(name, offset, type));
 			m_ClassMembers.Add(member);
 			return member.get();
 		}

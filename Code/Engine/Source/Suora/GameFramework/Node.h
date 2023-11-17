@@ -106,12 +106,12 @@ namespace Suora
 		template<class T>
 		T* CreateChild()
 		{
-			return CreateChild(T::StaticClass())->As<T>();
+			return dynamic_cast<T*>(CreateChild(T::StaticClass()));
 		}
 		template<class T>
 		T* CreateChild(const String& name)
 		{
-			T* child = CreateChild(T::StaticClass())->As<T>();
+			T* child = dynamic_cast<T*>(CreateChild(T::StaticClass()));
 			child->SetName(name);
 			return child;
 		}
@@ -120,7 +120,7 @@ namespace Suora
 		template<class T>
 		T* GetChildNodeOfClass(bool includeSelf = false)
 		{
-			return GetChildNodeOfClass(T::StaticClass(), includeSelf)->As<T>();
+			return dynamic_cast<T*>(GetChildNodeOfClass(T::StaticClass(), includeSelf));
 		}
 		void GetChildNodesOfClass(const Class& cls, Array<Node*>& OutArray, bool includeSelf = false);
 		template<class T>
@@ -142,7 +142,7 @@ namespace Suora
 		template<class T>
 		T* GetParentNodeOfClass(bool includeSelf = false)
 		{
-			return GetParentNodeOfClass(T::StaticClass(), includeSelf)->As<T>();
+			return dynamic_cast<T*>(GetParentNodeOfClass(T::StaticClass(), includeSelf));
 		}
 		Node* IsARecursive(const Class& cls)
 		{
@@ -151,7 +151,7 @@ namespace Suora
 		template<class T>
 		T* IsARecursive()
 		{
-			return IsARecursive(T::StaticClass())->As<T>();
+			return dynamic_cast<T*>(IsARecursive(T::StaticClass()));
 		}
 
 	protected:

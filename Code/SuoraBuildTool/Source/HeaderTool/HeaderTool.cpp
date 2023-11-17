@@ -8,7 +8,6 @@
 #include <iostream>
 #include <fstream>
 
-static std::mutex PrintMutex;
 static std::mutex AccessHeaderMutex;
 static std::mutex GenerateClassMutex;
 
@@ -297,13 +296,13 @@ private:\n\
 	{
 		if (inner == "float" || inner == "bool" || inner == "Class")
 		{
-			str += "\t\tRef<ClassMember> " + index + " = Ref<ClassMember>(new ClassMember(\"Inner\", 0, sizeof(" + inner + "), ClassMember::GetPrimitiveTypeEnumByTemplate<" + inner + ">()));\n";
+			str += "\t\tRef<ClassMember> " + index + " = Ref<ClassMember>(new ClassMember(\"Inner\", 0, ClassMember::GetPrimitiveTypeEnumByTemplate<" + inner + ">()));\n";
 		}
 		else if (inner.find("ArrayList") == 0)
 		{
 			std::string inner_str = inner.substr(10, inner.size() - 11);
 			GenerateTemplateInnerMember(str, inner_str, index + "_ArrayInner");
-			str += "\t\tRef<ClassMember_ArrayList> " + index + " = Ref<ClassMember_ArrayList>(new ClassMember_ArrayList(\"InnerArray\", 0, sizeof(" + inner + "), ClassMember::Type::ArrayList));\n";
+			str += "\t\tRef<ClassMember_ArrayList> " + index + " = Ref<ClassMember_ArrayList>(new ClassMember_ArrayList(\"InnerArray\", 0, ClassMember::Type::ArrayList));\n";
 			str += "\t\t" + index + "->m_ArraySubMember = " + (index + "_ArrayInner") + ";\n";
 		}
 		else if (inner[inner.size() - 1] == '*')
@@ -315,13 +314,13 @@ private:\n\
 				if (header->Inherits(GetHeaderByClassName("Asset")))
 				{
 					// Asset
-					str += "\t\tRef<ClassMember_AssetPtr> " + index + " = Ref<ClassMember_AssetPtr>(new ClassMember_AssetPtr(\"Inner\", 0, sizeof(Asset*), ClassMember::Type::AssetPtr));\n";
+					str += "\t\tRef<ClassMember_AssetPtr> " + index + " = Ref<ClassMember_AssetPtr>(new ClassMember_AssetPtr(\"Inner\", 0, ClassMember::Type::AssetPtr));\n";
 					str += "\t\t" + index + "->m_AssetClass = Class(" + header->m_ClassID + ");\n";
 				}
 				else
 				{
 					// Object
-					str += "\t\tRef<ClassMember> " + index + " = Ref<ClassMember>(new ClassMember(\"Inner\", 0, sizeof(Object*), ClassMember::Type::ObjectPtr));\n";
+					str += "\t\tRef<ClassMember> " + index + " = Ref<ClassMember>(new ClassMember(\"Inner\", 0, ClassMember::Type::ObjectPtr));\n";
 				}
 			}
 			else
@@ -373,11 +372,11 @@ private:\n\
 		}
 		else if (memberType.substr(0, 11) == "SubclassOf<")
 		{
-			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", ClassMember::OffsetOf(this, &" + memberName + "), sizeof(" + memberType + "), ClassMember::Type::SubclassOf);\n";
+			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", ClassMember::OffsetOf(this, &" + memberName + "), ClassMember::Type::SubclassOf);\n";
 		}
 		else if (memberType == "MaterialSlots")
 		{
-			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", ClassMember::OffsetOf(this, &" + memberName + "), sizeof(" + memberType + "), ClassMember::Type::MaterialSlots);\n";
+			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", ClassMember::OffsetOf(this, &" + memberName + "), ClassMember::Type::MaterialSlots);\n";
 		}
 		else if (memberType.substr(0, 8) == "Delegate")
 		{
@@ -387,7 +386,7 @@ private:\n\
 		{
 			std::string inner = memberType.substr(10, memberType.size() - 11);
 			GenerateTemplateInnerMember(str, inner, "_ArrayInner");
-			str += "\t\tClassMember_ArrayList* array = desc.AddArrayList(this, &" + memberName + ", sizeof(" + memberName + "), \"" + memberName + "\");\n";
+			str += "\t\tClassMember_ArrayList* array = desc.AddArrayList(this, &" + memberName + ", \"" + memberName + "\");\n";
 			str += "\t\tarray->m_ArraySubMember = _ArrayInner;\n";
 		}
 		else if (memberType[memberType.size() - 1] == '*') // if (memberType.find("*") != std::string::npos)

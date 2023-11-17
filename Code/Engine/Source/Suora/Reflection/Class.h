@@ -73,7 +73,7 @@ namespace Suora
 		{
 			return ((std::hash<NativeClassID>()(cls.m_NativeClassID)
 				^ (std::hash<Blueprint*>()(cls.m_BlueprintClass) << 1)) >> 1)
-				^ (std::hash<NativeClassID>()(cls.m_NativeClassID + 91282743) << 1); // 91282743 is a random number, replace with ScriptClass once implemented
+				^ (std::hash<ScriptClass*>()(cls.m_ScriptClass) >> 1);
 		}
 
 		String GetNativeClassName() const;
@@ -105,7 +105,7 @@ namespace std
 		{
 			return ((std::hash<Suora::NativeClassID>()(cls.GetNativeClassID())
 				^ (std::hash<Suora::Blueprint*>()(cls.GetBlueprintClass()) << 1)) >> 1)
-				^ (std::hash<Suora::NativeClassID>()(cls.GetNativeClassID() + 91282743) << 1); // 91282743 is a random number, replace with ScriptClass once implemented
+				^ (std::hash<Suora::ScriptClass*>()(cls.GetScriptClass()) >> 1);
 		}
 	};
 }
