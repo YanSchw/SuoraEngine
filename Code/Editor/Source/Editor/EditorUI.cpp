@@ -928,6 +928,10 @@ namespace Suora
 		{
 			EditorUI::DrawTexturedRect(texture->GetTexture(), x, y, width, height, 0.0f, Color(1.0f));
 		}
+		else if (Font* font = Cast<Font>(asset))
+		{
+			EditorUI::DrawTexturedRect(font->m_FontAtlas, x, y, width, height, 0.0f, Color(1.0f));
+		}
 		else
 		{
 			if (AssetPreviews.find(asset) == AssetPreviews.end())
