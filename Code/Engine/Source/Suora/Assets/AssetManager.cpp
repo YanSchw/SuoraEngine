@@ -19,12 +19,6 @@ namespace Suora
 
 	static std::unordered_map<String, Class> AssetClasses;
 
-	static void PreInitializeAsset(Asset* asset)
-	{
-		const String str = Platform::ReadFromFile(asset->m_Path.string());
-		asset->PreInitializeAsset(str);
-	}
-
 	static String GetCorrespondingAssetExtension(const Class& cls)
 	{
 		return Asset::GetAssetExtensionByClass(cls.GetNativeClassID());
@@ -126,7 +120,9 @@ namespace Suora
 			if (!s_Assets[i]->IsFlagSet(AssetFlags::WasPreInitialized) && !s_Assets[i]->IsFlagSet(AssetFlags::Missing))
 			{
 				const String str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
-				s_Assets[i]->PreInitializeAsset(str);
+				Yaml::Node root;
+				Yaml::Parse(root, str);
+				s_Assets[i]->PreInitializeAsset(root);
 			}
 		}
 		std::unordered_map<String, Asset*> UsedUUIDs;
@@ -142,7 +138,9 @@ namespace Suora
 						s_Assets[i]->m_Path = s_Assets[j]->m_Path;
 						s_Assets[i]->m_Name = s_Assets[j]->m_Name;
 						const String str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
-						s_Assets[i]->PreInitializeAsset(str);
+						Yaml::Node root;
+						Yaml::Parse(root, str);
+						s_Assets[i]->PreInitializeAsset(root);
 
 						delete s_Assets[j];
 						s_Assets.RemoveAt(j);
@@ -174,7 +172,9 @@ namespace Suora
 			if (!s_Assets[i]->IsFlagSet(AssetFlags::WasInitialized) && !s_Assets[i]->IsFlagSet(AssetFlags::Missing))
 			{
 				const String str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
-				s_Assets[i]->InitializeAsset(str);
+				Yaml::Node root;
+				Yaml::Parse(root, str);
+				s_Assets[i]->InitializeAsset(root);
 			}
 		}
 	}
@@ -251,8 +251,11 @@ namespace Suora
 			asset->m_Name = path.filename().string();
 			s_Assets.Add(asset);
 
-			asset->PreInitializeAsset(Platform::ReadFromFile(asset->m_Path.string()));
-			asset->InitializeAsset(Platform::ReadFromFile(asset->m_Path.string()));
+			const String str = Platform::ReadFromFile(asset->m_Path.string());
+			Yaml::Node root;
+			Yaml::Parse(root, str);
+			asset->PreInitializeAsset(root);
+			asset->InitializeAsset(root);
 		}
 	}
 

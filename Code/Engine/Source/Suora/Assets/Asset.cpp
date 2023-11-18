@@ -6,17 +6,15 @@
 namespace Suora
 {
 
-	void Asset::PreInitializeAsset(const String& str)
+	void Asset::PreInitializeAsset(Yaml::Node& root)
 	{
-		Yaml::Node root;
-		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<String>();
+		m_UUID = SuoraID(root["UUID"].As<String>());
 		m_LastWriteTime = std::filesystem::last_write_time(m_Path);
 
 		SetFlag(AssetFlags::WasPreInitialized);
 	}
 
-	void Asset::InitializeAsset(const String& str)
+	void Asset::InitializeAsset(Yaml::Node& root)
 	{
 		SetFlag(AssetFlags::WasInitialized);
 	}
@@ -44,7 +42,7 @@ namespace Suora
 
 	Class Asset::GetAssetClassByExtension(const String& ext)
 	{
-		Array<Class> derivatives = Class::GetSubclassesOf(Asset::StaticClass());//Asset::GetClassDerivatives();
+		Array<Class> derivatives = Class::GetSubclassesOf(Asset::StaticClass());
 
 		for (Class cls : derivatives)
 		{
@@ -65,7 +63,7 @@ namespace Suora
 	}
 	String Asset::GetAssetExtensionByClass(NativeClassID id)
 	{
-		Array<Class> derivatives = Class::GetSubclassesOf(Asset::StaticClass());//Asset::GetClassDerivatives();
+		Array<Class> derivatives = Class::GetSubclassesOf(Asset::StaticClass());
 
 		for (auto& cls : derivatives)
 		{

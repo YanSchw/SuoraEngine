@@ -22,7 +22,7 @@ namespace Suora
 
 		static Array<String> GetSupportedSourceAssetExtensions();
 
-		void PreInitializeAsset(const String& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
 		virtual uint32_t GetAssetFileSize() override;
 
 		void Serialize(Yaml::Node& root) override;

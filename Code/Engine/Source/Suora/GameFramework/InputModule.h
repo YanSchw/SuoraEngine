@@ -65,8 +65,8 @@ namespace Suora
 		SUORA_CLASS(78954453879);
 		ASSET_EXTENSION(".input");
 	public:
-		void PreInitializeAsset(const String& str) override;
-		void InitializeAsset(const String& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
+		void InitializeAsset(Yaml::Node& root) override;
 		void Serialize(Yaml::Node& root) override;
 
 		String m_Label = "Action";

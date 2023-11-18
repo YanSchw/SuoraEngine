@@ -19,21 +19,17 @@ namespace Suora
 
 	}
 
-	void Material::PreInitializeAsset(const String& str)
+	void Material::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		m_UUID = root["UUID"].As<String>();
 	}
 
-	void Material::InitializeAsset(const String& str)
+	void Material::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
+		Super::InitializeAsset(root);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		Yaml::Node& material = root["Material"];
 
 		if (!this->IsA<ShaderGraph>())

@@ -43,12 +43,10 @@ namespace Suora
 		}
 	}
 
-	void Mesh::PreInitializeAsset(const String& str)
+	void Mesh::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		m_UUID = root["UUID"].As<String>();
 		m_IsDecimaMesh = root["Mesh"]["m_IsDecimaMesh"].As<String>() == "true";
 		m_BoundingSphereRadius = root["Mesh"]["m_BoundingSphereRadius"].As<float>();
@@ -59,12 +57,10 @@ namespace Suora
 		}
 	}
 
-	void Mesh::InitializeAsset(const String& str)
+	void Mesh::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
+		Super::InitializeAsset(root);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		Yaml::Node& mesh = root["Mesh"];
 
 		// Materials

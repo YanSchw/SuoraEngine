@@ -17,19 +17,15 @@ namespace Suora
 	{
 	}
 
-	void ShaderGraph::PreInitializeAsset(const String& str)
+	void ShaderGraph::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
-		Yaml::Node root;
-		Yaml::Parse(root, str);
-		m_UUID = SuoraID(root["UUID"].As<String>());
+		Super::PreInitializeAsset(root);
+
 	}
 
-	void ShaderGraph::InitializeAsset(const String& str)
+	void ShaderGraph::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
-		Yaml::Node root;
-		Yaml::Parse(root, str);
+		Super::InitializeAsset(root);
 
 		m_ShaderGraph = this;
 

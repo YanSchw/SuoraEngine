@@ -18,8 +18,8 @@ namespace Suora
 		std::filesystem::path GetSourceAssetPath() const;
 		bool IsSourceAssetPathValid() const;
 
-		void PreInitializeAsset(const String& str) override;
-		void InitializeAsset(const String& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
+		void InitializeAsset(Yaml::Node& root) override;
 		void Serialize(Yaml::Node& root);
 
 		virtual bool IsAssetReloadRequired() const override;

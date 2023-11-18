@@ -19,12 +19,10 @@ namespace Suora
 
 	}
 
-	void Blueprint::PreInitializeAsset(const String& str)
+	void Blueprint::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		m_UUID = root["UUID"].As<String>();
 		m_YamlNode_EditorOnly = root;
 

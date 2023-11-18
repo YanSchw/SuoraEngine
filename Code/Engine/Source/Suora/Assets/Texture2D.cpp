@@ -31,13 +31,9 @@ namespace Suora
 		return {".png", ".jpg"};
 	}
 
-	void Texture2D::PreInitializeAsset(const String& str)
+	void Texture2D::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
-
-		Yaml::Node root;
-		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<String>();
+		Super::PreInitializeAsset(root);
 
 	}
 

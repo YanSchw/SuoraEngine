@@ -66,11 +66,11 @@ namespace Suora
 
 		void LoadAtlas();
 
-		void PreInitializeAsset(const String& str) override
+		void PreInitializeAsset(Yaml::Node& root) override
 		{
-			Super::PreInitializeAsset(str);
+			Super::PreInitializeAsset(root);
 		}
-		void InitializeAsset(const String& str) override;
+		void InitializeAsset(Yaml::Node& root) override;
 
 	};
 

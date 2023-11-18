@@ -28,11 +28,9 @@ namespace Suora
 		return ptr ? ptr : AssetManager::CreateAsset<EditorPreferences>("EditorPreferences", AssetManager::GetEngineAssetPath());
 	}
 
-	void EditorPreferences::PreInitializeAsset(const String& str)
+	void EditorPreferences::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
-		Yaml::Node root;
-		Yaml::Parse(root, str);
+		Super::PreInitializeAsset(root);
 
 		int i = 0;
 		while (true)
@@ -42,11 +40,9 @@ namespace Suora
 			if (!m_AllCachedProjectPaths.Contains(node.As<String>())) m_AllCachedProjectPaths.Add(node.As<String>());
 		}
 	}
-	void EditorPreferences::InitializeAsset(const String& str)
+	void EditorPreferences::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
-		Yaml::Node root;
-		Yaml::Parse(root, str);
+		Super::InitializeAsset(root);
 
 	}
 	void EditorPreferences::Serialize(Yaml::Node& root)

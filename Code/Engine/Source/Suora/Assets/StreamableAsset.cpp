@@ -14,12 +14,10 @@ namespace Suora
 		return std::filesystem::exists(GetSourceAssetPath());
 	}
 
-	void StreamableAsset::PreInitializeAsset(const String& str)
+	void StreamableAsset::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		Yaml::Node& streamable = root["StreamableAsset"];
 
 		m_SourceAssetName = streamable["m_SourceAssetName"].As<String>();
@@ -27,9 +25,9 @@ namespace Suora
 
 		m_LastWriteTimeOfSource = std::filesystem::last_write_time(GetSourceAssetPath());
 	}
-	void StreamableAsset::InitializeAsset(const String& str)
+	void StreamableAsset::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
+		Super::InitializeAsset(root);
 	}
 
 	void StreamableAsset::Serialize(Yaml::Node& root)

@@ -47,7 +47,7 @@ namespace Suora
 
 	public:
 		Blueprint();
-		void PreInitializeAsset(const String& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
 		Class GetNodeParentClass() const;
 		Object* CreateInstance(bool isRootNode);
 

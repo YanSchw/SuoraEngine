@@ -14,23 +14,19 @@ namespace Suora
 	{
 	}
 
-	void ProjectSettings::PreInitializeAsset(const String& str)
+	void ProjectSettings::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 		ClearFlag(AssetFlags::WasPreInitialized);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		m_UUID = root["UUID"].As<String>();
 	}
 
-	void ProjectSettings::InitializeAsset(const String& str)
+	void ProjectSettings::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
+		Super::InitializeAsset(root);
 		ClearFlag(AssetFlags::WasInitialized);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		Yaml::Node& settings = root["Settings"];
 
 		m_EnginePath = settings["Engine"]["Path"].IsNone() ? "" : settings["Engine"]["Path"].As<String>();

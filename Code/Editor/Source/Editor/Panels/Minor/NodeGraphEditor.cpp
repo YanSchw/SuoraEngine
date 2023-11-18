@@ -95,7 +95,7 @@ namespace Suora
 		m_LineShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/Line.glsl");
 		NodeLabelTexture = AssetManager::GetAssetByName<Texture2D>("NodeLabel.texture");
 
-		font = AssetManager::GetAssetByName<Font>("InterSDF.font");
+		font = AssetManager::GetAssetByName<Font>("Inter-Medium.font");
 	}
 
 	NodeGraphEditor::~NodeGraphEditor()

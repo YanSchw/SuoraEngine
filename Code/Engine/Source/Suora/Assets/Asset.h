@@ -38,8 +38,8 @@ namespace Suora
 		std::filesystem::file_time_type m_LastWriteTime;
 		AssetFlags m_Flags = AssetFlags::None;
 
-		virtual void PreInitializeAsset(const String& str);
-		virtual void InitializeAsset(const String& str);
+		virtual void PreInitializeAsset(Yaml::Node& root);
+		virtual void InitializeAsset(Yaml::Node& root);
 		virtual void Serialize(Yaml::Node& root);
 
 		virtual bool IsLoaded() const

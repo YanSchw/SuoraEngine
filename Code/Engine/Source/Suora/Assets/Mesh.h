@@ -43,8 +43,8 @@ namespace Suora
 	public:
 		Mesh();
 		~Mesh();
-		void PreInitializeAsset(const String& str) override;
-		void InitializeAsset(const String& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
+		void InitializeAsset(Yaml::Node& root) override;
 		virtual void ReloadAsset() override;
 		virtual uint32_t GetAssetFileSize() override;
 		VertexArray* GetVertexArray();

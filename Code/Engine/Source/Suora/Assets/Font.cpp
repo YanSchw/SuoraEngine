@@ -74,9 +74,9 @@ namespace Suora
         // TODO: Using STB_FREETYPE
 
     }
-    void Font::InitializeAsset(const String& str)
+    void Font::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
+		Super::InitializeAsset(root);
 
 		String atlasPath = GetSourceAssetPath().string();
 		String texturePath = atlasPath;

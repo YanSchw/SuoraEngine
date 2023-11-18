@@ -362,17 +362,14 @@ namespace Suora
 		m_Normalize = root["m_Normalize"].As<String>() == "true";
 	}
 
-	void InputMapping::PreInitializeAsset(const String& str)
+	void InputMapping::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 	}
 
-	void InputMapping::InitializeAsset(const String& str)
+	void InputMapping::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
-
-		Yaml::Node root;
-		Yaml::Parse(root, str);
+		Super::InitializeAsset(root);
 
 		m_Label = root["m_Label"].As<String>();
 
