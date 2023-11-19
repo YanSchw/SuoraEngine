@@ -43,6 +43,9 @@ namespace Suora
 		virtual void Update(float deltaTime);
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+
+		/* This Function prints the Engine Version and the label "Suora Engine" in ASCII art */
+		void PrintSuoraEngineAsciiArt();
 	private:
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
