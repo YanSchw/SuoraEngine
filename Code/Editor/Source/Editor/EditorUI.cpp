@@ -1,5 +1,6 @@
 #include "EditorUI.h"
 #include "EditorWindow.h"
+#include "AssetPreview.h"
 #include "Util/EditorPreferences.h"
 #include "Suora/Core/Base.h"
 #include "Suora/Common/Common.h"
@@ -13,6 +14,7 @@
 #include "Suora/Renderer/RenderCommand.h"
 #include "Panels/Minor/ContentBrowser.h"
 #include "Suora/GameFramework/World.h"
+#include "Suora/GameFramework/InputModule.h"
 #include "Suora/GameFramework/Nodes/MeshNode.h"
 #include "Suora/GameFramework/Nodes/DecalNode.h"
 #include "Suora/GameFramework/Nodes/ShapeNodes.h"
@@ -31,175 +33,6 @@ static Suora::Ref<Shader> ColorCircleShader;
 
 namespace Suora
 {
-
-	struct AssetPreview
-	{
-		Ref<Framebuffer> m_Preview;
-		uint32_t m_LastDraw = -10000;
-		bool m_Init = false;
-		bool m_Done = false;
-		inline static RenderPipeline* s_Pipeline = nullptr;
-		inline static RenderingParams s_RParams;
-		Ref<World> m_World = nullptr;
-		
-		AssetPreview()
-		{
-			{
-				FramebufferSpecification spec;
-				spec.Width = 128;
-				spec.Height = 128;
-				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
-				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-				m_Preview = Framebuffer::Create(spec);
-			}
-		}
-		~AssetPreview()
-		{
-			m_Preview = nullptr;
-			m_World = nullptr;
-		}
-
-		void Init(Asset* asset)
-		{
-			static bool pipelineInit = false;
-			if (!pipelineInit)
-			{
-				s_Pipeline = Engine::Get()->GetRenderPipeline();
-				pipelineInit = true;
-			}
-			m_World = CreateRef<World>();
-			if (asset->IsA<Material>())
-			{
-				CameraNode* camera = m_World->Spawn<CameraNode>();
-				m_World->Spawn<SkyLightNode>();
-				m_World->Spawn<MeshNode>()->mesh = AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47"));
-				m_World->Spawn<PointLightNode>()->SetPosition(Vec3(-1.5f, 1.5f, -1.5f));
-				DirectionalLightNode* dirLight = m_World->Spawn<DirectionalLightNode>();
-				dirLight->m_ShadowMap = false;
-				dirLight->SetEulerRotation(Vec3(45, 45, 0));
-				m_World->SetMainCamera(camera);
-				camera->SetPerspectiveVerticalFOV(25.0f);
-				camera->SetPosition(Vec3(0, 0, -5));
-				camera->SetViewportSize(256, 256);
-				MeshNode* mesh = m_World->Spawn<MeshNode>();
-				mesh->mesh = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
-				mesh->materials = asset->As<Material>();
-				mesh->materials.OverwritteMaterials = true;
-			}
-			if (asset->IsA<Mesh>())
-			{
-				CameraNode* camera = m_World->Spawn<CameraNode>();
-				m_World->Spawn<SkyLightNode>();
-				m_World->Spawn<MeshNode>()->mesh = AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47"));
-				DirectionalLightNode* dirLight = m_World->Spawn<DirectionalLightNode>();
-				dirLight->m_ShadowMap = true;
-				dirLight->m_Intensity = 0.75f;
-				dirLight->SetEulerRotation(Vec3(45, 45, 0));
-				m_World->Spawn<PointLightNode>()->SetPosition(Vec3(-3, 3, -3));
-				m_World->SetMainCamera(camera);
-				camera->SetPerspectiveVerticalFOV(75.0f);
-				camera->SetPosition(Vec3(asset->As<Mesh>()->m_BoundingSphereRadius * -1.0f, asset->As<Mesh>()->m_BoundingSphereRadius, asset->As<Mesh>()->m_BoundingSphereRadius * -1.20f));
-				camera->SetEulerRotation(Vec3(45, 45, 0));
-				camera->SetViewportSize(256, 256);
-				MeshNode* mesh = m_World->Spawn<MeshNode>();
-				mesh->mesh = asset->As<Mesh>();
-			}
-			if (asset->IsA<Blueprint>())
-			{
-				CameraNode* camera = m_World->Spawn<CameraNode>();
-				m_World->Spawn<SkyLightNode>();
-				m_World->Spawn<MeshNode>()->mesh = AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47"));
-				DirectionalLightNode* dirLight = m_World->Spawn<DirectionalLightNode>();
-				dirLight->m_ShadowMap = false;
-				dirLight->SetEulerRotation(Vec3(45, 45, 0));
-				m_World->Spawn<PointLightNode>()->SetPosition(Vec3(-3, 3, -3));
-				m_World->SetMainCamera(camera);
-				camera->SetPerspectiveVerticalFOV(75.0f);
-				camera->SetPosition(Vec3(5 * -1.0f, 5, 5 * -1.0f));
-				camera->SetEulerRotation(Vec3(45, 45, 0));
-				camera->SetViewportSize(256, 256);
-				m_World->Spawn(Class(asset->As<Blueprint>()));
-			}
-		}
-		void Render(Asset* asset)
-		{
-			//if (AssetManager::s_AssetStreamPool.Size() != 0) return;
-
-			if (m_Done) return;
-			if (asset->IsMissing()) return;
-			if (asset->IsA<Mesh>() && !asset->As<Mesh>()->GetVertexArray()) return;
-			if (asset->IsA<Material>() && !AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"))->GetVertexArray()) return;
-
-			if (!m_Init)
-			{
-				m_Init = true;
-				Init(asset);
-				
-			}
-			Framebuffer* current = Framebuffer::GetCurrent();
-			if (!m_Preview) return;
-			m_Preview->Bind();
-
-			if (asset->IsA<Material>())
-			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
-				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
-			}
-			if (asset->IsA<Mesh>())
-			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
-				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
-			}
-			if (asset->IsA<Blueprint>())
-			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
-				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
-			}
-			m_Done = true;
-			m_Init = false;
-			m_World = nullptr;
-
-			m_Preview->Unbind();
-			if (current) current->Bind();
-		}
-	};
-
-	static bool CanRerenderAssetPreviews = false;
-	static std::unordered_map<Asset*, Ref<AssetPreview>> AssetPreviews;
-
-	void EditorUI::RerenderAssetPreviews()
-	{
-		static bool InRenderPhase = false;
-		if (AssetManager::s_AssetStreamPool.Size() != 0 && !InRenderPhase) return;
-		InRenderPhase = true;
-		//if (Application::Get().GetRuntime() < 5.f) return;
-
-		if (!CanRerenderAssetPreviews) return;
-		CanRerenderAssetPreviews = false;
-
-		rerun:
-		int64_t Index = AssetPreviews.size() ? rand() % AssetPreviews.size() + (rand() % 3) : -1;
-		for (auto& it : AssetPreviews)
-		{
-			Index--;
-
-			/*if (it.second.m_LastDraw++ > 100)
-			{
-				AssetPreviews.erase(it.first);
-				goto rerun;
-			}*/
-
-			if (Index == 0 && it.second)
-			{
-				if (it.second->m_Init && rand() % 3 == 0) goto rerun;
-				it.second->Render(it.first);
-				break;
-			}
-		}
-
-
-
-	}
 
 	void EditorUI::Init()
 	{
@@ -239,6 +72,7 @@ namespace Suora
 		s_ClassIcons[FolderNode::StaticClass()]             = AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
 		s_ClassIcons[FolderNode3D::StaticClass()]           = AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
 		s_ClassIcons[UIImage::StaticClass()]                = AssetManager::GetAsset<Texture2D>(SuoraID("26ed62e2-e39b-4028-aca2-7b116c74541f"));
+		s_ClassIcons[PlayerInputNode::StaticClass()]        = AssetManager::GetAsset<Texture2D>(SuoraID("f36a106a-7116-4e55-a4ef-5f9e37e8d408"));
 	}
 
 	// DrawRect
@@ -263,26 +97,7 @@ namespace Suora
 			s_Overlays[i]->m_Lifetime++;
 		}
 		
-		CanRerenderAssetPreviews = true;
-		rerun:
-		for (auto& it : AssetPreviews)
-		{
-			if (!it.second)
-			{
-				it.second = CreateRef<AssetPreview>();
-			}
-			else if (it.second->m_LastDraw++ > 1800)
-			{
-				AssetPreviews.erase(it.first);
-				goto rerun;
-			}
-		}
-
-		static int counter = 0;
-		if (counter >= 512)
-			RerenderAssetPreviews();
-		else
-			counter++;
+		AssetPreview::Tick(deltaTime);
 	}
 
 	void EditorUI::PushInput(float x, float y, float offsetX, float offsetY)
@@ -920,40 +735,7 @@ namespace Suora
 
 	void EditorUI::DrawAssetPreview(Asset* asset, const Class& assetClass, float x, float y, float width, float height)
 	{
-		EditorUI::DrawTexturedRect(CheckerboardTexture->GetTexture(), x, y, width, height, 0.0f, Color(0.1f, 0.1f, 0.1f, 1));
-		if (!asset) return;
-		if (!Engine::Get()->GetRenderPipeline()->IsA<RenderPipeline>()) return;
-
-		if (Texture2D* texture = Cast<Texture2D>(asset))
-		{
-			EditorUI::DrawTexturedRect(texture->GetTexture(), x, y, width, height, 0.0f, Color(1.0f));
-		}
-		else if (Font* font = Cast<Font>(asset))
-		{
-			EditorUI::DrawTexturedRect(font->m_FontAtlas, x, y, width, height, 0.0f, Color(1.0f));
-		}
-		else
-		{
-			if (AssetPreviews.find(asset) == AssetPreviews.end())
-			{
-				AssetPreviews[asset] = nullptr;
-				//AssetPreviews[asset].Render(asset);
-			}
-			
-			if (!AssetPreviews[asset]) return;
-			if (AssetPreviews[asset]->m_LastDraw < 0) return;
-			AssetPreviews[asset]->m_LastDraw = 0;
-			//RerenderAssetPreviews();
-
-			if (AssetPreviews.find(asset) != AssetPreviews.end() && AssetPreviews[asset]->m_Preview && AssetPreviews[asset]->m_Done)
-			{
-				RenderPipeline::GetFullscreenPassShaderStatic()->Bind();
-				RenderPipeline::GetFullscreenPassShaderStatic()->SetInt("u_Texture", 0);
-				AssetPreviews[asset]->m_Preview->BindColorAttachmentByIndex(0, 0);
-				RenderCommand::SetViewport(x, y, width, height);
-				RenderCommand::DrawIndexed(RenderPipeline::__GetFullscreenQuad());
-			}
-		}
+		AssetPreview::DrawAssetPreview(asset, assetClass, x, y, width, height);
 	}
 
 	void EditorUI::SubclassSelectionMenu(const Class& base, const std::function<void(Class)>& lambda)

@@ -16,6 +16,7 @@ namespace Suora
 	const Icon Icon::Character                 = Icon(SuoraID("0660326f-a8a2-4314-bc96-9b61bdbddae3"));
 	const Icon Icon::Cogwheel                  = Icon(SuoraID("3e254a4e-cc83-4254-a462-73739fce6d61"));
 	const Icon Icon::Continue                  = Icon(SuoraID("073b49ee-bfe3-472a-9b15-78b864268b0e"));
+	const Icon Icon::Controller                = Icon(SuoraID("f36a106a-7116-4e55-a4ef-5f9e37e8d408"));
 	const Icon Icon::Critical                  = Icon(SuoraID("7df5a6ba-75a5-4974-87d7-047e58cce35e"));
 	const Icon Icon::Decal                     = Icon(SuoraID("9d81a066-2336-42f5-bf35-7bb1c4c65d66"));
 	const Icon Icon::Trashbin                  = Icon(SuoraID("fe478bcb-d2be-4a9c-9dd3-ab79e5f3b0e4"));

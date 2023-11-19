@@ -28,6 +28,7 @@ namespace Suora
 		static const Icon Character;
 		static const Icon Cogwheel;
 		static const Icon Continue;
+		static const Icon Controller;
 		static const Icon Critical;
 		static const Icon Decal;
 		static const Icon Trashbin;
