@@ -18,6 +18,7 @@
 
 namespace Suora
 {
+
 	AssetPreview::AssetPreview()
 	{
 		FramebufferSpecification spec;
@@ -32,6 +33,7 @@ namespace Suora
 		m_Preview = nullptr;
 		m_World = nullptr;
 	}
+
 	void AssetPreview::Init(Asset* asset)
 	{
 		static bool pipelineInit = false;
@@ -95,21 +97,21 @@ namespace Suora
 			m_World->Spawn(Class(asset->As<Blueprint>()));
 		}
 	}
-	void AssetPreview::Render(Asset* asset)
+
+	bool AssetPreview::Render(Asset* asset)
 	{
-		if (m_Done) return;
-		if (asset->IsMissing()) return;
-		if (asset->IsA<Mesh>() && !asset->As<Mesh>()->GetVertexArray()) return;
-		if (asset->IsA<Material>() && !AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"))->GetVertexArray()) return;
+		if (m_Done) return false;
+		if (asset->IsMissing()) return false;
+		if (asset->IsA<Mesh>() && !asset->As<Mesh>()->GetVertexArray()) return false;
+		if (asset->IsA<Material>() && !AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"))->GetVertexArray()) return false;
 
 		if (!m_Init)
 		{
 			m_Init = true;
 			Init(asset);
-
 		}
 		Framebuffer* current = Framebuffer::GetCurrent();
-		if (!m_Preview) return;
+		if (!m_Preview) return false;
 		m_Preview->Bind();
 
 		if (asset->IsA<Material>())
@@ -130,35 +132,35 @@ namespace Suora
 
 		m_Preview->Unbind();
 		if (current) current->Bind();
+
+		return true;
 	}
-	void AssetPreview::RerenderAssetPreviews()
+
+	void AssetPreview::RenderAssetPreviews()
 	{
 		static bool InRenderPhase = false;
 		if (AssetManager::s_AssetStreamPool.Size() != 0 && !InRenderPhase) return;
 		InRenderPhase = true;
 
-		if (!CanRerenderAssetPreviews) return;
-		CanRerenderAssetPreviews = false;
-
-	rerun:
-		int64_t Index = AssetPreviews.size() ? rand() % AssetPreviews.size() + (rand() % 3) : -1;
-		for (auto& it : AssetPreviews)
+		for (auto& It : s_AssetPreviews)
 		{
-			Index--;
-
-			if (Index == 0 && it.second)
+			if (It.second && !It.second->m_Done)
 			{
-				if (it.second->m_Init && rand() % 3 == 0) goto rerun;
-				it.second->Render(it.first);
-				break;
+				if (It.second->Render(It.first))
+				{
+					return;
+				}
 			}
 		}
 
 	}
+
 	void AssetPreview::DrawAssetPreview(Asset* asset, const Class& assetClass, float x, float y, float width, float height)
 	{
 		EditorUI::DrawTexturedRect(Texture::GetOrCreateDefaultTexture(), x, y, width, height, 0.0f, Color(0.1f, 0.1f, 0.1f, 1));
-		if (!asset) return;
+		
+		if (!asset)
+			return;
 
 		if (Texture2D* texture = Cast<Texture2D>(asset))
 		{
@@ -182,32 +184,28 @@ namespace Suora
 		}
 		else
 		{
-			if (AssetPreviews.find(asset) == AssetPreviews.end())
+			if (!s_AssetPreviews.ContainsKey(asset))
 			{
-				AssetPreviews[asset] = nullptr;
-				//AssetPreviews[asset].Render(asset);
+				s_AssetPreviews[asset] = nullptr;
 			}
 
-			if (!AssetPreviews[asset]) return;
-			/*if (AssetPreviews[asset]->m_LastDraw < 0) return;
-			AssetPreviews[asset]->m_LastDraw = 0;*/
-			//RerenderAssetPreviews();
+			if (!s_AssetPreviews[asset])
+				return;
 
-			if (AssetPreviews.find(asset) != AssetPreviews.end() && AssetPreviews[asset]->m_Preview && AssetPreviews[asset]->m_Done)
+			if (s_AssetPreviews.ContainsKey(asset) && s_AssetPreviews[asset]->m_Preview && s_AssetPreviews[asset]->m_Done)
 			{
 				RenderPipeline::GetFullscreenPassShaderStatic()->Bind();
 				RenderPipeline::GetFullscreenPassShaderStatic()->SetInt("u_Texture", 0);
-				AssetPreviews[asset]->m_Preview->BindColorAttachmentByIndex(0, 0);
+				s_AssetPreviews[asset]->m_Preview->BindColorAttachmentByIndex(0, 0);
 				RenderCommand::SetViewport(x, y, width, height);
 				RenderCommand::DrawIndexed(RenderPipeline::__GetFullscreenQuad());
 			}
 		}
 	}
+
 	void AssetPreview::Tick(float deltaTime)
 	{
-		CanRerenderAssetPreviews = true;
-	rerun:
-		for (auto& it : AssetPreviews)
+		for (auto& it : s_AssetPreviews)
 		{
 			if (!it.second)
 			{
@@ -215,10 +213,7 @@ namespace Suora
 			}
 		}
 
-		static int counter = 0;
-		if (counter >= 512)
-			RerenderAssetPreviews();
-		else
-			counter++;
+		RenderAssetPreviews();
 	}
+
 }
