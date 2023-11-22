@@ -50,6 +50,7 @@ namespace Suora
 
 		MeshNode* PreviewMesh = m_World.Spawn<MeshNode>();
 		PreviewMesh->SetPosition(Vec::Up * 1.0f);
+		PreviewMesh->SetScale(Vec3(2.0f));
 		PreviewMesh->mesh = AssetManager::GetAssetByName<Mesh>("Sphere.mesh");
 		PreviewMesh->materials = m_ShaderGraph.Get();
 		PreviewMesh->materials.OverwritteMaterials = true;
