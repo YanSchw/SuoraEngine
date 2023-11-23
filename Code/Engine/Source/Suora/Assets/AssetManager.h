@@ -8,6 +8,7 @@
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Common/SuoraID.h"
 #include "Suora/Common/Array.h"
+#include "Suora/Common/Map.h"
 
 namespace Suora
 {
@@ -15,34 +16,44 @@ namespace Suora
 	class Font;
 	class Texture2D;
 
+	/* The AssetManager class is responsible for managing assets in the Suora Engine. */
 	class AssetManager : public EngineSubSystem
 	{
 	private:
+		// Static members
 		inline static Array<Asset*> s_Assets;
 		inline static String s_EngineAssetPath = "", s_ProjectAssetPath = "";
 		inline static uint32_t s_AssetHotReloadingIteratorIndex = 0;
 		inline static Array<Asset*> s_AssetStreamPool;
 
+		// Private Function to create a missing Asset of a specified Class and ID.
 		static Asset* CreateMissingAsset(const Class& cls, const SuoraID& id);
 
 	public:
+		// Static public members
 		inline static bool s_AssetHotReloading = false;
 		inline static uint32_t s_AssetHotReloadingCount = 8;
 
+		// Initializes the AssetManager with the provided content path.
 		static void Initialize(const FilePath& contentPath);
 		~AssetManager();
 
+		/* Hot reloads assets with optional parameters for content path and base class. 
+		 * Only derivatives of baseClass are reloaded.                                  */
 		static void HotReload(const std::filesystem::path& contentPath = s_EngineAssetPath, const Class& baseClass = Asset::StaticClass());
 		static void InitializeAllAssets();
 
 		static void Update(float deltaTime);
 
+		/* Registers an asset of type T to be managed by the AssetManager. */
 		template<class T>
 		static void RegisterAsset(T* asset)
 		{
 			s_Assets.Add(asset);
 		}
 
+		/* Removes the specified asset from the AssetManager.
+		 * The Asset will remain in Memory and will be flagged as 'Missing' */
 		static void RemoveAsset(Asset* asset);
 		static void RenameAsset(Asset* asset, const String& name);
 		static void LoadAsset(const String& path);
