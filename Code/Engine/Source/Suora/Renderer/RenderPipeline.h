@@ -18,7 +18,6 @@ struct IVec2Hasher
 
 namespace Suora
 {
-	class Ilum;
 	class Decima;
 	class World;
 	class CameraNode;
@@ -111,7 +110,7 @@ namespace Suora
 		void RenderGBuffer(World& world, CameraNode& camera, RenderingParams& params);
 		void DecalPass(World& world, CameraNode& camera, RenderingParams& params);
 		void DeferredSkyPass(World& world, CameraNode& camera, RenderingParams& params);
-		void DeferredLightPass(Ref<Framebuffer> target, RenderingParams& params, World& world, CameraNode* camera, bool lowQuality = false, int quadTick = 0, bool volumetric = false);
+		void DeferredLightPass(Ref<Framebuffer> target, RenderingParams& params, World& world, CameraNode* camera);
 		void DeferredCompositePass(World& world, CameraNode& camera, RenderingParams& params);
 
 		void ForwardPass(World& world, CameraNode& camera, RenderingParams& params);
@@ -144,7 +143,6 @@ namespace Suora
 
 		inline static Ptr<RenderPipeline> s_Instance;
 
-		friend class Ilum;
 		friend class Decima;
 		friend class ViewportPanel;
 	};

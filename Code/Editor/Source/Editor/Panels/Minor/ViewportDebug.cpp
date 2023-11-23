@@ -4,7 +4,6 @@
 #include "Suora/Renderer/Renderer3D.h"
 #include "Suora/Renderer/Framebuffer.h"
 #include "Suora/Renderer/Shader.h"
-#include "Suora/Renderer/Ilum.h"
 #include "Suora/Assets/ShaderGraph.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/GameFramework/Nodes/ShapeNodes.h"
@@ -192,71 +191,6 @@ namespace Suora
 			auto GBufferSize = m_RParams.GetGBuffer()->GetSize();
 			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_RParams.GetForwardReadyBuffer(),
 				buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, GetWidth(), GetHeight()), "u_Texture", 0, false);
-		} return;
-		case DebugView::Ilum_Surfels:
-		{
-			struct IlumDebugShaderGraph : public ShaderGraph
-			{
-				IlumDebugShaderGraph()
-				{
-					m_ShaderSource = Platform::ReadFromFile(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Debug/IlumDebug.glsl");
-				}
-			};
-			static IlumDebugShaderGraph ProbeShader;
-			ProbeShader.GetShader()->Bind();
-			m_World->GetIlumContext()->m_SurfelCache->BindColorAttachmentByIndex((int)GBuffer::WorldPosition, (int)GBuffer::WorldPosition); ProbeShader.GetShader()->SetInt("u_WorldPosition", (int)GBuffer::WorldPosition);
-			m_World->GetIlumContext()->m_SurfelCache->BindColorAttachmentByIndex((int)GBuffer::WorldNormal, (int)GBuffer::WorldNormal); ProbeShader.GetShader()->SetInt("u_WorldNormal", (int)GBuffer::WorldNormal);
-			m_World->GetIlumContext()->m_SurfelIlumCache->BindColorAttachmentByIndex((int)GBuffer::BaseColor, (int)GBuffer::BaseColor); ProbeShader.GetShader()->SetInt("u_BaseColor", (int)GBuffer::BaseColor);
-
-			{
-				VertexArray* vao = AssetManager::GetAsset<Mesh>(SuoraID("180284a6-7c63-408c-8078-6ce3b1b50d77"))->GetVertexArray();
-				if (!vao) return;
-
-				glm::mat4 viewProj = GetEditorCamera()->GetProjectionMatrix() /*Projection*/ * glm::inverse(GetEditorCamera()->GetTransformMatrix());
-				ProbeShader.GetShader()->SetMat4("u_ViewProjection", viewProj);
-
-				vao->Bind();
-				RenderCommand::SetDepthTest(true);
-				RenderCommand::DrawInstanced(vao, 16384);
-				RenderCommand::SetDepthTest(false);
-			}
-		} return;
-
-		case DebugView::Ilum_Probes:
-		{
-			struct IlumDebugShaderGraph : public ShaderGraph
-			{
-				IlumDebugShaderGraph()
-				{
-					m_ShaderSource = Platform::ReadFromFile(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/Debug/IlumDebug_Probes.glsl");
-				}
-			};
-			static IlumDebugShaderGraph ProbeShader;
-			ProbeShader.GetShader()->Bind();
-			m_World->GetIlumContext()->m_IluminationCache->BindColorAttachmentByIndex(0, 1); ProbeShader.GetShader()->SetInt("u_IluminationCache", 1);
-
-			{
-				VertexArray* vao = AssetManager::GetAsset<Mesh>(SuoraID("4c2516be-3b7d-4684-b292-096ec621a83c"))->GetVertexArray();
-				if (!vao) return;
-
-				glm::mat4 viewProj = GetEditorCamera()->GetProjectionMatrix() /*Projection*/ * glm::inverse(GetEditorCamera()->GetTransformMatrix());
-				ProbeShader.GetShader()->SetMat4("u_ViewProjection", viewProj);
-				ProbeShader.GetShader()->SetFloat3("u_LightGridPos", m_World->GetIlumContext()->m_LightProbeGridPos);
-				ProbeShader.GetShader()->SetFloat3("u_LightGridStep", m_World->GetIlumContext()->m_LightProbeGridOffset);
-
-				vao->Bind();
-				RenderCommand::SetDepthTest(true);
-				RenderCommand::DrawInstanced(vao, 4096);
-				RenderCommand::SetDepthTest(false);
-			}
-		} return;
-		case DebugView::Ilum_Debug:
-		{
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_World->GetIlumContext()->m_SurfelCache, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(5, 5, 256, 256), "u_Texture", (int)GBuffer::BaseColor, false);
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_World->GetIlumContext()->m_SurfelDirectLightCache, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(5 + 256 + 20, 5, 256, 256), "u_Texture", 0, false);
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_World->GetIlumContext()->m_SurfelIlumCache, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(5 + 512 + 30, 5, 256, 256), "u_Texture", 0, false);
-			//RenderPipeline::RenderFramebufferIntoFramebuffer(*m_World->GetIlumContext()->m_IluminationCache, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(5 + 512 + 20, 5, 1024, 1024), "u_Texture", 0, false);
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_World->GetIlumContext()->m_SecondaryView, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(5, 5 + 256, 256, 256), "u_Texture", (int)GBuffer::BaseColor, false);
 		} return;
 		default: SuoraError("ViewportPanel::DrawDebugView(): DebugViewMode is not implemented!"); return;
 		}
