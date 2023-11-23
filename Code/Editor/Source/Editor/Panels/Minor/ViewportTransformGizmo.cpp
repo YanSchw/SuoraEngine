@@ -7,6 +7,7 @@
 #include "Suora/Renderer/Framebuffer.h"
 #include "Suora/Renderer/Shader.h"
 #include "Suora/Renderer/Renderer3D.h"
+#include "Suora/Renderer/Ilum.h"
 #include "Suora/Core/Engine.h"
 #include "Suora/GameFramework/GameInstance.h"
 #include "Suora/Assets/ShaderGraph.h"

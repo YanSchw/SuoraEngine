@@ -19,7 +19,10 @@ namespace Suora
 		GBuffer_MeshID,
 		GBuffer_Cluster,
 		DeferredLightPass,
-		ForwardReadyBuffer
+		ForwardReadyBuffer,
+		Ilum_Surfels,
+		Ilum_Probes,
+		Ilum_Debug
 	};
 
 	class ViewportPanel : public MinorTab
