@@ -65,17 +65,26 @@ namespace Suora
 
 	Texture* Texture2D::GetTexture()
 	{
-		if (IsMissing() || !IsSourceAssetPathValid())
+		if (IsMissing())
 		{
 			return Texture::GetOrCreateDefaultTexture();
 		}
 
-		if (!IsLoaded())
+		if (IsLoaded())
 		{
+			return m_Texture;
+		}
+		else
+		{
+			if (!IsSourceAssetPathValid())
+			{
+				return Texture::GetOrCreateDefaultTexture();
+			}
+
 			if (!m_AsyncTextureBuffer.get() && AssetManager::s_AssetStreamPool.Size() < AssetManager::GetAssetStreamCountLimit())
 			{
 				AssetManager::s_AssetStreamPool.Add(this);
-				
+
 				m_AsyncTextureBuffer = CreateRef<std::future<Ref<TextureBuffer_stbi>>>(std::async(std::launch::async, &Texture2D::Async_LoadTexture, this, GetSourceAssetPath().string()));
 			}
 			else if (m_AsyncTextureBuffer.get() && IsFutureReady(*m_AsyncTextureBuffer.get()))
@@ -90,7 +99,7 @@ namespace Suora
 			return Texture::GetOrCreateDefaultTexture();
 		}
 
-		return m_Texture;
+		return Texture::GetOrCreateDefaultTexture();
 	}
 
 	Ref<TextureBuffer_stbi> Texture2D::Async_LoadTexture(const String& path)

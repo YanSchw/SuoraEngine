@@ -411,25 +411,34 @@ namespace Suora
 
 	VertexArray* Mesh::GetVertexArray()
 	{
-		if (IsMissing() || !IsSourceAssetPathValid() || IsMasterMesh())
+		if (IsMissing() || IsMasterMesh())
 		{
 			return nullptr;
 		}
 
-		if (!m_VertexArray)
+		if (m_VertexArray)
 		{
+			return m_VertexArray.get();
+		}
+		else
+		{
+			if (!IsSourceAssetPathValid())
+			{
+				return nullptr;
+			}
+
 			if (!m_AsyncMeshBuffer.get() && AssetManager::s_AssetStreamPool.Size() < AssetManager::GetAssetStreamCountLimit())
 			{
 				AssetManager::s_AssetStreamPool.Add(this);
 				String filePath = GetSourceAssetPath().string();
-				
+
 				m_AsyncMeshBuffer = CreateRef<std::future<Ref<MeshBuffer>>>(std::async(std::launch::async, &Mesh::Async_LoadMeshBuffer, this, filePath, m_MeshBuffer.Vertices, m_MeshBuffer.Indices));
 			}
 			else if (m_AsyncMeshBuffer.get() && IsFutureReady(*m_AsyncMeshBuffer.get()))
 			{
 				AssetManager::s_AssetStreamPool.Remove(this);
 
-				if (IsSubMesh() && AssetManager::s_AssetStreamPool.Contains(m_ParentMesh)) 
+				if (IsSubMesh() && AssetManager::s_AssetStreamPool.Contains(m_ParentMesh))
 					AssetManager::s_AssetStreamPool.Remove(m_ParentMesh);
 
 				const Ref<MeshBuffer> buffer = m_AsyncMeshBuffer->get();
@@ -448,7 +457,7 @@ namespace Suora
 			}
 		}
 
-		return m_VertexArray.get();
+		return nullptr;
 	}
 
 	void Mesh::RebuildMesh()
