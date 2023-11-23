@@ -2,7 +2,6 @@
 #include "World.h"
 #include "Suora/GameFramework/Node.h"
 #include "New.h"
-#include "Suora/Renderer/Ilum.h"
 #include "Suora/Core/Engine.h"
 #include "Suora/Physics/PhysicsEngine.h"
 #include "Suora/Physics/PhysicsWorld.h"
@@ -14,7 +13,6 @@ namespace Suora
 
 	World::World()
 	{
-		m_IlumContext = Ref<Ilum>(new Ilum(this));
 	}
 
 	World::~World()
@@ -76,11 +74,6 @@ namespace Suora
 	GameInstance* World::GetGameInstance() const
 	{
 		return m_GameInstance;
-	}
-
-	Ilum* World::GetIlumContext() const
-	{
-		return m_IlumContext.get();
 	}
 
 	void World::SetPawn(Node* pawn)

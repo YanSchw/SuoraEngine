@@ -17,7 +17,6 @@ namespace Suora
 	class CameraNode;
 	class Node;
 	class Level;
-	class Ilum;
 	class GameInstance;
 	
 	struct HitResult
@@ -58,7 +57,6 @@ namespace Suora
 		Ptr<CameraNode> m_MainCamera;
 		Level* m_SourceLevel = nullptr;
 		Ref<Physics::PhysicsWorld> m_PhysicsWorld;
-		Ref<Ilum> m_IlumContext;
 
 	public:
 		World();
@@ -70,7 +68,6 @@ namespace Suora
 		Level* GetSourceLevel() const;
 		Physics::PhysicsWorld* GetPhysicsWorld();
 		GameInstance* GetGameInstance() const;
-		Ilum* GetIlumContext() const;
 
 		Node* Spawn(const Class& cls);
 		Node* Spawn(const Class& cls, const Vec3& position, const Quat& rotation);

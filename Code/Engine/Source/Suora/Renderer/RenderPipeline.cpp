@@ -7,7 +7,6 @@
 #include "Suora/Renderer/RenderCommand.h"
 #include "Suora/Renderer/VertexArray.h"
 #include "Suora/Renderer/Shader.h"
-#include "Suora/Renderer/Ilum.h"
 #include "Suora/Renderer/Decima.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/ShaderGraph.h"
@@ -84,16 +83,8 @@ namespace Suora
 
 		params.ValidateBuffers();
 
-		if (!Ilum::IsInIlumPass())
-		{
-			ShadowPass(world, camera);
-		}
+		ShadowPass(world, camera);
 
-		if (!Ilum::IsInIlumPass())
-		{
-			for (int i = 0; i < 1; i++)
-			world.GetIlumContext()->Tick(Engine::Get()->GetDeltaTime(), *params.GetGBuffer(), camera, world);
-		}
 		SetFullscreenViewport(*params.GetGBuffer());
 
 		if (params.EnableDeferredRendering)
@@ -111,20 +102,12 @@ namespace Suora
 
 		ForwardPass(world, camera, params);
 
-		if (!Ilum::IsInIlumPass())
-		{
-			PostProcessPass(world, camera, params);
+		PostProcessPass(world, camera, params);
 
-			UserInterfacePass(world, glm::orthoLH(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), *params.GetFinalBuffer(), params);
-		}
+		UserInterfacePass(world, glm::orthoLH(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f), *params.GetFinalBuffer(), params);
 
 		// Output Final Buffer
 		RenderFramebufferIntoFramebuffer(*params.GetFinalBuffer(), buffer, *m_FullscreenPassShader, BufferToRect(buffer), "u_Texture", 0, true);
-
-		if (!Ilum::IsInIlumPass())
-		{
-			//m_DecimaInstance->Run(&world, &camera);
-		}
 	}
 
 
@@ -204,7 +187,7 @@ namespace Suora
 
 		DeferredSkyPass(world, camera, params);
 
-		DeferredLightPass(params.GetDeferredLitBuffer(), params, world, &camera, Ilum::IsInIlumPass());
+		DeferredLightPass(params.GetDeferredLitBuffer(), params, world, &camera);
 
 		DeferredCompositePass(world, camera, params);
 
@@ -287,43 +270,31 @@ namespace Suora
 		}
 	}
 
-	void RenderPipeline::DeferredLightPass(Ref<Framebuffer> target, RenderingParams& params, World& world, CameraNode* camera, bool lowQuality, int quadTick, bool volumetric)
+	void RenderPipeline::DeferredLightPass(Ref<Framebuffer> target, RenderingParams& params, World& world, CameraNode* camera)
 	{
 		RenderCommand::SetClearColor(glm::vec4(0.0f));
 		target->Bind();
 		RenderCommand::Clear();
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Disable);
 		
-		if (lowQuality)
-		{
-			const glm::ivec4 rect = quadTick == 0 ? (glm::ivec4(0, 0, target->GetSpecification().Width / 2, target->GetSpecification().Height / 2)) :
-									quadTick == 1 ? (glm::ivec4(target->GetSpecification().Width / 2, 0, target->GetSpecification().Width / 2, target->GetSpecification().Height / 2)) :
-									quadTick == 2 ? (glm::ivec4(0, target->GetSpecification().Height / 2, target->GetSpecification().Width / 2, target->GetSpecification().Height / 2)) :
-													(glm::ivec4(target->GetSpecification().Width / 2, target->GetSpecification().Height / 2, target->GetSpecification().Width / 2, target->GetSpecification().Height / 2));
-			RenderCommand::SetViewport(rect.x, rect.y, rect.z, rect.w);
-		}
-		else SetFullscreenViewport(*params.GetGBuffer());
+		SetFullscreenViewport(*params.GetGBuffer());
 
 		RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *target, *m_FullscreenPassShader, BufferToRect(*params.GetGBuffer()), "u_Texture", (int)GBuffer::Emissive);
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Additive);
 
 
 		/* ----- Sky Light ----- */
-		if (!volumetric)
+		m_DeferredSkyLightShader->Bind();
+		Array<SkyLightNode*> lights = world.FindNodesByClass<SkyLightNode>();
+		if (lights.Size() > 0)
 		{
-			m_DeferredSkyLightShader->Bind();
-			Array<SkyLightNode*> lights = world.FindNodesByClass<SkyLightNode>();
-			if(lights.Size() > 0)
+			SkyLightNode* sky = lights[0];
+			if (sky && sky->IsEnabled())
 			{
-				SkyLightNode* sky = lights[0];
-				if (sky && sky->IsEnabled())
-				{
-					m_DeferredSkyLightShader->SetFloat("u_Intensity", sky->m_Intensity);
-					m_DeferredSkyLightShader->SetFloat3("u_Color", sky->m_Color);
-					RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *target, *m_DeferredSkyLightShader, BufferToRect(*params.GetGBuffer()), "u_BaseColor", (int)GBuffer::BaseColor, false);
-				}
+				m_DeferredSkyLightShader->SetFloat("u_Intensity", sky->m_Intensity);
+				m_DeferredSkyLightShader->SetFloat3("u_Color", sky->m_Color);
+				RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *target, *m_DeferredSkyLightShader, BufferToRect(*params.GetGBuffer()), "u_BaseColor", (int)GBuffer::BaseColor, false);
 			}
-
 		}
 
 		/* ----- Directional Lights ----- */
@@ -338,18 +309,13 @@ namespace Suora
 				m_DeferredDirectionalLightShader->SetFloat3("u_LightDirection", lights[i]->GetTransform()->GetForwardVector());
 				m_DeferredDirectionalLightShader->SetFloat3("u_ViewPos", camera->GetTransform()->GetPosition());
 
-				m_DeferredDirectionalLightShader->SetBool("u_Volumetric", volumetric);
+				m_DeferredDirectionalLightShader->SetBool("u_Volumetric", false);
 				m_DeferredDirectionalLightShader->SetBool("u_ShadowMapping", lights[i]->m_ShadowMap);
-				m_DeferredDirectionalLightShader->SetBool("u_SoftShadows", lowQuality ? false : lights[i]->m_SoftShadows);
+				m_DeferredDirectionalLightShader->SetBool("u_SoftShadows", lights[i]->m_SoftShadows);
 
 				int index = 0;
 				for (ShadowCascade& cascade : lights[i]->m_Cascades)
 				{
-					if (lowQuality && index != lights[i]->m_Cascades.Last())
-					{
-						index++;
-						continue;
-					}
 					constexpr int DepthTextureOffset = (int)GBuffer::GBufferSlotCount + 1;
 					m_DeferredDirectionalLightShader->SetMat4("u_LightProjection[" + std::to_string(index) + "]", cascade.m_Matrix * glm::inverse(lights[i]->m_LightCamera.GetTransform()->GetTransformMatrix()));
 					m_DeferredDirectionalLightShader->SetInt("u_ShadowMap[" + std::to_string(index) + "]", index + DepthTextureOffset); cascade.m_ShadowMapBuffer->BindDepthAttachmentToSlot(index + DepthTextureOffset);
@@ -362,7 +328,7 @@ namespace Suora
 				m_DeferredDirectionalLightShader->SetInt("u_WorldNormal", (int)GBuffer::WorldNormal); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::WorldNormal, (int)GBuffer::WorldNormal);
 				m_DeferredDirectionalLightShader->SetInt("u_WorldPos", (int)GBuffer::WorldPosition); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::WorldPosition, (int)GBuffer::WorldPosition);
 				m_DeferredDirectionalLightShader->SetInt("u_CascadeCount", lights[i]->m_Cascades.Size()); 
-				m_DeferredDirectionalLightShader->SetInt("u_CascadeBeginIndex", lowQuality ? lights[i]->m_Cascades.Last() : 0);
+				m_DeferredDirectionalLightShader->SetInt("u_CascadeBeginIndex", 0);
 
 
 				RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *target, *m_DeferredDirectionalLightShader, BufferToRect(*params.GetGBuffer()), "u_BaseColor", (int)GBuffer::BaseColor, false);
@@ -400,7 +366,7 @@ namespace Suora
 			}
 			m_DeferredPointLightShader->SetInt("u_PointLights", PointLightIter);
 			m_DeferredPointLightShader->SetInt("u_ShadowMapCount", PointLightNode::s_ShadowAtlasContent.Size());
-			m_DeferredPointLightShader->SetBool("u_Volumetric", volumetric);
+			m_DeferredPointLightShader->SetBool("u_Volumetric", false);
 
 			m_DeferredPointLightShader->SetFloat3("u_ViewPos", camera->GetTransform()->GetPosition());
 			m_DeferredPointLightShader->SetInt("u_WorldNormal", 1); params.GetGBuffer()->BindColorAttachmentByIndex((int)GBuffer::WorldNormal, 1);
@@ -412,12 +378,6 @@ namespace Suora
 			RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *target, *m_DeferredPointLightShader, BufferToRect(*params.GetGBuffer()), "u_WorldPos", (int)GBuffer::WorldPosition, false);
 		}
 
-
-		/* ----- Indirect Ilumination ----- */
-		if (!lowQuality)
-		{
-			world.GetIlumContext()->ApplyIlumination(*params.GetGBuffer(), *camera, world, *target);
-		}
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Disable);
 	}
 
@@ -441,17 +401,6 @@ namespace Suora
 			texture->GetTexture()->Bind(7); m_DeferredComposite->SetInt("u_IrradianceMap", 7); m_DeferredComposite->SetInt("u_PrefilterMap", 7);
 		}
 		AssetManager::GetAsset<Texture2D>(SuoraID("d1fcff5c-fc7b-4470-9f5d-8167f0bf874c"))->GetTexture()->Bind(8); m_DeferredComposite->SetInt("u_BrdfLUT", 8);
-
-		// Ilum
-		world.GetIlumContext()->m_IluminationCache->BindColorAttachmentByIndex(0, 9); m_DeferredComposite->SetInt("u_IlumCache", 9);
-		m_DeferredComposite->SetFloat3("u_LightGridPos", world.GetIlumContext()->m_LightProbeGridPos);
-		m_DeferredComposite->SetFloat3("u_LightGridStep", world.GetIlumContext()->m_LightProbeGridOffset);
-		{
-			std::random_device rd;
-			static std::mt19937 mt(rd());
-			std::uniform_int_distribution<int> dt(0, INT_MAX);
-			m_DeferredComposite->SetInt("u_IlumSeed", dt(mt));
-		}
 
 		RenderFramebufferIntoFramebuffer(*params.GetGBuffer(), *params.GetForwardReadyBuffer(), *m_DeferredComposite, BufferToRect(*params.GetGBuffer()), "u_BaseColor", (int)GBuffer::BaseColor, false);
 	}

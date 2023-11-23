@@ -33,9 +33,6 @@ namespace Suora
 		case DebugView::GBuffer_Cluster: return "Cluster";
 		case DebugView::DeferredLightPass: return "DeferredLightPass";
 		case DebugView::ForwardReadyBuffer: return "ForwardReadyBuffer";
-		case DebugView::Ilum_Surfels: return "Ilum Surfels";
-		case DebugView::Ilum_Probes: return "Ilum Probes";
-		case DebugView::Ilum_Debug: return "Ilum Overview";
 		default: return "DebugView::MissingName";
 		}
 	}
@@ -349,10 +346,7 @@ namespace Suora
 													  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::GBuffer_Cluster; }, "Cluster", nullptr)
 												  }, []() { }, "GBuffer", nullptr),
 											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::DeferredLightPass; }, "DeferredLightPass", nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::ForwardReadyBuffer; }, "ForwardReadyBuffer", nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::Ilum_Surfels; }, "Ilum Surfels", nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::Ilum_Probes; }, "Ilum Probes", nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::Ilum_Debug; }, "Ilum Overview", nullptr) }, 10.0f, GetHeight() - 35.0f);
+											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::ForwardReadyBuffer; }, "ForwardReadyBuffer", nullptr) }, 10.0f, GetHeight() - 35.0f);
 			}
 			if (HoverOverTools) EditorUI::SetCursor(Cursor::Hand);
 			if (EditorUI::Button("View", 140.0f, GetHeight() - 35.0f, 100.0f, 25.0f, Params))
