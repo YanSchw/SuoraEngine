@@ -14,7 +14,7 @@ namespace Suora
 	static void CalculateMeshData(Mesh* mesh)
 	{
 		mesh->m_BoundingSphereRadius = 0.0f;
-		mesh->m_NegativeY_Bounds = 0.0f;
+		mesh->m_NegativeY_Bounds = 9999999.0f;
 
 		if (mesh->IsMasterMesh())
 		{
@@ -38,6 +38,17 @@ namespace Suora
 
 					if (pos.y < submesh->m_NegativeY_Bounds) submesh->m_NegativeY_Bounds = pos.y;
 					if (glm::length(pos) > submesh->m_BoundingSphereRadius) submesh->m_BoundingSphereRadius = glm::length(pos);
+				}
+			}
+			for (auto submesh : mesh->m_Submeshes)
+			{
+				if (submesh->m_NegativeY_Bounds < mesh->m_NegativeY_Bounds)
+				{
+					mesh->m_NegativeY_Bounds = submesh->m_NegativeY_Bounds;
+				}
+				if (submesh->m_BoundingSphereRadius > mesh->m_BoundingSphereRadius)
+				{
+					mesh->m_BoundingSphereRadius = submesh->m_BoundingSphereRadius;
 				}
 			}
 		}

@@ -456,7 +456,7 @@ namespace Suora
 
 			if (!IsLauncher())
 			{
-				EditorUI::Button(ProjectSettings::GetProjectName(), m_Window->GetWidth() - (36 * ui) * 9, m_Window->GetHeight() - (17 * ui), 5 * 36 * ui, 18 * ui);
+				EditorUI::Text("[" + ProjectSettings::GetProjectName() + "]", Font::Instance, 0, m_Window->GetHeight() - (36 * ui), m_Window->GetWidth() - (36 * ui) * 3 - 10.0f, 36.0f * ui, 21.0f * ui, Vec2(1.0f, 0.0f), Color(1));
 			}
 		}
 	}

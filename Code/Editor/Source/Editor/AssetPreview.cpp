@@ -7,6 +7,7 @@
 #include "Suora/Renderer/Framebuffer.h"
 #include "Suora/Renderer/Texture.h"
 #include "Suora/Renderer/Shader.h"
+#include "Suora/Assets/Mesh.h"
 
 #include "Suora/GameFramework/Nodes/MeshNode.h"
 #include "Suora/GameFramework/Nodes/DecalNode.h"
@@ -71,12 +72,11 @@ namespace Suora
 			dirLight->m_ShadowMap = true;
 			dirLight->m_Intensity = 0.75f;
 			dirLight->SetEulerRotation(Vec3(45, 45, 0));
-			m_World->Spawn<PointLightNode>()->SetPosition(Vec3(-3, 3, -3));
 			m_World->SetMainCamera(camera);
-			camera->SetPerspectiveVerticalFOV(75.0f);
+			camera->SetPerspectiveVerticalFOV(85.0f);
 			camera->SetPosition(Vec3(asset->As<Mesh>()->m_BoundingSphereRadius * -1.0f, asset->As<Mesh>()->m_BoundingSphereRadius, asset->As<Mesh>()->m_BoundingSphereRadius * -1.20f));
 			camera->SetEulerRotation(Vec3(45, 45, 0));
-			camera->SetViewportSize(256, 256);
+			camera->SetViewportSize(128, 128);
 			MeshNode* mesh = m_World->Spawn<MeshNode>();
 			mesh->mesh = asset->As<Mesh>();
 		}
@@ -102,7 +102,26 @@ namespace Suora
 	{
 		if (m_Done) return false;
 		if (asset->IsMissing()) return false;
-		if (asset->IsA<Mesh>() && !asset->As<Mesh>()->GetVertexArray()) return false;
+		if (asset->IsA<Mesh>()) 
+		{
+			if (!asset->As<Mesh>()->IsMasterMesh())
+			{
+				if (!asset->As<Mesh>()->GetVertexArray())
+				{
+					return false;
+				}
+			}
+			else
+			{
+				for (auto& It : asset->As<Mesh>()->m_Submeshes)
+				{
+					if (!It->GetVertexArray())
+					{
+						return false;
+					}
+				}
+			}
+		}
 		if (asset->IsA<Material>() && !AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"))->GetVertexArray()) return false;
 
 		if (!m_Init)
@@ -162,7 +181,11 @@ namespace Suora
 		if (!asset)
 			return;
 
-		if (Texture2D* texture = Cast<Texture2D>(asset))
+		if (asset->IsA<Blueprint>() && !asset->IsA<Level>() && !asset->As<Blueprint>()->GetNodeParentClass().Inherits(Node3D::StaticClass()))
+		{
+			EditorUI::DrawTexturedRect(EditorUI::GetClassIcon(asset->As<Blueprint>()->GetNodeParentClass())->GetTexture(), x, y, width, height, 0.0f, Color(1.0f));
+		}
+		else if (Texture2D* texture = Cast<Texture2D>(asset))
 		{
 			EditorUI::DrawTexturedRect(texture->GetTexture(), x, y, width, height, 0.0f, Color(1.0f));
 		}
@@ -214,6 +237,14 @@ namespace Suora
 		}
 
 		RenderAssetPreviews();
+	}
+
+	void AssetPreview::ResetAssetPreview(Asset* asset)
+	{
+		if (s_AssetPreviews.ContainsKey(asset))
+		{
+			s_AssetPreviews.Remove(asset);
+		}
 	}
 
 }

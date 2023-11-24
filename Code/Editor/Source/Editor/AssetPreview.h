@@ -30,9 +30,14 @@ namespace Suora
 		static void RenderAssetPreviews();
 
 		/* Draws the AssetPreview in the EditorUI like specified. Certain Asset classes require a separate Rendering Tick,
-		   and are therefore not immediately drawn! */
+		   and are therefore not immediately drawn!                                                                         */
 		static void DrawAssetPreview(Asset* asset, const Class& assetClass, float x, float y, float width, float height);
 		static void Tick(float deltaTime);
+
+		/* Removes the cached AssetPreview, so it will be rendered again next Frame.
+		 * Used, if an Asset has been edited.                                        */
+		static void ResetAssetPreview(Asset* asset);
+
 	public:
 		/* Map of all currently cached AssetPreviews */
 		inline static Map<Asset*, Ref<AssetPreview>> s_AssetPreviews;

@@ -39,7 +39,7 @@ namespace Suora
 
 		int TransformGizmo_Tool = 1;
 		bool TransformGizmo_Local = false;
-		bool TransformGizmo_SnapTranslate = true;
+		bool TransformGizmo_SnapTranslate = false;
 		float TransformGizmo_SnapTranslateGrid = 0.5f;
 
 		bool TransformGizmo_Translate(Node3D* node);
