@@ -25,7 +25,7 @@ namespace Suora
         return (std::to_string(quat.x) + "/" + std::to_string(quat.y) + "/" + std::to_string(quat.z) + "/" + std::to_string(quat.w));
     }
     template<>
-    String Vec::ToString<glm::mat4>(const glm::mat4& m)
+    String Vec::ToString<Mat4>(const Mat4& m)
     {
         String str;
         str += ToString<Vec4>(m[0]) + ";";
@@ -64,10 +64,10 @@ namespace Suora
         return Quat(std::stof(xyzw[0]), std::stof(xyzw[1]), std::stof(xyzw[2]), std::stof(xyzw[3]));
     }
     template<>
-    glm::mat4 Vec::FromString<glm::mat4>(const String& str)
+    Mat4 Vec::FromString<Mat4>(const String& str)
     {
-        if (str == "") return glm::mat4();
-        glm::mat4 m = glm::mat4();
+        if (str == "") return Mat4();
+        Mat4 m = Mat4();
         std::vector<String> rows = StringUtil::SplitString(str, ';');
 
         m[0] = FromString<Vec4>(rows[0]);

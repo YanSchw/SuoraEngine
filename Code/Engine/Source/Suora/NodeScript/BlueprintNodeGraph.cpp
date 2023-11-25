@@ -270,7 +270,7 @@ namespace Suora
 			Ref<VisualNode> IF = CreateRef<VisualNode>();
 			IF->m_Title = "If";
 			IF->m_NodeID = 100;
-			IF->m_Color = glm::vec4(0.8f, 0.49f, 0.38f, 1.0f);
+			IF->m_Color = Vec4(0.8f, 0.49f, 0.38f, 1.0f);
 			IF->m_Size = { 215, 105 };
 			IF->AddInputPin("InExec", Color(1.0f), 1, false, 30.0f);
 			IF->AddInputPin("Condition", GetScriptDataTypeColor(ScriptDataType::Bool), (int64_t)ScriptDataType::Bool, true);
@@ -282,7 +282,7 @@ namespace Suora
 			Ref<VisualNode> MultiplyVec3Float = CreateRef<VisualNode>();
 			MultiplyVec3Float->m_Title = "Vec3 * Float";
 			MultiplyVec3Float->m_NodeID = 200;
-			MultiplyVec3Float->m_Color = glm::vec4(0.8f, 0.49f, 0.38f, 1.0f);
+			MultiplyVec3Float->m_Color = Vec4(0.8f, 0.49f, 0.38f, 1.0f);
 			MultiplyVec3Float->m_Size = { 215, 105 };
 			MultiplyVec3Float->AddInputPin("Vec3", GetScriptDataTypeColor(ScriptDataType::Vec3), (int64_t)ScriptDataType::Vec3, true);
 			MultiplyVec3Float->AddInputPin("Float", GetScriptDataTypeColor(ScriptDataType::Float), (int64_t)ScriptDataType::Float, true);
@@ -296,7 +296,7 @@ namespace Suora
 				Ref<VisualNode> event = CreateRef<VisualNode>();
 				event->m_Title = "Events/" + ExtractFunctionName(func->m_Label);
 				event->m_NodeID = NODE_ID_EVENT;
-				event->m_Color = Color(100 / 255.0f, 19 / 255.0f, 13 / 255.0f, 1.0f); // glm::vec4(0.82f, 0.25f, 0.18f, 1.0f);
+				event->m_Color = Color(100 / 255.0f, 19 / 255.0f, 13 / 255.0f, 1.0f); // Vec4(0.82f, 0.25f, 0.18f, 1.0f);
 				event->m_Size = { 215, 105 };
 				event->AddInputPin("Hash", Color(1.0f), 0, false, 0.0f); event->m_InputPins[0].m_AdditionalData = std::to_string(func->m_Hash);
 				event->AddOutputPin("Exec", Color(1.0f), 1, true, 30.0f);
@@ -313,7 +313,7 @@ namespace Suora
 				Ref<VisualNode> function = CreateRef<VisualNode>();
 				function->m_Title = Class(func->m_ClassID).GetClassName() + "/" + ExtractFunctionName(func->m_Label);
 				function->m_NodeID = isPure ? NODE_ID_NATIVE_PURE : NODE_ID_NATIVE_FUNC;
-				function->m_Color = isPure ? /*glm::vec4(0.18f, 0.62f, 0.23f, 1.0f)*/Color(51.0f / 255.0f, 73.0f / 255.0f, 55.0f / 255.0f, 1.0f) : /*glm::vec4(0.18f, 0.22f, 0.63f, 1.0f)*/Color(38 / 255.0f, 61 / 255.0f, 76 / 255.0f, 1.0f);
+				function->m_Color = isPure ? /*Vec4(0.18f, 0.62f, 0.23f, 1.0f)*/Color(51.0f / 255.0f, 73.0f / 255.0f, 55.0f / 255.0f, 1.0f) : /*Vec4(0.18f, 0.22f, 0.63f, 1.0f)*/Color(38 / 255.0f, 61 / 255.0f, 76 / 255.0f, 1.0f);
 				function->m_Size = { 275, 165 };
 				function->AddInputPin("Hash", Color(1.0f), 0, false, 0.0f); function->m_InputPins[0].m_AdditionalData = std::to_string(func->m_Hash);
 				function->AddInputPin("Flags", Color(1.0f), 0, false, 0.0f); function->m_InputPins[1].m_AdditionalData = std::to_string((int32_t)func->m_Flags);
@@ -324,7 +324,7 @@ namespace Suora
 				}
 				else
 				{
-					function->m_BackgroundColor = glm::vec4(0.05f, 0.055f, 0.05f, 0.9f);
+					function->m_BackgroundColor = Vec4(0.05f, 0.055f, 0.05f, 0.9f);
 				}
 				if (!func->IsFlagSet(FunctionFlags::Static))
 				{

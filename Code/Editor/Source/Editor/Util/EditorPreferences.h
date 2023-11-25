@@ -1,15 +1,13 @@
 #pragma once
 #include "Suora.h"
+#include "Suora/Common/VectorUtils.h"
 #include "EditorPreferences.generated.h"
 
-#include <glm/glm.hpp>
 #include <random>
 #include <unordered_map>
 
 namespace Suora
 {
-	using Color = glm::vec4;
-	using NativeClassID = uint64_t;
 
 	class EditorPreferences : public Asset
 	{

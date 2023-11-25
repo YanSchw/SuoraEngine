@@ -1,16 +1,14 @@
 #pragma once
 
 #include <vector>
-#include <string>
+#include "Suora/Common/StringUtils.h"
 #include <stack>
 #include <inttypes.h>
-#include <glm/glm.hpp>
+#include "Suora/Common/VectorUtils.h"
 
 namespace Suora
 {
 	class Object;
-	using Vec3 = glm::vec3;
-	using Quat = glm::quat;
 	struct DelegateNoParams;
 
 	struct ScriptStack

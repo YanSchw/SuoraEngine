@@ -272,7 +272,7 @@ namespace Suora
 
 	void RenderPipeline::DeferredLightPass(Ref<Framebuffer> target, RenderingParams& params, World& world, CameraNode* camera)
 	{
-		RenderCommand::SetClearColor(glm::vec4(0.0f));
+		RenderCommand::SetClearColor(Vec4(0.0f));
 		target->Bind();
 		RenderCommand::Clear();
 		RenderCommand::SetAlphaBlending(AlphaBlendMode::Disable);
@@ -464,7 +464,7 @@ namespace Suora
 		RenderFramebufferIntoFramebuffer(*(resultIsInTempBuffer ? postProcessTempBuffer : forwardBuffer), *params.GetFinalBuffer(), *GetFullscreenPassShader(), BufferToRect(*params.GetGBuffer()));
 	}
 
-	void RenderPipeline::UserInterfacePass(World& world, const glm::mat4& view, Framebuffer& target, RenderingParams& params)
+	void RenderPipeline::UserInterfacePass(World& world, const Mat4& view, Framebuffer& target, RenderingParams& params)
 	{
 		Array<UIRenderable*> renderables = world.FindNodesByClass<UIRenderable>();
 		for (UIRenderable* It : renderables)

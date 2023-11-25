@@ -14,10 +14,10 @@ namespace Suora
 
 	struct VisualNodePin
 	{
-		VisualNodePin(VisualNode& node, const String& label, const glm::vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
+		VisualNodePin(VisualNode& node, const String& label, const Vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
 			: m_Node(&node), Label(label), Color(color), PinID(id), IsReceivingPin(receive), PinHeight(pinHeight) { }
 		String Label;
-		glm::vec4 Color;
+		Vec4 Color;
 		VisualNodePin* Target = nullptr;
 		bool IsReceivingPin = false;
 		int64_t PinID = 0;
@@ -33,7 +33,7 @@ namespace Suora
 		bool HasOtherPin(const Array<Ref<VisualNode>>& nodes);
 	private:
 		VisualNode* m_Node = nullptr;
-		glm::vec2 PinConnectionPoint = glm::vec2(0.0f);
+		Vec2 PinConnectionPoint = Vec2(0.0f);
 		friend class VisualNodeGraph;
 		friend class NodeGraphEditor;
 		friend struct VisualNodeSearchOverlay;
@@ -42,10 +42,10 @@ namespace Suora
 	struct VisualNode
 	{
 		int64_t m_NodeID = 0;
-		glm::vec2 m_Position = { 0, 0 };
-		glm::vec2 m_Size = { 160, 100 };
-		glm::vec4 m_Color = glm::vec4(0.25f, 0.25f, 0.555f, 1);
-		glm::vec4 m_BackgroundColor = glm::vec4(0.05f, 0.05f, 0.055f, 0.9f);
+		Vec2 m_Position = { 0, 0 };
+		Vec2 m_Size = { 160, 100 };
+		Vec4 m_Color = Vec4(0.25f, 0.25f, 0.555f, 1);
+		Vec4 m_BackgroundColor = Vec4(0.05f, 0.05f, 0.055f, 0.9f);
 		String m_Title = "VisualNode";
 		Array<VisualNodePin> m_InputPins;
 		Array<VisualNodePin> m_OutputPins;
@@ -53,11 +53,11 @@ namespace Suora
 		{
 			return (this == &other);
 		}
-		void AddInputPin(const String& label, const glm::vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
+		void AddInputPin(const String& label, const Vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
 		{
 			m_InputPins.Add(VisualNodePin(*this, label, color, id, receive, pinHeight));
 		}
-		void AddOutputPin(const String& label, const glm::vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
+		void AddOutputPin(const String& label, const Vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
 		{
 			m_OutputPins.Add(VisualNodePin(*this, label, color, id, receive, pinHeight));
 		}

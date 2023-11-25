@@ -25,10 +25,10 @@ namespace Suora
 		virtual void SetInt(const String& name, int value) override;
 		virtual void SetIntArray(const String& name, int* values, uint32_t count) override;
 		virtual void SetFloat(const String& name, float value) override;
-		virtual void SetFloat2(const String& name, const glm::vec2& value) override;
-		virtual void SetFloat3(const String& name, const glm::vec3& value) override;
-		virtual void SetFloat4(const String& name, const glm::vec4& value) override;
-		virtual void SetMat4(const String& name, const glm::mat4& value) override;
+		virtual void SetFloat2(const String& name, const Vec2& value) override;
+		virtual void SetFloat3(const String& name, const Vec3& value) override;
+		virtual void SetFloat4(const String& name, const Vec4& value) override;
+		virtual void SetMat4(const String& name, const Mat4& value) override;
 		virtual void SetBool(const String& name, bool value) override;
 
 		virtual const String& GetName() const override { return m_Name; }
@@ -37,12 +37,12 @@ namespace Suora
 		void UploadUniformIntArray(const String& name, int* values, uint32_t count);
 
 		void UploadUniformFloat(const String& name, float value);
-		void UploadUniformFloat2(const String& name, const glm::vec2& value);
-		void UploadUniformFloat3(const String& name, const glm::vec3& value);
-		void UploadUniformFloat4(const String& name, const glm::vec4& value);
+		void UploadUniformFloat2(const String& name, const Vec2& value);
+		void UploadUniformFloat3(const String& name, const Vec3& value);
+		void UploadUniformFloat4(const String& name, const Vec4& value);
 
 		void UploadUniformMat3(const String& name, const glm::mat3& matrix);
-		void UploadUniformMat4(const String& name, const glm::mat4& matrix);
+		void UploadUniformMat4(const String& name, const Mat4& matrix);
 
 		void UploadUniformBool(const String& name, bool value);
 	private:

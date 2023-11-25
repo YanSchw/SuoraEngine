@@ -17,7 +17,7 @@ namespace Suora
 	{
 		return m_Quad;
 	}
-	void UIRenderable::RenderUI(const glm::mat4& view, Framebuffer& target)
+	void UIRenderable::RenderUI(const Mat4& view, Framebuffer& target)
     {
 		CreateQuad();
     }
@@ -44,7 +44,7 @@ namespace Suora
 		m_Quad->AddVertexBuffer(QuadVBO);
     }
 
-    void UIImage::RenderUI(const glm::mat4& view, Framebuffer& target)
+    void UIImage::RenderUI(const Mat4& view, Framebuffer& target)
     {
 		if (!m_Texture)
 		{

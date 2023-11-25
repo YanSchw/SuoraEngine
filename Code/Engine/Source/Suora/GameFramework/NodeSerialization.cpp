@@ -135,7 +135,7 @@ namespace Suora
 			Yaml::Node& child = root["Children"][std::to_string(serializer.m_ChildCount++)];
 			child["Name"] = GetName();
 			child["Enabled"] = IsEnabled() ? "true" : "false";
-			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<glm::mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<Mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
 			if (this->IsA<UINode>()) this->As<UINode>()->TransformToYaml(child["UINode"]);
 			child["Class"] = GetClass().ToString();
 			child["SocketName"] = GetParent()->GetName();
@@ -145,7 +145,7 @@ namespace Suora
 			Yaml::Node& child = root["InheretedChildren"][std::to_string(serializer.m_InheretedChildCount++)];
 			child["Name"] = GetName();
 			child["Enabled"] = IsEnabled() ? "true" : "false";
-			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<glm::mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<Mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
 			if (this->IsA<UINode>()) this->As<UINode>()->TransformToYaml(child["UINode"]);
 			String indicies;
 			Node* node = this;
@@ -177,7 +177,7 @@ namespace Suora
 		root["RootParentClass"] = GetClass().GetParentClass().ToString();
 		root["RootEnabled"] = m_Enabled ? "true" : "false";
 		root["Enabled"] = IsEnabled() ? "true" : "false";
-		root["Node3D"] = IsA<Node3D>() ? Vec::ToString<glm::mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+		root["Node3D"] = IsA<Node3D>() ? Vec::ToString<Mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
 		if (this->IsA<UINode>()) this->As<UINode>()->TransformToYaml(root["UINode"]);
 
 		NodeSerializer serializer;
@@ -224,7 +224,7 @@ namespace Suora
 						node->SetEnabled(Enabled[i] == "true");
 						if (node->IsA<Node3D>() && !Node3DTransform[i].empty())
 						{
-							node->As<Node3D>()->SetTransformMatrix(Vec::FromString<glm::mat4>(Node3DTransform[i]));
+							node->As<Node3D>()->SetTransformMatrix(Vec::FromString<Mat4>(Node3DTransform[i]));
 						}
 						if (node->IsA<UINode>())
 						{
@@ -274,7 +274,7 @@ namespace Suora
 		node->SetEnabled(true);
 		if (!root["Node3D"].IsNone() && node->IsA<Node3D>())
 		{
-			node->As<Node3D>()->SetTransformMatrix(Vec::FromString<glm::mat4>(root["Node3D"].As<String>()));
+			node->As<Node3D>()->SetTransformMatrix(Vec::FromString<Mat4>(root["Node3D"].As<String>()));
 		}
 		if (!root["UINode"].IsNone() && node->IsA<UINode>())
 		{
@@ -295,7 +295,7 @@ namespace Suora
 			{
 				if (!yamlChild["Node3D"].IsNone())
 				{
-					child->As<Node3D>()->SetTransformMatrix(Vec::FromString<glm::mat4>(yamlChild["Node3D"].As<String>()));
+					child->As<Node3D>()->SetTransformMatrix(Vec::FromString<Mat4>(yamlChild["Node3D"].As<String>()));
 				}
 			}
 			if (child->IsA<UINode>())

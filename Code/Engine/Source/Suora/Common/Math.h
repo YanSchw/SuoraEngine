@@ -52,7 +52,7 @@ namespace Suora
 			return glm::sin(value);
 		}
 
-		inline static bool IsPointInRect(const glm::vec2& point, float x, float y, uint32_t width, uint32_t height)
+		inline static bool IsPointInRect(const Vec2& point, float x, float y, uint32_t width, uint32_t height)
 		{
 			return point.x > x && point.x < x + width && point.y > y && point.y < y + height;
 		}

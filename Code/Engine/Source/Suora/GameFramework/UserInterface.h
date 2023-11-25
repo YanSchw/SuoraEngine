@@ -16,7 +16,7 @@ namespace Suora
 		Ref<VertexArray> GetQuad() const;
 
 	protected:
-		virtual void RenderUI(const glm::mat4& view, class Framebuffer& target);
+		virtual void RenderUI(const Mat4& view, class Framebuffer& target);
 	private:
 		void CreateQuad();
 
@@ -29,7 +29,7 @@ namespace Suora
 	{
 		SUORA_CLASS(647832325);
 	public:
-		virtual void RenderUI(const glm::mat4& view, class Framebuffer& target) override;
+		virtual void RenderUI(const Mat4& view, class Framebuffer& target) override;
 
 		MEMBER()
 		Texture2D* m_Texture = nullptr;

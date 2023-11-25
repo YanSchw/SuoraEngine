@@ -176,10 +176,10 @@ namespace Suora
 				m_Nodes.Add(Ref<VisualNode>(new VisualNode()));
 				VisualNode* node = m_Nodes[m_Nodes.Last()].get();
 
-				node->m_Color = glm::vec4(entry["Color"]["r"].As<float>(), entry["Color"]["g"].As<float>(), entry["Color"]["b"].As<float>(), entry["Color"]["a"].As<float>());
+				node->m_Color = Vec4(entry["Color"]["r"].As<float>(), entry["Color"]["g"].As<float>(), entry["Color"]["b"].As<float>(), entry["Color"]["a"].As<float>());
 				node->m_NodeID = entry["NodeID"].As<int64_t>();
-				node->m_Position = glm::vec2(entry["Position"]["x"].As<float>(), entry["Position"]["y"].As<float>());
-				node->m_Size = glm::vec2(entry["Size"]["x"].As<float>(), entry["Size"]["y"].As<float>());
+				node->m_Position = Vec2(entry["Position"]["x"].As<float>(), entry["Position"]["y"].As<float>());
+				node->m_Size = Vec2(entry["Size"]["x"].As<float>(), entry["Size"]["y"].As<float>());
 				node->m_Title = entry["Title"].As<String>();
 
 				int inputIndex = 0;
@@ -187,10 +187,10 @@ namespace Suora
 				{
 					Yaml::Node& entryPin = entry["Input_" + std::to_string(inputIndex++)];
 					if (entryPin.IsNone()) break;
-					node->m_InputPins.Add(VisualNodePin(*node, "", glm::vec4(), 0, false));
+					node->m_InputPins.Add(VisualNodePin(*node, "", Vec4(), 0, false));
 					VisualNodePin& pin = node->m_InputPins[node->m_InputPins.Last()];
 
-					pin.Color = glm::vec4(entryPin["Color"]["r"].As<float>(), entryPin["Color"]["g"].As<float>(), entryPin["Color"]["b"].As<float>(), entryPin["Color"]["a"].As<float>());
+					pin.Color = Vec4(entryPin["Color"]["r"].As<float>(), entryPin["Color"]["g"].As<float>(), entryPin["Color"]["b"].As<float>(), entryPin["Color"]["a"].As<float>());
 					pin.IsReceivingPin = entryPin["IsReceivingPin"].As<String>() == "true";
 					pin.Label = entryPin["Label"].As<String>();
 					pin.m_AdditionalData = entryPin["m_AdditionalData"].As<String>();
@@ -203,10 +203,10 @@ namespace Suora
 				{
 					Yaml::Node& entryPin = entry["Output_" + std::to_string(outputIndex++)];
 					if (entryPin.IsNone()) break;
-					node->m_OutputPins.Add(VisualNodePin(*node, "", glm::vec4(), 0, false));
+					node->m_OutputPins.Add(VisualNodePin(*node, "", Vec4(), 0, false));
 					VisualNodePin& pin = node->m_OutputPins[node->m_OutputPins.Last()];
 
-					pin.Color = glm::vec4(entryPin["Color"]["r"].As<float>(), entryPin["Color"]["g"].As<float>(), entryPin["Color"]["b"].As<float>(), entryPin["Color"]["a"].As<float>());
+					pin.Color = Vec4(entryPin["Color"]["r"].As<float>(), entryPin["Color"]["g"].As<float>(), entryPin["Color"]["b"].As<float>(), entryPin["Color"]["a"].As<float>());
 					pin.IsReceivingPin = entryPin["IsReceivingPin"].As<String>() == "true";
 					pin.Label = entryPin["Label"].As<String>();
 					pin.m_AdditionalData = entryPin["m_AdditionalData"].As<String>();

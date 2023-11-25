@@ -16,7 +16,7 @@ namespace Suora
 		virtual void Bind() override;
 		virtual void Unbind() override;
 
-		virtual void Resize(const glm::vec2& size) override;
+		virtual void Resize(const Vec2& size) override;
 		virtual void Resize(uint32_t width, uint32_t height) override;
 		virtual glm::ivec2 GetSize() const override;
 
@@ -28,8 +28,8 @@ namespace Suora
 		virtual void BindDepthAttachmentToSlot(uint32_t slot = 0) override;
 
 		virtual int32_t ReadPixel_R32I(const glm::ivec2& pos, uint32_t index = 0) override;
-		virtual glm::vec3 ReadPixel_RGB8(const glm::ivec2& pos, uint32_t index = 0) override;
-		virtual glm::vec3 ReadPixel_RGB32F(const glm::ivec2& pos, uint32_t index = 0) override;
+		virtual Vec3 ReadPixel_RGB8(const glm::ivec2& pos, uint32_t index = 0) override;
+		virtual Vec3 ReadPixel_RGB32F(const glm::ivec2& pos, uint32_t index = 0) override;
 
 		virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
 	private:

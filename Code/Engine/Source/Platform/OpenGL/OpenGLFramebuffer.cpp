@@ -217,7 +217,7 @@ namespace Suora
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void OpenGLFramebuffer::Resize(const glm::vec2& size)
+	void OpenGLFramebuffer::Resize(const Vec2& size)
 	{
 		Resize(size.x, size.y);
 	}
@@ -265,16 +265,16 @@ namespace Suora
 		return out;
 	}
 
-	glm::vec3 OpenGLFramebuffer::ReadPixel_RGB8(const glm::ivec2& pos, uint32_t index)
+	Vec3 OpenGLFramebuffer::ReadPixel_RGB8(const glm::ivec2& pos, uint32_t index)
 	{
-		glm::vec3 out = glm::vec3();
+		Vec3 out = Vec3();
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 		glReadPixels(pos.x, pos.y, 1, 1, GL_RGB, GL_FLOAT, &out);
 		return out;
 	}
-	glm::vec3 OpenGLFramebuffer::ReadPixel_RGB32F(const glm::ivec2& pos, uint32_t index)
+	Vec3 OpenGLFramebuffer::ReadPixel_RGB32F(const glm::ivec2& pos, uint32_t index)
 	{
-		glm::vec3 out = glm::vec3();
+		Vec3 out = Vec3();
 		BindColorAttachmentByIndex(index, index);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 		glReadPixels(pos.x, pos.y, 1, 1, GL_RGB, GL_FLOAT, &out);

@@ -14,7 +14,7 @@
 namespace Suora
 {
 
-	static float GetAbsScale(const glm::mat4& transform)
+	static float GetAbsScale(const Mat4& transform)
 	{
 		Vec3 scale;
 		scale[0] = glm::length(Vec3(transform[0]));
@@ -36,15 +36,15 @@ namespace Suora
 		return Math::Remap(distance, 0.0f, 50.0f, 1.0f, 0.5f);
 	}
 
-	static float GetApproximateScreenPercentage(float fov, const glm::mat4& transform, const Vec3& cameraPos, Cluster* cluster)
+	static float GetApproximateScreenPercentage(float fov, const Mat4& transform, const Vec3& cameraPos, Cluster* cluster)
 	{
-		glm::mat4 tr = (transform * glm::translate(glm::mat4(), cluster->LocalPosition));
-		glm::vec3 translation = tr[3];
+		Mat4 tr = (transform * glm::translate(Mat4(), cluster->LocalPosition));
+		Vec3 translation = tr[3];
 		
 		return (GetAbsScale(transform) * 1.25f * cluster->ClusterRadius) / (glm::distance(translation, cameraPos) * glm::sin(glm::radians(fov)));
 	}
 
-	std::vector<Ref<Cluster>> Decima::Generate(Mesh* mesh, const glm::mat4& transform, const glm::vec3& cameraPos, const glm::vec3& cameraForward, float fov)
+	std::vector<Ref<Cluster>> Decima::Generate(Mesh* mesh, const Mat4& transform, const Vec3& cameraPos, const Vec3& cameraForward, float fov)
 	{
 		std::vector<Ref<Cluster>> Clusters;
 		Clusters.push_back(mesh->m_MainCluster);

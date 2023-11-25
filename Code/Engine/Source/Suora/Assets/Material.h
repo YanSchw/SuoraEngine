@@ -36,15 +36,15 @@ namespace Suora
 		String m_Label;
 
 		float m_Float = 0.0f;
-		glm::vec2 m_Vec2 = glm::vec2();
-		glm::vec3 m_Vec3 = glm::vec3();
-		glm::vec4 m_Vec4 = glm::vec4();
+		Vec2 m_Vec2 = Vec2();
+		Vec3 m_Vec3 = Vec3();
+		Vec4 m_Vec4 = Vec4();
 		Texture2D* m_Texture2D = nullptr;
 
 		UniformSlot(ShaderGraphDataType type, const String& label, float value) : m_Type(type), m_Label(label), m_Float(value) { }
-		UniformSlot(ShaderGraphDataType type, const String& label, const glm::vec2& value) : m_Type(type), m_Label(label), m_Vec2(value) { }
-		UniformSlot(ShaderGraphDataType type, const String& label, const glm::vec3& value) : m_Type(type), m_Label(label), m_Vec3(value) { }
-		UniformSlot(ShaderGraphDataType type, const String& label, const glm::vec4& value) : m_Type(type), m_Label(label), m_Vec4(value) { }
+		UniformSlot(ShaderGraphDataType type, const String& label, const Vec2& value) : m_Type(type), m_Label(label), m_Vec2(value) { }
+		UniformSlot(ShaderGraphDataType type, const String& label, const Vec3& value) : m_Type(type), m_Label(label), m_Vec3(value) { }
+		UniformSlot(ShaderGraphDataType type, const String& label, const Vec4& value) : m_Type(type), m_Label(label), m_Vec4(value) { }
 		UniformSlot(ShaderGraphDataType type, const String& label, Texture2D* value) : m_Type(type), m_Label(label), m_Texture2D(value) { }
 	};
 

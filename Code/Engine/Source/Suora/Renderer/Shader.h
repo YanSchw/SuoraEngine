@@ -1,9 +1,8 @@
 #pragma once
 
-#include <string>
 #include <unordered_map>
-
-#include <glm/glm.hpp>
+#include "Suora/Common/StringUtils.h"
+#include "Suora/Common/VectorUtils.h"
 
 namespace Suora 
 {
@@ -20,10 +19,10 @@ namespace Suora
 		virtual void SetInt(const String& name, int value) = 0;
 		virtual void SetIntArray(const String& name, int* values, uint32_t count) = 0;
 		virtual void SetFloat(const String& name, float value) = 0;
-		virtual void SetFloat2(const String& name, const glm::vec2& value) = 0;
-		virtual void SetFloat3(const String& name, const glm::vec3& value) = 0;
-		virtual void SetFloat4(const String& name, const glm::vec4& value) = 0;
-		virtual void SetMat4(const String& name, const glm::mat4& value) = 0;
+		virtual void SetFloat2(const String& name, const Vec2& value) = 0;
+		virtual void SetFloat3(const String& name, const Vec3& value) = 0;
+		virtual void SetFloat4(const String& name, const Vec4& value) = 0;
+		virtual void SetMat4(const String& name, const Mat4& value) = 0;
 		virtual void SetBool(const String& name, bool value) = 0;
 
 		virtual const String& GetName() const = 0;

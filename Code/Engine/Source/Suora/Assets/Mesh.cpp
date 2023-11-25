@@ -546,7 +546,7 @@ namespace Suora
 				vector.z = mesh->mBitangents[i].z;
 				if (mesh->HasTangentsAndBitangents()) vertex.Bitangent = vector;
 			}
-			else vertex.TexCoord = glm::vec2(0.0f, 0.0f);
+			else vertex.TexCoord = Vec2(0.0f, 0.0f);
 
 			buffer->Vertices.push_back(vertex);
 		}

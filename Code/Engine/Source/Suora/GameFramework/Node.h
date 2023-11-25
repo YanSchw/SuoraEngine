@@ -243,8 +243,8 @@ namespace Suora
 	{
 		SUORA_CLASS(4863437);
 	private:
-		glm::mat4 m_WorldTransformMatrix = glm::mat4(1);
-		glm::mat4 m_LocalTransformMatrix = glm::mat4(1);
+		Mat4 m_WorldTransformMatrix = Mat4(1);
+		Mat4 m_LocalTransformMatrix = Mat4(1);
 	public:
 		Node3D();
 		virtual ~Node3D();
@@ -286,8 +286,8 @@ namespace Suora
 		void SetScale(const Vec3& scale);
 		void SetLocalScale(const Vec3& scale);
 
-		glm::mat4 GetTransformMatrix() const;
-		void SetTransformMatrix(const glm::mat4& mat)
+		Mat4 GetTransformMatrix() const;
+		void SetTransformMatrix(const Mat4& mat)
 		{
 			m_WorldTransformMatrix = mat;
 			RecalculateTransformMatrix();
@@ -295,8 +295,8 @@ namespace Suora
 		}
 		void RecalculateTransformMatrix();
 		void ReprojectLocalMatrixToWorld();
-		static glm::mat4 CalculateTransformMatrix(const glm::vec3& position, const glm::vec3& eulerAngles, const glm::vec3& scale);
-		static glm::mat4 CalculateTransformMatrix(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale);
+		static Mat4 CalculateTransformMatrix(const Vec3& position, const Vec3& eulerAngles, const Vec3& scale);
+		static Mat4 CalculateTransformMatrix(const Vec3& position, const Quat& rotation, const Vec3& scale);
 
 	protected:
 		void TickTransform(bool inWorldSpace = false) override;
@@ -311,8 +311,8 @@ namespace Suora
 			Vec3 scale;
 			glm::quat rotation;
 			Vec3 translation;
-			glm::vec3 skew;
-			glm::vec4 perspective;
+			Vec3 skew;
+			Vec4 perspective;
 			glm::decompose(GetTransformMatrix(), scale, rotation, translation, skew, perspective);
 			m_Position = translation;
 			m_Rotation = glm::degrees(glm::eulerAngles(glm::conjugate(rotation)));

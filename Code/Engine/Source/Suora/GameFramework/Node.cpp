@@ -531,9 +531,9 @@ namespace Suora
 
 	Node3D::Node3D()
 	{
-		const auto& scaled = glm::scale(glm::mat4(1), Vec3(1));
+		const auto& scaled = glm::scale(Mat4(1), Vec3(1));
 		const auto& rotated = glm::toMat4(glm::identity<Quat>()) * scaled;
-		m_WorldTransformMatrix = glm::translate(glm::mat4(1), Vec3(0)) * rotated;
+		m_WorldTransformMatrix = glm::translate(Mat4(1), Vec3(0)) * rotated;
 		TickTransform(false);
 	}
 	Node3D::~Node3D()
@@ -544,12 +544,12 @@ namespace Suora
 
 	void Node3D::SetPosition(const Vec3& position)
 	{
-		//GetTransformMatrix()[3] = glm::vec4(position, 1.0);
+		//GetTransformMatrix()[3] = Vec4(position, 1.0);
 
-		const auto& scaled = glm::scale(glm::mat4(1), GetScale());
+		const auto& scaled = glm::scale(Mat4(1), GetScale());
 
 		const auto& rotated = glm::toMat4(GetRotation()) * scaled;
-		m_WorldTransformMatrix = glm::translate(glm::mat4(1), position) * rotated;
+		m_WorldTransformMatrix = glm::translate(Mat4(1), position) * rotated;
 
 		TickTransform(true);
 	}
@@ -571,10 +571,10 @@ namespace Suora
 
 	void Node3D::SetLocalPosition(const Vec3& position)
 	{
-		const auto& scaled = glm::scale(glm::mat4(1), GetLocalScale());
+		const auto& scaled = glm::scale(Mat4(1), GetLocalScale());
 
 		const auto& rotated = glm::toMat4(GetLocalRotation()) * scaled;
-		m_LocalTransformMatrix = glm::translate(glm::mat4(1), position) * rotated;
+		m_LocalTransformMatrix = glm::translate(Mat4(1), position) * rotated;
 
 		ReprojectLocalMatrixToWorld();
 		TickTransform(true);
@@ -586,8 +586,8 @@ namespace Suora
 		Vec3 scale;
 		glm::quat rotation;
 		Vec3 translation;
-		glm::vec3 skew;
-		glm::vec4 perspective;
+		Vec3 skew;
+		Vec4 perspective;
 		glm::decompose(m_WorldTransformMatrix, scale, rotation, translation, skew, perspective);
 		return rotation;
 
@@ -598,8 +598,8 @@ namespace Suora
 		Vec3 scale;
 		glm::quat rotation;
 		Vec3 translation;
-		glm::vec3 skew;
-		glm::vec4 perspective;
+		Vec3 skew;
+		Vec4 perspective;
 		glm::decompose(m_LocalTransformMatrix, scale, rotation, translation, skew, perspective);
 		return rotation;
 
@@ -615,16 +615,16 @@ namespace Suora
 	}
 	void Node3D::SetRotation(const Quat& rot)
 	{
-		const auto& scaled = glm::scale(glm::mat4(1), GetScale());
+		const auto& scaled = glm::scale(Mat4(1), GetScale());
 		const auto& rotated = glm::toMat4(rot) * scaled;
-		m_WorldTransformMatrix = glm::translate(glm::mat4(1), GetPosition()) * rotated;
+		m_WorldTransformMatrix = glm::translate(Mat4(1), GetPosition()) * rotated;
 		TickTransform(true);
 	}
 	void Node3D::SetLocalRotation(const Quat& rot)
 	{
-		const auto& scaled = glm::scale(glm::mat4(1), GetLocalScale());
+		const auto& scaled = glm::scale(Mat4(1), GetLocalScale());
 		const auto& rotated = glm::toMat4(rot) * scaled;
-		m_LocalTransformMatrix = glm::translate(glm::mat4(1), GetLocalPosition()) * rotated;
+		m_LocalTransformMatrix = glm::translate(Mat4(1), GetLocalPosition()) * rotated;
 		ReprojectLocalMatrixToWorld();
 		TickTransform(true);
 	}
@@ -663,8 +663,8 @@ namespace Suora
 		Vec3 scale;
 		glm::quat rotation;
 		Vec3 translation;
-		glm::vec3 skew;
-		glm::vec4 perspective;
+		Vec3 skew;
+		Vec4 perspective;
 		glm::decompose(m_WorldTransformMatrix, scale, rotation, translation, skew, perspective);
 		return scale;
 	}
@@ -673,70 +673,70 @@ namespace Suora
 		Vec3 scale;
 		glm::quat rotation;
 		Vec3 translation;
-		glm::vec3 skew;
-		glm::vec4 perspective;
+		Vec3 skew;
+		Vec4 perspective;
 		glm::decompose(m_LocalTransformMatrix, scale, rotation, translation, skew, perspective);
 		return scale;
 	}
 	void Node3D::SetScale(const Vec3& scale)
 	{
 		if (scale.x <= 0.0f || scale.y <= 0.0f || scale.z <= 0.0f) return;
-		const auto& scaled = glm::scale(glm::mat4(1), scale);
+		const auto& scaled = glm::scale(Mat4(1), scale);
 
 		const auto& rotated = glm::toMat4(GetRotation()) * scaled;
-		m_WorldTransformMatrix = glm::translate(glm::mat4(1), GetPosition()) * rotated;
+		m_WorldTransformMatrix = glm::translate(Mat4(1), GetPosition()) * rotated;
 		TickTransform(true);
 	}
 	void Node3D::SetLocalScale(const Vec3& scale)
 	{
 		if (scale.x <= 0.0f || scale.y <= 0.0f || scale.z <= 0.0f) return;
-		const auto& scaled = glm::scale(glm::mat4(1), scale);
+		const auto& scaled = glm::scale(Mat4(1), scale);
 
 		const auto& rotated = glm::toMat4(GetLocalRotation()) * scaled;
-		m_LocalTransformMatrix = glm::translate(glm::mat4(1), GetLocalPosition()) * rotated;
+		m_LocalTransformMatrix = glm::translate(Mat4(1), GetLocalPosition()) * rotated;
 		ReprojectLocalMatrixToWorld();
 		TickTransform(true);
 	}
 
 	Vec3 Node3D::GetRightVector() const
 	{
-		//const glm::mat4 inverted = glm::inverse(GetTransformMatrix());
-		const glm::vec3 right = glm::normalize(glm::vec3(GetTransformMatrix()[0]));
+		//const Mat4 inverted = glm::inverse(GetTransformMatrix());
+		const Vec3 right = glm::normalize(Vec3(GetTransformMatrix()[0]));
 		return right;
 	}
 	Vec3 Node3D::GetUpVector() const
 	{
-		//const glm::mat4 inverted = glm::inverse(GetTransformMatrix());
-		const glm::vec3 up = glm::normalize(glm::vec3(GetTransformMatrix()[1]));
+		//const Mat4 inverted = glm::inverse(GetTransformMatrix());
+		const Vec3 up = glm::normalize(Vec3(GetTransformMatrix()[1]));
 		return up;
 	}
 	Vec3 Node3D::GetForwardVector() const
 	{
-		//const glm::mat4 inverted = glm::inverse(GetTransformMatrix());
-		const glm::vec3 forward = glm::normalize(glm::vec3(GetTransformMatrix()[2]));
+		//const Mat4 inverted = glm::inverse(GetTransformMatrix());
+		const Vec3 forward = glm::normalize(Vec3(GetTransformMatrix()[2]));
 		return forward;
 	}
 
-	glm::mat4 Node3D::GetTransformMatrix() const
+	Mat4 Node3D::GetTransformMatrix() const
 	{
 		return m_WorldTransformMatrix;
 
-		/*glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.x), { 1, 0, 0 })
-						   * glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.y), { 0, 1, 0 })
-						   * glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.z), { 0, 0, 1 });
+		/*Mat4 rotation = glm::rotate(Mat4(1.0f), glm::radians(Rotation.x), { 1, 0, 0 })
+						   * glm::rotate(Mat4(1.0f), glm::radians(Rotation.y), { 0, 1, 0 })
+						   * glm::rotate(Mat4(1.0f), glm::radians(Rotation.z), { 0, 0, 1 });
 
-		return glm::translate(glm::mat4(1.0f), { Position.x, Position.y, Position.z })
+		return glm::translate(Mat4(1.0f), { Position.x, Position.y, Position.z })
 			 * rotation
-			 * glm::scale(glm::mat4(1.0f), { Scale.x, Scale.y, Scale.z });*/
+			 * glm::scale(Mat4(1.0f), { Scale.x, Scale.y, Scale.z });*/
 	}
 
 	void Node3D::RecalculateTransformMatrix()
 	{
 		bool inverseParentTransform = false;
-		//const auto& scaled = glm::scale(glm::mat4(1), m_Scale);
+		//const auto& scaled = glm::scale(Mat4(1), m_Scale);
 		
 		//const auto& rotated = glm::toMat4(m_Rotation) * scaled;
-		//const auto& translated = glm::translate(glm::mat4(1), m_Position) * rotated;
+		//const auto& translated = glm::translate(Mat4(1), m_Position) * rotated;
 
 
 		/*m_TransformMatrix = GetParentTransform() ?
@@ -761,22 +761,22 @@ namespace Suora
 		m_WorldTransformMatrix = GetParentTransform()->m_WorldTransformMatrix * m_LocalTransformMatrix;
 	}
 
-	glm::mat4 Node3D::CalculateTransformMatrix(const glm::vec3& position, const glm::vec3& eulerAngles, const glm::vec3& scale)
+	Mat4 Node3D::CalculateTransformMatrix(const Vec3& position, const Vec3& eulerAngles, const Vec3& scale)
 	{
-		const glm::mat4 rotation = glm::toMat4(glm::quat({ glm::radians(eulerAngles.x), glm::radians(eulerAngles.y), glm::radians(eulerAngles.z) }));
+		const Mat4 rotation = glm::toMat4(Quat({ glm::radians(eulerAngles.x), glm::radians(eulerAngles.y), glm::radians(eulerAngles.z) }));
 
-		return glm::translate(glm::mat4(1.0f), { position.x, position.y, position.z })
+		return glm::translate(Mat4(1.0f), { position.x, position.y, position.z })
 			* rotation
-			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, scale.z });
+			* glm::scale(Mat4(1.0f), { scale.x, scale.y, scale.z });
 	}
 
-	glm::mat4 Node3D::CalculateTransformMatrix(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale)
+	Mat4 Node3D::CalculateTransformMatrix(const Vec3& position, const Quat& rotation, const Vec3& scale)
 	{
-		const glm::mat4 rot = glm::toMat4(rotation);
+		const Mat4 rot = glm::toMat4(rotation);
 
-		return glm::translate(glm::mat4(1.0f), { position.x, position.y, position.z })
+		return glm::translate(Mat4(1.0f), { position.x, position.y, position.z })
 			* rot
-			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, scale.z });
+			* glm::scale(Mat4(1.0f), { scale.x, scale.y, scale.z });
 	}
 
 	void Node3D::TickTransform(bool inWorldSpace)

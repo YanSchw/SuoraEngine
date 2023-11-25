@@ -20,6 +20,8 @@ namespace Suora
 
     using Quat = glm::quat;
 
+    using Mat4 = glm::mat4;
+
     struct Vec
     {
         template<class T> inline static T Normalized(const T& a) { return glm::normalize(a); }

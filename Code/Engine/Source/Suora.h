@@ -16,8 +16,6 @@
 
 namespace glm { }
 
-using Color = glm::vec4;
-
 #include "Suora/Common/Common.h"
 #include "Suora/Common/Delegate.h"
 #include "Suora/Common/Math.h"

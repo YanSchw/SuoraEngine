@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <thread>
 #include "inttypes.h"
-#include <glm/glm.hpp>
+#include "Suora/Common/VectorUtils.h"
 
 namespace Suora
 {
@@ -28,7 +28,7 @@ namespace Suora
 		std::thread m_Thread;
 		bool m_ThreadInit = false;
 
-		std::vector<Ref<Cluster>> Generate(Mesh* mesh, const glm::mat4& transform, const glm::vec3& cameraPos, const glm::vec3& cameraForward, float fov);
+		std::vector<Ref<Cluster>> Generate(Mesh* mesh, const Mat4& transform, const Vec3& cameraPos, const Vec3& cameraForward, float fov);
 		void Run(World* world, CameraNode* camera);
 
 		inline static std::unordered_map<MeshNode*, std::vector<Ref<VertexArray>>> m_DecimaMeshes;

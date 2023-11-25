@@ -2,7 +2,7 @@
 
 #include "inttypes.h"
 #include "Suora/Core/Base.h"
-#include <glm/glm.hpp>
+#include "Suora/Common/VectorUtils.h"
 
 namespace Suora 
 {
@@ -84,7 +84,7 @@ namespace Suora
 				s_Current = nullptr;
 		}
 
-		virtual void Resize(const glm::vec2& size) = 0;
+		virtual void Resize(const Vec2& size) = 0;
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 		virtual glm::ivec2 GetSize() const = 0;
 
@@ -96,8 +96,8 @@ namespace Suora
 		virtual void BindDepthAttachmentToSlot(uint32_t slot = 0) = 0;
 
 		virtual int32_t ReadPixel_R32I(const glm::ivec2& pos, uint32_t index = 0) = 0;
-		virtual glm::vec3 ReadPixel_RGB8(const glm::ivec2& pos, uint32_t index = 0) = 0;
-		virtual glm::vec3 ReadPixel_RGB32F(const glm::ivec2& pos, uint32_t index = 0) = 0;
+		virtual Vec3 ReadPixel_RGB8(const glm::ivec2& pos, uint32_t index = 0) = 0;
+		virtual Vec3 ReadPixel_RGB32F(const glm::ivec2& pos, uint32_t index = 0) = 0;
 
 		virtual const FramebufferSpecification& GetSpecification() const = 0;
 

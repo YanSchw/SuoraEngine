@@ -25,9 +25,9 @@ namespace Suora
 		return state == GLFW_PRESS;
 	}
 
-	glm::vec2 NativeInput::GetMousePosition()
+	Vec2 NativeInput::GetMousePosition()
 	{
-		if (!Window::s_CurrentFocusedWindow) return glm::vec2(0);
+		if (!Window::s_CurrentFocusedWindow) return Vec2(0);
 
 		auto* window = static_cast<GLFWwindow*>(Window::s_CurrentFocusedWindow->GetNativeWindow());
 		double xpos, ypos;

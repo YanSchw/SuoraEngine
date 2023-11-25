@@ -24,7 +24,7 @@ namespace Suora
 		static ShaderGraphDataType StringToShaderGraphDataType(String str);
 		static String ShaderGraphDataTypeToLabel(ShaderGraphDataType type);
 		static String ShaderGraphDataTypeToString(ShaderGraphDataType type);
-		static glm::vec4 GetShaderDataTypeColor(ShaderGraphDataType type);
+		static Vec4 GetShaderDataTypeColor(ShaderGraphDataType type);
 	};
 
 }
