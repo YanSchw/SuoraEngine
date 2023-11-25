@@ -12,6 +12,8 @@
 #include "Suora/GameFramework/Node.h"
 #include "Suora/Common/Filesystem.h"
 
+#include "Editor/Panels/Major/MeshEditorPanel.h"
+
 namespace Suora
 {
 
@@ -233,6 +235,20 @@ namespace Suora
 				{
 					Result result = DrawAsset((Asset**)&materials->Materials[i], Material::StaticClass(), "Slot " + std::to_string(i), y, false);
 					if (result == Result::ValueChange) valueChanged = true;
+
+
+					// Hover over MaterialSlot will display a MeshOutline in the MeshEditorPanel
+					EditorUI::ButtonParams HoverParams = EditorUI::ButtonParams::Invisible();
+					bool hover = false;
+					HoverParams.OutHover = &hover;
+					EditorUI::Button("", 0.0f, y, GetDetailWidth(), 60.0f , HoverParams);
+					if (hover)
+					{
+						if (MeshEditorPanel* editor = GetMajorTab()->As<MeshEditorPanel>())
+						{
+							editor->m_MaterialSlotOutline = i;
+						}
+					}
 				}
 			}
 		}

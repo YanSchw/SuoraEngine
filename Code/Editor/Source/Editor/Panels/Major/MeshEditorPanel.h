@@ -28,6 +28,11 @@ namespace Suora
 		Ref<ViewportPanel> m_ViewportPanel = nullptr;
 		bool m_InitResetCamera = false;
 		World m_World;
+
+		int32_t m_MaterialSlotOutline = -1;
+
+		friend class DetailsPanel;
+		friend class MeshViewportPanel;
 	};
 
 }

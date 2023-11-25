@@ -11,6 +11,46 @@
 namespace Suora
 {
 
+	class MeshViewportPanel : public ViewportPanel
+	{
+	public:
+		MeshViewportPanel(MeshEditorPanel* editor, MajorTab* majorTab, World* world)
+			: ViewportPanel(majorTab, world)
+		{
+			m_MeshEditor = editor;
+		}
+		virtual void OnRenderOutlines() override
+		{
+			if (m_MeshEditor->m_MaterialSlotOutline != -1)
+			{
+				if (!m_MeshEditor->m_Mesh->IsMasterMesh())
+				{
+					if (m_MeshEditor->m_MaterialSlotOutline == 0)
+					{
+						MeshNode node;
+						node.SetPosition(Vec3(0.0f, 0.0f - m_MeshEditor->m_Mesh->m_NegativeY_Bounds + 0.1f, 0.0f));
+						node.mesh = m_MeshEditor->m_Mesh;
+						node.materials.OverwritteMaterials = true;
+						node.materials.Materials.Add(m_MeshEditor->m_Mesh->m_Materials.Materials[0]);
+						DrawSelectionOutline(&node, EditorPreferences::Get()->UiHighlightColor);
+					}
+				}
+				else
+				{
+					MeshNode node;
+					node.SetPosition(Vec3(0.0f, 0.0f - m_MeshEditor->m_Mesh->m_NegativeY_Bounds + 0.1f, 0.0f));
+					node.mesh = m_MeshEditor->m_Mesh->m_Submeshes[m_MeshEditor->m_MaterialSlotOutline].get();
+					node.materials.OverwritteMaterials = true;
+					node.materials.Materials.Add(m_MeshEditor->m_Mesh->m_Materials.Materials[m_MeshEditor->m_MaterialSlotOutline]);
+					DrawSelectionOutline(&node, EditorPreferences::Get()->UiHighlightColor);
+				}
+			}
+			m_MeshEditor->m_MaterialSlotOutline = -1;
+		}
+		WeakPtr<MeshEditorPanel> m_MeshEditor;
+	};
+
+
 	static void CalculateMeshData(Mesh* mesh)
 	{
 		mesh->m_BoundingSphereRadius = 0.0f;
@@ -83,7 +123,7 @@ namespace Suora
 
 		CalculateMeshData(m_Mesh);
 
-		m_ViewportPanel = CreateRef<ViewportPanel>(this, &m_World);
+		m_ViewportPanel = CreateRef<MeshViewportPanel>(this, this, &m_World);
 		Ref<DetailsPanel> details = CreateRef<DetailsPanel>(this);
 		details->m_Data = m_Mesh;
 
@@ -119,6 +159,7 @@ namespace Suora
 		}
 
 	}
+
 	Texture* MeshEditorPanel::GetIconTexture()
 	{
 		return EditorUI::GetClassIcon(MeshNode::StaticClass())->GetTexture();

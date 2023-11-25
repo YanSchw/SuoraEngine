@@ -309,6 +309,7 @@ namespace Suora
 				RenderPipeline::RenderFramebufferIntoFramebuffer(*m_CameraPreviewBuffer, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(GetWidth() - 20.0f - PreviewWidth, 20.0f, PreviewWidth, PreviewHeight), "u_Texture", 0, false);
 			}
 		}
+		OnRenderOutlines();
 
 		// Only allow mouse Input if the Users does not interact with any Overlays
 		bool mousePickReady = EditorUI::IsNotHoveringOverlays() && !EditorUI::WasInputConsumed();

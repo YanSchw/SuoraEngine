@@ -73,8 +73,8 @@ namespace Suora
 			dirLight->m_Intensity = 0.75f;
 			dirLight->SetEulerRotation(Vec3(45, 45, 0));
 			m_World->SetMainCamera(camera);
-			camera->SetPerspectiveVerticalFOV(85.0f);
-			camera->SetPosition(Vec3(asset->As<Mesh>()->m_BoundingSphereRadius * -1.0f, asset->As<Mesh>()->m_BoundingSphereRadius, asset->As<Mesh>()->m_BoundingSphereRadius * -1.20f));
+			camera->SetPerspectiveVerticalFOV(55.0f);
+			camera->SetPosition(glm::normalize(Vec3(-1.0f, 1.0f, -1.0f)) * asset->As<Mesh>()->m_BoundingSphereRadius * 2.25f);
 			camera->SetEulerRotation(Vec3(45, 45, 0));
 			camera->SetViewportSize(128, 128);
 			MeshNode* mesh = m_World->Spawn<MeshNode>();
@@ -133,18 +133,8 @@ namespace Suora
 		if (!m_Preview) return false;
 		m_Preview->Bind();
 
-		if (asset->IsA<Material>())
-		{
-			s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
-		}
-		if (asset->IsA<Mesh>())
-		{
-			s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
-		}
-		if (asset->IsA<Blueprint>())
-		{
-			s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
-		}
+		s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), s_RParams);
+
 		m_Done = true;
 		m_Init = false;
 		m_World = nullptr;

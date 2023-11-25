@@ -69,6 +69,7 @@ namespace Suora
 		EditorCamera* GetEditorCamera() const { return m_EditorCamera.get(); }
 
 		virtual void Render(float deltaTime) override;
+		virtual void OnRenderOutlines() {}
 
 		friend class NodeClassEditor;
 	};
