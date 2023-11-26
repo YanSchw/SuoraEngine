@@ -11,7 +11,7 @@ namespace Suora
 	{
 		SUORA_CLASS(5487392221);
 	public:
-		Ptr<Mesh> m_Mesh = nullptr;
+		Ptr<Mesh> m_MeshAsset = nullptr;
 
 		MeshEditorPanel();
 		MeshEditorPanel(Mesh* mesh);

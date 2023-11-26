@@ -12,8 +12,8 @@ namespace Suora
 
 	SpriteNode::SpriteNode()
 	{
-		mesh = AssetManager::GetAsset<Mesh>(SuoraID("75f466f7-baec-4c5a-a23b-a5e3dc3d22bc"));
-		materials = AssetManager::GetAsset<Material>(SuoraID("49785g48345839"));
+		SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("75f466f7-baec-4c5a-a23b-a5e3dc3d22bc")));
+		m_Materials = AssetManager::GetAsset<Material>(SuoraID("49785g48345839"));
 		m_CastShadow = false;
 	}
 	SpriteNode::~SpriteNode()

@@ -26,11 +26,11 @@ namespace Suora
 	{
 		if (!node->IsEnabled()) return;
 
-		if (node->mesh && node->GetMaterials().Materials.Size() > 0 && node->GetMaterials().Materials[0] && node->GetMaterials().Materials[0]->GetShaderGraph())
+		if (node->GetMesh() && node->GetMaterials().Materials.Size() > 0 && node->GetMaterials().Materials[0] && node->GetMaterials().Materials[0]->GetShaderGraph())
 		{
-			if (node->mesh->IsDecimaMesh())
+			if (node->GetMesh()->IsDecimaMesh())
 			{
-				node->mesh->GetVertexArray(); // To load the Mesh and initiate the decimation process
+				node->GetMesh()->GetVertexArray(); // To load the Mesh and initiate the decimation process
 				if (Decima::m_DecimaMeshes.find(node) == Decima::m_DecimaMeshes.end()) return;
 				RenderCommand::SetDepthTest(node->GetMaterials().Materials[0]->m_DepthTest);
 				RenderCommand::SetCullingMode(node->GetMaterials().Materials[0]->m_BackfaceCulling ? CullingMode::Backface : CullingMode::None);
@@ -50,7 +50,7 @@ namespace Suora
 			}
 			else
 			{
-				Renderer3D::DrawMesh(camera, node->GetTransformMatrix(), *node->mesh, node->GetMaterials());
+				Renderer3D::DrawMesh(camera, node->GetTransformMatrix(), *node->GetMesh(), node->GetMaterials());
 			}
 		}
 

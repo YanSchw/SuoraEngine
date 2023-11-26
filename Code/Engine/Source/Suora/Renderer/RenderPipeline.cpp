@@ -205,7 +205,7 @@ namespace Suora
 		int32_t meshID = 0;
 		for (MeshNode* meshNode : meshes)
 		{
-			if (meshNode->mesh && meshNode->GetMaterials().Materials.Size() > 0 && meshNode->GetMaterials().Materials[0] && meshNode->GetMaterials().Materials[0]->IsDeferred())
+			if (meshNode->GetMesh() && meshNode->GetMaterials().Materials.Size() > 0 && meshNode->GetMaterials().Materials[0] && meshNode->GetMaterials().Materials[0]->IsDeferred())
 			{
 				Renderer3D::DrawMeshNode(&camera, meshNode, MaterialType::Material, ++meshID);
 				
@@ -415,7 +415,7 @@ namespace Suora
 		int32_t meshID = 0;
 		for (MeshNode* meshNode : meshes)
 		{
-			if (meshNode->mesh && meshNode->GetMaterials().Materials.Size() > 0 && meshNode->GetMaterials().Materials[0] && meshNode->GetMaterials().Materials[0]->GetShaderGraph() && !meshNode->GetMaterials().Materials[0]->IsDeferred())
+			if (meshNode->GetMesh() && meshNode->GetMaterials().Materials.Size() > 0 && meshNode->GetMaterials().Materials[0] && meshNode->GetMaterials().Materials[0]->GetShaderGraph() && !meshNode->GetMaterials().Materials[0]->IsDeferred())
 			{
 				Renderer3D::DrawMeshNode(&camera, meshNode, MaterialType::Material, ++meshID);
 			}

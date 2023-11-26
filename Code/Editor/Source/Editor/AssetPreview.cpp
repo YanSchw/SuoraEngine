@@ -48,7 +48,7 @@ namespace Suora
 		{
 			CameraNode* camera = m_World->Spawn<CameraNode>();
 			m_World->Spawn<SkyLightNode>();
-			m_World->Spawn<MeshNode>()->mesh = AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47"));
+			m_World->Spawn<MeshNode>()->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47")));
 			m_World->Spawn<PointLightNode>()->SetPosition(Vec3(-1.5f, 1.5f, -1.5f));
 			DirectionalLightNode* dirLight = m_World->Spawn<DirectionalLightNode>();
 			dirLight->m_ShadowMap = false;
@@ -59,15 +59,15 @@ namespace Suora
 			camera->SetViewportSize(256, 256);
 			MeshNode* mesh = m_World->Spawn<MeshNode>();
 			mesh->SetScale(Vec3(2.0f));
-			mesh->mesh = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
-			mesh->materials = asset->As<Material>();
-			mesh->materials.OverwritteMaterials = true;
+			mesh->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1")));
+			mesh->m_Materials = asset->As<Material>();
+			mesh->m_Materials.OverwritteMaterials = true;
 		}
 		if (asset->IsA<Mesh>())
 		{
 			CameraNode* camera = m_World->Spawn<CameraNode>();
 			m_World->Spawn<SkyLightNode>();
-			m_World->Spawn<MeshNode>()->mesh = AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47"));
+			m_World->Spawn<MeshNode>()->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47")));
 			DirectionalLightNode* dirLight = m_World->Spawn<DirectionalLightNode>();
 			dirLight->m_ShadowMap = true;
 			dirLight->m_Intensity = 0.75f;
@@ -78,13 +78,13 @@ namespace Suora
 			camera->SetEulerRotation(Vec3(45, 45, 0));
 			camera->SetViewportSize(128, 128);
 			MeshNode* mesh = m_World->Spawn<MeshNode>();
-			mesh->mesh = asset->As<Mesh>();
+			mesh->SetMesh(asset->As<Mesh>());
 		}
 		if (asset->IsA<Blueprint>())
 		{
 			CameraNode* camera = m_World->Spawn<CameraNode>();
 			m_World->Spawn<SkyLightNode>();
-			m_World->Spawn<MeshNode>()->mesh = AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47"));
+			m_World->Spawn<MeshNode>()->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47")));
 			DirectionalLightNode* dirLight = m_World->Spawn<DirectionalLightNode>();
 			dirLight->m_ShadowMap = false;
 			dirLight->SetEulerRotation(Vec3(45, 45, 0));

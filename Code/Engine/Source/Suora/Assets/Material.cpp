@@ -208,7 +208,7 @@ namespace Suora
 		else if (MeshNode* node = Owner->As<MeshNode>())
 		{
 			// Have as many slots as the MeshNodes Mesh has SubMeshes
-			const int64_t count = node->mesh ? (node->mesh->m_Submeshes.Size() > 0 ? node->mesh->m_Submeshes.Size() : 1) : 0;
+			const int64_t count = node->GetMesh() ? (node->GetMesh()->m_Submeshes.Size() > 0 ? node->GetMesh()->m_Submeshes.Size() : 1) : 0;
 			while (Materials.Size() < count) Materials.Add(nullptr);
 			while (Materials.Size() > count) Materials.RemoveAt(Materials.Last());
 		}

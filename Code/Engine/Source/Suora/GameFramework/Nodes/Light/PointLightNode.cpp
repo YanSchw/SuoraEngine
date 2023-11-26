@@ -43,7 +43,7 @@ namespace Suora
 		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
 		for (MeshNode* meshNode : meshes)
 		{
-			if (meshNode->mesh)
+			if (meshNode->GetMesh())
 			{
 				if (meshNode->m_CastShadow)
 				{

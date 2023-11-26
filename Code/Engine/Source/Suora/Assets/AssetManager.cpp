@@ -185,7 +185,7 @@ namespace Suora
 		{
 			if (Mesh* mesh = s_AssetStreamPool[i]->As<Mesh>())
 			{
-				//mesh->GetVertexArray();
+				//m_MeshAsset->GetVertexArray();
 			}
 			else if (Texture2D* texture = s_AssetStreamPool[i]->As<Texture2D>())
 			{

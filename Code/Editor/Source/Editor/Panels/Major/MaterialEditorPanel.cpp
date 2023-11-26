@@ -33,15 +33,15 @@ namespace Suora
 
 
 		MeshNode* PlaneMesh = m_World.Spawn<MeshNode>();
-		PlaneMesh->mesh = AssetManager::GetAssetByName<Mesh>("Plane.mesh");
-		PlaneMesh->materials = AssetManager::GetAsset<Material>(SuoraID("b546f092-3f80-4dd3-a73a-b4c13d28f7f8"));
+		PlaneMesh->SetMesh(AssetManager::GetAssetByName<Mesh>("Plane.mesh"));
+		PlaneMesh->m_Materials = AssetManager::GetAsset<Material>(SuoraID("b546f092-3f80-4dd3-a73a-b4c13d28f7f8"));
 
 		MeshNode* PreviewMesh = m_World.Spawn<MeshNode>();
 		PreviewMesh->SetPosition(Vec::Up * 1.0f);
 		PreviewMesh->SetScale(Vec3(2.0f));
-		PreviewMesh->mesh = AssetManager::GetAssetByName<Mesh>("Sphere.mesh");
-		PreviewMesh->materials = m_Material.Get();
-		PreviewMesh->materials.OverwritteMaterials = true;
+		PreviewMesh->SetMesh(AssetManager::GetAssetByName<Mesh>("Sphere.mesh"));
+		PreviewMesh->m_Materials = m_Material.Get();
+		PreviewMesh->m_Materials.OverwritteMaterials = true;
 
 		DirectionalLightNode* Light = m_World.Spawn<DirectionalLightNode>();
 		SkyLightNode* Sky = m_World.Spawn<SkyLightNode>();

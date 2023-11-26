@@ -59,7 +59,7 @@ namespace Suora
 				cube->SetName("Cube");
 				cube->m_IsActorLayer = true;
 				cube->m_OverwrittenProperties.Add("mesh");
-				cube->mesh = AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8"));
+				cube->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8")));
 			}, "Cube", nullptr });
 			_3D.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
 			{
@@ -67,7 +67,7 @@ namespace Suora
 				sphere->SetName("Sphere");
 				sphere->m_IsActorLayer = true;
 				sphere->m_OverwrittenProperties.Add("mesh");
-				sphere->mesh = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
+				sphere->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1")));
 			}, "Sphere", nullptr });
 		}
 		out.push_back(EditorUI::ContextMenuElement{ {_3D}, [world, node]() {}, "3D", nullptr });

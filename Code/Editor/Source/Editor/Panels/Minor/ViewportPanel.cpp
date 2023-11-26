@@ -102,9 +102,9 @@ namespace Suora
 
 		if (MeshNode* meshNode = node->As<MeshNode>())
 		{
-			if (meshNode->mesh)
+			if (meshNode->GetMesh())
 			{
-				Renderer3D::DrawMesh(GetEditorCamera(), meshNode->GetTransformMatrix(), *meshNode->mesh, meshNode->GetMaterials(), MaterialType::FlatWhite);
+				Renderer3D::DrawMesh(GetEditorCamera(), meshNode->GetTransformMatrix(), *meshNode->GetMesh(), meshNode->GetMaterials(), MaterialType::FlatWhite);
 			}
 		}
 		RenderCommand::SetDepthTest(false);
@@ -134,11 +134,11 @@ namespace Suora
 		int i = 1;
 		for (MeshNode* meshNode : nodes)
 		{
-			if (meshNode->IsEnabled() && meshNode->mesh)
+			if (meshNode->IsEnabled() && meshNode->GetMesh())
 			{
 				IDs[i] = meshNode;
 				for (Material* submaterial : meshNode->GetMaterials().Materials) if (submaterial && submaterial->GetShaderGraph()) submaterial->GetShaderGraph()->GetIDShader()->SetInt("u_ID", i);
-				Renderer3D::DrawMesh(GetEditorCamera(), meshNode->GetTransformMatrix(), *meshNode->mesh, meshNode->GetMaterials(), MaterialType::ObjectID);
+				Renderer3D::DrawMesh(GetEditorCamera(), meshNode->GetTransformMatrix(), *meshNode->GetMesh(), meshNode->GetMaterials(), MaterialType::ObjectID);
 			}
 			i++;
 		}
@@ -162,8 +162,6 @@ namespace Suora
 			SuoraError("Cannot handle 'selection' in ViewportPanel::HandleMousePick()");
 		}
 
-		//RenderPipeline::RenderFramebufferIntoFramebuffer(*fb, *m_Framebuffer, *Application::Get().m_Engine->GetRenderPipeline()->GetFullscreenPassShader());
-
 		m_Framebuffer->Bind();
 	}
 
@@ -181,8 +179,8 @@ namespace Suora
 					{
 						AssetDragDropNode = m_World->Spawn<MeshNode>();
 						AssetDragDropNode->SetName(ContentBrowser::s_DraggedAsset->GetAssetName());
-						AssetDragDropNode->As<MeshNode>()->mesh = ContentBrowser::s_DraggedAsset->As<Mesh>();
-						AssetDragDropNode->As<MeshNode>()->materials = AssetManager::GetAsset<Material>(SuoraID("d83842b6-ee90-4329-a4cc-7c01977107b6"));
+						AssetDragDropNode->As<MeshNode>()->SetMesh(ContentBrowser::s_DraggedAsset->As<Mesh>());
+						AssetDragDropNode->As<MeshNode>()->m_Materials = AssetManager::GetAsset<Material>(SuoraID("d83842b6-ee90-4329-a4cc-7c01977107b6"));
 						AssetDragDropNode->m_IsActorLayer = true;
 						AssetDragDropNode->m_OverwrittenProperties.Add("mesh");
 						AssetDragDropNode->m_OverwrittenProperties.Add("material");

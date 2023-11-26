@@ -23,25 +23,25 @@ namespace Suora
 		{
 			if (m_MeshEditor->m_MaterialSlotOutline != -1)
 			{
-				if (!m_MeshEditor->m_Mesh->IsMasterMesh())
+				if (!m_MeshEditor->m_MeshAsset->IsMasterMesh())
 				{
 					if (m_MeshEditor->m_MaterialSlotOutline == 0)
 					{
 						MeshNode node;
-						node.SetPosition(Vec3(0.0f, 0.0f - m_MeshEditor->m_Mesh->m_NegativeY_Bounds + 0.1f, 0.0f));
-						node.mesh = m_MeshEditor->m_Mesh;
-						node.materials.OverwritteMaterials = true;
-						node.materials.Materials.Add(m_MeshEditor->m_Mesh->m_Materials.Materials[0]);
+						node.SetPosition(Vec3(0.0f, 0.0f - m_MeshEditor->m_MeshAsset->m_NegativeY_Bounds + 0.1f, 0.0f));
+						node.SetMesh(m_MeshEditor->m_MeshAsset);
+						node.m_Materials.OverwritteMaterials = true;
+						node.m_Materials.Materials.Add(m_MeshEditor->m_MeshAsset->m_Materials.Materials[0]);
 						DrawSelectionOutline(&node, EditorPreferences::Get()->UiHighlightColor);
 					}
 				}
 				else
 				{
 					MeshNode node;
-					node.SetPosition(Vec3(0.0f, 0.0f - m_MeshEditor->m_Mesh->m_NegativeY_Bounds + 0.1f, 0.0f));
-					node.mesh = m_MeshEditor->m_Mesh->m_Submeshes[m_MeshEditor->m_MaterialSlotOutline].get();
-					node.materials.OverwritteMaterials = true;
-					node.materials.Materials.Add(m_MeshEditor->m_Mesh->m_Materials.Materials[m_MeshEditor->m_MaterialSlotOutline]);
+					node.SetPosition(Vec3(0.0f, 0.0f - m_MeshEditor->m_MeshAsset->m_NegativeY_Bounds + 0.1f, 0.0f));
+					node.SetMesh(m_MeshEditor->m_MeshAsset->m_Submeshes[m_MeshEditor->m_MaterialSlotOutline].get());
+					node.m_Materials.OverwritteMaterials = true;
+					node.m_Materials.Materials.Add(m_MeshEditor->m_MeshAsset->m_Materials.Materials[m_MeshEditor->m_MaterialSlotOutline]);
 					DrawSelectionOutline(&node, EditorPreferences::Get()->UiHighlightColor);
 				}
 			}
@@ -119,25 +119,25 @@ namespace Suora
 	{
 		Super::Init();
 		m_Name = m_Asset->As<Mesh>()->GetAssetName();
-		m_Mesh = m_Asset->As<Mesh>();
+		m_MeshAsset = m_Asset->As<Mesh>();
 
-		CalculateMeshData(m_Mesh);
+		CalculateMeshData(m_MeshAsset);
 
 		m_ViewportPanel = CreateRef<MeshViewportPanel>(this, this, &m_World);
 		Ref<DetailsPanel> details = CreateRef<DetailsPanel>(this);
-		details->m_Data = m_Mesh;
+		details->m_Data = m_MeshAsset;
 
 		Ref<DockingSpace> ds1 = CreateRef<DockingSpace>(0, 0, 0.75f, 1, this);					    m_DockspacePanel.m_DockingSpaces.Add(ds1); ds1->m_MinorTabs.Add(m_ViewportPanel);
 		Ref<DockingSpace> ds2 = CreateRef<DockingSpace>(0.75f, 0.0f, 1.0f, 1.0f, this);				m_DockspacePanel.m_DockingSpaces.Add(ds2); ds2->m_MinorTabs.Add(details);
 
 		MeshNode* PlaneMesh = m_World.Spawn<MeshNode>();
-		PlaneMesh->mesh = AssetManager::GetAssetByName<Mesh>("Plane.mesh");
-		PlaneMesh->materials = AssetManager::GetAsset<Material>(SuoraID("b546f092-3f80-4dd3-a73a-b4c13d28f7f8"));
+		PlaneMesh->SetMesh(AssetManager::GetAssetByName<Mesh>("Plane.mesh"));
+		PlaneMesh->m_Materials = AssetManager::GetAsset<Material>(SuoraID("b546f092-3f80-4dd3-a73a-b4c13d28f7f8"));
 
 		MeshNode* PreviewMesh = m_World.Spawn<MeshNode>();
-		PreviewMesh->SetPosition(Vec3(0.0f, 0.0f - m_Mesh->m_NegativeY_Bounds + 0.1f, 0.0f));
-		PreviewMesh->mesh = m_Mesh;
-		PreviewMesh->materials = AssetManager::GetAsset<Material>(SuoraID("b546f092-3f80-4dd3-a73a-b4c13d28f7f8"));
+		PreviewMesh->SetPosition(Vec3(0.0f, 0.0f - m_MeshAsset->m_NegativeY_Bounds + 0.1f, 0.0f));
+		PreviewMesh->SetMesh(m_MeshAsset);
+		PreviewMesh->m_Materials = AssetManager::GetAsset<Material>(SuoraID("b546f092-3f80-4dd3-a73a-b4c13d28f7f8"));
 
 		DirectionalLightNode* Light = m_World.Spawn<DirectionalLightNode>();
 		SkyLightNode* Sky = m_World.Spawn<SkyLightNode>();
@@ -170,7 +170,7 @@ namespace Suora
 
 		if (EditorUI::Button("Rebuild Mesh", x + 15, y, 150, height, EditorUI::ButtonParams::Highlight()))
 		{
-			m_Mesh->RebuildMesh();
+			m_MeshAsset->RebuildMesh();
 		}
 	}
 
@@ -179,10 +179,10 @@ namespace Suora
 		Super::SaveAsset();
 
 		Yaml::Node root;
-		m_Mesh->Serialize(root);
+		m_MeshAsset->Serialize(root);
 		String out;
 		Yaml::Serialize(root, out);
-		Platform::WriteToFile(m_Mesh->m_Path.string(), out);
+		Platform::WriteToFile(m_MeshAsset->m_Path.string(), out);
 	}
 
 }
