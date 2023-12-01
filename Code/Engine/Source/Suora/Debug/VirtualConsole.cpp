@@ -33,6 +33,10 @@ namespace Suora
 	{
 		return GetMessagesWithLevel(LogLevel::Info);
 	}
+	std::vector<ConsoleMessage> VirtualConsole::GetDebugMessages()
+	{
+		return GetMessagesWithLevel(LogLevel::Debug);
+	}
 	std::vector<ConsoleMessage> VirtualConsole::GetWarnMessages()
 	{
 		return GetMessagesWithLevel(LogLevel::Warn);

@@ -34,6 +34,7 @@ namespace Suora
 		static void Clear();
 		static std::vector<ConsoleMessage> GetMessagesWithLevel(LogLevel level);
 		static std::vector<ConsoleMessage> GetLogMessages();
+		static std::vector<ConsoleMessage> GetDebugMessages();
 		static std::vector<ConsoleMessage> GetWarnMessages();
 		static std::vector<ConsoleMessage> GetErrorMessages();
 		static void PushMessage(ConsoleMessage msg);

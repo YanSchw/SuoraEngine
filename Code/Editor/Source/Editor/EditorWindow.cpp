@@ -375,7 +375,7 @@ namespace Suora
 					}
 					m_SelectedHeroTool = 1;
 				}
-				m_ConsoleLogs = VirtualConsole::GetLogMessages().size();
+				m_ConsoleDebugs = VirtualConsole::GetDebugMessages().size();
 				m_ConsoleWarnings = VirtualConsole::GetWarnMessages().size();
 				m_ConsoleErrors = VirtualConsole::GetErrorMessages().size();
 				const String textErrors = m_ConsoleErrors >= 10 ? std::to_string(m_ConsoleErrors) : "0" + std::to_string(m_ConsoleErrors);
@@ -388,10 +388,10 @@ namespace Suora
 				EditorUI::Text(textWarnings, Font::Instance, 150.0f * ui + 40.0f * ui, 3.0f, 25.0f * ui, 9.0f * ui, 18.0f, Vec2(), colorWarnings);
 				EditorUI::DrawTexturedRect(Icon::Warning, 150.0f * ui + 43.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorWarnings);
 
-				const String textLogs = m_ConsoleLogs >= 10 ? std::to_string(m_ConsoleLogs) : "0" + std::to_string(m_ConsoleLogs);
-				const Color colorLogs = m_ConsoleLogs > 0 ? Color(1) : EditorPreferences::Get()->UiBackgroundColor * 0.5f;
-				EditorUI::Text(textLogs, Font::Instance, 150.0f * ui + 70.0f * ui, 3.0f, 25.0f * ui, 9.0f * ui, 18.0f, Vec2(), colorLogs);
-				EditorUI::DrawTexturedRect(Icon::Info, 150.0f * ui + 73.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorLogs);
+				const String textDebugs = m_ConsoleDebugs >= 10 ? std::to_string(m_ConsoleDebugs) : "0" + std::to_string(m_ConsoleDebugs);
+				const Color colorDebugs = m_ConsoleDebugs > 0 ? Color(0.33725f, 0.60294f, 0.764117f, 1) : EditorPreferences::Get()->UiBackgroundColor * 0.5f;
+				EditorUI::Text(textDebugs, Font::Instance, 150.0f * ui + 70.0f * ui, 3.0f, 25.0f * ui, 9.0f * ui, 18.0f, Vec2(), colorDebugs);
+				EditorUI::DrawTexturedRect(Icon::Bug, 150.0f * ui + 73.5f * ui, 13.0f * ui, 18.0f * ui, 18.0f * ui, 0, colorDebugs);
 			}
 
 			SideBarParams.ButtonColorHover = SideBarParams.ButtonColor;

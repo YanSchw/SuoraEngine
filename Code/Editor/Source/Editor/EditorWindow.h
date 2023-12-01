@@ -83,7 +83,7 @@ namespace Suora
 		Array<Ref<MinorTab>> m_HeroTools;
 		uint32_t m_SelectedHeroTool = 0;
 
-		uint32_t m_ConsoleLogs = 0;
+		uint32_t m_ConsoleDebugs = 0;
 		uint32_t m_ConsoleWarnings = 0;
 		uint32_t m_ConsoleErrors = 0;
 
