@@ -1,7 +1,7 @@
 #include "LevelOutliner.h"
-#include "../../Util/EditorCamera.h"
-#include "../../Util/EditorPreferences.h"
-#include "../Major/NodeClassEditor.h"
+#include "Editor/Util/EditorCamera.h"
+#include "Editor/Util/EditorPreferences.h"
+#include "Editor/Panels/Major/NodeClassEditor.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
 #include "Suora/GameFramework/Node.h"
 #include "Suora/GameFramework/Nodes/Light/SkyLightNode.h"
@@ -10,7 +10,7 @@
 #include "Suora/GameFramework/Nodes/PostProcess/PostProcessNode.h"
 #include "Suora/GameFramework/Nodes/DecalNode.h"
 #include "Suora/GameFramework/Nodes/OrganizationNodes.h"
-#include "../../Overlays/SelectClassOverlay.h"
+#include "Editor/Overlays/SelectClassOverlay.h"
 
 namespace Suora
 {

@@ -2,7 +2,7 @@
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Serialization/Yaml.h"
 #include "Suora/Assets/Texture2D.h"
-#include "../MinorTab.h"
+#include "Editor/Panels/MinorTab.h"
 
 namespace Suora
 {

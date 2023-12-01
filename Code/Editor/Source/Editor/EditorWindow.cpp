@@ -17,7 +17,6 @@
 #include "Util/Icon.h"
 #include "EditorUI.h"
 #include "Launcher.h"
-#include <Suora.h>
 #include <optional>
 
 namespace Suora

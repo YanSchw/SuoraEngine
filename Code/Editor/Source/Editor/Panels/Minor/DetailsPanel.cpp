@@ -1,7 +1,7 @@
 #include "DetailsPanel.h"
-#include "../../EditorWindow.h"
-#include "../Major/NodeClassEditor.h"
-#include "../../Util/EditorPreferences.h"
+#include "Editor/EditorWindow.h"
+#include "Editor/Panels/Major/NodeClassEditor.h"
+#include "Editor/Util/EditorPreferences.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 #include "Suora/Assets/SuoraProject.h"
@@ -11,7 +11,6 @@
 #include "Suora/GameFramework/InputModule.h"
 #include "Suora/GameFramework/Node.h"
 #include "Suora/Common/Filesystem.h"
-
 #include "Editor/Panels/Major/MeshEditorPanel.h"
 
 namespace Suora

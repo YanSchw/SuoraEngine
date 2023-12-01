@@ -4,9 +4,9 @@
 #include "Suora/Assets/Mesh.h"
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/SkyLightNode.h"
-#include "../MinorTab.h"
-#include "../Minor/ViewportPanel.h"
-#include "../../Util/EditorCamera.h"
+#include "Editor/Panels/MinorTab.h"
+#include "Editor/Panels/Minor/ViewportPanel.h"
+#include "Editor/Util/EditorCamera.h"
 
 namespace Suora
 {

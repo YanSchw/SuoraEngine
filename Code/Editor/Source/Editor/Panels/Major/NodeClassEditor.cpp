@@ -3,11 +3,11 @@
 #include "Suora/Serialization/Yaml.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
-#include "../Minor/ViewportPanel.h"
-#include "../../Util/EditorCamera.h"
-#include "../Minor/NodeGraphEditor.h"
-#include "../Minor/LevelOutliner.h"
-#include "../Minor/EditorConsolePanel.h"
+#include "Editor/Panels/Minor/ViewportPanel.h"
+#include "Editor/Util/EditorCamera.h"
+#include "Editor/Panels/Minor/NodeGraphEditor.h"
+#include "Editor/Panels/Minor/LevelOutliner.h"
+#include "Editor/Panels/Minor/EditorConsolePanel.h"
 #include "Suora/NodeScript/BlueprintNodeGraph.h"
 
 #define NODE_ID_EVENT 14

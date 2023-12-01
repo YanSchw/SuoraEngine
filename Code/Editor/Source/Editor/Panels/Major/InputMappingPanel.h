@@ -1,6 +1,6 @@
 #pragma once
-#include "../MajorTab.h"
-#include "../Minor/DetailsPanel.h"
+#include "Editor/Panels/MajorTab.h"
+#include "Editor/Panels/Minor/DetailsPanel.h"
 #include "Suora/GameFramework/InputModule.h"
 #include "InputMappingPanel.generated.h"
 

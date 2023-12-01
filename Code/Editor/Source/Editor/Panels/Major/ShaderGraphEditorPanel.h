@@ -1,6 +1,6 @@
 #pragma once
-#include "../MajorTab.h"
-#include "../Minor/ViewportPanel.h"
+#include "Editor/Panels/MajorTab.h"
+#include "Editor/Panels/Minor/ViewportPanel.h"
 #include "Suora/NodeScript/ShaderNodeGraph.h"
 #include "ShaderGraphEditorPanel.generated.h"
 

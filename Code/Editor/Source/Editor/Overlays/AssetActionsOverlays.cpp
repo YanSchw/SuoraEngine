@@ -1,6 +1,11 @@
 #include "AssetActionsOverlays.h"
+#include "Suora/Assets/AssetManager.h"
+#include "Suora/Assets/Blueprint.h"
+#include "Suora/Assets/Texture2D.h"
+#include "Suora/Assets/Mesh.h"
+#include "Suora/Assets/Level.h"
 #include "Suora/Assets/ShaderGraph.h"
-
+#include "Platform/Platform.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 

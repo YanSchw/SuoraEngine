@@ -1,7 +1,7 @@
 #pragma once
 #include "Editor/Panels/MinorTab.h"
+#include "Suora/Assets/Material.h"
 #include "Suora/GameFramework/InputModule.h"
-#include <Suora.h>
 #include <unordered_map>
 
 namespace Suora

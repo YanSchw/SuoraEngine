@@ -1,7 +1,9 @@
 #include "Launcher.h"
+#include "Suora/Core/Engine.h"
 #include "Suora/Renderer/RenderCommand.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/SuoraProject.h"
+#include "Platform/Platform.h"
 #include "EditorWindow.h"
 #include "EditorUI.h"
 #include <filesystem>

@@ -1,7 +1,7 @@
 #include "ViewportPanel.h"
-#include "../MajorTab.h"
-#include "../../Util/EditorCamera.h"
-#include "../../Util/EditorPreferences.h"
+#include "Editor/Panels/MajorTab.h"
+#include "Editor/Util/EditorCamera.h"
+#include "Editor/Util/EditorPreferences.h"
 #include "Suora/Renderer/RenderCommand.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "Suora/Renderer/Shader.h"
@@ -15,7 +15,7 @@
 #include "Suora/GameFramework/Nodes/Light/PointLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/InputModule.h"
-#include "../Major/NodeClassEditor.h"
+#include "Editor/Panels/Major/NodeClassEditor.h"
 
 namespace Suora
 {
@@ -170,7 +170,6 @@ namespace Suora
 	{
 		if (IsInputMode(EditorInputEvent::ContentBrowser_AssetDrag) && ContentBrowser::s_DraggedAsset)
 		{
-			//if (ContentBrowser::s_DraggedAsset->GetClass() != Mesh::StaticClass()) return;
 			if (IsInputValid())
 			{
 				if (!AssetDragDropNode)

@@ -1,10 +1,9 @@
 #pragma once
-#include <Suora.h>
 #include <array>
 #include <future>
 #include "Suora/GameFramework/Nodes/CameraNode.h"
-#include "../Panels/Major/NodeClassEditor.h"
-#include "../EditorWindow.h"
+#include "Editor/Panels/Major/NodeClassEditor.h"
+#include "Editor/EditorWindow.h"
 
 namespace Suora
 {

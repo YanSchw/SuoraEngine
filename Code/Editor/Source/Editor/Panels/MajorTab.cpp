@@ -2,8 +2,8 @@
 #include "MajorTab.h"
 #include "MinorTab.h"
 #include "Dockspace.h"
-#include "../EditorWindow.h"
-#include "../Util/EditorPreferences.h"
+#include "Editor/EditorWindow.h"
+#include "Editor/Util/EditorPreferences.h"
 #include "Suora/Assets/SuoraProject.h"
 #include "Editor/AssetPreview.h"
 

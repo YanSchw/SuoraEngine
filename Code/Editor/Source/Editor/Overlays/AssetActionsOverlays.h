@@ -1,5 +1,6 @@
 #pragma once
 #include "DragableOverlay.h"
+#include "Suora/GameFramework/Node.h"
 #include <functional>
 
 namespace Suora

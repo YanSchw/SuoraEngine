@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "../EditorUI.h"
+#include "Editor/EditorUI.h"
 
 namespace Suora
 {

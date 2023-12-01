@@ -1,10 +1,10 @@
 #pragma once
-#include "Suora.h"
+#include <random>
+#include <unordered_map>
+#include "Suora/Assets/Asset.h"
 #include "Suora/Common/VectorUtils.h"
 #include "EditorPreferences.generated.h"
 
-#include <random>
-#include <unordered_map>
 
 namespace Suora
 {

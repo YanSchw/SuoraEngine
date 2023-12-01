@@ -1,7 +1,6 @@
 #pragma once
 #include "Suora/Core/Window.h"
 #include "Suora/Renderer/GraphicsContext.h"
-#include <Suora.h>
 
 namespace Suora
 {

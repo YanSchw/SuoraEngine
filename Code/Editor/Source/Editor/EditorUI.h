@@ -1,13 +1,17 @@
 #pragma once
 
-#include <Suora.h>
-#include <string>
 #include <vector>
 #include <unordered_map>
 #include <functional>
 #include "Util/Icon.h"
 #include "Util/EditorPreferences.h"
+#include "Suora/Core/Base.h"
+#include "Suora/Common/StringUtils.h"
 #include "Suora/Assets/Font.h"
+#include "Suora/Core/NativeInput.h"
+#include "Suora/Renderer/Shader.h"
+#include "Suora/Renderer/Texture.h"
+#include "Suora/Renderer/Framebuffer.h"
 #include "EditorWindow.h"
 
 namespace Suora

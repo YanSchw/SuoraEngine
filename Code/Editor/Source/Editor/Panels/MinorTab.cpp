@@ -1,10 +1,9 @@
 #include "Precompiled.h"
 #include "MinorTab.h"
 #include "MajorTab.h"
-#include "../EditorWindow.h"
+#include "Editor/EditorWindow.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "Suora/Renderer/Framebuffer.h"
-#include <Suora.h>
 
 namespace Suora
 {

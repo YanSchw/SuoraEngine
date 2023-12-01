@@ -1,6 +1,10 @@
 #pragma once
-#include <Suora.h>
 #include <filesystem>
+#include "EditorWindow.h"
+#include "Suora/Core/Base.h"
+#include "Suora/Common/StringUtils.h"
+#include "Suora/Renderer/Shader.h"
+#include "Suora/Renderer/Texture.h"
 
 namespace Suora
 {

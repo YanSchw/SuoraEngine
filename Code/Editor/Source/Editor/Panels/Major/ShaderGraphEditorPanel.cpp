@@ -7,7 +7,7 @@
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/SkyLightNode.h"
 #include "Suora/Renderer/RenderPipeline.h"
-#include "../../Util/EditorCamera.h"
+#include "Editor/Util/EditorCamera.h"
 #include "Suora/NodeScript/ShaderNodeGraph.h"
 
 namespace Suora

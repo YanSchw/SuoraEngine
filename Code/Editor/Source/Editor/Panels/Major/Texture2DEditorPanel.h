@@ -1,5 +1,5 @@
 #pragma once
-#include "../MajorTab.h"
+#include "Editor/Panels/MajorTab.h"
 #include "Texture2DEditorPanel.generated.h"
 
 namespace Suora

@@ -1,7 +1,6 @@
 #pragma once
-#include "../MinorTab.h"
+#include "Editor/Panels/MinorTab.h"
 #include "Suora/Renderer/RenderPipeline.h"
-#include <Suora.h>
 
 #define _ENUM_BODY_6476475
 

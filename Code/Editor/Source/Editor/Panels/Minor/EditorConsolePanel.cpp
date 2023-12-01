@@ -1,6 +1,7 @@
 #include "EditorConsolePanel.h"
-#include "../../Util/EditorPreferences.h"
 #include "Suora/Debug/VirtualConsole.h"
+#include "Editor/Util/Icon.h"
+#include "Editor/Util/EditorPreferences.h"
 
 namespace Suora
 {
@@ -102,12 +103,12 @@ namespace Suora
 	{
 		switch (level)
 		{
-		case LogLevel::Trace: return AssetManager::GetAsset<Texture2D>(SuoraID("b17ddd50-8a50-4143-ac3d-028d3366495b"))->GetTexture();
-		case LogLevel::Debug: return AssetManager::GetAsset<Texture2D>(SuoraID("cfb089b4-bd21-4ee6-93a3-a6334e15430e"))->GetTexture();
-		case LogLevel::Info: return AssetManager::GetAsset<Texture2D>(SuoraID("b3758660-1e0a-4a6a-9223-1a25966bdefd"))->GetTexture();
-		case LogLevel::Warn: return AssetManager::GetAsset<Texture2D>(SuoraID("cf027e56-ead0-4e61-ac31-b3d9125a03d9"))->GetTexture();
-		case LogLevel::Error: return AssetManager::GetAsset<Texture2D>(SuoraID("7224f801-1370-4f82-ac37-0cecf2cc35b9"))->GetTexture();
-		case LogLevel::Critical: return AssetManager::GetAsset<Texture2D>(SuoraID("7df5a6ba-75a5-4974-87d7-047e58cce35e"))->GetTexture();
+		case LogLevel::Trace: return Icon::TextBubble;
+		case LogLevel::Debug: return Icon::Bug;
+		case LogLevel::Info: return Icon::Info;
+		case LogLevel::Warn: return Icon::Warning;
+		case LogLevel::Error: return Icon::Error;
+		case LogLevel::Critical: return Icon::Critical;
 		default: break;
 		}
 		return nullptr;

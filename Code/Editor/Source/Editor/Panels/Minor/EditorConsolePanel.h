@@ -1,6 +1,5 @@
 #pragma once
-#include "../MinorTab.h"
-#include <Suora.h>
+#include "Editor/Panels/MinorTab.h"
 
 namespace Suora
 {

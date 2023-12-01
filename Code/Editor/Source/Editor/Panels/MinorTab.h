@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include <Suora.h>
+#include "Suora/Core/Base.h"
 #include "Suora/Common/Array.h"
-#include "../EditorUI.h"
+#include "Editor/EditorUI.h"
 
 namespace Suora
 {

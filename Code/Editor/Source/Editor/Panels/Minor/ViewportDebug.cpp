@@ -9,7 +9,7 @@
 #include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/PointLightNode.h"
-#include "../../Util/EditorCamera.h"
+#include "Editor/Util/EditorCamera.h"
 
 namespace Suora
 {

@@ -1,10 +1,8 @@
 #pragma once
-#include "../MinorTab.h"
+#include "Editor/Panels/MinorTab.h"
 #include "inttypes.h"
 #include "Suora/Serialization/Yaml.h"
-#include <glm/glm.hpp>
 #include "Suora/NodeScript/NodeGraph.h"
-#include <Suora.h>
 
 namespace Suora
 {
