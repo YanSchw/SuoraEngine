@@ -151,6 +151,7 @@ namespace Suora
 	void ViewportPanel::DrawDebugView(Framebuffer& buffer, World& world, CameraNode& camera)
 	{
 		// Default Render Final Scene
+		m_RParams.EnableDeferredRendering = ProjectSettings::Get()->m_EnableDeferredRendering;
 		m_RParams.DrawWireframe = m_DrawWireframe;
 		m_RParams.Resolution = iVec2(GetWidth(), GetHeight());
 		Engine::Get()->GetRenderPipeline()->Render(buffer, world, camera, m_RParams);
