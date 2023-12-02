@@ -58,7 +58,7 @@ namespace Suora
 				MeshNode* cube = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
 				cube->SetName("Cube");
 				cube->m_IsActorLayer = true;
-				cube->m_OverwrittenProperties.Add("mesh");
+				cube->m_OverwrittenProperties.Add("m_Mesh");
 				cube->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8")));
 			}, "Cube", nullptr });
 			_3D.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
@@ -66,7 +66,7 @@ namespace Suora
 				MeshNode* sphere = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
 				sphere->SetName("Sphere");
 				sphere->m_IsActorLayer = true;
-				sphere->m_OverwrittenProperties.Add("mesh");
+				sphere->m_OverwrittenProperties.Add("m_Mesh");
 				sphere->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1")));
 			}, "Sphere", nullptr });
 		}

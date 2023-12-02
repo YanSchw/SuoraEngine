@@ -181,8 +181,8 @@ namespace Suora
 						AssetDragDropNode->As<MeshNode>()->SetMesh(ContentBrowser::s_DraggedAsset->As<Mesh>());
 						AssetDragDropNode->As<MeshNode>()->m_Materials = AssetManager::GetAsset<Material>(SuoraID("d83842b6-ee90-4329-a4cc-7c01977107b6"));
 						AssetDragDropNode->m_IsActorLayer = true;
-						AssetDragDropNode->m_OverwrittenProperties.Add("mesh");
-						AssetDragDropNode->m_OverwrittenProperties.Add("material");
+						AssetDragDropNode->m_OverwrittenProperties.Add("m_Mesh");
+						AssetDragDropNode->m_OverwrittenProperties.Add("m_Materials");
 					}
 					else if (ContentBrowser::s_DraggedAsset->IsA<Blueprint>())
 					{
