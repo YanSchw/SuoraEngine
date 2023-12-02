@@ -31,9 +31,7 @@ namespace Suora
 
 			AssetManager::LoadAsset(AssetManager::GetEngineAssetPath() + "/EditorPreferences.editor");
 
-			Font::Instance = AssetManager::GetAssetByName<Font>("Inter-SemiBold.font");
-			Font::Instance = AssetManager::GetAssetByName<Font>("Inter-Light.font");
-			Font::Instance = AssetManager::GetAssetByName<Font>("JetbrainsMono32b.font");
+			Font::Instance = AssetManager::GetAssetByName<Font>("SimplyMono.font");
 
 			Modules_Init();
 			
