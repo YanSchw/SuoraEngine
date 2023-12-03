@@ -372,6 +372,7 @@ namespace Suora
 		Super::InitializeAsset(root);
 
 		m_Label = root["m_Label"].As<String>();
+		m_ActionType = (InputActionType)std::stoi(root["m_Type"].As<String>());
 
 		int64_t i = 0;
 		while (true)
@@ -392,6 +393,7 @@ namespace Suora
 		Super::Serialize(root);
 
 		root["m_Label"] = m_Label;
+		root["m_Type"] = std::to_string((uint8_t)m_ActionType);
 
 		int64_t i = 0;
 		for (auto& Binding : m_Bindings)
