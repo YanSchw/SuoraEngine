@@ -37,7 +37,11 @@ public:
 					Yaml::Node root;
 					Yaml::Parse(root, str);
 					Yaml::Node& settings = root["Settings"];
-					enginePath = settings["Engine"]["Path"].As<std::string>();
+					std::string possibleEnginePath = settings["Engine"]["Path"].As<std::string>();
+					if (std::filesystem::exists(std::filesystem::path(possibleEnginePath)))
+					{
+						enginePath = possibleEnginePath;
+					}
 					break;
 				}
 			}
