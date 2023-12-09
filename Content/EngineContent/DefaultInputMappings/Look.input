@@ -1,0 +1,15 @@
+Binding_0: 
+  Class: Native$654739842
+  m_Dispatcher: Mouse/Mouse Position Delta
+  m_TargetActionType: 3
+Binding_1: 
+  Class: Native$43855832
+  m_DispatcherDown: Keyboard/Down
+  m_DispatcherLeft: Keyboard/Left
+  m_DispatcherRight: Keyboard/Right
+  m_DispatcherUp: Keyboard/Up
+  m_Normalize: false
+  m_TargetActionType: 3
+UUID: "0c0a317c-b96d-4832-8f7b-0e06f0a8717f"
+m_Label: Default.Look
+m_Type: 3
