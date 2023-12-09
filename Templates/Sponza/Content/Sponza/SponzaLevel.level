@@ -64,7 +64,7 @@ NodeComposition:
   Properties: 
     0: 
       NodeName: Sponza
-      PropertyName: mesh
+      PropertyName: m_Mesh
       Value: 
         AssetPtr: "b4947f7a-f91a-4490-b371-04ffabc57eb0"
     1: 
