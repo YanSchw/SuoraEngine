@@ -259,6 +259,21 @@ namespace Suora
 		}
 	}
 
+	Asset* AssetManager::GetAsset(const Class& assetClass, const SuoraID& id)
+	{
+		if (id.GetString() == "0") return nullptr;
+
+		Array<Asset*> assets = GetAssetsByClass(assetClass);
+		for (Asset* asset : assets)
+		{
+			if (asset->m_UUID == id)
+			{
+				return asset;
+			}
+		}
+		return CreateMissingAsset(assetClass, id);
+	}
+
 	Array<Asset*> AssetManager::GetAssetsByClass(Class type)
 	{
 		Array<Asset*> array;

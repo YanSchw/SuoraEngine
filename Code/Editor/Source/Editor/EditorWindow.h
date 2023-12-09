@@ -4,6 +4,7 @@
 
 namespace Suora
 {
+	class Asset;
 	class MajorTab;
 	class MinorTab;
 	class Texture2D;

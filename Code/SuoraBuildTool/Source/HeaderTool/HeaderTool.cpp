@@ -46,8 +46,6 @@ namespace Suora::Tools
 		}
 		future.clear();
 
-		ParseAllHeadersParentData();
-
 		for (Ref<Header> header : m_Headers)
 		{
 			if (header->m_ClassID == "1") continue;
@@ -166,20 +164,6 @@ namespace Suora::Tools
 		}
 	}
 
-	// TODO: Remove
-	void HeaderTool::ParseAllHeadersParentData()
-	{
-		for (Ref<Header> header : m_Headers)
-		{
-			header->m_ParentNames = header->GetAllParentNames();
-			for (const std::string& parentName : header->m_ParentNames)
-			{
-				std::string id = GetHeaderByClassName(parentName)->m_ClassID;
-				header->m_ParentIDs.push_back(id);
-			}
-		}
-	}
-
 	void HeaderTool::GenerateClassSymbols(HeaderTool::Header* header, std::map<HeaderOutput, std::string>* output)
 	{
 		std::string generated = "/* Auto Generated! */ \n\n";
@@ -266,7 +250,7 @@ private:\n\
 					offset++;
 					if (header->str[offset] != '\n' && header->str[offset] != '\t') member += header->str[offset];
 				}
-				GenerateMemberReflection(generated, meta, member);
+				GenerateMemberReflection(header->m_ClassName, generated, meta, member);
 			}
 			generated += "}\n";
 		}
@@ -308,25 +292,9 @@ private:\n\
 		else if (inner[inner.size() - 1] == '*')
 		{
 			std::string type = inner.substr(0, inner.size() - 1);
-			if (DoesHeaderExist(type))
-			{
-				Header* header = GetHeaderByClassName(type);
-				if (header->Inherits(GetHeaderByClassName("Asset")))
-				{
-					// Asset
-					str += "\t\tRef<ClassMember_AssetPtr> " + index + " = Ref<ClassMember_AssetPtr>(new ClassMember_AssetPtr(\"Inner\", 0, ClassMember::Type::AssetPtr));\n";
-					str += "\t\t" + index + "->m_AssetClass = Class(" + header->m_ClassID + ");\n";
-				}
-				else
-				{
-					// Object
-					str += "\t\tRef<ClassMember> " + index + " = Ref<ClassMember>(new ClassMember(\"Inner\", 0, ClassMember::Type::ObjectPtr));\n";
-				}
-			}
-			else
-			{
-				str += "#error The Suora Header-Tool could not parse the InnerTemplateMember   [...] < " + inner + " > (!)\n";
-			}
+
+			// ObjectPtr
+			//str += "\t\tdesc.AddObjectPointer<" + type + ">(" + offset + ", (Object**) &" + memberName + ", \"" + memberName + "\");\n";
 		}
 		else
 		{
@@ -335,7 +303,7 @@ private:\n\
 		str += "\n";
 	}
 
-	void HeaderTool::GenerateMemberReflection(std::string& str, const std::string& meta, std::string member)
+	void HeaderTool::GenerateMemberReflection(const std::string& className, std::string& str, const std::string& meta, std::string member)
 	{
 		// Receive Member Info
 		bool erase = false;
@@ -362,55 +330,41 @@ private:\n\
 			}
 		}
 
+		const std::string offset = "offsetof(" + className + ", " + memberName + ")";
+
 		// Out
 		str += "\t/* " + member + "*/\n";
 		str += "\t{\n";
 
 		if (memberType == "int" || memberType == "float" || memberType == "bool" || memberType == "Vec3" || memberType == "Color" || memberType == "Class")
 		{
-			str += "\t\tdesc.AddPrimitive<" + memberType + ">(this, &" + memberName + ", \"" + memberName + "\");\n";
+			str += "\t\tdesc.AddPrimitive<" + memberType + ">(" + offset + ", &" + memberName + ", \"" + memberName + "\");\n";
 		}
 		else if (memberType.substr(0, 11) == "SubclassOf<")
 		{
-			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", ClassMember::OffsetOf(this, &" + memberName + "), ClassMember::Type::SubclassOf);\n";
+			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", " + offset + ", ClassMember::Type::SubclassOf);\n";
 		}
 		else if (memberType == "MaterialSlots")
 		{
-			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", ClassMember::OffsetOf(this, &" + memberName + "), ClassMember::Type::MaterialSlots);\n";
+			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", " + offset + ", ClassMember::Type::MaterialSlots);\n";
 		}
 		else if (memberType.substr(0, 8) == "Delegate")
 		{
-			str += "\t\tdesc.AddDelegate(this, " + memberName + ".GetInternalDelegate(), \"" + memberName + "\", \"" + memberType + "\");\n";
+			str += "\t\tdesc.AddDelegate(" + offset + ", " + memberName + ".GetInternalDelegate(), \"" + memberName + "\", \"" + memberType + "\");\n";
 		}
 		else if (memberType.find("ArrayList") == 0)
 		{
 			std::string inner = memberType.substr(10, memberType.size() - 11);
 			GenerateTemplateInnerMember(str, inner, "_ArrayInner");
-			str += "\t\tClassMember_ArrayList* array = desc.AddArrayList(this, &" + memberName + ", \"" + memberName + "\");\n";
+			str += "\t\tClassMember_ArrayList* array = desc.AddArrayList(" + offset + ", &" + memberName + ", \"" + memberName + "\");\n";
 			str += "\t\tarray->m_ArraySubMember = _ArrayInner;\n";
 		}
 		else if (memberType[memberType.size() - 1] == '*') // if (memberType.find("*") != std::string::npos)
 		{
 			std::string type = memberType.substr(0, memberType.size() - 1);
-			if (DoesHeaderExist(type))
-			{
-				Header* header = GetHeaderByClassName(type);
-				if (header->Inherits(GetHeaderByClassName("Asset")))
-				{
-					// Asset
-					str += "\t\tdesc.AddAssetPointer(this, (Asset**) &" + memberName + ", \"" + memberName + "\", " + header->m_ClassID + ");\n";
-				}
-				else
-				{
-					// Object
-					str += "\t\tdesc.AddObjectPointer(this, (Object**) &" + memberName + ", \"" + memberName + "\");\n";
-				}
-			}
-			else
-			{
-				str += "#error The Suora Header-Tool could not parse Member of Type   [ " + memberType + " ] (!)\n";
-			}
-			
+
+			// ObjectPtr
+			str += "\t\tdesc.AddObjectPointer<" + type + ">(" + offset + ", (Object**) &" + memberName + ", \"" + memberName + "\");\n";
 		}
 		else
 		{
@@ -568,38 +522,4 @@ private:\n\
 		m_Headers.push_back(ref);
 	}
 
-	HeaderTool::Header* HeaderTool::GetHeaderByClassName(const std::string& name)
-	{
-		std::lock_guard<std::mutex> lock(AccessHeaderMutex);
-		for (auto& header : m_Headers)
-		{
-			if (header->m_ClassName == name) return header.get();
-		}
-		return nullptr;
-	}
-
-	bool HeaderTool::DoesHeaderExist(const std::string& name)
-	{
-		return GetHeaderByClassName(name);
-	}
-
-	std::vector<std::string> HeaderTool::Header::GetAllParentNames()
-	{
-		if (this == nullptr) return std::vector<std::string>(); // For "None" (Parent of Object)
-
-		std::vector<std::string> parents = m_HeaderTool->GetHeaderByClassName(m_ParentClass)->GetAllParentNames();
-		if (m_ParentClass != "None") parents.push_back(m_ParentClass);
-
-		return parents;
-	}
-	bool Suora::Tools::HeaderTool::Header::Inherits(Header* other)
-	{
-		std::lock_guard<std::mutex> lock(AccessHeaderMutex);
-		for (std::string& parent : m_ParentNames)
-		{
-			if (parent == other->m_ClassName) return true;
-		}
-
-		return false;
-	}
 }

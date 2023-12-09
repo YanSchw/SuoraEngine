@@ -40,9 +40,9 @@ namespace Suora
 		return ClassMember::Type::Class;
 	}
 	template<>
-	ClassMember::Type ClassMember::GetPrimitiveTypeEnumByTemplate<Asset*>()
+	ClassMember::Type ClassMember::GetPrimitiveTypeEnumByTemplate<Object*>()
 	{
-		return ClassMember::Type::AssetPtr;
+		return ClassMember::Type::ObjectPtr;
 	}
 
 //====================================================================================================//

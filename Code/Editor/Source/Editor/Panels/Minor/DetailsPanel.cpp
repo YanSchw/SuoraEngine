@@ -423,10 +423,14 @@ namespace Suora
 			Vec4* v = ClassMember::AccessMember<Vec4>(obj, member->m_MemberOffset);
 			result = DrawVec4(v, mname, y, valueChangedBefore);
 		}
-		else if (member->m_Type == ClassMember::Type::AssetPtr)
+		else if (member->m_Type == ClassMember::Type::ObjectPtr)
 		{
-			Asset** asset = ClassMember::AccessMember<Asset*>(obj, member->m_MemberOffset);
-			result = DrawAsset(asset, ((ClassMember_AssetPtr*)(member))->m_AssetClass, mname, y, valueChangedBefore);
+			const Class objClass = ((ClassMember_ObjectPtr*)(member))->m_ObjectClass;
+			if (objClass.Inherits(Asset::StaticClass()))
+			{
+				Asset** asset = ClassMember::AccessMember<Asset*>(obj, member->m_MemberOffset);
+				result = DrawAsset(asset, objClass, mname, y, valueChangedBefore);
+			}
 		}
 		else if (member->m_Type == ClassMember::Type::MaterialSlots)
 		{

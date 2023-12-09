@@ -31,18 +31,13 @@ namespace Suora::Tools
 
 	struct HeaderTool
 	{
-		HeaderTool()
-		{
-		}
-		~HeaderTool()
-		{
-		}
+		HeaderTool() = default;
+		~HeaderTool() = default;
 		void FetchHeaders(const std::string& path);
 		void ParseHeaders(const std::filesystem::path& outPath, bool cacheWriteTime);
 
 	private:
 		void ParseSingleHeader(const std::filesystem::path& path);
-		void ParseAllHeadersParentData();
 
 	private:
 		std::vector<std::filesystem::path> m_HeaderPaths;
@@ -63,9 +58,6 @@ namespace Suora::Tools
 			std::vector<std::string> m_ParentNames;
 			std::vector<std::string> m_ParentIDs;
 
-			std::vector<std::string> GetAllParentNames();
-			bool Inherits(Header* other);
-
 		private:
 			// Metadata from HeaderFile
 			std::string str;
@@ -79,15 +71,13 @@ namespace Suora::Tools
 
 		void GenerateClassSymbols(HeaderTool::Header* header, std::map<HeaderOutput, std::string>* output);
 		void GenerateTemplateInnerMember(std::string& str, std::string inner, const std::string& index);
-		void GenerateMemberReflection(std::string& str, const std::string& meta, std::string member);
+		void GenerateMemberReflection(const std::string& className, std::string& str, const std::string& meta, std::string member);
 		FunctionMeta GenerateFunctionReflection(const std::string& className, const std::string& classID, const std::string& meta, const std::string& func);
 
 		void AddHeader(Ref<Header> ref);
-		Header* GetHeaderByClassName(const std::string& name);
-		bool DoesHeaderExist(const std::string& name);
 		std::vector<Ref<Header>> m_Headers;
 
-		float m_InitialTime = 0.0f;
+		double m_InitialTime = 0.0;
 	};
 }
 

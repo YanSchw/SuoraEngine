@@ -7,10 +7,10 @@
 
 struct Platform
 {
-	static float GetTime()
+	static double GetTime()
 	{
 		auto currentTime = std::chrono::steady_clock::now();
-		return currentTime.time_since_epoch().count() / 1000000000.0f;
+		return currentTime.time_since_epoch().count() / 1000000000.0;
 	}
 	static void WriteToFile(const std::string& filePath, const std::string& content)
 	{

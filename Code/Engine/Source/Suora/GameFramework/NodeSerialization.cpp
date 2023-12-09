@@ -27,17 +27,31 @@ namespace Suora
 		case ClassMember::Type::Vector4:
 			property["Value"]["Vec4"] = Vec::ToString<Vec4>((*ClassMember::AccessMember<Vec4>(node, member.m_MemberOffset)));
 			break;
-		case ClassMember::Type::AssetPtr:
+		case ClassMember::Type::ObjectPtr:
 			{
-			const Asset* asset = *ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset);
-			property["Value"]["AssetPtr"] = (asset) ? asset->m_UUID.GetString() : "0";
-			break;
+				const Class objClass = ((ClassMember_ObjectPtr*)(&member))->m_ObjectClass;
+				if (objClass.Inherits(Asset::StaticClass()))
+				{
+					const Asset* asset = *ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset);
+					property["Value"]["AssetPtr"] = (asset) ? asset->m_UUID.GetString() : "0";
+				}
+				else
+				{
+					SuoraError("Cannot serialize ObjectPtr");
+				}
+				break;
 			}
 		case ClassMember::Type::MaterialSlots:
 		{
 			MaterialSlots* slots = (ClassMember::AccessMember<MaterialSlots>(node, member.m_MemberOffset));
 			property["Value"]["MaterialSlots"]["Overwrite"] = slots->OverwritteMaterials ? "true" : "false";
-			if (slots->OverwritteMaterials) for (int i = 0; i < slots->Materials.Size(); i++) property["Value"]["MaterialSlots"][std::to_string(i)] = (slots->Materials[i]) ? slots->Materials[i]->m_UUID.GetString() : "0";
+			if (slots->OverwritteMaterials)
+			{
+				for (int i = 0; i < slots->Materials.Size(); i++)
+				{
+					property["Value"]["MaterialSlots"][std::to_string(i)] = (slots->Materials[i]) ? slots->Materials[i]->m_UUID.GetString() : "0";
+				}
+			}
 		} break;
 		case ClassMember::Type::Class:
 			property["Value"]["Class"] = ClassMember::AccessMember<Class>(node, member.m_MemberOffset)->ToString();
@@ -69,11 +83,27 @@ namespace Suora
 		case ClassMember::Type::Vector4:
 			*ClassMember::AccessMember<Vec4>(node, member.m_MemberOffset) = Vec::FromString<Vec4>(property["Value"]["Vec4"].As<String>());
 			break;
-		case ClassMember::Type::AssetPtr:
-			*ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset) = (property["Value"]["AssetPtr"].As<String>() != "0")
-						? AssetManager::GetAsset<Asset>(property["Value"]["AssetPtr"].As<String>())
-						: nullptr;
+		case ClassMember::Type::ObjectPtr:
+		{
+			const Class objClass = ((ClassMember_ObjectPtr*)(&member))->m_ObjectClass;
+			if (objClass.Inherits(Asset::StaticClass()))
+			{
+				Asset*& assetRef = (Asset*&)*ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset);
+				const String assetUUID = property["Value"]["AssetPtr"].As<String>();
+				Asset* asset = (assetUUID != "0" && assetUUID != "") ? AssetManager::GetAsset(objClass, SuoraID(assetUUID)) : nullptr;
+
+				if (asset)
+				{
+					SuoraAssert(asset->GetClass().Inherits(objClass));
+				}
+				assetRef = asset;
+			}
+			else
+			{
+				SuoraError("Cannot deserialize ObjectPtr");
+			}
 			break;
+		}
 		case ClassMember::Type::MaterialSlots:
 		{
 			MaterialSlots ValueMaterialSlots;

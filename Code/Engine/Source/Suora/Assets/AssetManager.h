@@ -67,20 +67,11 @@ namespace Suora
 			}
 			return nullptr;
 		}
+		static Asset* GetAsset(const Class& assetClass, const SuoraID& id);
 		template<class T>
 		static T* GetAsset(const SuoraID& id)
 		{
-			if (id.GetString() == "0") return nullptr;
-
-			Array<T*> assets = GetAssets<T>();
-			for (T* asset : assets)
-			{
-				if (asset->m_UUID == id)
-				{
-					return asset;
-				}
-			}
-			return Cast<T>(CreateMissingAsset(T::StaticClass(), id));
+			return GetAsset(T::StaticClass(), id)->As<T>();
 		}
 		template<class T>
 		static T* GetAssetByName(const String& name)
