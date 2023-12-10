@@ -1,9 +1,7 @@
 #pragma once
 #include "inttypes.h"
 #include "Suora/Common/Array.h"
-#include <unordered_map>
-
-template<class T> class Array;
+#include "Suora/Common/StringUtils.h"
 
 namespace Suora
 {
@@ -32,113 +30,34 @@ namespace Suora
 		Blueprint* m_BlueprintClass = nullptr; // nullptr if this is a native class
 		ScriptClass* m_ScriptClass = nullptr;  // nullptr if this is a native class
 	public:
-		explicit Class(const NativeClassID id)
-		{
-			m_NativeClassID = id;
-		}
-		Class(Blueprint* node)
-		{
-			m_BlueprintClass = node;
-		}
-		explicit Class(Blueprint& node)
-		{
-			m_BlueprintClass = &node;
-		}
-		explicit Class(ScriptClass* script)
-		{
-			m_ScriptClass = script;
-		}
-		explicit Class(ScriptClass& script)
-		{
-			m_ScriptClass = &script;
-		}
+		explicit Class(const NativeClassID id);
+		Class(Blueprint* node);
+		explicit Class(Blueprint& node);
+		Class(ScriptClass* script);
+		explicit Class(ScriptClass& script);
 
-		Class& operator=(const NativeClassID id)
-		{
-			m_NativeClassID = id;
-			m_BlueprintClass = nullptr;
-			m_ScriptClass = nullptr;
-			return *this;
-		}
-		Class& operator=(Blueprint* node)
-		{
-			m_NativeClassID = 0;
-			m_BlueprintClass = node;
-			m_ScriptClass = nullptr;
-			return *this;
-		}
-		Class& operator=(ScriptClass* script)
-		{
-			m_NativeClassID = 0;
-			m_BlueprintClass = nullptr;
-			m_ScriptClass = script;
-			return *this;
-		}
+		Class& operator=(const NativeClassID id);
+		Class& operator=(Blueprint* node);
+		Class& operator=(ScriptClass* script);
 
-		NativeClassID GetNativeClassID() const
-		{
-			return m_NativeClassID;
-		}
-		Blueprint* GetBlueprintClass() const
-		{
-			return m_BlueprintClass;
-		}
-		ScriptClass* GetScriptClass() const
-		{
-			return m_ScriptClass;
-		}
+		NativeClassID GetNativeClassID() const;
+		Blueprint* GetBlueprintClass() const;
+		ScriptClass* GetScriptClass() const;
 
-		bool operator==(const Class& cls) const
-		{
-			return IsNative() ? (*this == cls.m_NativeClassID) : ( IsScriptClass() ? (*this == cls.m_ScriptClass) : (*this == cls.m_BlueprintClass));
-		}
-		bool operator==(const NativeClassID id) const
-		{
-			return id == m_NativeClassID;
-		}
-		bool operator==(const Blueprint* node) const
-		{
-			return node == m_BlueprintClass;
-		}
-		bool operator==(const ScriptClass* script) const
-		{
-			return script == m_ScriptClass;
-		}
-		bool operator!=(const Class& cls) const
-		{
-			return !operator==(cls);
-		}
-		bool operator!=(const NativeClassID id) const
-		{
-			return !operator==(id);
-		}
-		bool operator!=(Blueprint* node) const
-		{
-			return !operator==(node);
-		}
-		bool operator!=(ScriptClass* script) const
-		{
-			return !operator==(script);
-		}
+		bool operator==(const Class& cls) const;
+		bool operator==(const NativeClassID id) const;
+		bool operator==(const Blueprint* node) const;
+		bool operator==(const ScriptClass* script) const;
+		bool operator!=(const Class& cls) const;
+		bool operator!=(const NativeClassID id) const;
+		bool operator!=(Blueprint* node) const;
+		bool operator!=(ScriptClass* script) const;
 
-		bool IsNative() const
-		{
-			return !m_BlueprintClass && !m_ScriptClass;
-		}
-		bool IsBlueprintClass() const
-		{
-			return m_BlueprintClass;
-		}
-		bool IsScriptClass() const
-		{
-			return m_ScriptClass;
-		}
+		bool IsNative() const;
+		bool IsBlueprintClass() const;
+		bool IsScriptClass() const;
 
-		bool Inherits(const Class& base) const
-		{
-			if ((*this) == base) return true;
-			return (m_NativeClassID == 1) ? false : (GetParentClass() == base ? true : (GetParentClass() != Class::None ? GetParentClass().Inherits(base) : false));
-		}
+		bool Inherits(const Class& base) const;
 		Class GetParentClass() const;
 		ClassType GetClassType() const;
 
@@ -154,19 +73,24 @@ namespace Suora
 		{
 			return ((std::hash<NativeClassID>()(cls.m_NativeClassID)
 				^ (std::hash<Blueprint*>()(cls.m_BlueprintClass) << 1)) >> 1)
-				^ (std::hash<NativeClassID>()(cls.m_NativeClassID + 91282743) << 1); // 91282743 is a random number, replace with ScriptClass once implemented
+				^ (std::hash<ScriptClass*>()(cls.m_ScriptClass) >> 1);
 		}
 
-		std::string GetNativeClassName() const;
-		std::string GetClassName() const;
+		String GetNativeClassName() const;
+		String GetClassName() const;
 		const ClassReflector& GetClassReflector() const;
 
-		std::string ToString() const;
-		static Class FromString(const std::string& str);
+		String ToString() const;
+		static Class FromString(const String& str);
 
 		Object* GetClassDefaultObject(bool clear = false) const;
 
+	};
+
+	class ClassInternal
+	{
 		inline static std::vector<Class> s_NativeClasses;
+		friend struct Class;
 	};
 
 }
@@ -181,7 +105,7 @@ namespace std
 		{
 			return ((std::hash<Suora::NativeClassID>()(cls.GetNativeClassID())
 				^ (std::hash<Suora::Blueprint*>()(cls.GetBlueprintClass()) << 1)) >> 1)
-				^ (std::hash<Suora::NativeClassID>()(cls.GetNativeClassID() + 91282743) << 1); // 91282743 is a random number, replace with ScriptClass once implemented
+				^ (std::hash<Suora::ScriptClass*>()(cls.GetScriptClass()) >> 1);
 		}
 	};
 }

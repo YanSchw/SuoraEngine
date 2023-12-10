@@ -50,7 +50,7 @@ public:
 	public:
 		JPH_DECLARE_SERIALIZABLE_NON_VIRTUAL(JPH_EXPORT, AnimatedJoint)
 
-		String							mJointName;											///< Name of the joint
+		JoltString							mJointName;											///< Name of the joint
 		KeyframeVector					mKeyframes;											///< List of keyframes over time
 	};
 

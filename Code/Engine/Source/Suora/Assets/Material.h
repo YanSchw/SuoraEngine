@@ -33,19 +33,19 @@ namespace Suora
 	struct UniformSlot
 	{
 		ShaderGraphDataType m_Type;
-		std::string m_Label;
+		String m_Label;
 
 		float m_Float = 0.0f;
-		glm::vec2 m_Vec2 = glm::vec2();
-		glm::vec3 m_Vec3 = glm::vec3();
-		glm::vec4 m_Vec4 = glm::vec4();
+		Vec2 m_Vec2 = Vec2();
+		Vec3 m_Vec3 = Vec3();
+		Vec4 m_Vec4 = Vec4();
 		Texture2D* m_Texture2D = nullptr;
 
-		UniformSlot(ShaderGraphDataType type, const std::string& label, float value) : m_Type(type), m_Label(label), m_Float(value) { }
-		UniformSlot(ShaderGraphDataType type, const std::string& label, const glm::vec2& value) : m_Type(type), m_Label(label), m_Vec2(value) { }
-		UniformSlot(ShaderGraphDataType type, const std::string& label, const glm::vec3& value) : m_Type(type), m_Label(label), m_Vec3(value) { }
-		UniformSlot(ShaderGraphDataType type, const std::string& label, const glm::vec4& value) : m_Type(type), m_Label(label), m_Vec4(value) { }
-		UniformSlot(ShaderGraphDataType type, const std::string& label, Texture2D* value) : m_Type(type), m_Label(label), m_Texture2D(value) { }
+		UniformSlot(ShaderGraphDataType type, const String& label, float value) : m_Type(type), m_Label(label), m_Float(value) { }
+		UniformSlot(ShaderGraphDataType type, const String& label, const Vec2& value) : m_Type(type), m_Label(label), m_Vec2(value) { }
+		UniformSlot(ShaderGraphDataType type, const String& label, const Vec3& value) : m_Type(type), m_Label(label), m_Vec3(value) { }
+		UniformSlot(ShaderGraphDataType type, const String& label, const Vec4& value) : m_Type(type), m_Label(label), m_Vec4(value) { }
+		UniformSlot(ShaderGraphDataType type, const String& label, Texture2D* value) : m_Type(type), m_Label(label), m_Texture2D(value) { }
 	};
 
 	class Material : public Asset
@@ -57,15 +57,15 @@ namespace Suora
 		Array<UniformSlot> m_UniformSlots;
 
 		Material();
-		void PreInitializeAsset(const std::string& str) override;
-		void InitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
+		void InitializeAsset(Yaml::Node& root) override;
 		void Serialize(Yaml::Node& root) override;
 
 		void SetShaderGraph(ShaderGraph* shaderGraph);
 		ShaderGraph* GetShaderGraph() const;
 
 		void ApplyUniforms(MaterialType type);
-		UniformSlot* GetUniformSlot(const std::string& label);
+		UniformSlot* GetUniformSlot(const String& label);
 
 		virtual bool IsDeferred() const;
 

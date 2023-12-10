@@ -1050,14 +1050,14 @@ void BodyManager::Draw(const DrawSettings &inDrawSettings, const PhysicsSettings
 					inRenderer->DrawWireBox(body->GetCenterOfMassTransform() * Mat44::sRotation(mp->GetInertiaRotation()), AABox(-0.5f * box_size, 0.5f * box_size), Color::sOrange);
 
 					// Draw mass
-					inRenderer->DrawText3D(body->GetCenterOfMassPosition(), StringFormat("%.2f", (double)mass), Color::sOrange, 0.2f);
+					inRenderer->DrawText3D(body->GetCenterOfMassPosition(), JoltStringFormat("%.2f", (double)mass), Color::sOrange, 0.2f);
 				}
 			}
 
 			if (inDrawSettings.mDrawSleepStats && body->IsDynamic() && body->IsActive())
 			{
 				// Draw stats to know which bodies could go to sleep
-				String text = StringFormat("t: %.1f", (double)body->mMotionProperties->mSleepTestTimer);
+				JoltString text = JoltStringFormat("t: %.1f", (double)body->mMotionProperties->mSleepTestTimer);
 				uint8 g = uint8(Clamp(255.0f * body->mMotionProperties->mSleepTestTimer / inPhysicsSettings.mTimeBeforeSleep, 0.0f, 255.0f));
 				Color sleep_color = Color(0, 255 - g, g);
 				inRenderer->DrawText3D(body->GetCenterOfMassPosition(), text, sleep_color, 0.2f);

@@ -2,6 +2,7 @@
 #include "PointLightNode.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "Suora/Renderer/Renderer3D.h"
+#include "Suora/Renderer/Framebuffer.h"
 #include "Suora/Renderer/RenderCommand.h"
 #include "Suora/GameFramework/Nodes/MeshNode.h"
 #include "Suora/GameFramework/Nodes/CameraNode.h"
@@ -42,7 +43,7 @@ namespace Suora
 		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
 		for (MeshNode* meshNode : meshes)
 		{
-			if (meshNode->mesh)
+			if (meshNode->GetMesh())
 			{
 				if (meshNode->m_CastShadow)
 				{

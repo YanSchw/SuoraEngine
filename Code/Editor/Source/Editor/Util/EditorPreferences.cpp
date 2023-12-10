@@ -24,29 +24,25 @@ namespace Suora
 
 	EditorPreferences* EditorPreferences::Get()
 	{
-		EditorPreferences* ptr = AssetManager::GetFirstAssetOfType<EditorPreferences>();
-		return ptr ? ptr : AssetManager::CreateAsset<EditorPreferences>("EditorPreferences", AssetManager::GetEngineAssetPath());
+		static EditorPreferences* ptr = AssetManager::GetFirstAssetOfType<EditorPreferences>();
+		return ptr ? ptr : (ptr = AssetManager::CreateAsset<EditorPreferences>("EditorPreferences", AssetManager::GetEngineAssetPath()));
 	}
 
-	void EditorPreferences::PreInitializeAsset(const std::string& str)
+	void EditorPreferences::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
-		Yaml::Node root;
-		Yaml::Parse(root, str);
+		Super::PreInitializeAsset(root);
 
 		int i = 0;
 		while (true)
 		{
 			Yaml::Node& node = root["m_AllCachedProjectPaths"][std::to_string(i++)];
 			if (node.IsNone()) break;
-			if (!m_AllCachedProjectPaths.Contains(node.As<std::string>())) m_AllCachedProjectPaths.Add(node.As<std::string>());
+			if (!m_AllCachedProjectPaths.Contains(node.As<String>())) m_AllCachedProjectPaths.Add(node.As<String>());
 		}
 	}
-	void EditorPreferences::InitializeAsset(const std::string& str)
+	void EditorPreferences::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
-		Yaml::Node root;
-		Yaml::Parse(root, str);
+		Super::InitializeAsset(root);
 
 	}
 	void EditorPreferences::Serialize(Yaml::Node& root)

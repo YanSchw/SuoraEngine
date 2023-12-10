@@ -1,7 +1,7 @@
 project "SuoraBuildTool"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "on"
 
 	targetdir ("%{wks.location}/Build/" .. outputdir .. "/%{prj.name}")
@@ -9,18 +9,22 @@ project "SuoraBuildTool"
 
 	files
 	{
-		"Source/SuoraBuildTool.cpp"
+		"Source/***.h",
+		"Source/***.cpp",
 	}
 
 	includedirs
 	{
-		"%{ENGINE_PATH}/Code/Dependencies/spdlog/include",
-		"%{ENGINE_PATH}/Code/Engine/Source",
-		"%{ENGINE_PATH}/Code/Dependencies"
+		"Source",
+		"Source/ThirdParty/spdlog/include"
 	}
 
 	links
 	{
+	}
+	defines
+	{
+		"SPDLOG_COMPILED_LIB"
 	}
 
 	filter "system:windows"

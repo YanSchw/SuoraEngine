@@ -2,6 +2,7 @@
 #include "AssetManager.h"
 #include <unordered_map>
 #include <future>
+#include <thread>
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/Assets/SuoraProject.h"
 #include "Suora/Core/Engine.h"
@@ -16,19 +17,13 @@
 namespace Suora
 {
 
-	static std::unordered_map<std::string, Class> AssetClasses;
+	static std::unordered_map<String, Class> AssetClasses;
 
-	static void PreInitializeAsset(Asset* asset)
-	{
-		const std::string str = Platform::ReadFromFile(asset->m_Path.string());
-		asset->PreInitializeAsset(str);
-	}
-
-	static std::string GetCorrespondingAssetExtension(const Class& cls)
+	static String GetCorrespondingAssetExtension(const Class& cls)
 	{
 		return Asset::GetAssetExtensionByClass(cls.GetNativeClassID());
 	}
-	static Class GetCorrespondingAssetClass(const std::string& fileExt)
+	static Class GetCorrespondingAssetClass(const String& fileExt)
 	{
 		if (fileExt == ".png" || fileExt == ".jpg")
 			return Texture2D::StaticClass();
@@ -99,7 +94,7 @@ namespace Suora
 
 			Asset* asset = nullptr;
 
-			const std::string ext = File::GetFileExtension(file);
+			const String ext = File::GetFileExtension(file);
 			const Class cls = Asset::GetAssetClassByExtension(ext);
 			if (!cls.Inherits(baseClass)) continue;
 			if (cls != Asset::StaticClass()) asset = Cast<Asset>(New(cls));
@@ -124,11 +119,13 @@ namespace Suora
 		{
 			if (!s_Assets[i]->IsFlagSet(AssetFlags::WasPreInitialized) && !s_Assets[i]->IsFlagSet(AssetFlags::Missing))
 			{
-				const std::string str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
-				s_Assets[i]->PreInitializeAsset(str);
+				const String str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
+				Yaml::Node root;
+				Yaml::Parse(root, str);
+				s_Assets[i]->PreInitializeAsset(root);
 			}
 		}
-		std::unordered_map<std::string, Asset*> UsedUUIDs;
+		std::unordered_map<String, Asset*> UsedUUIDs;
 		for (int i = 0; i < s_Assets.Size(); i++)
 		{
 			if (s_Assets[i]->IsFlagSet(AssetFlags::Missing))
@@ -140,8 +137,10 @@ namespace Suora
 						s_Assets[i]->ClearFlag(AssetFlags::Missing);
 						s_Assets[i]->m_Path = s_Assets[j]->m_Path;
 						s_Assets[i]->m_Name = s_Assets[j]->m_Name;
-						const std::string str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
-						s_Assets[i]->PreInitializeAsset(str);
+						const String str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
+						Yaml::Node root;
+						Yaml::Parse(root, str);
+						s_Assets[i]->PreInitializeAsset(root);
 
 						delete s_Assets[j];
 						s_Assets.RemoveAt(j);
@@ -172,8 +171,10 @@ namespace Suora
 		{
 			if (!s_Assets[i]->IsFlagSet(AssetFlags::WasInitialized) && !s_Assets[i]->IsFlagSet(AssetFlags::Missing))
 			{
-				const std::string str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
-				s_Assets[i]->InitializeAsset(str);
+				const String str = Platform::ReadFromFile(s_Assets[i]->m_Path.string());
+				Yaml::Node root;
+				Yaml::Parse(root, str);
+				s_Assets[i]->InitializeAsset(root);
 			}
 		}
 	}
@@ -184,7 +185,7 @@ namespace Suora
 		{
 			if (Mesh* mesh = s_AssetStreamPool[i]->As<Mesh>())
 			{
-				//mesh->GetVertexArray();
+				//m_MeshAsset->GetVertexArray();
 			}
 			else if (Texture2D* texture = s_AssetStreamPool[i]->As<Texture2D>())
 			{
@@ -223,23 +224,23 @@ namespace Suora
 		asset->SetFlag(AssetFlags::Missing);
 		asset->RemoveAsset();
 	}
-	void AssetManager::RenameAsset(Asset* asset, const std::string& name)
+	void AssetManager::RenameAsset(Asset* asset, const String& name)
 	{
 		Platform::RenameFile(asset->m_Path, name);
 
 		asset->m_Name = name;
-		const std::string ext = asset->m_Path.extension().string();
+		const String ext = asset->m_Path.extension().string();
 		asset->m_Path = asset->m_Path.parent_path() / (name + ext);
 	}
 
-	void AssetManager::LoadAsset(const std::string& path)
+	void AssetManager::LoadAsset(const String& path)
 	{
 		if (GetAssetByPath(path)) return;
 
 		DirectoryEntry file = DirectoryEntry(path);
 		Asset* asset = nullptr;
 
-		const std::string ext = File::GetFileExtension(file);
+		const String ext = File::GetFileExtension(file);
 		const Class cls = Asset::GetAssetClassByExtension(ext);
 		if (cls != Asset::StaticClass()) asset = Cast<Asset>(New(cls));
 
@@ -250,21 +251,64 @@ namespace Suora
 			asset->m_Name = path.filename().string();
 			s_Assets.Add(asset);
 
-			asset->PreInitializeAsset(Platform::ReadFromFile(asset->m_Path.string()));
-			asset->InitializeAsset(Platform::ReadFromFile(asset->m_Path.string()));
+			const String str = Platform::ReadFromFile(asset->m_Path.string());
+			Yaml::Node root;
+			Yaml::Parse(root, str);
+			asset->PreInitializeAsset(root);
+			asset->InitializeAsset(root);
 		}
 	}
 
-	Asset* AssetManager::CreateAsset(const Class& assetClass, const std::string& name, const std::string& dir)
+	Asset* AssetManager::GetAsset(const Class& assetClass, const SuoraID& id)
+	{
+		if (id.GetString() == "0") return nullptr;
+
+		Array<Asset*> assets = GetAssetsByClass(assetClass);
+		for (Asset* asset : assets)
+		{
+			if (asset->m_UUID == id)
+			{
+				return asset;
+			}
+		}
+		return CreateMissingAsset(assetClass, id);
+	}
+
+	Array<Asset*> AssetManager::GetAssetsByClass(Class type)
+	{
+		Array<Asset*> array;
+		for (Asset* asset : s_Assets)
+		{
+			if (Asset* a = Cast(asset, type)) array.Add(a);
+		}
+		return array;
+	}
+
+	Asset* AssetManager::GetAssetByPath(const std::filesystem::path& path)
+	{
+		for (Asset* asset : s_Assets)
+		{
+			if (asset->m_Path == path) return asset;
+		}
+		return nullptr;
+	}
+
+	Asset* AssetManager::CreateAsset(const Class& assetClass, const String& name, const String& dir)
 	{
 		Asset* asset = New(assetClass)->As<Asset>();
-		std::vector<std::string> exts = asset->GetAssetExtensions();
+		std::vector<String> exts = asset->GetAssetExtensions();
 		s_Assets.Add(asset);
 		asset->m_Name = name;
 		asset->m_Path = dir + "/" + name + (exts.size() > 0 ? exts[0] : ".asset");
 		asset->m_UUID = SuoraID::Generate();
 
 		return asset;
+	}
+
+	uint32_t AssetManager::GetAssetStreamCountLimit()
+	{
+		const uint32_t avail = std::thread::hardware_concurrency();
+		return avail - 3;
 	}
 
 }

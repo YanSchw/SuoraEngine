@@ -14,16 +14,16 @@ namespace Suora
 
 	struct VisualNodePin
 	{
-		VisualNodePin(VisualNode& node, const std::string& label, const glm::vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
+		VisualNodePin(VisualNode& node, const String& label, const Vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
 			: m_Node(&node), Label(label), Color(color), PinID(id), IsReceivingPin(receive), PinHeight(pinHeight) { }
-		std::string Label;
-		glm::vec4 Color;
+		String Label;
+		Vec4 Color;
 		VisualNodePin* Target = nullptr;
 		bool IsReceivingPin = false;
 		int64_t PinID = 0;
 		float PinHeight = 25.0f;
-		std::string m_AdditionalData = "";
-		std::string Tooltip = "";
+		String m_AdditionalData = "";
+		String Tooltip = "";
 
 		bool operator==(const VisualNodePin& other) const
 		{
@@ -33,7 +33,7 @@ namespace Suora
 		bool HasOtherPin(const Array<Ref<VisualNode>>& nodes);
 	private:
 		VisualNode* m_Node = nullptr;
-		glm::vec2 PinConnectionPoint = glm::vec2(0.0f);
+		Vec2 PinConnectionPoint = Vec2(0.0f);
 		friend class VisualNodeGraph;
 		friend class NodeGraphEditor;
 		friend struct VisualNodeSearchOverlay;
@@ -42,22 +42,22 @@ namespace Suora
 	struct VisualNode
 	{
 		int64_t m_NodeID = 0;
-		glm::vec2 m_Position = { 0, 0 };
-		glm::vec2 m_Size = { 160, 100 };
-		glm::vec4 m_Color = glm::vec4(0.25f, 0.25f, 0.555f, 1);
-		glm::vec4 m_BackgroundColor = glm::vec4(0.05f, 0.05f, 0.055f, 0.9f);
-		std::string m_Title = "VisualNode";
+		Vec2 m_Position = { 0, 0 };
+		Vec2 m_Size = { 160, 100 };
+		Vec4 m_Color = Vec4(0.25f, 0.25f, 0.555f, 1);
+		Vec4 m_BackgroundColor = Vec4(0.05f, 0.05f, 0.055f, 0.9f);
+		String m_Title = "VisualNode";
 		Array<VisualNodePin> m_InputPins;
 		Array<VisualNodePin> m_OutputPins;
 		bool operator==(const VisualNode& other) const
 		{
 			return (this == &other);
 		}
-		void AddInputPin(const std::string& label, const glm::vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
+		void AddInputPin(const String& label, const Vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
 		{
 			m_InputPins.Add(VisualNodePin(*this, label, color, id, receive, pinHeight));
 		}
-		void AddOutputPin(const std::string& label, const glm::vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
+		void AddOutputPin(const String& label, const Vec4& color, int64_t id, bool receive, float pinHeight = 25.0f)
 		{
 			m_OutputPins.Add(VisualNodePin(*this, label, color, id, receive, pinHeight));
 		}
@@ -68,7 +68,7 @@ namespace Suora
 		VisualNodeEntry(const Ref<VisualNode>& node)
 			: m_Node(node) { }
 		Ref<VisualNode> m_Node;
-		Array<std::string> m_Tags;
+		Array<String> m_Tags;
 	};
 
 	struct VisualNodeGraph
@@ -76,7 +76,7 @@ namespace Suora
 		Array<Ref<VisualNode>> m_Nodes;
 
 		Array<VisualNodeEntry> m_SupportedNodes;
-		void AddSupportedNode(const Ref<VisualNode>& node, const Array<std::string>& tags = {});
+		void AddSupportedNode(const Ref<VisualNode>& node, const Array<String>& tags = {});
 		virtual void UpdateSupportedNodes();
 
 		virtual void TickAllVisualNodes();
@@ -89,8 +89,8 @@ namespace Suora
 
 		void SerializeNodeGraph(Yaml::Node& root);
 		void DeserializeNodeGraph(Yaml::Node& root);
-		std::string VisualNodePinToString(VisualNodePin& pin);
-		void VisualNodePinFromString(const std::string& str, VisualNodePin& a);
+		String VisualNodePinToString(VisualNodePin& pin);
+		void VisualNodePinFromString(const String& str, VisualNodePin& a);
 	};
 
 }

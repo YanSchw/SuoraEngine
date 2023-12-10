@@ -14,7 +14,7 @@
 namespace Suora
 {
 
-	static float GetAbsScale(const glm::mat4& transform)
+	static float GetAbsScale(const Mat4& transform)
 	{
 		Vec3 scale;
 		scale[0] = glm::length(Vec3(transform[0]));
@@ -36,15 +36,15 @@ namespace Suora
 		return Math::Remap(distance, 0.0f, 50.0f, 1.0f, 0.5f);
 	}
 
-	static float GetApproximateScreenPercentage(float fov, const glm::mat4& transform, const Vec3& cameraPos, Cluster* cluster)
+	static float GetApproximateScreenPercentage(float fov, const Mat4& transform, const Vec3& cameraPos, Cluster* cluster)
 	{
-		glm::mat4 tr = (transform * glm::translate(glm::mat4(), cluster->LocalPosition));
-		glm::vec3 translation = tr[3];
+		Mat4 tr = (transform * glm::translate(Mat4(), cluster->LocalPosition));
+		Vec3 translation = tr[3];
 		
 		return (GetAbsScale(transform) * 1.25f * cluster->ClusterRadius) / (glm::distance(translation, cameraPos) * glm::sin(glm::radians(fov)));
 	}
 
-	std::vector<Ref<Cluster>> Decima::Generate(Mesh* mesh, const glm::mat4& transform, const glm::vec3& cameraPos, const glm::vec3& cameraForward, float fov)
+	std::vector<Ref<Cluster>> Decima::Generate(Mesh* mesh, const Mat4& transform, const Vec3& cameraPos, const Vec3& cameraForward, float fov)
 	{
 		std::vector<Ref<Cluster>> Clusters;
 		Clusters.push_back(mesh->m_MainCluster);
@@ -93,16 +93,16 @@ namespace Suora
 				m_Index %= meshNodes.Size();
 				MeshNode* meshNode = meshNodes[m_Index];
 
-				if (meshNode->mesh && meshNode->mesh->IsDecimaMesh() && meshNode->mesh->m_MainCluster && meshNode->mesh->GetVertexArray())
+				if (meshNode->m_Mesh && meshNode->m_Mesh->IsDecimaMesh() && meshNode->m_Mesh->m_MainCluster && meshNode->m_Mesh->GetVertexArray())
 				{
-					if (meshNode->mesh->m_DecimaMeshes.find(meshNode) == meshNode->mesh->m_DecimaMeshes.end())
+					if (meshNode->m_Mesh->m_DecimaMeshes.find(meshNode) == meshNode->m_Mesh->m_DecimaMeshes.end())
 					{
-						meshNode->mesh->m_DecimaMeshes[meshNode] = CreateRef<Mesh>();
+						meshNode->m_Mesh->m_DecimaMeshes[meshNode] = CreateRef<Mesh>();
 					}
 
 					if (m_Jobs.find(meshNode) == m_Jobs.end())
 					{
-						m_Jobs[meshNode] = std::async(std::launch::async, &Decima::Generate, this, meshNode->mesh, meshNode->GetTransformMatrix(), camera->GetPosition(), camera->GetForwardVector(), camera->GetPerspectiveVerticalFOV());
+						m_Jobs[meshNode] = std::async(std::launch::async, &Decima::Generate, this, meshNode->m_Mesh, meshNode->GetTransformMatrix(), camera->GetPosition(), camera->GetForwardVector(), camera->GetPerspectiveVerticalFOV());
 					}
 
 				}
@@ -121,7 +121,7 @@ namespace Suora
 				std::vector<Ref<VertexArray>> vao;
 				for (auto& clusters : Clusters)
 				{
-					vao.push_back(clusters->GetVertexArray(It.first->mesh->m_MeshBuffer));
+					vao.push_back(clusters->GetVertexArray(It.first->m_Mesh->m_MeshBuffer));
 				}
 
 				s_ActiveClusters -= m_DecimaMeshes[It.first].size();

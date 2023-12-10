@@ -1,6 +1,6 @@
 #pragma once
 #include "Suora/GameFramework/Node.h"
-#include <glm/glm.hpp>
+#include "Suora/Common/VectorUtils.h"
 #include "CameraNode.generated.h"
 
 namespace Suora
@@ -16,6 +16,8 @@ namespace Suora
 		CameraNode();
 
 		void Begin() override;
+
+		virtual void TickTransform(bool inWorldSpace) override;
 
 		FUNCTION(Callable)
 		void SetPerspective(float verticalFOV, float nearClip, float farClip);
@@ -59,7 +61,7 @@ namespace Suora
 		ProjectionType GetProjectionType() const { return m_ProjectionType; }
 		void SetProjectionType(ProjectionType type) { m_ProjectionType = type; RecalculateProjection(); }
 
-		glm::vec3 ScreenPosToWorldDirection(const glm::vec2& pos, float windowWidth, float windowHeight) const;
+		Vec3 ScreenPosToWorldDirection(const Vec2& pos, float windowWidth, float windowHeight) const;
 
 		FUNCTION(Callable, Pure)
 		bool IsInFrustum(const Vec3& pos, float radius) const;
@@ -69,7 +71,8 @@ namespace Suora
 	public:
 		void RecalculateProjection();
 
-		const glm::mat4& GetProjectionMatrix() const { return m_Projection; }
+		const Mat4& GetProjectionMatrix() const { return m_Projection; }
+		const Mat4& GetViewProjectionMatrix() const { return m_ViewProjection; }
 
 		void SetAutoPossess(bool autoPossess) { m_AutoPossess = autoPossess; }
 		bool IsAutoPossessed() const { return m_AutoPossess; }
@@ -79,7 +82,8 @@ namespace Suora
 		Color GetClearColor() const { return m_ClearColor; }
 
 	protected:
-		glm::mat4 m_Projection = glm::mat4(1.0f);
+		Mat4 m_Projection = Mat4(1.0f);
+		Mat4 m_ViewProjection = Mat4(1.0f);
 
 	private:
 		ProjectionType m_ProjectionType = ProjectionType::Perspective;

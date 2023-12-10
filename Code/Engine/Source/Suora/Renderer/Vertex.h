@@ -14,12 +14,12 @@ namespace Suora
 
 	struct Vertex
 	{
-		glm::vec3 Position;
-		glm::vec4 Color = glm::vec4(1, 1, 1, 1);
-		glm::vec2 TexCoord = glm::vec2(0);
-		glm::vec3 Normal = glm::vec3(0, 1, 0);
-		glm::vec3 Tangent = glm::vec3(1, 0, 0);
-		glm::vec3 Bitangent = glm::vec3(0, 0, 1);
+		Vec3 Position;
+		Vec4 Color = Vec4(1, 1, 1, 1);
+		Vec2 TexCoord = Vec2(0);
+		Vec3 Normal = Vec3(0, 1, 0);
+		Vec3 Tangent = Vec3(1, 0, 0);
+		Vec3 Bitangent = Vec3(0, 0, 1);
 		int32_t Cluster = 0;
 		float TexIndex = 0;
 		float TilingFactor = 1;
@@ -27,28 +27,28 @@ namespace Suora
 		Vertex()
 		{
 			Position = Vec3();
-			Color = glm::vec4(1, 1, 1, 1);
-			TexCoord = glm::vec2(0);
+			Color = Vec4(1, 1, 1, 1);
+			TexCoord = Vec2(0);
 			TexIndex = 0;
 			TilingFactor = 1;
 		}
 		Vertex(const Vec3& pos)
 		{
 			Position = pos;
-			Color = glm::vec4(1, 1, 1, 1);
-			TexCoord = glm::vec2(0);
+			Color = Vec4(1, 1, 1, 1);
+			TexCoord = Vec2(0);
 			TexIndex = 0;
 			TilingFactor = 1;
 		}
-		Vertex(const Vec3& pos, const glm::vec2& uv)
+		Vertex(const Vec3& pos, const Vec2& uv)
 		{
 			Position = pos;
-			Color = glm::vec4(1, 1, 1, 1);
+			Color = Vec4(1, 1, 1, 1);
 			TexCoord = uv;
 			TexIndex = 0;
 			TilingFactor = 1;
 		}
-		operator glm::vec3()& { return Position; }
+		operator Vec3()& { return Position; }
 		bool Equals(const Vertex& other) const;
 		bool operator == (const Vertex& other) const;
 		bool operator != (const Vertex& other) const

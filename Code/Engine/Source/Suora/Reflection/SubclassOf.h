@@ -3,38 +3,19 @@
 
 namespace Suora
 {
+	struct Class;
 
 	/** Not used in C++, the Engine needs it internally, to do Scripting... */
 	struct TSubclassOf
 	{
-		TSubclassOf()
-		{
-		}
-		TSubclassOf(const Class& cls)
-		{
-			SetClass(cls);
-		}
+		TSubclassOf();
+		TSubclassOf(const Class& cls);
 
-		Class GetBase() const
-		{
-			return m_BaseClass;
-		}
-		Class GetClass() const
-		{
-			return m_SubClass;
-		}
-		void SetClass(const Class& cls)
-		{
-			if (cls.Inherits(m_BaseClass))
-			{
-				m_SubClass = cls;
-			}
-		}
+		Class GetBase() const;
+		Class GetClass() const;
+		void SetClass(const Class& cls);
 
-		operator Class() const
-		{
-			return m_SubClass;
-		}
+		operator Class() const;
 
 	private:
 		Class m_BaseClass = Class::None;

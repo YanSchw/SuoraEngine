@@ -78,7 +78,7 @@ void main(void)
 
 	out_BaseColor = vec3(0.0);
 	out_Metallic = 0.0;
-	out_Roughness = 0.0;
+	out_Roughness = 1.0;
 	out_WorldPos = worldPos;
 	out_WorldNormal = normalize(normal);
 	out_Emissive = baseColor;

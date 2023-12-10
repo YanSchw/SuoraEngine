@@ -21,11 +21,12 @@ namespace Suora
 	private:
 		uint32_t m_ClusterCount = 0;
 
+	private:
+		MEMBER() 
+		Mesh* m_Mesh = nullptr;
 	public:
 		MEMBER() 
-			Mesh* mesh = nullptr;
-		MEMBER() 
-			MaterialSlots materials;
+		MaterialSlots m_Materials;
 		
 		MEMBER()
 		bool m_CastShadow = true;
@@ -33,13 +34,17 @@ namespace Suora
 		MEMBER()
 		bool m_ContributeGI = true;
 
+	public:
 		float GetBoundingSphereRadius() const;
 		float GetApproximateScreenPercentage(CameraNode* camera) const;
 
 		MaterialSlots GetMaterials() const
 		{
-			return materials.OverwritteMaterials ? materials : (mesh ? mesh->m_Materials : materials);
+			return m_Materials.OverwritteMaterials ? m_Materials : (m_Mesh ? m_Mesh->m_Materials : m_Materials);
 		}
+
+		void SetMesh(Mesh* mesh);
+		Mesh* GetMesh() const;
 
 		MeshNode();
 		~MeshNode();

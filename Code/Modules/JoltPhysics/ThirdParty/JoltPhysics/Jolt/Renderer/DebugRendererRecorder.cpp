@@ -93,11 +93,11 @@ void DebugRendererRecorder::DrawGeometry(RMat44Arg inModelMatrix, const AABox &i
 	mCurrentFrame.mGeometries.push_back({ inModelMatrix, inModelColor, geometry_id, inCullMode, inCastShadow, inDrawMode });
 }
 
-void DebugRendererRecorder::DrawText3D(RVec3Arg inPosition, const string_view &inString, ColorArg inColor, float inHeight)
+void DebugRendererRecorder::DrawText3D(RVec3Arg inPosition, const string_view &inJoltString, ColorArg inColor, float inHeight)
 {
 	lock_guard lock(mMutex);
 
-	mCurrentFrame.mTexts.push_back({ inPosition, inString, inColor, inHeight });
+	mCurrentFrame.mTexts.push_back({ inPosition, inJoltString, inColor, inHeight });
 }
 
 void DebugRendererRecorder::EndFrame()
@@ -133,7 +133,7 @@ void DebugRendererRecorder::EndFrame()
 	for (const TextBlob &text : mCurrentFrame.mTexts)
 	{
 		mStream.Write(text.mPosition);
-		mStream.Write(text.mString);
+		mStream.Write(text.mJoltString);
 		mStream.Write(text.mColor);
 		mStream.Write(text.mHeight);
 	}

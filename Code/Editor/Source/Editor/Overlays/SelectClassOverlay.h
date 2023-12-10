@@ -7,7 +7,7 @@ namespace Suora
 
 	struct SelectAnyClassOverlay : public DragableOverlay
 	{
-		SelectAnyClassOverlay(const std::string& title, const Class& rootClass, const std::function<void(Class)>& lambda)
+		SelectAnyClassOverlay(const String& title, const Class& rootClass, const std::function<void(Class)>& lambda)
 			: DragableOverlay(title), m_RootClass(rootClass), m_Lambda(lambda)
 		{
 		}

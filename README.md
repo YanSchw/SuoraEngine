@@ -50,7 +50,7 @@ Create custom Gameplay Logic using Visual Scripting. Easy interoperability with 
 - Build using VS2022
 
 ## Build Requirements
-- C++17 Compiler
+- C++20 Compiler
 - [Windows] Visual Studio 2022 Toolset (**MSVC**)
 
 ## Supported Platforms

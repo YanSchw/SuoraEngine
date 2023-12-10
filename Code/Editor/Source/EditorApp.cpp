@@ -9,8 +9,6 @@
 #include "Editor/EditorWindow.h"
 #include "Editor/EditorUI.h"
 #include "Editor/Util/EditorPreferences.h"
-// HeaderTool
-#include "Tooling/HeaderTool/HeaderTool.h"
 
 extern void Modules_Init();
 
@@ -33,9 +31,7 @@ namespace Suora
 
 			AssetManager::LoadAsset(AssetManager::GetEngineAssetPath() + "/EditorPreferences.editor");
 
-			Font::Instance = AssetManager::GetAssetByName<Font>("Inter-SemiBold.font");
-			Font::Instance = AssetManager::GetAssetByName<Font>("Inter-Light.font");
-			Font::Instance = AssetManager::GetAssetByName<Font>("JetbrainsMono32b.font");
+			Font::Instance = AssetManager::GetAssetByName<Font>("SimplyMono.font");
 
 			Modules_Init();
 			

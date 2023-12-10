@@ -1,7 +1,7 @@
 #include "LevelOutliner.h"
-#include "../../Util/EditorCamera.h"
-#include "../../Util/EditorPreferences.h"
-#include "../Major/NodeClassEditor.h"
+#include "Editor/Util/EditorCamera.h"
+#include "Editor/Util/EditorPreferences.h"
+#include "Editor/Panels/Major/NodeClassEditor.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
 #include "Suora/GameFramework/Node.h"
 #include "Suora/GameFramework/Nodes/Light/SkyLightNode.h"
@@ -10,7 +10,7 @@
 #include "Suora/GameFramework/Nodes/PostProcess/PostProcessNode.h"
 #include "Suora/GameFramework/Nodes/DecalNode.h"
 #include "Suora/GameFramework/Nodes/OrganizationNodes.h"
-#include "../../Overlays/SelectClassOverlay.h"
+#include "Editor/Overlays/SelectClassOverlay.h"
 
 namespace Suora
 {
@@ -58,16 +58,16 @@ namespace Suora
 				MeshNode* cube = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
 				cube->SetName("Cube");
 				cube->m_IsActorLayer = true;
-				cube->m_OverwrittenProperties.Add("mesh");
-				cube->mesh = AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8"));
+				cube->m_OverwrittenProperties.Add("m_Mesh");
+				cube->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8")));
 			}, "Cube", nullptr });
 			_3D.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
 			{
 				MeshNode* sphere = world ? world->Spawn<MeshNode>() : node->CreateChild<MeshNode>();
 				sphere->SetName("Sphere");
 				sphere->m_IsActorLayer = true;
-				sphere->m_OverwrittenProperties.Add("mesh");
-				sphere->mesh = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
+				sphere->m_OverwrittenProperties.Add("m_Mesh");
+				sphere->SetMesh(AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1")));
 			}, "Sphere", nullptr });
 		}
 		out.push_back(EditorUI::ContextMenuElement{ {_3D}, [world, node]() {}, "3D", nullptr });
@@ -104,6 +104,12 @@ namespace Suora
 				nodeUI->SetName("UINode");
 				nodeUI->m_IsActorLayer = true;
 			}, "UINode", nullptr });
+			_UI.push_back(EditorUI::ContextMenuElement{ {}, [world, node]()
+			{
+				UINode* nodeUI = world ? world->Spawn<UIImage>() : node->CreateChild<UIImage>();
+				nodeUI->SetName("UIImage");
+				nodeUI->m_IsActorLayer = true;
+			}, "UIImage", nullptr });
 		}
 		out.push_back(EditorUI::ContextMenuElement{ {_UI}, [world, node]() {}, "UI", nullptr });
 
@@ -239,6 +245,18 @@ namespace Suora
 			m_DropDowns[node] = true;
 		}
 
+
+		// Drawing the Parent/Child   v MyParentNode
+		//                            |
+		//                            |--> MyChildNode
+		// Stuff
+		if (node->GetParent())
+		{
+			EditorUI::DrawRect(x - 0.64f * EntryHeight, y + 0.5f * EntryHeight, EntryHeight * (node->HasChildren() ? 1.0f : 1.5f) - 10.0f, 2.0f, 0.0f, Color(0.3f, 0.3f, 0.3f, 1.0f));
+			EditorUI::DrawRect(x - 0.64f * EntryHeight, y + 0.5f * EntryHeight, 2.0f, m_TempYValuesOfParentNodes[node->GetParent()] - y - 10.0f, 0.0f, Color(0.3f, 0.3f, 0.3f, 1.0f));
+		}
+
+
 		Vec2 mousePosition = EditorUI::GetInput();
 		const bool Hovering = mousePosition.x >= x + (EntryHeight + 6) && mousePosition.x <= 0 + GetWidth() && mousePosition.y > y && mousePosition.y <= y + EntryHeight && (mousePosition.y > 35.0f && mousePosition.y < GetHeight() - 35.0f && mousePosition.x < GetWidth() - 10.0f);
 		const bool Selected = (node == GetSelectedObject());
@@ -346,7 +364,7 @@ namespace Suora
 
 			if (node->GetParent())
 			{
-				std::string className = ClassReflector::GetClassName(node->GetNativeClass());
+				String className = ClassReflector::GetClassName(node->GetNativeClass());
 				bool isNativeClass = true;
 				if (INodeScriptObject* obj = node->GetInterface<INodeScriptObject>())
 				{
@@ -373,16 +391,6 @@ namespace Suora
 				}
 				EditorUI::Text(className, Font::Instance, GetWidth() * m_HeaderSeperator1, y, GetWidth() * (m_HeaderSeperator2 - m_HeaderSeperator1), EntryHeight, EntryHeight * 0.9f, Vec2(-0.95f, 0), Selected ? EditorPreferences::Get()->UiColor : (isNativeClass ? Color(0.65f) : EditorPreferences::Get()->UiHighlightColor));
 			}
-		}
-
-		// Drawing the Parent/Child   v MyParentNode
-		//                            |
-		//                            |--> MyChildNode
-		// Stuff
-		if (node->GetParent())
-		{
-			EditorUI::DrawRect(x - 0.64f * EntryHeight, y + 0.5f * EntryHeight, EntryHeight * (node->HasChildren() ? 1.0f : 1.5f) - 10.0f, 2.0f, 0.0f, Color(0.3f, 0.3f, 0.3f, 1.0f));
-			EditorUI::DrawRect(x - 0.64f * EntryHeight, y + 0.5f * EntryHeight, 2.0f, m_TempYValuesOfParentNodes[node->GetParent()] - y - 10.0f, 0.0f, Color(0.3f, 0.3f, 0.3f, 1.0f));
 		}
 
 		y -= EntryHeight;

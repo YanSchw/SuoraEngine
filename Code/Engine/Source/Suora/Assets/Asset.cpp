@@ -6,17 +6,15 @@
 namespace Suora
 {
 
-	void Asset::PreInitializeAsset(const std::string& str)
+	void Asset::PreInitializeAsset(Yaml::Node& root)
 	{
-		Yaml::Node root;
-		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<std::string>();
+		m_UUID = SuoraID(root["UUID"].As<String>());
 		m_LastWriteTime = std::filesystem::last_write_time(m_Path);
 
 		SetFlag(AssetFlags::WasPreInitialized);
 	}
 
-	void Asset::InitializeAsset(const std::string& str)
+	void Asset::InitializeAsset(Yaml::Node& root)
 	{
 		SetFlag(AssetFlags::WasInitialized);
 	}
@@ -42,14 +40,14 @@ namespace Suora
 		Platform::RemoveFile(m_Path);
 	}
 
-	Class Asset::GetAssetClassByExtension(const std::string& ext)
+	Class Asset::GetAssetClassByExtension(const String& ext)
 	{
-		Array<Class> derivatives = Class::GetSubclassesOf(Asset::StaticClass());//Asset::GetClassDerivatives();
+		Array<Class> derivatives = Class::GetSubclassesOf(Asset::StaticClass());
 
 		for (Class cls : derivatives)
 		{
 			Asset* asset = Cast<Asset>(New(cls));
-			const std::vector<std::string> assetExtensions = asset->GetAssetExtensions();
+			const std::vector<String> assetExtensions = asset->GetAssetExtensions();
 			for (auto& str : assetExtensions)
 			{
 				if (str == ext)
@@ -63,9 +61,9 @@ namespace Suora
 
 		return Asset::StaticClass();
 	}
-	std::string Asset::GetAssetExtensionByClass(NativeClassID id)
+	String Asset::GetAssetExtensionByClass(NativeClassID id)
 	{
-		Array<Class> derivatives = Class::GetSubclassesOf(Asset::StaticClass());//Asset::GetClassDerivatives();
+		Array<Class> derivatives = Class::GetSubclassesOf(Asset::StaticClass());
 
 		for (auto& cls : derivatives)
 		{
@@ -74,7 +72,7 @@ namespace Suora
 			{
 				if (asset->GetNativeClass().GetNativeClassID() == id)
 				{
-					const std::string out = asset->GetAssetExtensions()[0];
+					const String out = asset->GetAssetExtensions()[0];
 					delete asset;
 					return out;
 				}

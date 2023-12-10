@@ -3,7 +3,7 @@
 
 namespace Suora
 {
-	void VisualNodeGraph::AddSupportedNode(const Ref<VisualNode>& node, const Array<std::string>& tags)
+	void VisualNodeGraph::AddSupportedNode(const Ref<VisualNode>& node, const Array<String>& tags)
 	{
 		m_SupportedNodes.Add(node);
 		VisualNodeEntry& entry = m_SupportedNodes[m_SupportedNodes.Size() - 1];
@@ -176,24 +176,24 @@ namespace Suora
 				m_Nodes.Add(Ref<VisualNode>(new VisualNode()));
 				VisualNode* node = m_Nodes[m_Nodes.Last()].get();
 
-				node->m_Color = glm::vec4(entry["Color"]["r"].As<float>(), entry["Color"]["g"].As<float>(), entry["Color"]["b"].As<float>(), entry["Color"]["a"].As<float>());
+				node->m_Color = Vec4(entry["Color"]["r"].As<float>(), entry["Color"]["g"].As<float>(), entry["Color"]["b"].As<float>(), entry["Color"]["a"].As<float>());
 				node->m_NodeID = entry["NodeID"].As<int64_t>();
-				node->m_Position = glm::vec2(entry["Position"]["x"].As<float>(), entry["Position"]["y"].As<float>());
-				node->m_Size = glm::vec2(entry["Size"]["x"].As<float>(), entry["Size"]["y"].As<float>());
-				node->m_Title = entry["Title"].As<std::string>();
+				node->m_Position = Vec2(entry["Position"]["x"].As<float>(), entry["Position"]["y"].As<float>());
+				node->m_Size = Vec2(entry["Size"]["x"].As<float>(), entry["Size"]["y"].As<float>());
+				node->m_Title = entry["Title"].As<String>();
 
 				int inputIndex = 0;
 				while (true)
 				{
 					Yaml::Node& entryPin = entry["Input_" + std::to_string(inputIndex++)];
 					if (entryPin.IsNone()) break;
-					node->m_InputPins.Add(VisualNodePin(*node, "", glm::vec4(), 0, false));
+					node->m_InputPins.Add(VisualNodePin(*node, "", Vec4(), 0, false));
 					VisualNodePin& pin = node->m_InputPins[node->m_InputPins.Last()];
 
-					pin.Color = glm::vec4(entryPin["Color"]["r"].As<float>(), entryPin["Color"]["g"].As<float>(), entryPin["Color"]["b"].As<float>(), entryPin["Color"]["a"].As<float>());
-					pin.IsReceivingPin = entryPin["IsReceivingPin"].As<std::string>() == "true";
-					pin.Label = entryPin["Label"].As<std::string>();
-					pin.m_AdditionalData = entryPin["m_AdditionalData"].As<std::string>();
+					pin.Color = Vec4(entryPin["Color"]["r"].As<float>(), entryPin["Color"]["g"].As<float>(), entryPin["Color"]["b"].As<float>(), entryPin["Color"]["a"].As<float>());
+					pin.IsReceivingPin = entryPin["IsReceivingPin"].As<String>() == "true";
+					pin.Label = entryPin["Label"].As<String>();
+					pin.m_AdditionalData = entryPin["m_AdditionalData"].As<String>();
 					pin.PinHeight = entryPin["PinHeight"].As<float>();
 					pin.PinID = entryPin["PinID"].As<int64_t>();
 					// Target still left
@@ -203,13 +203,13 @@ namespace Suora
 				{
 					Yaml::Node& entryPin = entry["Output_" + std::to_string(outputIndex++)];
 					if (entryPin.IsNone()) break;
-					node->m_OutputPins.Add(VisualNodePin(*node, "", glm::vec4(), 0, false));
+					node->m_OutputPins.Add(VisualNodePin(*node, "", Vec4(), 0, false));
 					VisualNodePin& pin = node->m_OutputPins[node->m_OutputPins.Last()];
 
-					pin.Color = glm::vec4(entryPin["Color"]["r"].As<float>(), entryPin["Color"]["g"].As<float>(), entryPin["Color"]["b"].As<float>(), entryPin["Color"]["a"].As<float>());
-					pin.IsReceivingPin = entryPin["IsReceivingPin"].As<std::string>() == "true";
-					pin.Label = entryPin["Label"].As<std::string>();
-					pin.m_AdditionalData = entryPin["m_AdditionalData"].As<std::string>();
+					pin.Color = Vec4(entryPin["Color"]["r"].As<float>(), entryPin["Color"]["g"].As<float>(), entryPin["Color"]["b"].As<float>(), entryPin["Color"]["a"].As<float>());
+					pin.IsReceivingPin = entryPin["IsReceivingPin"].As<String>() == "true";
+					pin.Label = entryPin["Label"].As<String>();
+					pin.m_AdditionalData = entryPin["m_AdditionalData"].As<String>();
 					pin.PinHeight = entryPin["PinHeight"].As<float>();
 					pin.PinID = entryPin["PinID"].As<int64_t>();
 					// Target still left
@@ -231,9 +231,9 @@ namespace Suora
 					Yaml::Node& entryPin = entry["Input_" + std::to_string(inputIndex++)];
 					if (entryPin.IsNone()) break;
 					VisualNodePin& pin = node->m_InputPins[inputIndex - 1];
-					if (pin.IsReceivingPin && entryPin["Target"].As<std::string>() != "NULL")
+					if (pin.IsReceivingPin && entryPin["Target"].As<String>() != "NULL")
 					{
-						VisualNodePinFromString(entryPin["Target"].As<std::string>(), pin);
+						VisualNodePinFromString(entryPin["Target"].As<String>(), pin);
 					}
 				}
 				int outputIndex = 0;
@@ -242,18 +242,18 @@ namespace Suora
 					Yaml::Node& entryPin = entry["Output_" + std::to_string(outputIndex++)];
 					if (entryPin.IsNone()) break;
 					VisualNodePin& pin = node->m_OutputPins[outputIndex - 1];
-					if (pin.IsReceivingPin && entryPin["Target"].As<std::string>() != "NULL")
+					if (pin.IsReceivingPin && entryPin["Target"].As<String>() != "NULL")
 					{
-						VisualNodePinFromString(entryPin["Target"].As<std::string>(), pin);
+						VisualNodePinFromString(entryPin["Target"].As<String>(), pin);
 					}
 				}
 			}
 		}
 	}
 
-	std::string VisualNodeGraph::VisualNodePinToString(VisualNodePin& pin)
+	String VisualNodeGraph::VisualNodePinToString(VisualNodePin& pin)
 	{
-		std::string str;
+		String str;
 
 		int nodeIndex = IndexOf(*pin.GetNode());
 		str += std::to_string(nodeIndex) + "/";
@@ -271,10 +271,10 @@ namespace Suora
 
 		return str;
 	}
-	void VisualNodeGraph::VisualNodePinFromString(const std::string& str, VisualNodePin& a)
+	void VisualNodeGraph::VisualNodePinFromString(const String& str, VisualNodePin& a)
 	{
 		SUORA_ASSERT(a.IsReceivingPin, "Pin A must be a receiving Pin!");
-		std::vector<std::string> strs = Util::SplitString(str, '/');
+		std::vector<String> strs = StringUtil::SplitString(str, '/');
 
 		Ref<VisualNode> node = m_Nodes[std::stoi(strs[0])];
 		const bool isInput = strs[1] == "Input";

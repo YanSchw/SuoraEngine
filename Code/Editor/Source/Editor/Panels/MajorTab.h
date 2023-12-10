@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "DockspacePanel.h"
+#include "Suora/Core/Base.h"
 #include "Suora/Common/Array.h"
 #include "Minor/LevelOutliner.h"
 #include "Minor/ContentBrowser.h"
@@ -8,9 +9,8 @@
 #include "Minor/DetailsPanel.h"
 #include "Minor/NodeGraphEditor.h"
 #include "Suora/GameFramework/Nodes/MeshNode.h"
+#include "Editor/Util/EditorTransaction.h"
 #include "MajorTab.generated.h"
-
-#include "../Util/EditorTransaction.h"
 
 namespace Suora
 {
@@ -26,7 +26,7 @@ namespace Suora
 		SUORA_CLASS(689754);
 
 	public:
-		std::string m_Name = "MajorTab";
+		String m_Name = "MajorTab";
 
 		Ptr<Asset> m_Asset = nullptr;
 

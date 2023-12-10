@@ -25,9 +25,9 @@ namespace Suora
 
 	struct FunctionParam
 	{
-		std::string m_Type;
-		std::string m_Name;
-		FunctionParam(const std::string& type, const std::string& name)
+		String m_Type;
+		String m_Name;
+		FunctionParam(const String& type, const String& name)
 			: m_Type(type), m_Name(name)
 		{
 		}
@@ -50,25 +50,25 @@ namespace Suora
 
 	struct NativeFunction
 	{
-		NativeFunction(const std::string& label, const NativeFunctionPtr& func, uint64_t id, const std::vector<FunctionParam>& params, const std::string& returnType, FunctionFlags flags = FunctionFlags::None);
+		NativeFunction(const String& label, const NativeFunctionPtr& func, uint64_t id, const std::vector<FunctionParam>& params, const String& returnType, FunctionFlags flags = FunctionFlags::None);
 		~NativeFunction();
 		bool IsFlagSet(FunctionFlags flag) const;
 
 		inline static std::vector<NativeFunction*> s_NativeFunctions;
 	//private:
-		std::string m_Label;
+		String m_Label;
 		size_t m_Hash;
 		std::vector<FunctionParam> m_Params;
-		std::string m_ReturnType = "void";
+		String m_ReturnType = "void";
 		uint64_t m_ClassID;
 		FunctionFlags m_Flags;
 	};
 
 	struct NativeFunctionHashCheck
 	{
-		NativeFunctionHashCheck(const std::string& str)
+		NativeFunctionHashCheck(const String& str)
 		{
-			size_t hash = std::hash<std::string>{}(str);
+			size_t hash = std::hash<String>{}(str);
 			for (auto& It : NativeFunction::s_NativeFunctions)
 			{
 				if (It->m_Hash == hash)

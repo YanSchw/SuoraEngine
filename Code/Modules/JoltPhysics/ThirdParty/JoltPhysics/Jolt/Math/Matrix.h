@@ -212,7 +212,7 @@ public:
 		return m;
 	}
 
-	/// To String
+	/// To JoltString
 	friend ostream &						operator << (ostream &inStream, const Matrix &inM)
 	{
 		for (uint i = 0; i < Cols - 1; ++i)

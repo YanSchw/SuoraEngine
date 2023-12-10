@@ -18,7 +18,7 @@ namespace Suora
 		Ref<ScriptClassInternal> m_ScriptClass;
 	public:
 		ScriptClass();
-		void PreInitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
 		Class GetScriptParentClass() const;
 		Object* CreateInstance(bool isRootNode);
 

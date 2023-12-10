@@ -1,0 +1,16 @@
+Settings: 
+  Engine: 
+    Path: "NoPath"
+    VersionMajor: 0
+    VersionMinor: 9
+    VersionPatch: 0
+    m_EditorStartupAsset: "369b6f34-df9e-42e0-a25b-5fce6f8c769f"
+    m_IsNativeProject: false
+  Game: 
+    m_DefaultLevel: "369b6f34-df9e-42e0-a25b-5fce6f8c769f"
+    m_GameInstanceClass: Native$89437688
+    m_ProjectIconTexture: "059f71bb-7ad3-47a0-be84-6dfc910f7ca3"
+  Rendering: 
+    m_EnableDeferredRendering: true
+    m_TargetFramerate: 60.000000
+UUID: "c036dd9a-9b93-4852-bb9c-369cd22999b8"

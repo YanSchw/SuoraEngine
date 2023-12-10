@@ -264,7 +264,7 @@ public:
 	/// Get vector that contains the sign of each element (returns 1.0f if positive, -1.0f if negative)
 	JPH_INLINE Vec3				GetSign() const;
 
-	/// To String
+	/// To JoltString
 	friend ostream &			operator << (ostream &inStream, Vec3Arg inV)
 	{
 		inStream << inV.mF32[0] << ", " << inV.mF32[1] << ", " << inV.mF32[2];

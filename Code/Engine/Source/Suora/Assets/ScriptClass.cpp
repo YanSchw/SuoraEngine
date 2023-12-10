@@ -17,20 +17,10 @@ namespace Suora
 
 	}
 
-	void ScriptClass::PreInitializeAsset(const std::string& str)
+	void ScriptClass::PreInitializeAsset(Yaml::Node& root)
 	{
-		//Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 
-		/*Yaml::Node root;
-		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<std::string>();
-
-		Yaml::Node& node = root["Node"];
-		m_ParentClass = Class::FromString(node["m_ParentClass"].As<std::string>());*/
-
-
-		// ScriptClass
-		//m_ScriptClass->Deserialize(node);
 	}
 
 	Class ScriptClass::GetScriptParentClass() const

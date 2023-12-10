@@ -1,7 +1,6 @@
 #include "DockspacePanel.h"
-#include "../Util/EditorPreferences.h"
-#include "../EditorUI.h"
-#include <Suora.h>
+#include "Editor/Util/EditorPreferences.h"
+#include "Editor/EditorUI.h"
 
 namespace Suora
 {

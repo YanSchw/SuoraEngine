@@ -1,0 +1,35 @@
+Mesh: 
+  Materials: 
+    0: "40c60ec4-4852-4b08-a757-ed6231a64796"
+    1: "cd2ab9c9-0950-4c15-b1c0-08ef2114eb4d"
+    10: "a15a32b7-3d42-4ec3-ae26-93f66c14635d"
+    11: "8efcf0d1-c4b9-4ae3-858c-029016c16f42"
+    12: "d4fd510d-fce4-42c2-af01-e49e7ff67bea"
+    13: "02a48baa-628e-4f87-950e-c6e93558fd8b"
+    14: "8141c9a0-4217-4b8c-98bc-34807178dc99"
+    15: "02e3089f-5f0a-4fd9-a6d9-a633f863523a"
+    16: "381902f5-9f74-4928-a29c-9f868d73273b"
+    17: "51540c5f-cb02-4c60-8d18-0266aaf9eaeb"
+    18: "730f4231-97a0-4c99-a1f1-a4ff2ada56da"
+    19: "f6f44efa-8f02-4970-969b-f4c1c5021b42"
+    2: "c9fcdcf2-b4a3-4590-b8fd-6f1dd4e0eb64"
+    20: "0e37ec3e-2523-4f08-b798-cfe52ddbf8dd"
+    21: "f76d6a1f-bdc4-4039-a5fc-6ec996971100"
+    22: "f01aedbc-1005-4ffa-88f2-f58d85abeef3"
+    23: "32dcf43c-fc1d-4acc-8f77-4cb8c0162f81"
+    3: "29b800e2-44e9-43fd-a797-ce0fda834310"
+    4: "bba42f6e-231f-4cbc-8c26-a54642efec0c"
+    5: "2e656d22-79b9-4d30-8e8d-10f43046f03f"
+    6: "ef7f357f-95d0-4f8e-ac01-5402da901c8f"
+    7: "ef986e58-eb88-4373-a77d-227228414d92"
+    8: "7150444b-aad1-4ed9-b4b6-cd43f5e368a4"
+    9: "5a3056a7-9a1f-492f-a1d4-72f7578f585d"
+    Overwrite: false
+  m_BoundingSphereRadius: 0.000000
+  m_ImportScale: 0.010000/0.010000/0.010000
+  m_IsDecimaMesh: false
+  m_NegativeY_Bounds: 0.000000
+StreamableAsset: 
+  m_SourceAssetName: Sponza.fbx
+  m_StreamMode: 0
+UUID: "b4947f7a-f91a-4490-b371-04ffabc57eb0"

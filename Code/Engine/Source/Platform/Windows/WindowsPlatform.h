@@ -24,7 +24,7 @@ namespace Suora
 		auto currentTime = std::chrono::steady_clock::now();
 		return currentTime.time_since_epoch().count() / 1000000000.0f;
 	}
-	void Platform::WriteToFile(const std::string& filePath, const std::string& content)
+	void Platform::WriteToFile(const String& filePath, const String& content)
 	{
 		std::ofstream writer;
 		writer.open(filePath);
@@ -33,15 +33,15 @@ namespace Suora
 
 		writer.close();
 	}
-	std::string Platform::ReadFromFile(const std::string& filePath)
+	String Platform::ReadFromFile(const String& filePath)
 	{
 		std::ifstream reader(filePath);
-		std::string str((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
+		String str((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
 		reader.close();
 
 		return str;
 	}
-	void Platform::RenameFile(const std::filesystem::path& filePath, const std::string& rename)
+	void Platform::RenameFile(const std::filesystem::path& filePath, const String& rename)
 	{
 		if (std::filesystem::exists(filePath))
 		{
@@ -49,7 +49,7 @@ namespace Suora
 		}
 	}
 
-	std::optional<std::string> Platform::OpenFileDialog()
+	std::optional<String> Platform::OpenFileDialog()
 	{
 		LPCSTR filter = "All\0*.*\0Text\0*.TXT\0";
 
@@ -71,9 +71,9 @@ namespace Suora
 			return ofn.lpstrFile;
 		return std::nullopt;
 	}
-	std::optional<std::string> Platform::OpenFileDialog(const std::vector<std::string>& filter)
+	std::optional<String> Platform::OpenFileDialog(const std::vector<String>& filter)
 	{
-		std::string allFilters;
+		String allFilters;
 		for (int i = 0; i < filter.size(); i++)
 		{
 			allFilters += filter[i];
@@ -107,16 +107,16 @@ namespace Suora
 	{
 		if (uMsg == BFFM_INITIALIZED)
 		{
-			std::string tmp = (const char*)lpData;
+			String tmp = (const char*)lpData;
 			//std::cout << "path: " << tmp << std::endl;
 			SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
 		}
 
 		return 0;
 	}
-	std::optional<std::string> Platform::ChoosePathDialog()
+	std::optional<String> Platform::ChoosePathDialog()
 	{
-		const std::string saved_path = std::filesystem::current_path().string();
+		const String saved_path = std::filesystem::current_path().string();
 		TCHAR path[MAX_PATH];
 
 		const char* path_param = saved_path.c_str();
@@ -143,14 +143,14 @@ namespace Suora
 			}
 
 			std::wstring ws = std::basic_string<TCHAR>(path);
-			std::string str(ws.begin(), ws.end());
+			String str(ws.begin(), ws.end());
 			return str;
 		}
 
 		return std::nullopt;
 	}
 	
-	void Platform::WriteToClipboard(const std::string& str)
+	void Platform::WriteToClipboard(const String& str)
 	{
 		HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, str.length());
 		memcpy(GlobalLock(hMem), str.c_str(), str.length());
@@ -161,7 +161,7 @@ namespace Suora
 		CloseClipboard();
 		GlobalFree(hMem);
 	}
-	std::string Platform::ReadFromClipboard()
+	String Platform::ReadFromClipboard()
 	{
 		if (OpenClipboard(NULL))
 		{
@@ -215,7 +215,7 @@ namespace Suora
 		}
 	}
 
-	void Platform::OpenFileExternally(const std::string& filePath)
+	void Platform::OpenFileExternally(const String& filePath)
 	{
 		wchar_t wtext[512];
 		mbstowcs(wtext, filePath.c_str(), filePath.length());//includes null

@@ -1,6 +1,6 @@
 #pragma once
 #include <filesystem>
-#include <string>
+#include "Suora/Common/StringUtils.h"
 #include <vector>
 #include <algorithm>
 
@@ -47,8 +47,9 @@ namespace File
         return Entries;
     }
 
-    static std::string GetFileExtension(const DirectoryEntry& File)
+    static Suora::String GetFileExtension(const DirectoryEntry& File)
     {
         return File.path().extension().string();
     }
+
 }

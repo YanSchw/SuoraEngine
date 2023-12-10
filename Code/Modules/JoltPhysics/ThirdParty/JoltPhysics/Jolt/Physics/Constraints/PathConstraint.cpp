@@ -376,7 +376,7 @@ void PathConstraint::DrawConstraint(DebugRenderer *inRenderer) const
 		inRenderer->DrawArrow(x1, x1 + mPathTangent, Color::sBlue, 0.1f);
 		inRenderer->DrawArrow(x1, x1 + mPathNormal, Color::sRed, 0.1f);
 		inRenderer->DrawArrow(x1, x1 + mPathBinormal, Color::sGreen, 0.1f);
-		inRenderer->DrawText3D(x1, StringFormat("%.1f", (double)mPathFraction));
+		inRenderer->DrawText3D(x1, JoltStringFormat("%.1f", (double)mPathFraction));
 
 		// Draw motor
 		switch (mPositionMotorState)

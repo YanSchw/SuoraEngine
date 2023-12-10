@@ -1,6 +1,6 @@
 #pragma once
-#include "../MajorTab.h"
-#include "../Minor/ViewportPanel.h"
+#include "Editor/Panels/MajorTab.h"
+#include "Editor/Panels/Minor/ViewportPanel.h"
 #include "Suora/NodeScript/ShaderNodeGraph.h"
 #include "ShaderGraphEditorPanel.generated.h"
 
@@ -54,7 +54,7 @@ namespace Suora
 		void SaveAsset() override;
 	private:
 		bool m_InitResetCamera = false;
-		std::string m_LastBaseShader;
+		String m_LastBaseShader;
 	};
 
 }

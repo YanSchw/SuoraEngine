@@ -12,8 +12,8 @@ JPH_NAMESPACE_BEGIN
 ObjectStreamBinaryOut::ObjectStreamBinaryOut(ostream &inStream) :
 	ObjectStreamOut(inStream)
 {
-	String header;
-	header = StringFormat("BOS%2d.%02d", ObjectStream::sVersion, ObjectStream::sRevision);
+	JoltString header;
+	header = JoltStringFormat("BOS%2d.%02d", ObjectStream::sVersion, ObjectStream::sRevision);
 	mStream.write(header.c_str(), header.size());
 }
 
@@ -24,7 +24,7 @@ void ObjectStreamBinaryOut::WriteDataType(EOSDataType inType)
 
 void ObjectStreamBinaryOut::WriteName(const char *inName)
 {
-	WritePrimitiveData(String(inName));
+	WritePrimitiveData(JoltString(inName));
 }
 
 void ObjectStreamBinaryOut::WriteIdentifier(Identifier inIdentifier)
@@ -77,7 +77,7 @@ void ObjectStreamBinaryOut::WritePrimitiveData(const bool &inPrimitive)
 	mStream.write((const char *)&inPrimitive, sizeof(inPrimitive));
 }
 
-void ObjectStreamBinaryOut::WritePrimitiveData(const String &inPrimitive)
+void ObjectStreamBinaryOut::WritePrimitiveData(const JoltString &inPrimitive)
 {
 	// Empty strings are trivial
 	if (inPrimitive.empty())
@@ -87,16 +87,16 @@ void ObjectStreamBinaryOut::WritePrimitiveData(const String &inPrimitive)
 	}
 
 	// Check if we've already written this string
-	StringTable::iterator i = mStringTable.find(inPrimitive);
-	if (i != mStringTable.end())
+	JoltStringTable::iterator i = mJoltStringTable.find(inPrimitive);
+	if (i != mJoltStringTable.end())
 	{
 		WritePrimitiveData(i->second);
 		return;
 	}
 
 	// Insert string in table
-	mStringTable.try_emplace(inPrimitive, mNextStringID);
-	mNextStringID++;
+	mJoltStringTable.try_emplace(inPrimitive, mNextJoltStringID);
+	mNextJoltStringID++;
 
 	// Write string
 	uint32 len = min((uint32)inPrimitive.size(), (uint32)0x7fffffff);

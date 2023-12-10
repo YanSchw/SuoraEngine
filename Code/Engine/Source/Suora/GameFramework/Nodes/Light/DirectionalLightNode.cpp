@@ -46,7 +46,7 @@ namespace Suora
 	void DirectionalLightNode::ShadowMap(World& world, CameraNode& camera)
 	{
 		if (!IsEnabled()) return;
-		RenderCommand::SetClearColor(glm::vec4(0.0f));
+		RenderCommand::SetClearColor(Vec4(0.0f));
 		RenderCommand::SetDepthTest(true);
 		RenderCommand::SetAlphaBlending(false);
 

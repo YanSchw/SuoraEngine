@@ -28,7 +28,7 @@ public:
 			break;
 
 		case EState::Error:
-			::new (&mError) String(inRHS.mError);
+			::new (&mError) JoltString(inRHS.mError);
 			break;
 
 		case EState::Invalid:
@@ -47,7 +47,7 @@ public:
 			break;
 
 		case EState::Error:
-			::new (&mError) String(std::move(inRHS.mError));
+			::new (&mError) JoltString(std::move(inRHS.mError));
 			break;
 
 		case EState::Invalid:
@@ -74,7 +74,7 @@ public:
 			break;
 
 		case EState::Error:
-			::new (&mError) String(inRHS.mError);
+			::new (&mError) JoltString(inRHS.mError);
 			break;
 
 		case EState::Invalid:
@@ -98,7 +98,7 @@ public:
 			break;
 
 		case EState::Error:
-			::new (&mError) String(std::move(inRHS.mError));
+			::new (&mError) JoltString(std::move(inRHS.mError));
 			break;
 
 		case EState::Invalid:
@@ -120,7 +120,7 @@ public:
 			break;
 
 		case EState::Error:
-			mError.~String();
+			mError.~JoltString();
 			break;
 
 		case EState::Invalid:
@@ -149,18 +149,18 @@ public:
 	bool				HasError() const							{ return mState == EState::Error; }
 
 	/// Get the error value
-	const String &		GetError() const							{ JPH_ASSERT(HasError()); return mError; }
+	const JoltString &		GetError() const							{ JPH_ASSERT(HasError()); return mError; }
 
 	/// Set an error value
-	void				SetError(const char *inError)				{ Clear(); ::new (&mError) String(inError); mState = EState::Error; }
-	void				SetError(const string_view &inError)		{ Clear(); ::new (&mError) String(inError); mState = EState::Error; }
-	void				SetError(String &&inError)					{ Clear(); ::new (&mError) String(std::move(inError)); mState = EState::Error; }
+	void				SetError(const char *inError)				{ Clear(); ::new (&mError) JoltString(inError); mState = EState::Error; }
+	void				SetError(const string_view &inError)		{ Clear(); ::new (&mError) JoltString(inError); mState = EState::Error; }
+	void				SetError(JoltString &&inError)					{ Clear(); ::new (&mError) JoltString(std::move(inError)); mState = EState::Error; }
 
 private:
 	union
 	{
 		Type			mResult;									///< The actual result object
-		String			mError;										///< The error description if the result failed
+		JoltString			mError;										///< The error description if the result failed
 	};
 
 	/// State of the result

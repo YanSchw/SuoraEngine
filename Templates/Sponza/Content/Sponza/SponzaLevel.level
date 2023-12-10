@@ -1,0 +1,105 @@
+Node: 
+  Class: Native$1863227
+
+NodeComposition: 
+  ChildCount: 9
+  Children: 
+    0: 
+      Class: Native$844454323
+      Enabled: true
+      Name: Sponza
+      Node3D: "0.000345/0.000000/-1.000000/0.000000;0.000000/1.000000/0.000000/0.000000;0.999999/0.000000/0.000345/0.000000;0.000000/0.000000/0.000000/1.000000"
+      SocketName: Sponza2Level
+    1: 
+      Class: Native$547896459
+      Enabled: true
+      Name: SkyLightNode
+      Node3D: 1.000000/0.000000/0.000000/0.000000;0.000000/1.000000/0.000000/0.000000;0.000000/0.000000/1.000000/0.000000;0.000000/0.000000/0.000000/1.000000
+      SocketName: Sponza2Level
+    2: 
+      Class: Native$45738744712
+      Enabled: true
+      Name: DirectionalLightNode
+      Node3D: "0.736705/0.000001/-0.676212/0.000000;0.672456/0.105246/0.732614/0.000000;0.071169/-0.994446/0.077535/0.000000;0.000000/0.000000/0.000000/1.000000"
+      SocketName: Sponza2Level
+    3: 
+      Class: Native$3644879
+      Enabled: true
+      Name: PostProcesing
+      Node3D: 
+      SocketName: Sponza2Level
+    4: 
+      Class: Native$78694434
+      Enabled: true
+      Name: ChromaticAberration
+      Node3D: 
+      SocketName: PostProcesing
+    5: 
+      Class: Native$47863233
+      Enabled: true
+      Name: Vignette
+      Node3D: 
+      SocketName: PostProcesing
+    6: 
+      Class: Native$5477844901
+      Enabled: true
+      Name: SSAO
+      Node3D: 
+      SocketName: PostProcesing
+    7: 
+      Class: Native$42387911
+      Enabled: true
+      Name: ToneMapping
+      Node3D: 
+      SocketName: PostProcesing
+    8: 
+      Class: Native$4578654769
+      Enabled: true
+      Name: CameraNode
+      Node3D: "0.999999/0.000000/0.000000/0.000000;0.000000/1.000000/0.000000/0.000000;0.000000/0.000000/0.999999/0.000000;-0.360000/1.937281/-11.419991/1.000000"
+      SocketName: Sponza2Level
+  Enabled: true
+  InheretedChildCount: 0
+  Node3D: 
+  Properties: 
+    0: 
+      NodeName: Sponza
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "b4947f7a-f91a-4490-b371-04ffabc57eb0"
+    1: 
+      NodeName: SkyLightNode
+      PropertyName: m_Intensity
+      Value: 
+        Float: 2.899999
+    2: 
+      NodeName: SkyLightNode
+      PropertyName: m_SkyTexture
+      Value: 
+        AssetPtr: "a6d871d8-52c5-43cc-ba73-191acfe2b7e5"
+    3: 
+      NodeName: DirectionalLightNode
+      PropertyName: m_Intensity
+      Value: 
+        Float: 1.140000
+    4: 
+      NodeName: SSAO
+      PropertyName: m_Intensity
+      Value: 
+        Float: 0.450000
+    5: 
+      NodeName: SSAO
+      PropertyName: m_AOColor
+      Value: 
+        Vec4: 0.000000/0.000000/0.083333/1.000000
+    6: 
+      NodeName: ToneMapping
+      PropertyName: m_TonemapFunction
+      Value: 
+        Float: 0.480001
+  PropertyCount: 7
+  RootClass: "Node$369b6f34-df9e-42e0-a25b-5fce6f8c769f"
+  RootEnabled: true
+  RootName: Sponza2Level
+  RootParentClass: Native$1863227
+UUID: "369b6f34-df9e-42e0-a25b-5fce6f8c769f"

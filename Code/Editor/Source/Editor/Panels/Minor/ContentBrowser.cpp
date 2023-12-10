@@ -1,23 +1,24 @@
 #include "ContentBrowser.h"
-#include "../../Util/EditorPreferences.h"
-#include "../../Util/EditorCamera.h"
-#include "../../Overlays/AssetActionsOverlays.h"
-
-#include "../Major/MaterialEditorPanel.h"
-#include "../Major/ShaderGraphEditorPanel.h"
-#include "../Major/Texture2DEditorPanel.h"
-#include "../Major/MeshEditorPanel.h"
-#include "../Major/NodeClassEditor.h"
-#include "../Major/SettingsTabs.h"
+#include "Editor/Util/EditorPreferences.h"
+#include "Editor/Util/EditorCamera.h"
+#include "Editor/Overlays/AssetActionsOverlays.h"
+#include "Editor/Panels/Major/MaterialEditorPanel.h"
+#include "Editor/Panels/Major/ShaderGraphEditorPanel.h"
+#include "Editor/Panels/Major/Texture2DEditorPanel.h"
+#include "Editor/Panels/Major/MeshEditorPanel.h"
+#include "Editor/Panels/Major/NodeClassEditor.h"
+#include "Editor/Panels/Major/SettingsTabs.h"
+#include "Editor/Panels/Major/InputMappingPanel.h"
 #include "Suora/Assets/ShaderGraph.h"
 #include "Suora/Assets/Blueprint.h"
+#include "Suora/GameFramework/InputModule.h"
 
 #define ITEM_CORNER 4.0f
 
 namespace Suora
 {
 
-	static bool IsPathDirectSubpathOf(const std::string& directory, const FilePath& file)
+	static bool IsPathDirectSubpathOf(const String& directory, const FilePath& file)
 	{
 		return file.parent_path() == std::filesystem::path(directory);
 	}
@@ -93,7 +94,7 @@ namespace Suora
 		{
 			float width = GetMajorTab()->GetEditorWindow()->GetWindow()->GetWidth();
 			float height = GetMajorTab()->GetEditorWindow()->GetWindow()->GetHeight();
-			std::string currentPath = m_CurrentPath;
+			String currentPath = m_CurrentPath;
 
 			std::vector<EditorUI::ContextMenuElement> Texture2DImports;
 			std::vector<EditorUI::ContextMenuElement> MeshImports;
@@ -102,8 +103,8 @@ namespace Suora
 			{
 				if (!file.is_directory())
 				{
-					Array<std::string> textureExtensions = Texture2D::GetSupportedSourceAssetExtensions();
-					Array<std::string> meshExtensions = Mesh::GetSupportedSourceAssetExtensions();
+					Array<String> textureExtensions = Texture2D::GetSupportedSourceAssetExtensions();
+					Array<String> meshExtensions = Mesh::GetSupportedSourceAssetExtensions();
 					for (auto ext : textureExtensions)
 					{
 						if (File::GetFileExtension(file) == ext)
@@ -129,6 +130,7 @@ namespace Suora
 													EditorUI::ContextMenuElement{{ MeshImports }, []() {}, "Mesh", nullptr },
 													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateSimpleAssetOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath, "Create a new ShaderGraph", "MyShaderGraph", ShaderGraph::StaticClass(), [](Asset* shader) { shader->As<ShaderGraph>()->m_BaseShader = "DeferredLit.glsl"; }); }, "ShaderGraph", nullptr},
 													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateSimpleAssetOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath, "Create a new Material", "MyMaterial", Material::StaticClass(), [](Asset* material) {}); }, "Material", nullptr},
+													EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateSimpleAssetOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath, "Create a new InputMapping", "MyInputMapping", InputMapping::StaticClass(), [](Asset* input) {}); }, "InputMapping", nullptr}
 												}, []() {}, "Create Asset", nullptr },
 										  EditorUI::ContextMenuElement{{}, [width, height, currentPath]() { EditorUI::CreateOverlay<CreateNewFolderOverlay>(width / 2 - 150.0f, height / 2 - 75.0f, 300.0f, 150.0f, currentPath); }, "Create Empty Folder", nullptr },
 										  EditorUI::ContextMenuElement{{}, [&]() { Platform::ShowInExplorer(m_CurrentPath); }, "Show in Explorer", nullptr} });
@@ -191,7 +193,7 @@ namespace Suora
 
 		if (EditorUI::_GetOverlays().Size() == 0)
 		{
-			Params.TooltipText = asset->GetAssetName() + " (" + asset->GetClass().GetNativeClassName() + ")" + "\n" + "Asset-UUID: " + asset->m_UUID.GetString() + "\n" + asset->m_Path.string() + "\n" + "Filesize: " + Util::FloatToString((float)(asset->GetAssetFileSize()) / 1024.f) + " kB";
+			Params.TooltipText = asset->GetAssetName() + " (" + asset->GetClass().GetNativeClassName() + ")" + "\n" + "Asset-UUID: " + asset->m_UUID.GetString() + "\n" + asset->m_Path.string() + "\n" + "Filesize: " + StringUtil::FloatToString((float)(asset->GetAssetFileSize()) / 1024.f) + " kB";
 		}
 		else
 		{
@@ -243,7 +245,7 @@ namespace Suora
 		EditorUI::Text(asset->GetAssetName(), Font::Instance, x, y, size.x, size.y - size.x, 22, Vec2(-0.75f, 0.75f), (index == m_SelectedElement) ? EditorPreferences::Get()->UiBackgroundColor : EditorPreferences::Get()->UiTextColor);
 
 		// Asset Type
-		EditorUI::Text(Util::SmartToUpperCase(asset->GetNativeClass().GetNativeClassName(), true), Font::Instance, x, y, size.x, size.y - size.x, 18.0f, Vec2(0.92f, -0.92f), (index == m_SelectedElement) ? EditorPreferences::Get()->UiForgroundColor : EditorPreferences::Get()->UiHighlightColor);
+		EditorUI::Text(StringUtil::SmartToUpperCase(asset->GetNativeClass().GetNativeClassName(), true), Font::Instance, x, y, size.x, size.y - size.x, 18.0f, Vec2(0.92f, -0.92f), (index == m_SelectedElement) ? EditorPreferences::Get()->UiForgroundColor : EditorPreferences::Get()->UiHighlightColor);
 
 		/// Asset Preview
 		EditorUI::DrawAssetPreview(asset, asset->GetNativeClass(), rectX, rectY, rectWidth, rectHeight);
@@ -309,7 +311,7 @@ namespace Suora
 				continue;
 			}
 
-			const std::string label = path.stem().string();
+			const String label = path.stem().string();
 			const float strWidth = Font::Instance->GetStringWidth(label, 32.0f) * 0.8f;
 
 			if (EditorUI::Button(label, x_, GetHeight() - 35, strWidth, 30, _HdrParams))
@@ -361,6 +363,10 @@ namespace Suora
 		{
 			EditorWindow::GetCurrent()->AddMajorTab<EditorPreferencesMajorTab>((EditorPreferences*)asset);
 		}
+		else if (asset->IsA<InputMapping>())
+		{
+			EditorWindow::GetCurrent()->AddMajorTab<InputMappingPanel>((InputMapping*)asset);
+		}
 	}
 
 	bool ContentBrowser::ProcessElementClick(int i, Asset* selectAsset)
@@ -390,12 +396,12 @@ namespace Suora
 		return false;
 	}
 
-	std::string ContentBrowser::GetRootPath()
+	String ContentBrowser::GetRootPath()
 	{
 		return m_CurrentMode == PathMode::ProjectPath ? AssetManager::GetProjectAssetPath() : AssetManager::GetEngineAssetPath();
 	}
 
-	std::string ContentBrowser::GetCurrentDirectory() const
+	String ContentBrowser::GetCurrentDirectory() const
 	{
 		return m_CurrentPath;
 	}

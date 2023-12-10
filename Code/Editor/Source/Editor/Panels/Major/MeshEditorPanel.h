@@ -1,5 +1,5 @@
 #pragma once
-#include "../MajorTab.h"
+#include "Editor/Panels/MajorTab.h"
 #include "MeshEditorPanel.generated.h"
 
 namespace Suora
@@ -11,7 +11,7 @@ namespace Suora
 	{
 		SUORA_CLASS(5487392221);
 	public:
-		Ptr<Mesh> m_Mesh = nullptr;
+		Ptr<Mesh> m_MeshAsset = nullptr;
 
 		MeshEditorPanel();
 		MeshEditorPanel(Mesh* mesh);
@@ -28,6 +28,11 @@ namespace Suora
 		Ref<ViewportPanel> m_ViewportPanel = nullptr;
 		bool m_InitResetCamera = false;
 		World m_World;
+
+		int32_t m_MaterialSlotOutline = -1;
+
+		friend class DetailsPanel;
+		friend class MeshViewportPanel;
 	};
 
 }

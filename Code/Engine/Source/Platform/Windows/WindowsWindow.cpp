@@ -121,13 +121,13 @@ namespace Suora
 
 			// switch to full screen
 			glfwWindowHint(GLFW_DECORATED, 1);
-			glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, 0);
+			glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
 		}
 		else
 		{
 			// restore last window size and position
 			glfwWindowHint(GLFW_DECORATED, m_Props.isDecorated ? 1 : 0);
-			glfwSetWindowMonitor(m_Window, nullptr, _wndPos[0], _wndPos[1], _wndSize[0], _wndSize[1], 0);
+			glfwSetWindowMonitor(m_Window, nullptr, _wndPos[0], _wndPos[1], _wndSize[0], _wndSize[1], GLFW_DONT_CARE);
 		}
 	}
 
@@ -288,7 +288,7 @@ namespace Suora
 		glfwSetDropCallback(m_Window, [](GLFWwindow* window, int count, const char** paths)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			Array<std::string> args;
+			Array<String> args;
 			for (int i = 0; i < count; i++)
 			{
 				args.Add(paths[i]);
@@ -453,7 +453,7 @@ namespace Suora
 		return GLFW_CURSOR_DISABLED == glfwGetInputMode(m_Window, GLFW_CURSOR);
 	}
 
-	void WindowsWindow::SetTitle(const std::string& title)
+	void WindowsWindow::SetTitle(const String& title)
 	{
 		glfwSetWindowTitle(m_Window, title.c_str());
 	}

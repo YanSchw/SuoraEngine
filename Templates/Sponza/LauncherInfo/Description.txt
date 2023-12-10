@@ -1,0 +1,1 @@
+Use the famous Sponza example Scene as a Project Template

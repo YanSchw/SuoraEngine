@@ -3,6 +3,7 @@
 #include "World.h"
 #include "Suora/Core/Engine.h"
 #include "Suora/Assets/Level.h"
+#include "Suora/Renderer/Framebuffer.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "InputModule.h"
 
@@ -22,10 +23,6 @@ namespace Suora
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_Framebuffer = Framebuffer::Create(spec);
-		}
-		if (!m_InputModule)
-		{
-			m_InputModule = Ref<InputModule>(new InputModule());
 		}
 	}
 	GameInstance::~GameInstance()
@@ -82,12 +79,6 @@ namespace Suora
 
 	void GameInstance::Update(float deltaTime)
 	{
-		m_InputModule->Tick();
-
-		for (auto& It : m_InputModule->m_BlueprintInstanceBindings)
-		{
-			m_InputModule->ProcessInputForBlueprintInstance(It.first->As<Node>());
-		}
 
 		if (m_CurrentWorld)
 		{
@@ -100,9 +91,9 @@ namespace Suora
 		}
 	}
 
-	InputModule* GameInstance::GetInputModule() const
+	Framebuffer* GameInstance::GetFinalFramebuffer() const
 	{
-		return m_InputModule.get();
+		return m_Framebuffer.get();
 	}
 
 }

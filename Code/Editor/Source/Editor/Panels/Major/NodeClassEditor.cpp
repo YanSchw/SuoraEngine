@@ -3,11 +3,11 @@
 #include "Suora/Serialization/Yaml.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
-#include "../Minor/ViewportPanel.h"
-#include "../../Util/EditorCamera.h"
-#include "../Minor/NodeGraphEditor.h"
-#include "../Minor/LevelOutliner.h"
-#include "../Minor/EditorConsolePanel.h"
+#include "Editor/Panels/Minor/ViewportPanel.h"
+#include "Editor/Util/EditorCamera.h"
+#include "Editor/Panels/Minor/NodeGraphEditor.h"
+#include "Editor/Panels/Minor/LevelOutliner.h"
+#include "Editor/Panels/Minor/EditorConsolePanel.h"
 #include "Suora/NodeScript/BlueprintNodeGraph.h"
 
 #define NODE_ID_EVENT 14
@@ -34,7 +34,7 @@ namespace Suora
 		}
 		void OnNodeGraphRender(float deltaTime) override
 		{
-			Name = m_BlueprintClass->m_YamlNode_EditorOnly["Node"]["Graphs"][std::to_string(m_GraphIndex)]["Label"].As<std::string>();
+			Name = m_BlueprintClass->m_YamlNode_EditorOnly["Node"]["Graphs"][std::to_string(m_GraphIndex)]["Label"].As<String>();
 		}
 		void DrawVisualNode(VisualNode& node) override
 		{
@@ -55,9 +55,9 @@ namespace Suora
 			// Float Input
 			if (pin.PinID == (int64_t)ScriptDataType::Float && pin.IsReceivingPin && !pin.Target)
 			{
-				if (m_PinFloat.find(&pin) == m_PinFloat.end()) m_PinFloat[&pin] = Util::StringToFloat(pin.m_AdditionalData);
-				const float temp = Util::StringToFloat(pin.m_AdditionalData);
-				EditorUI::DragFloat(&m_PinFloat[&pin], node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + (GetNodeGraphFont()->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom)), y + 2.0f, 100.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](std::string str) { pin.m_AdditionalData = str; });
+				if (m_PinFloat.find(&pin) == m_PinFloat.end()) m_PinFloat[&pin] = StringUtil::StringToFloat(pin.m_AdditionalData);
+				const float temp = StringUtil::StringToFloat(pin.m_AdditionalData);
+				EditorUI::DragFloat(&m_PinFloat[&pin], node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + (GetNodeGraphFont()->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom)), y + 2.0f, 100.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](String str) { pin.m_AdditionalData = str; });
 				if (m_PinFloat[&pin] != temp)
 				{
 					pin.m_AdditionalData = std::to_string(m_PinFloat[&pin]);
@@ -81,9 +81,9 @@ namespace Suora
 				if (m_PinVec3.find(&pin) == m_PinVec3.end()) m_PinVec3[&pin] = Vec::FromString<Vec3>(pin.m_AdditionalData);
 				Vec3& vec = m_PinVec3[&pin];
 
-				EditorUI::DragFloat(&vec.x, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f, y + 2.0f - pin.PinHeight * m_Zoom, 50.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](std::string str) { pin.m_AdditionalData = str; });
-				EditorUI::DragFloat(&vec.y, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + 50 * m_Zoom, y + 2.0f - pin.PinHeight * m_Zoom, 50.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](std::string str) { pin.m_AdditionalData = str; });
-				EditorUI::DragFloat(&vec.z, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + 100 * m_Zoom, y + 2.0f - pin.PinHeight * m_Zoom, 50.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](std::string str) { pin.m_AdditionalData = str; });
+				EditorUI::DragFloat(&vec.x, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f, y + 2.0f - pin.PinHeight * m_Zoom, 50.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](String str) { pin.m_AdditionalData = str; });
+				EditorUI::DragFloat(&vec.y, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + 50 * m_Zoom, y + 2.0f - pin.PinHeight * m_Zoom, 50.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](String str) { pin.m_AdditionalData = str; });
+				EditorUI::DragFloat(&vec.z, node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + 100 * m_Zoom, y + 2.0f - pin.PinHeight * m_Zoom, 50.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](String str) { pin.m_AdditionalData = str; });
 
 				pin.m_AdditionalData = Vec::ToString(vec);
 				return pin.PinHeight * m_Zoom;
@@ -212,7 +212,7 @@ namespace Suora
 
 		Yaml::Node root;
 		m_BlueprintClass->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(m_BlueprintClass->m_Path.string(), out);
 
@@ -329,7 +329,7 @@ namespace Suora
 		}
 		x += 15 + height * 0.8f + 90.0f;
 
-		if ((m_SelectedObject == m_BlueprintClass))
+		if (m_SelectedObject == m_BlueprintClass)
 		{
 			Params = EditorUI::ButtonParams::Outlined();
 			Params.TextOrientation = Vec2(0.8f, 0.0f);

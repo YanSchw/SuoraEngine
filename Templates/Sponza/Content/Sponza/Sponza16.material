@@ -1,0 +1,16 @@
+Material: 
+  ShaderGraph: "80206651-33d6-4f5a-bf1d-ddf5f50b9e43"
+  Uniform_0: 
+    m_Float: 0.000000
+    m_Label: BaseColor
+    m_Texture2D: "71a1f652-df26-48c0-8aa0-0121bbd99cbc"
+    m_Type: 5
+    m_Vec3: 0.000000/0.000000/0.000000
+  Uniform_1: 
+    m_Float: 0.000000
+    m_Label: Normal
+    m_Texture2D: "bfb373b8-43df-4bc6-a6bf-7a46d0540d2e"
+    m_Type: 5
+    m_Vec3: 0.000000/0.000000/0.000000
+  m_BackfaceCulling: true
+UUID: "381902f5-9f74-4928-a29c-9f868d73273b"

@@ -10,7 +10,7 @@ namespace Suora
 		Suora::CmdArgs args;
 		for (int i = 0; i < argc; i++)
 		{
-			args.Args.push_back({ std::string(argv[i]) });
+			args.Args.push_back({ String(argv[i]) });
 		}
 
 		auto app = Suora::CreateApplication();

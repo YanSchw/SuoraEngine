@@ -1,15 +1,13 @@
 #pragma once
-#include "Suora.h"
-#include "EditorPreferences.generated.h"
-
-#include <glm/glm.hpp>
 #include <random>
 #include <unordered_map>
+#include "Suora/Assets/Asset.h"
+#include "Suora/Common/VectorUtils.h"
+#include "EditorPreferences.generated.h"
+
 
 namespace Suora
 {
-	using Color = glm::vec4;
-	using NativeClassID = uint64_t;
 
 	class EditorPreferences : public Asset
 	{
@@ -21,16 +19,16 @@ namespace Suora
 
 		static EditorPreferences* Get();
 
-		void PreInitializeAsset(const std::string& str) override;
-		void InitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
+		void InitializeAsset(Yaml::Node& root) override;
 		void Serialize(Yaml::Node& root) override;
 
 		uint32_t GetAssetFileSize() override;
 
 		EditorPreferences();
 
-		Array<std::string> m_AllCachedProjectPaths;
-		float UiScale = 1;
+		Array<String> m_AllCachedProjectPaths;
+		float UiScale = 1.28f;
 		Color UiColor = Color(0.14717647f, 0.14717647f, 0.15217647f, 1.0f); //Color(0.2f, 0.2f, 0.21f, 1.0f); //Color(0.26f, 0.27f, 0.29f, 1);
 		Color UiForgroundColor = Color(0.2f, 0.20392157f, 0.211764706f, 1.0f); // Color(0.18531372f, 0.18531372f, 0.18531372f, 1.0f);
 		Color UiBackgroundColor = Color(0.101961f, 0.105882f, 0.1198039f, 1.0f); // Color(0.10216078f, 0.10216078f, 0.10216078f, 1.0f);
@@ -39,6 +37,7 @@ namespace Suora
 		Color UiInputColor = Color(0.05882f, 0.05882f, 0.05882f, 1.0f);
 		Color UiTextColor = Color(0.75f, 0.75f, 0.75f, 1.0f);
 
+		bool m_AutoImportTextures = true;
 	};
 
 }

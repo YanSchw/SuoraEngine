@@ -2,9 +2,10 @@
 #include "MajorTab.h"
 #include "MinorTab.h"
 #include "Dockspace.h"
-#include "../EditorWindow.h"
-#include "../Util/EditorPreferences.h"
+#include "Editor/EditorWindow.h"
+#include "Editor/Util/EditorPreferences.h"
 #include "Suora/Assets/SuoraProject.h"
+#include "Editor/AssetPreview.h"
 
 namespace Suora
 {
@@ -80,6 +81,8 @@ namespace Suora
 	void MajorTab::SaveAsset()
 	{
 		SUORA_LOG(LogCategory::AssetManagement, LogLevel::Info, "Saving Asset: {0}", m_Asset->GetAssetName());
+
+		AssetPreview::ResetAssetPreview(m_Asset);
 	}
 
 }

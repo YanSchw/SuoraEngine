@@ -1,15 +1,14 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <thread>
 #include <filesystem>
 #include "Asset.h"
+#include "Suora/Core/Object/Object.h"
 #include "Suora/Core/EngineSubSystem.h"
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Common/SuoraID.h"
 #include "Suora/Common/Array.h"
-
-#define ASSET_STREAM_COUNT_LIMIT 6
+#include "Suora/Common/Map.h"
 
 namespace Suora
 {
@@ -17,37 +16,47 @@ namespace Suora
 	class Font;
 	class Texture2D;
 
+	/* The AssetManager class is responsible for managing assets in the Suora Engine. */
 	class AssetManager : public EngineSubSystem
 	{
 	private:
+		// Static members
 		inline static Array<Asset*> s_Assets;
-		inline static std::string s_EngineAssetPath = "", s_ProjectAssetPath = "";
+		inline static String s_EngineAssetPath = "", s_ProjectAssetPath = "";
 		inline static uint32_t s_AssetHotReloadingIteratorIndex = 0;
 		inline static Array<Asset*> s_AssetStreamPool;
 
+		// Private Function to create a missing Asset of a specified Class and ID.
 		static Asset* CreateMissingAsset(const Class& cls, const SuoraID& id);
 
 	public:
+		// Static public members
 		inline static bool s_AssetHotReloading = false;
 		inline static uint32_t s_AssetHotReloadingCount = 8;
 
+		// Initializes the AssetManager with the provided content path.
 		static void Initialize(const FilePath& contentPath);
 		~AssetManager();
 
+		/* Hot reloads assets with optional parameters for content path and base class. 
+		 * Only derivatives of baseClass are reloaded.                                  */
 		static void HotReload(const std::filesystem::path& contentPath = s_EngineAssetPath, const Class& baseClass = Asset::StaticClass());
 		static void InitializeAllAssets();
 
 		static void Update(float deltaTime);
 
+		/* Registers an asset of type T to be managed by the AssetManager. */
 		template<class T>
 		static void RegisterAsset(T* asset)
 		{
 			s_Assets.Add(asset);
 		}
 
+		/* Removes the specified asset from the AssetManager.
+		 * The Asset will remain in Memory and will be flagged as 'Missing' */
 		static void RemoveAsset(Asset* asset);
-		static void RenameAsset(Asset* asset, const std::string& name);
-		static void LoadAsset(const std::string& path);
+		static void RenameAsset(Asset* asset, const String& name);
+		static void LoadAsset(const String& path);
 
 		template<class T>
 		static T* GetFirstAssetOfType()
@@ -58,23 +67,14 @@ namespace Suora
 			}
 			return nullptr;
 		}
+		static Asset* GetAsset(const Class& assetClass, const SuoraID& id);
 		template<class T>
 		static T* GetAsset(const SuoraID& id)
 		{
-			if (id.GetString() == "0") return nullptr;
-
-			Array<T*> assets = GetAssets<T>();
-			for (T* asset : assets)
-			{
-				if (asset->m_UUID == id)
-				{
-					return asset;
-				}
-			}
-			return Cast<T>(CreateMissingAsset(T::StaticClass(), id));
+			return GetAsset(T::StaticClass(), id)->As<T>();
 		}
 		template<class T>
-		static T* GetAssetByName(const std::string& name)
+		static T* GetAssetByName(const String& name)
 		{
 			for (Asset* asset : s_Assets)
 			{
@@ -95,39 +95,27 @@ namespace Suora
 			}
 			return array;
 		}
-		static Array<Asset*> GetAssetsByClass(Class type)
-		{
-			Array<Asset*> array;
-			for (Asset* asset : s_Assets)
-			{
-				if (Asset* a = Cast(asset, type)) array.Add(a);
-			}
-			return array;
-		}
-		static Asset* GetAssetByPath(const std::filesystem::path& path)
-		{
-			for (Asset* asset : s_Assets)
-			{
-				if (asset->m_Path == path) return asset;
-			}
-			return nullptr;
-		}
-		static Asset* CreateAsset(const Class& assetClass, const std::string& name, const std::string& dir);
+		static Array<Asset*> GetAssetsByClass(Class type);
+		static Asset* GetAssetByPath(const std::filesystem::path& path);
+		static Asset* CreateAsset(const Class& assetClass, const String& name, const String& dir);
+
 		template<class T>
-		static T* CreateAsset(const std::string& name, const std::string& dir)
+		static T* CreateAsset(const String& name, const String& dir)
 		{
-			return CreateAsset(T::StaticClass(), name, dir)->As<T>();
+			return dynamic_cast<T*>(CreateAsset(T::StaticClass(), name, dir));
 		}
 
-		static std::string GetEngineAssetPath()
+		static uint32_t GetAssetStreamCountLimit();
+
+		static String GetEngineAssetPath()
 		{
 			return s_EngineAssetPath;
 		}
-		static std::string GetProjectAssetPath()
+		static String GetProjectAssetPath()
 		{
 			return s_ProjectAssetPath;
 		}
-		static void SetProjectAssetPath(const std::string& path)
+		static void SetProjectAssetPath(const String& path)
 		{
 			s_ProjectAssetPath = path;
 		}

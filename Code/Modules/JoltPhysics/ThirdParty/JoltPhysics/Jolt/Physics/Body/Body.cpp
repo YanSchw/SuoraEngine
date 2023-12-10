@@ -210,7 +210,7 @@ bool Body::ApplyBuoyancyImpulse(RVec3Arg inSurfacePosition, Vec3Arg inSurfaceNor
 		{
 			RVec3 center_of_buoyancy = mPosition + relative_center_of_buoyancy;
 			DebugRenderer::sInstance->DrawMarker(center_of_buoyancy, Color::sWhite, 2.0f);
-			DebugRenderer::sInstance->DrawText3D(center_of_buoyancy, StringFormat("%.3f / %.3f", (double)submerged_volume, (double)total_volume));
+			DebugRenderer::sInstance->DrawText3D(center_of_buoyancy, JoltStringFormat("%.3f / %.3f", (double)submerged_volume, (double)total_volume));
 		}
 	#endif // JPH_DEBUG_RENDERER
 

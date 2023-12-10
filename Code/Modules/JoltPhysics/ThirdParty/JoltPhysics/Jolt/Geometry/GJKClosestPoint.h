@@ -38,7 +38,7 @@ private:
 	{
 #ifdef JPH_GJK_DEBUG
 		for (int i = 0; i < mNumPoints; ++i)
-			Trace("y[%d] = [%s], |y[%d]| = %g", i, ConvertToString(mY[i]).c_str(), i, (double)mY[i].Length());
+			Trace("y[%d] = [%s], |y[%d]| = %g", i, ConvertToJoltString(mY[i]).c_str(), i, (double)mY[i].Length());
 #endif
 
 		uint32 set;
@@ -73,7 +73,7 @@ private:
 		}
 
 #ifdef JPH_GJK_DEBUG
- 		Trace("GetClosest: set = 0b%s, v = [%s], |v| = %g", NibbleToBinary(set), ConvertToString(v).c_str(), (double)v.Length());
+ 		Trace("GetClosest: set = 0b%s, v = [%s], |v| = %g", NibbleToBinary(set), ConvertToJoltString(v).c_str(), (double)v.Length());
 #endif
 
 		float v_len_sq = v.LengthSq();
@@ -229,7 +229,7 @@ public:
 		for (;;)
 		{
 #ifdef JPH_GJK_DEBUG
-			Trace("v = [%s], num_points = %d", ConvertToString(ioV).c_str(), mNumPoints);
+			Trace("v = [%s], num_points = %d", ConvertToJoltString(ioV).c_str(), mNumPoints);
 #endif
 
 			// Get support points for shape A and B in the direction of v
@@ -254,7 +254,7 @@ public:
 			++mNumPoints;
 
 #ifdef JPH_GJK_DEBUG
-			Trace("w = [%s]", ConvertToString(w).c_str());
+			Trace("w = [%s]", ConvertToJoltString(w).c_str());
 #endif
 
 			// Determine the new closest point
@@ -360,7 +360,7 @@ public:
 		for (;;)
 		{
 #ifdef JPH_GJK_DEBUG
-			Trace("v = [%s], num_points = %d", ConvertToString(ioV).c_str(), mNumPoints);
+			Trace("v = [%s], num_points = %d", ConvertToJoltString(ioV).c_str(), mNumPoints);
 #endif
 
 			// Get support points for shape A and B in the direction of v
@@ -407,7 +407,7 @@ public:
 			++mNumPoints;
 
 #ifdef JPH_GJK_DEBUG
-			Trace("w = [%s]", ConvertToString(w).c_str());
+			Trace("w = [%s]", ConvertToJoltString(w).c_str());
 #endif
 
 			uint32 set;
@@ -480,7 +480,7 @@ public:
 		CalculatePointAAndB(outPointA, outPointB);
 
 #ifdef JPH_GJK_DEBUG
-		Trace("Return: v = [%s], |v| = %g", ConvertToString(ioV).c_str(), (double)ioV.Length());
+		Trace("Return: v = [%s], |v| = %g", ConvertToJoltString(ioV).c_str(), (double)ioV.Length());
 
 		// Draw -ioV to show the closest point to the origin from the previous simplex
 		DebugRenderer::sInstance->DrawArrow(mOffset, mOffset - ioV, Color::sOrange, 0.05f);
@@ -536,7 +536,7 @@ public:
 		for (;;)
 		{
 #ifdef JPH_GJK_DEBUG
-			Trace("v = [%s], num_points = %d", ConvertToString(v).c_str(), mNumPoints);
+			Trace("v = [%s], num_points = %d", ConvertToJoltString(v).c_str(), mNumPoints);
 #endif
 
 			// Get new support point
@@ -544,7 +544,7 @@ public:
 			Vec3 w = x - p;
 
 #ifdef JPH_GJK_DEBUG
-			Trace("w = [%s]", ConvertToString(w).c_str());
+			Trace("w = [%s]", ConvertToJoltString(w).c_str());
 #endif
 
 			float v_dot_w = v.Dot(w);
@@ -730,7 +730,7 @@ public:
 		for (;;)
 		{
 #ifdef JPH_GJK_DEBUG
-			Trace("v = [%s], num_points = %d", ConvertToString(v).c_str(), mNumPoints);
+			Trace("v = [%s], num_points = %d", ConvertToJoltString(v).c_str(), mNumPoints);
 #endif
 
 			// Calculate the minkowski difference inB - inA
@@ -741,7 +741,7 @@ public:
 			Vec3 w = x - (q - p);
 
 #ifdef JPH_GJK_DEBUG
-			Trace("w = [%s]", ConvertToString(w).c_str());
+			Trace("w = [%s]", ConvertToJoltString(w).c_str());
 #endif
 
 			// Difference from article to this code:

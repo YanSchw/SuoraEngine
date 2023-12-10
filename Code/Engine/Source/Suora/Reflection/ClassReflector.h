@@ -1,7 +1,5 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <cstddef>
+#include "Suora/Common/StringUtils.h"
 #include "Class.h"
 #include "Suora/Common/Array.h"
 
@@ -20,7 +18,6 @@ namespace Suora
 			Class,
 			StackAllocatedObject,
 			ObjectPtr,
-			AssetPtr,
 			ArrayList,
 			Integer32,
 			Float,
@@ -33,31 +30,26 @@ namespace Suora
 			Delegate
 		};
 
-		std::string m_MemberName = "";
+		String m_MemberName = "";
 		size_t m_MemberOffset = 0;
-		size_t m_TypeSize = 0;
 		Type m_Type = Type::None;
 
-		ClassMember() { }
-		ClassMember(const std::string& memberName, size_t memberOffset, size_t size, Type type)
-			: m_MemberName(memberName), m_MemberOffset(memberOffset), m_TypeSize(size), m_Type(type)
+		ClassMember() = default;
+		ClassMember(const String& memberName, size_t memberOffset, Type type)
+			: m_MemberName(memberName), m_MemberOffset(memberOffset), m_Type(type)
 		{
 		}
 		template<class T>
 		static T* AccessMember(Object* obj, size_t offset)
 		{
-			return (T*)(((char*)obj) + offset);
-		}
-		inline static size_t OffsetOf(void* obj, void* ptr)
-		{
-			return size_t(ptr) - size_t(obj);
+			return (T*)(((std::uint8_t*)obj) + offset);
 		}
 		template<class T>
 		static ClassMember::Type GetPrimitiveTypeEnumByTemplate();
 		template<class T>
-		static Ref<ClassMember> CreatePrimitive(class Object* obj, T* ptr, const std::string& name)
+		static Ref<ClassMember> CreatePrimitive(class Object* obj, T* ptr, const String& name)
 		{
-			return Ref<ClassMember>(new ClassMember(name, ClassMember::OffsetOf(obj, ptr), sizeof(T), ClassMember::GetPrimitiveTypeEnumByTemplate<T>()));
+			return Ref<ClassMember>(new ClassMember(name, ClassMember::OffsetOf(obj, ptr), ClassMember::GetPrimitiveTypeEnumByTemplate<T>()));
 		}
 	};
 
@@ -65,29 +57,29 @@ namespace Suora
 	{
 		Ref<ClassMember> m_ArraySubMember;
 
-		ClassMember_ArrayList(const std::string& memberName, size_t memberOffset, size_t size, Type type)
-			: ClassMember(memberName, memberOffset, size, type)
+		ClassMember_ArrayList(const String& memberName, size_t memberOffset, Type type)
+			: ClassMember(memberName, memberOffset, type)
 		{
 		}
 	}; 
-	struct ClassMember_AssetPtr : public ClassMember
+	struct ClassMember_ObjectPtr : public ClassMember
 	{
-		Class m_AssetClass = Class::None;
+		Class m_ObjectClass = Class::None;
 
-		ClassMember_AssetPtr(const std::string& memberName, size_t memberOffset, size_t size, Type type)
-			: ClassMember(memberName, memberOffset, size, type)
+		ClassMember_ObjectPtr(const String& memberName, size_t memberOffset, Type type)
+			: ClassMember(memberName, memberOffset, type)
 		{
 		}
 	};
 	struct ClassMember_Delegate : public ClassMember
 	{
-		ClassMember_Delegate(const std::string& memberName, size_t memberOffset, size_t size, Type type)
-			: ClassMember(memberName, memberOffset, size, type)
+		ClassMember_Delegate(const String& memberName, size_t memberOffset, Type type)
+			: ClassMember(memberName, memberOffset, type)
 		{
 		}
-		void FeedSignature(const std::string& args);
+		void FeedSignature(const String& args);
 
-		Array<std::string> m_StrArgs;
+		Array<String> m_StrArgs;
 		Array<ScriptDataType> m_Args;
 	};
 
@@ -97,52 +89,44 @@ namespace Suora
 	struct ClassReflector
 	{
 		Array<Ref<ClassMember>> m_ClassMembers;
-		std::string m_ClassName;
+		String m_ClassName;
 		Class m_NativeParentClass = Class::None;
 		size_t m_ClassSize = 0;
 
-		void AddObjectPointer(class Object* obj, class Object** ptr, const std::string& name)
+		template<class T>
+		void AddObjectPointer(size_t offset, class Object** ptr, const String& name)
 		{
-			AddMember<ClassMember>(name, ClassMember::OffsetOf(obj, ptr), sizeof(Object*), ClassMember::Type::ObjectPtr);
-		}
-		void AddAssetPointer(class Object* obj, class Asset** ptr, const std::string& name, NativeClassID assetClassID)
-		{
-			ClassMember_AssetPtr* assetPtr = AddMember<ClassMember_AssetPtr>(name, ClassMember::OffsetOf(obj, ptr), sizeof(Asset*), ClassMember::Type::AssetPtr);
-			assetPtr->m_AssetClass = Class(assetClassID);
+			ClassMember_ObjectPtr* objectPtr = AddMember<ClassMember_ObjectPtr>(name, offset, ClassMember::Type::ObjectPtr);
+			objectPtr->m_ObjectClass = T::StaticClass();
 		}
 		template<class ... Args>
-		void AddDelegate(class Object* obj, TDelegate* d, const std::string& name, const std::string& args)
+		void AddDelegate(size_t offset, TDelegate* d, const String& name, const String& args)
 		{
-			ClassMember_Delegate* delegate = AddMember<ClassMember_Delegate>(name, ClassMember::OffsetOf(obj, d), sizeof(TDelegate), ClassMember::Type::Delegate);
+			ClassMember_Delegate* delegate = AddMember<ClassMember_Delegate>(name, offset, ClassMember::Type::Delegate);
 			delegate->FeedSignature(args);
 		}
 		
 		template<class T>
-		void AddPrimitive(class Object* obj, T* ptr, const std::string& name)
+		void AddPrimitive(size_t offset, T* ptr, const String& name)
 		{
-			AddMember<ClassMember>(name, ClassMember::OffsetOf(obj, ptr), sizeof(T), ClassMember::GetPrimitiveTypeEnumByTemplate<T>());
+			AddMember<ClassMember>(name, offset, ClassMember::GetPrimitiveTypeEnumByTemplate<T>());
 		}
 
-		ClassMember_ArrayList* AddArrayList(class Object* obj, void* array, size_t size, const std::string& name)
+		ClassMember_ArrayList* AddArrayList(size_t offset, void* array, const String& name)
 		{
-			if (obj)
-			{
-				size_t offset = size_t(array) - size_t(obj);
-				ClassMember_ArrayList* member = AddMember<ClassMember_ArrayList>(name, offset, size, ClassMember::Type::ArrayList);
-				return member;
-			}
-			return nullptr;
+			ClassMember_ArrayList* member = AddMember<ClassMember_ArrayList>(name, offset, ClassMember::Type::ArrayList);
+			return member;
 		}
 
 		template<class T>
-		T* AddMember(const std::string& name, size_t offset, size_t size, ClassMember::Type type)
+		T* AddMember(const String& name, size_t offset, ClassMember::Type type)
 		{
-			Ref<T> member = Ref<T>(new T(name, offset, size, type));
+			Ref<T> member = Ref<T>(new T(name, offset, type));
 			m_ClassMembers.Add(member);
 			return member.get();
 		}
 
-		void SetClassName(const std::string& name)
+		void SetClassName(const String& name)
 		{
 			m_ClassName = name;
 		}
@@ -161,7 +145,7 @@ namespace Suora
 		inline static std::unordered_map<NativeClassID, ClassReflector*> m_Reflectors;
 	public:
 		static const ClassReflector& GetByClass(const Class& cls);
-		static std::string GetClassName(const Class& cls);
+		static String GetClassName(const Class& cls);
 
 		friend struct Class;
 	};

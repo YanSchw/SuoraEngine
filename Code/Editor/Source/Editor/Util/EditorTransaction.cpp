@@ -1,5 +1,5 @@
 #include "EditorTransaction.h"
-#include "../Panels/MajorTab.h"
+#include "Editor/Panels/MajorTab.h"
 
 namespace Suora
 {

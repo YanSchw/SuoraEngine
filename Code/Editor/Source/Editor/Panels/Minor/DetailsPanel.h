@@ -1,6 +1,7 @@
 #pragma once
-#include "../MinorTab.h"
-#include <Suora.h>
+#include "Editor/Panels/MinorTab.h"
+#include "Suora/Assets/Material.h"
+#include "Suora/GameFramework/InputModule.h"
 #include <unordered_map>
 
 namespace Suora
@@ -21,7 +22,6 @@ namespace Suora
 		using Super = MinorTab;
 	public:
 		Ptr<Object> m_Data = nullptr;
-		//DetailViewType m_ViewType = DetailViewType::None;
 		float m_Seperator = 0.35f;
 		float m_ScrollY = 0.0f;
 		float m_ResetSeperator = 35.0f;
@@ -36,20 +36,21 @@ namespace Suora
 		void DrawClassMember(float& x, float& y, Node* obj, ClassMember* member, int memberIndex);
 
 		/** UI Utility */
-		bool DrawHeaderShutter(void* data, const std::string& label, float x, float& y, bool valueChanged, bool& reset);
-		void DrawLabel(const std::string& label, float y, float height);
-		bool DrawButton(const std::string& label, const std::string& buttonLabel, float& y);
-		void DrawDropDown(const std::string& label, const std::vector<std::pair<std::string, std::function<void(void)>>>& options, int index, float& y);
+		bool DrawHeaderShutter(void* data, const String& label, float x, float& y, bool valueChanged, bool& reset);
+		void DrawLabel(const String& label, float y, float height);
+		bool DrawButton(const String& label, const String& buttonLabel, float& y);
+		void DrawDropDown(const String& label, const std::vector<std::pair<String, std::function<void(void)>>>& options, int index, float& y);
 		bool DrawResetButton(float y, float height);
-		Result DrawFloat(float* f, const std::string& label, float& y, bool valueChanged);
-		Result DrawBool(bool* b, const std::string& label, float& y, bool valueChanged);
-		Result DrawVec3(Vec3* v, const std::string& label, float& y, bool valueChanged);
-		Result DrawVec4(Vec4* v, const std::string& label, float& y, bool valueChanged);
-		Result DrawAsset(Asset** asset, const Class& cls, const std::string& label, float& y, bool valueChanged);
+		Result DrawInt32(int32_t* i, const String& label, float& y, bool valueChanged);
+		Result DrawFloat(float* f, const String& label, float& y, bool valueChanged);
+		Result DrawBool(bool* b, const String& label, float& y, bool valueChanged);
+		Result DrawVec3(Vec3* v, const String& label, float& y, bool valueChanged);
+		Result DrawVec4(Vec4* v, const String& label, float& y, bool valueChanged);
+		Result DrawAsset(Asset** asset, const Class& cls, const String& label, float& y, bool valueChanged);
 		Result DrawMaterialSlots(MaterialSlots* materials, float& y, bool valueChanged);
-		Result DrawClass(Class* cls, const std::string& label, float& y, bool valueChanged);
-		Result DrawSubclassOf(TSubclassOf* cls, const std::string& label, float& y, bool valueChanged);
-		Result DrawDelegate(TDelegate* delegate, const std::string& label, float& y);
+		Result DrawClass(Class* cls, const String& label, float& y, bool valueChanged);
+		Result DrawSubclassOf(TSubclassOf* cls, const String& label, float& y, bool valueChanged);
+		Result DrawDelegate(TDelegate* delegate, const String& label, float& y);
 
 		// Transform Util
 		void* Transform_LastNode = nullptr;
@@ -64,7 +65,10 @@ namespace Suora
 		void ViewBlueprintClass(float& y, Blueprint* blueprint);
 		void ViewProjectSettings(float& y, ProjectSettings* settings);
 		void ViewEditorPreferences(float& y, EditorPreferences* settings);
+		void ViewInputMapping(float& y, class InputMapping* input);
 
+		void DrawInputDispatcherDropDown(const String& label, Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height);
+		
 		bool m_ScrollbarNeeded = false;
 		float GetScrollbarWidth() const;
 

@@ -11,6 +11,12 @@ namespace Suora
 {
 	const Class Class::None = Class((NativeClassID) 0);
 
+	bool Class::Inherits(const Class& base) const
+	{
+		if ((*this) == base) return true;
+		return (m_NativeClassID == 1) ? false : (GetParentClass() == base ? true : (GetParentClass() != Class::None ? GetParentClass().Inherits(base) : false));
+	}
+
 	Class Class::GetParentClass() const
 	{
 		switch (GetClassType())
@@ -41,6 +47,7 @@ namespace Suora
 	void Class::GenerateNativeClassReflector(const Class& cls)
 	{
 		ClassReflector::GetByClass(cls);
+		ClassInternal::s_NativeClasses.push_back(cls);
 	}
 
 	Array<Class> Class::GetInheritanceTree() const
@@ -59,7 +66,7 @@ namespace Suora
 
 	Array<Class> Class::GetAllClasses()
 	{
-		Array<Class> classes = s_NativeClasses;
+		Array<Class> classes = ClassInternal::s_NativeClasses;
 		classes.Add(Object::StaticClass());
 
 		const Array<Blueprint*> blueprints = AssetManager::GetAssets<Blueprint>();
@@ -94,12 +101,12 @@ namespace Suora
 		return subClasses;
 	}
 
-	std::string Class::GetNativeClassName() const
+	String Class::GetNativeClassName() const
 	{
 		return ClassReflector::GetClassName(*this);
 	}
 
-	std::string Class::GetClassName() const
+	String Class::GetClassName() const
 	{
 		switch (GetClassType())
 		{
@@ -122,9 +129,9 @@ namespace Suora
 		return ClassReflector::GetByClass(*this);
 	}
 
-	std::string Class::ToString() const
+	String Class::ToString() const
 	{
-		std::string str = IsNative() ? "Native$" : "Node$";
+		String str = IsNative() ? "Native$" : "Node$";
 
 		if (IsNative())
 		{
@@ -138,17 +145,17 @@ namespace Suora
 		return str;
 	}
 
-	Class Class::FromString(const std::string& str)
+	Class Class::FromString(const String& str)
 	{
-		if (str.find("Native$") != std::string::npos)
+		if (str.find("Native$") != String::npos)
 		{
-			const std::string substr = str.substr(7, str.size() - 7);
+			const String substr = str.substr(7, str.size() - 7);
 			const NativeClassID id = std::stoll(substr);
 			return Class(id);
 		}
-		if (str.find("Node$") != std::string::npos)
+		if (str.find("Node$") != String::npos)
 		{
-			const std::string uid = str.substr(5, str.size() - 5);
+			const String uid = str.substr(5, str.size() - 5);
 			return Class(AssetManager::GetAsset<Blueprint>(uid));
 		}
 
@@ -174,5 +181,103 @@ namespace Suora
 		{
 			return s_ClassDefaultObjects[*this].get();
 		}
+	}
+
+	Class::Class(const NativeClassID id)
+	{
+		m_NativeClassID = id;
+	}
+	Class::Class(Blueprint* node)
+	{
+		m_BlueprintClass = node;
+	}
+	Class::Class(Blueprint& node)
+	{
+		m_BlueprintClass = &node;
+	}
+	Class::Class(ScriptClass* script)
+	{
+		m_ScriptClass = script;
+	}
+	Class::Class(ScriptClass& script)
+	{
+		m_ScriptClass = &script;
+	}
+	Class& Class::operator=(const NativeClassID id)
+	{
+		m_NativeClassID = id;
+		m_BlueprintClass = nullptr;
+		m_ScriptClass = nullptr;
+		return *this;
+	}
+	Class& Class::operator=(Blueprint* node)
+	{
+		m_NativeClassID = 0;
+		m_BlueprintClass = node;
+		m_ScriptClass = nullptr;
+		return *this;
+	}
+	Class& Class::operator=(ScriptClass* script)
+	{
+		m_NativeClassID = 0;
+		m_BlueprintClass = nullptr;
+		m_ScriptClass = script;
+		return *this;
+	}
+	NativeClassID Class::GetNativeClassID() const
+	{
+		return m_NativeClassID;
+	}
+	Blueprint* Class::GetBlueprintClass() const
+	{
+		return m_BlueprintClass;
+	}
+	ScriptClass* Class::GetScriptClass() const
+	{
+		return m_ScriptClass;
+	}
+	bool Class::operator==(const Class& cls) const
+	{
+		return IsNative() ? (*this == cls.m_NativeClassID) : (IsScriptClass() ? (*this == cls.m_ScriptClass) : (*this == cls.m_BlueprintClass));
+	}
+	bool Class::operator==(const NativeClassID id) const
+	{
+		return id == m_NativeClassID;
+	}
+	bool Class::operator==(const Blueprint* node) const
+	{
+		return node == m_BlueprintClass;
+	}
+	bool Class::operator==(const ScriptClass* script) const
+	{
+		return script == m_ScriptClass;
+	}
+	bool Class::operator!=(const Class& cls) const
+	{
+		return !operator==(cls);
+	}
+	bool Class::operator!=(const NativeClassID id) const
+	{
+		return !operator==(id);
+	}
+	bool Class::operator!=(Blueprint* node) const
+	{
+		return !operator==(node);
+	}
+	bool Class::operator!=(ScriptClass* script) const
+	{
+		return !operator==(script);
+	}
+	bool Class::IsNative() const
+	{
+		return !m_BlueprintClass && !m_ScriptClass;
+	}
+	bool Class::IsBlueprintClass() const
+	{
+		return m_BlueprintClass;
+	}
+	bool Class::IsScriptClass() const
+	{
+		return m_ScriptClass;
 	}
 }

@@ -79,8 +79,8 @@ template <typename T> using STLAllocator = std::allocator<T>;
 
 // Declare STL containers that use our allocator
 template <class T> using Array = std::vector<T, STLAllocator<T>>;
-using String = std::basic_string<char, std::char_traits<char>, STLAllocator<char>>;
-using IStringStream = std::basic_istringstream<char, std::char_traits<char>, STLAllocator<char>>;
+using JoltString = std::basic_string<char, std::char_traits<char>, STLAllocator<char>>;
+using IJoltStringStream = std::basic_istringstream<char, std::char_traits<char>, STLAllocator<char>>;
 
 JPH_NAMESPACE_END
 
@@ -88,11 +88,11 @@ JPH_NAMESPACE_END
 
 namespace std
 {
-	/// Declare std::hash for String, for some reason on Linux based platforms template deduction takes the wrong variant
+	/// Declare std::hash for JoltString, for some reason on Linux based platforms template deduction takes the wrong variant
 	template <>
-	struct hash<JPH::String>
+	struct hash<JPH::JoltString>
 	{
-		inline size_t operator () (const JPH::String &inRHS) const
+		inline size_t operator () (const JPH::JoltString &inRHS) const
 		{
 			return hash<string_view> { } (inRHS);
 		}

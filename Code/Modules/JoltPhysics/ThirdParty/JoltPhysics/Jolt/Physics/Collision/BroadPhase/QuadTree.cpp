@@ -238,7 +238,7 @@ void QuadTree::UpdatePrepare(const BodyVector &inBodies, TrackingVector &ioTrack
 	const RootNode &root_node = GetCurrentRoot();
 
 #ifdef JPH_DUMP_BROADPHASE_TREE
-	DumpTree(root_node.GetNodeID(), StringFormat("%s_PRE", mName).c_str());
+	DumpTree(root_node.GetNodeID(), JoltStringFormat("%s_PRE", mName).c_str());
 #endif
 
 	// Assert sane data
@@ -372,7 +372,7 @@ void QuadTree::UpdateFinalize([[maybe_unused]] const BodyVector &inBodies, [[may
 	mRootNodeIndex = new_root_idx;
 
 #ifdef JPH_DUMP_BROADPHASE_TREE
-	DumpTree(new_root_node.GetNodeID(), StringFormat("%s_POST", mName).c_str());
+	DumpTree(new_root_node.GetNodeID(), JoltStringFormat("%s_POST", mName).c_str());
 #endif
 
 #ifdef _DEBUG
@@ -1537,7 +1537,7 @@ void QuadTree::DumpTree(const NodeID &inRoot, const char *inFileNamePrefix) cons
 {
 	// Open DOT file
 	std::ofstream f;
-	f.open(StringFormat("%s.dot", inFileNamePrefix).c_str(), std::ofstream::out | std::ofstream::trunc);
+	f.open(JoltStringFormat("%s.dot", inFileNamePrefix).c_str(), std::ofstream::out | std::ofstream::trunc);
 	if (!f.is_open())
 		return;
 
@@ -1556,7 +1556,7 @@ void QuadTree::DumpTree(const NodeID &inRoot, const char *inFileNamePrefix) cons
 		if (node_id.IsBody())
 		{
 			// Output body
-			String body_id = ConvertToString(node_id.GetBodyID().GetIndex());
+			JoltString body_id = ConvertToJoltString(node_id.GetBodyID().GetIndex());
 			f << "body" << body_id << "[label = \"Body " << body_id << "\"]\n";
 		}
 		else
@@ -1570,8 +1570,8 @@ void QuadTree::DumpTree(const NodeID &inRoot, const char *inFileNamePrefix) cons
 			node.GetNodeBounds(bounds);
 
 			// Output node
-			String node_str = ConvertToString(node_idx);
-			f << "node" << node_str << "[label = \"Node " << node_str << "\nVolume: " << ConvertToString(bounds.GetVolume()) << "\" color=" << (node.mIsChanged? "red" : "black") << "]\n";
+			JoltString node_str = ConvertToJoltString(node_idx);
+			f << "node" << node_str << "[label = \"Node " << node_str << "\nVolume: " << ConvertToJoltString(bounds.GetVolume()) << "\" color=" << (node.mIsChanged? "red" : "black") << "]\n";
 
 			// Recurse and get all children
 			for (NodeID child_node_id : node.mChildNodeID)
@@ -1584,9 +1584,9 @@ void QuadTree::DumpTree(const NodeID &inRoot, const char *inFileNamePrefix) cons
 					// Output link
 					f << "node" << node_str << " -> ";
 					if (child_node_id.IsBody())
-						f << "body" << ConvertToString(child_node_id.GetBodyID().GetIndex());
+						f << "body" << ConvertToJoltString(child_node_id.GetBodyID().GetIndex());
 					else
-						f << "node" << ConvertToString(child_node_id.GetNodeIndex());
+						f << "node" << ConvertToJoltString(child_node_id.GetNodeIndex());
 					f << "\n";
 				}
 		}
@@ -1599,7 +1599,7 @@ void QuadTree::DumpTree(const NodeID &inRoot, const char *inFileNamePrefix) cons
 	f.close();
 
 	// Convert to svg file
-	String cmd = StringFormat("dot %s.dot -Tsvg -o %s.svg", inFileNamePrefix, inFileNamePrefix);
+	JoltString cmd = JoltStringFormat("dot %s.dot -Tsvg -o %s.svg", inFileNamePrefix, inFileNamePrefix);
 	system(cmd.c_str());
 }
 

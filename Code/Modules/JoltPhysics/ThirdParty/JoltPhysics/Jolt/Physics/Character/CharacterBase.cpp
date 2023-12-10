@@ -19,7 +19,7 @@ CharacterBase::CharacterBase(const CharacterBaseSettings *inSettings, PhysicsSys
 	SetMaxSlopeAngle(inSettings->mMaxSlopeAngle);
 }
 
-const char *CharacterBase::sToString(EGroundState inState)
+const char *CharacterBase::sToJoltString(EGroundState inState)
 {
 	switch (inState)
 	{

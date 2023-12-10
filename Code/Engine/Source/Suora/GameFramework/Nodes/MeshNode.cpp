@@ -11,16 +11,27 @@ namespace Suora
 		float scalar = scale.x;
 		scalar = scale.y > scalar ? scale.y : scalar;
 		scalar = scale.z > scalar ? scale.z : scalar;
-		return mesh->m_BoundingSphereRadius * scalar;
+		return m_Mesh->m_BoundingSphereRadius * scalar;
 	}
 	float MeshNode::GetApproximateScreenPercentage(CameraNode* camera) const
 	{
-		if (!mesh) return 0.0f;
+		if (!m_Mesh) return 0.0f;
 		return GetBoundingSphereRadius() / (glm::distance(GetPosition(), camera->GetPosition()) * glm::sin(glm::radians(camera->GetPerspectiveVerticalFOV())));
 	}
+
+	void MeshNode::SetMesh(Mesh* mesh)
+	{
+		m_Mesh = mesh;
+	}
+
+	Mesh* MeshNode::GetMesh() const
+	{
+		return m_Mesh;
+	}
+
 	MeshNode::MeshNode()
 	{
-		materials.Owner = this;
+		m_Materials.Owner = this;
 	}
 	MeshNode::~MeshNode()
 	{

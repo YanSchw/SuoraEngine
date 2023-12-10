@@ -129,7 +129,7 @@ MeshShape::MeshShape(const MeshShapeSettings &inSettings, ShapeResult &outResult
 		const IndexedTriangle &triangle = inSettings.mIndexedTriangles[t];
 		if (triangle.IsDegenerate(inSettings.mTriangleVertices))
 		{
-			outResult.SetError(StringFormat("Triangle %d is degenerate!", t));
+			outResult.SetError(JoltStringFormat("Triangle %d is degenerate!", t));
 			return;
 		}
 		else
@@ -138,7 +138,7 @@ MeshShape::MeshShape(const MeshShapeSettings &inSettings, ShapeResult &outResult
 			for (uint32 idx : triangle.mIdx)
 				if (idx >= inSettings.mTriangleVertices.size())
 				{
-					outResult.SetError(StringFormat("Vertex index %u is beyond vertex list (size: %u)", idx, (uint)inSettings.mTriangleVertices.size()));
+					outResult.SetError(JoltStringFormat("Vertex index %u is beyond vertex list (size: %u)", idx, (uint)inSettings.mTriangleVertices.size()));
 					return;
 				}
 		}
@@ -151,13 +151,13 @@ MeshShape::MeshShape(const MeshShapeSettings &inSettings, ShapeResult &outResult
 		// Validate materials
 		if (mMaterials.size() > (1 << FLAGS_MATERIAL_BITS))
 		{
-			outResult.SetError(StringFormat("Supporting max %d materials per mesh", 1 << FLAGS_MATERIAL_BITS));
+			outResult.SetError(JoltStringFormat("Supporting max %d materials per mesh", 1 << FLAGS_MATERIAL_BITS));
 			return;
 		}
 		for (const IndexedTriangle &t : inSettings.mIndexedTriangles)
 			if (t.mMaterialIndex >= mMaterials.size())
 			{
-				outResult.SetError(StringFormat("Triangle material %u is beyond material list (size: %u)", t.mMaterialIndex, (uint)mMaterials.size()));
+				outResult.SetError(JoltStringFormat("Triangle material %u is beyond material list (size: %u)", t.mMaterialIndex, (uint)mMaterials.size()));
 				return;
 			}
 	}

@@ -411,7 +411,7 @@ bool LargeIslandSplitter::SplitIsland(uint32 inIslandIndex, const IslandBuilder 
 #ifdef JPH_LARGE_ISLAND_SPLITTER_DEBUG
 	// Trace the size of all splits
 	uint sum = 0;
-	String stats;
+	JoltString stats;
 	for (uint s = 0; s < cNumSplits; ++s)
 	{
 		// If we've processed all splits, jump to the non-parallel split
@@ -419,10 +419,10 @@ bool LargeIslandSplitter::SplitIsland(uint32 inIslandIndex, const IslandBuilder 
 			s = cNonParallelSplitIdx;
 
 		const Split &split = splits.mSplits[s];
-		stats += StringFormat("g:%d:%d:%d, ", s, split.GetNumContacts(), split.GetNumConstraints());
+		stats += JoltStringFormat("g:%d:%d:%d, ", s, split.GetNumContacts(), split.GetNumConstraints());
 		sum += split.GetNumItems();
 	}
-	stats += StringFormat("sum: %d", sum);
+	stats += JoltStringFormat("sum: %d", sum);
 	Trace(stats.c_str());
 #endif // JPH_LARGE_ISLAND_SPLITTER_DEBUG
 

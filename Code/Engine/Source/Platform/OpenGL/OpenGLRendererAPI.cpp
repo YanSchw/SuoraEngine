@@ -57,7 +57,7 @@ namespace Suora
 		glViewport(x, y, width, height);
 	}
 
-	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
+	void OpenGLRendererAPI::SetClearColor(const Vec4& color)
 	{
 		glClearColor(color.r, color.g, color.b, color.a);
 	}

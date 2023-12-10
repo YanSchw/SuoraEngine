@@ -7,14 +7,14 @@ class Random
     std::uniform_real_distribution<double_t> _realDistribution;
     std::uniform_int_distribution<int32_t> _bytedistribution;
 public:
-    Random(uint_least32_t seed)
+    explicit Random(uint_least32_t seed)
     {
         this->_randomNumberGenerator = std::mt19937(seed);
         this->_realDistribution = std::uniform_real_distribution<double_t>();
         this->_bytedistribution = std::uniform_int_distribution<int32_t>(0, 256);
     }
-    Random() : Random(std::_Random_device()) {};
-    ~Random() {}
+    Random() : Random(std::random_device()()) {};
+    ~Random() = default;
     int32_t Next()
     {
         return this->Next(0, INT32_MAX);

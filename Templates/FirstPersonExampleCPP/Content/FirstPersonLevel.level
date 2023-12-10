@@ -1,0 +1,646 @@
+Node: 
+  Class: Native$1863227
+  ScriptClass: 
+    ClassName: 
+
+NodeComposition: 
+  ChildCount: 53
+  Children: 
+    0: 
+      Class: Native$547896459
+      Enabled: true
+      Name: SkyLightNode
+      Node3D: 1.000000/0.000000/0.000000/0.000000;0.000000/1.000000/0.000000/0.000000;0.000000/0.000000/1.000000/0.000000;0.000000/0.000000/0.000000/1.000000
+      SocketName: MyLevel
+    1: 
+      Class: Native$45738744712
+      Enabled: true
+      Name: DirectionalLightNode
+      Node3D: "0.707107/0.000000/-0.707107/0.000000;0.500000/0.707107/0.500000/0.000000;0.500000/-0.707107/0.500000/0.000000;-8.128153/2.413640/-7.831265/1.000000"
+      SocketName: MyLevel
+    10: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [11]"
+      Node3D: 29.999786/0.000000/0.000000/0.000000;0.000000/6.499948/0.000000/0.000000;0.000000/0.000000/0.499999/0.000000;0.000000/3.001532/14.981848/0.999992
+      SocketName: Wall North
+    11: 
+      Class: Native$844454323
+      Enabled: true
+      Name: Wall South
+      Node3D: "30.000000/0.000000/0.000000/0.000000;0.000000/6.500000/0.000000/0.000000;0.000000/0.000000/0.500000/0.000000;0.000000/3.000000/-15.000000/1.000000"
+      SocketName: Geometry
+    12: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [10]"
+      Node3D: "29.999786/0.000000/0.000000/0.000000;0.000000/6.499948/0.000000/0.000000;0.000000/0.000000/0.499999/0.000000;0.000000/3.004481/-15.017912/0.999992"
+      SocketName: Wall South
+    13: 
+      Class: Native$844454323
+      Enabled: true
+      Name: Wall East
+      Node3D: 0.500000/0.000000/0.000000/0.000000;0.000000/6.500000/0.000000/0.000000;0.000000/0.000000/30.000000/0.000000;15.000000/3.000000/0.000000/1.000000
+      SocketName: Geometry
+    14: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [9]"
+      Node3D: 0.500000/0.000000/0.000000/0.000000;0.000000/6.500000/0.000000/0.000000;0.000000/0.000000/30.000143/0.000000;15.000000/3.007239/0.000000/1.000000
+      SocketName: Wall East
+    15: 
+      Class: Native$844454323
+      Enabled: true
+      Name: Wall West
+      Node3D: "0.500000/0.000000/0.000000/0.000000;0.000000/6.500000/0.000000/0.000000;0.000000/0.000000/30.000000/0.000000;-15.000000/3.000000/0.000000/1.000000"
+      SocketName: Geometry
+    16: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [8]"
+      Node3D: "0.500000/0.000000/0.000000/0.000000;0.000000/6.500000/0.000000/0.000000;0.000000/0.000000/30.000143/0.000000;-15.000000/3.009856/0.000000/1.000000"
+      SocketName: Wall West
+    17: 
+      Class: Native$844454323
+      Enabled: true
+      Name: Large Box
+      Node3D: "8.000000/0.000000/0.000000/0.000000;0.000000/3.000000/0.000000/0.000000;0.000000/0.000000/6.000000/0.000000;-11.000000/1.750000/-4.250000/1.000000"
+      SocketName: Geometry
+    18: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [7]"
+      Node3D: "8.000047/0.000000/0.000000/0.000000;0.000000/3.000031/0.000000/0.000000;0.000000/0.000000/6.000089/0.000000;-11.000000/1.750000/-4.250001/1.000000"
+      SocketName: Large Box
+    19: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Large Box [2]"
+      Node3D: 8.000000/0.000000/0.000000/0.000000;0.000000/3.000000/0.000000/0.000000;0.000000/0.000000/6.000000/0.000000;11.000000/1.750000/4.250000/1.000000
+      SocketName: Geometry
+    2: 
+      Class: Native$3644879
+      Enabled: true
+      Name: PostProcess
+      Node3D: 
+      SocketName: MyLevel
+    20: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [4]"
+      Node3D: 8.000047/0.000000/0.000000/0.000000;0.000000/3.000031/0.000000/0.000000;0.000000/0.000000/6.000090/0.000000;11.000000/1.750000/4.250001/1.000000
+      SocketName: "Large Box [2]"
+    21: 
+      Class: Native$844454323
+      Enabled: true
+      Name: Smaller Box
+      Node3D: "2.755954/0.000000/0.000000/0.000000;0.000000/1.100188/0.000000/0.000000;0.000000/0.000000/2.118042/0.000000;11.000000/0.778105/-7.691098/1.000000"
+      SocketName: Geometry
+    22: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [5]"
+      Node3D: "2.755947/0.000000/0.000000/0.000000;0.000000/1.100173/0.000000/0.000000;0.000000/0.000000/2.118058/0.000000;10.984631/0.776918/-7.691187/0.999961"
+      SocketName: Smaller Box
+    23: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Smaller Box [1]"
+      Node3D: "2.755954/0.000000/0.000000/0.000000;0.000000/2.248561/0.000000/0.000000;0.000000/0.000000/3.948489/0.000000;11.000000/1.336091/-2.687324/1.000000"
+      SocketName: Geometry
+    24: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [6]"
+      Node3D: "2.755934/0.000000/0.000000/0.000000;0.000000/2.248594/0.000000/0.000000;0.000000/0.000000/3.948564/0.000000;10.986401/1.334430/-2.688334/0.999985"
+      SocketName: "Smaller Box [1]"
+    25: 
+      Class: Native$3644879
+      Enabled: true
+      Name: Cubes
+      Node3D: 
+      SocketName: MyLevel
+    26: 
+      Class: Native$1299861
+      Enabled: true
+      Name: BoxShapeNode
+      Node3D: "0.836565/0.000000/-0.547854/0.000000;0.000000/0.999999/0.000000/0.000000;0.547854/0.000000/0.836565/0.000000;9.753267/3.737237/4.898270/1.000000"
+      SocketName: Cubes
+    27: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [4]"
+      Node3D: "0.836612/-0.000000/-0.547886/0.000000;-0.000001/0.999453/-0.000002/0.000000;0.547572/0.000002/0.836133/0.000000;9.743596/3.734163/4.882775/1.000000"
+      SocketName: BoxShapeNode
+    28: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [1]"
+      Node3D: 0.999998/0.000000/0.000000/0.000000;0.000000/0.999999/0.000000/0.000000;0.000000/0.000000/0.999999/0.000000;10.778668/0.766538/10.899589/1.000000
+      SocketName: Cubes
+    29: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [2]"
+      Node3D: "1.000012/0.000000/-0.000001/0.000000;-0.000001/0.999526/-0.000002/0.000000;0.000001/0.000000/0.999520/0.000000;10.778574/0.766161/10.882482/1.000000"
+      SocketName: "BoxShapeNode [1]"
+    3: 
+      Class: Native$5477844901
+      Enabled: true
+      Name: SSAO
+      Node3D: 
+      SocketName: PostProcess
+    30: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [2]"
+      Node3D: "-0.875965/-0.000000/0.482363/0.000000;-0.000000/1.000000/-0.000000/0.000000;-0.482363/-0.000000/-0.875965/0.000000;-10.650396/1.724330/-10.591887/1.000000"
+      SocketName: Cubes
+    31: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [10]"
+      Node3D: "-0.876019/-0.000000/0.482393/0.000000;0.000002/1.000000/0.000001/0.000000;-0.482177/-0.000000/-0.875647/0.000000;-10.642308/1.725169/-10.577378/1.000000"
+      SocketName: "BoxShapeNode [2]"
+    32: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [12]"
+      Node3D: "0.916917/0.000000/0.399065/0.000000;-0.000000/0.999999/0.000000/0.000000;-0.399065/-0.000000/0.916917/0.000000;9.457114/0.766538/11.017076/1.000000"
+      SocketName: Cubes
+    33: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [3]"
+      Node3D: "0.916960/0.000000/0.399083/0.000000;0.000000/0.999502/-0.000002/0.000000;-0.398853/0.000000/0.916430/0.000000;9.464500/0.765982/11.000396/1.000000"
+      SocketName: "BoxShapeNode [12]"
+    34: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [13]"
+      Node3D: "0.876471/0.000000/-0.481448/0.000000;0.000000/0.999999/0.000000/0.000000;0.481448/0.000000/0.876472/0.000000;10.183435/0.766538/9.761446/1.000000"
+      SocketName: Cubes
+    35: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [6]"
+      Node3D: "0.876497/0.000000/-0.481462/0.000000;-0.000002/0.999727/-0.000001/0.000000;0.481183/0.000000/0.875989/0.000000;10.175119/0.766232/9.745874/1.000000"
+      SocketName: "BoxShapeNode [13]"
+    36: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [14]"
+      Node3D: "1.752948/0.000000/-0.962899/0.000000;0.000000/2.000000/0.000000/0.000000;0.962899/0.000000/1.752948/0.000000;-10.648168/1.255928/9.185722/1.000000"
+      SocketName: Cubes
+    37: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [13]"
+      Node3D: "1.753000/0.000000/-0.962926/0.000000;-0.000004/2.000000/-0.000002/0.000000;0.962369/0.000000/1.751982/0.000000;-10.665604/1.255764/9.154242/1.000000"
+      SocketName: "BoxShapeNode [14]"
+    38: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [15]"
+      Node3D: "0.387835/0.000000/-0.921729/0.000000;0.000000/1.000000/0.000000/0.000000;0.921729/0.000000/0.387835/0.000000;-10.648168/2.767332/9.185722/1.000000"
+      SocketName: Cubes
+    39: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [7]"
+      Node3D: "0.387850/0.000000/-0.921763/0.000000;-0.000002/1.000000/0.000000/0.000000;0.921229/0.000000/0.387625/0.000000;-10.664785/2.767693/9.178812/1.000000"
+      SocketName: "BoxShapeNode [15]"
+    4: 
+      Class: Native$47863233
+      Enabled: true
+      Name: Vignette
+      Node3D: 
+      SocketName: PostProcess
+    40: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [16]"
+      Node3D: "0.986340/0.000000/0.164703/0.000000;-0.000000/1.000000/0.000000/0.000000;-0.164703/-0.000000/0.986340/0.000000;-10.920490/0.732372/7.271611/1.000000"
+      SocketName: Cubes
+    41: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [8]"
+      Node3D: "0.986378/0.000000/0.164710/0.000000;-0.000001/1.000000/-0.000002/0.000000;-0.164618/0.000000/0.985821/0.000000;-10.917646/0.732683/7.254649/1.000000"
+      SocketName: "BoxShapeNode [16]"
+    42: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [17]"
+      Node3D: "0.663271/0.000000/-0.748374/0.000000;-0.000000/1.000000/0.000000/0.000000;0.748375/-0.000000/0.663271/0.000000;-10.920490/0.732372/-11.372278/1.000000"
+      SocketName: Cubes
+    43: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [12]"
+      Node3D: "0.663306/0.000000/-0.748413/0.000000;-0.000002/1.000000/0.000000/0.000000;0.748075/0.000000/0.663018/0.000000;-10.934598/0.732445/-11.383530/1.000000"
+      SocketName: "BoxShapeNode [17]"
+    44: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [18]"
+      Node3D: "0.663271/0.000000/-0.748374/0.000000;-0.000000/1.000000/0.000000/0.000000;0.748375/-0.000000/0.663271/0.000000;-11.289135/0.732372/-10.218482/1.000000"
+      SocketName: Cubes
+    45: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [11]"
+      Node3D: "0.663306/0.000000/-0.748413/0.000000;-0.000002/1.000000/0.000000/0.000000;0.748075/0.000000/0.663018/0.000000;-11.303041/0.732431/-10.229706/1.000000"
+      SocketName: "BoxShapeNode [18]"
+    46: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [19]"
+      Node3D: "-0.927177/-0.000000/0.374604/0.000000;-0.000000/1.000000/-0.000000/0.000000;-0.374604/-0.000000/-0.927177/0.000000;-9.985415/0.732372/-10.347883/1.000000"
+      SocketName: Cubes
+    47: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [9]"
+      Node3D: "-0.927229/0.000000/0.374624/0.000000;0.000002/1.000000/0.000001/0.000000;-0.374454/0.000000/-0.926831/0.000000;-9.979264/0.732346/-10.332869/1.000000"
+      SocketName: "BoxShapeNode [19]"
+    48: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [20]"
+      Node3D: "0.836565/0.000000/-0.547854/0.000000;0.000000/0.999999/0.000000/0.000000;0.547854/0.000000/0.836565/0.000000;9.753267/1.832890/10.393177/1.000000"
+      SocketName: Cubes
+    49: 
+      Class: Native$844454323
+      Enabled: true
+      Name: "Cube [5]"
+      Node3D: "0.836612/0.000000/-0.547886/0.000000;-0.000001/0.999914/-0.000002/0.000000;0.547572/0.000002/0.836133/0.000000;9.743573/1.830515/10.377617/1.000000"
+      SocketName: "BoxShapeNode [20]"
+    5: 
+      Class: Native$42387911
+      Enabled: true
+      Name: ToneMapping
+      Node3D: 
+      SocketName: PostProcess
+    50: 
+      Class: Native$2645454331
+      Enabled: true
+      Name: FirstPersonCharacter
+      Node3D: 1.000000/0.000000/0.000000/0.000000;0.000000/1.000000/0.000000/0.000000;0.000000/0.000000/1.000000/0.000000;0.000000/0.500000/0.000000/1.000000
+      SocketName: MyLevel
+    51: 
+      Class: Native$8569225
+      Enabled: true
+      Name: HUD
+      Node3D: 
+      SocketName: MyLevel
+      UINode: 
+        m_AbsolutePixelOffset: 0.000000/0.000000/0.000000
+        m_Anchor: 0.000000/0.000000
+        m_EulerRotationAroundAnchor: 0.000000/0.000000/0.000000
+        m_Height: 1.000000
+        m_IsHeightRelative: true
+        m_IsWidthRelative: true
+        m_Pivot: 0.000000/0.000000
+        m_Width: 1.000000
+    52: 
+      Class: Native$647832325
+      Enabled: true
+      Name: Crosshair
+      Node3D: 
+      SocketName: HUD
+      UINode: 
+        m_AbsolutePixelOffset: 0.000000/0.000000/0.000000
+        m_Anchor: 0.000000/0.000000
+        m_EulerRotationAroundAnchor: 0.000000/0.000000/0.000000
+        m_Height: 8.000000
+        m_IsHeightRelative: false
+        m_IsWidthRelative: false
+        m_Pivot: 0.000000/0.000000
+        m_Width: 8.000000
+    6: 
+      Class: Native$3644879
+      Enabled: true
+      Name: Geometry
+      Node3D: 
+      SocketName: MyLevel
+    7: 
+      Class: Native$844454323
+      Enabled: true
+      Name: Floor
+      Node3D: 30.000000/0.000000/0.000000/0.000000;0.000000/0.500000/0.000000/0.000000;0.000000/0.000000/30.000000/0.000000;0.000000/0.000000/0.000000/1.000000
+      SocketName: Geometry
+    8: 
+      Class: Native$1299861
+      Enabled: true
+      Name: "BoxShapeNode [3]"
+      Node3D: 29.999786/0.000000/0.000000/0.000000;0.000000/0.499996/0.000000/0.000000;0.000000/0.000000/29.999958/0.000000;0.000000/0.000000/0.000000/0.999992
+      SocketName: Floor
+    9: 
+      Class: Native$844454323
+      Enabled: true
+      Name: Wall North
+      Node3D: 30.000000/0.000000/0.000000/0.000000;0.000000/6.500000/0.000000/0.000000;0.000000/0.000000/0.500000/0.000000;0.000000/3.000000/15.000000/1.000000
+      SocketName: Geometry
+  Enabled: true
+  InheretedChildCount: 2
+  InheretedChildren: 
+    0: 
+      Enabled: true
+      Indicies: 0
+      Name: CameraNode
+      Node3D: 1.000000/0.000000/0.000000/0.000000;0.000000/1.000000/0.000000/0.000000;0.000000/0.000000/1.000000/0.000000;0.000000/1.000000/0.000000/1.000000
+      Owner: FirstPersonCharacter
+    1: 
+      Enabled: true
+      Indicies: 1
+      Name: PlayerInputNode
+      Node3D: 
+      Owner: FirstPersonCharacter
+  Node3D: 
+  Properties: 
+    0: 
+      NodeName: SkyLightNode
+      PropertyName: m_Intensity
+      Value: 
+        Float: 1.300000
+    1: 
+      NodeName: SkyLightNode
+      PropertyName: m_SkyTexture
+      Value: 
+        AssetPtr: "a6d871d8-52c5-43cc-ba73-191acfe2b7e5"
+    10: 
+      NodeName: Large Box
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    11: 
+      NodeName: "Large Box [2]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    12: 
+      NodeName: Smaller Box
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    13: 
+      NodeName: "Smaller Box [1]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    14: 
+      NodeName: BoxShapeNode
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    15: 
+      NodeName: "Cube [4]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    16: 
+      NodeName: "Cube [4]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    17: 
+      NodeName: "BoxShapeNode [1]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    18: 
+      NodeName: "Cube [2]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    19: 
+      NodeName: "Cube [2]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    2: 
+      NodeName: SSAO
+      PropertyName: m_Intensity
+      Value: 
+        Float: 0.150000
+    20: 
+      NodeName: "BoxShapeNode [2]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    21: 
+      NodeName: "Cube [10]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    22: 
+      NodeName: "Cube [10]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    23: 
+      NodeName: "BoxShapeNode [12]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    24: 
+      NodeName: "Cube [3]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    25: 
+      NodeName: "Cube [3]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    26: 
+      NodeName: "BoxShapeNode [13]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    27: 
+      NodeName: "Cube [6]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    28: 
+      NodeName: "Cube [6]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    29: 
+      NodeName: "BoxShapeNode [14]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    3: 
+      NodeName: SSAO
+      PropertyName: m_Alpha
+      Value: 
+        Float: 0.800000
+    30: 
+      NodeName: "Cube [13]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    31: 
+      NodeName: "Cube [13]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    32: 
+      NodeName: "BoxShapeNode [15]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    33: 
+      NodeName: "Cube [7]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    34: 
+      NodeName: "Cube [7]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    35: 
+      NodeName: "BoxShapeNode [16]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    36: 
+      NodeName: "Cube [8]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    37: 
+      NodeName: "Cube [8]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    38: 
+      NodeName: "BoxShapeNode [17]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    39: 
+      NodeName: "Cube [12]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    4: 
+      NodeName: ToneMapping
+      PropertyName: m_TonemapFunction
+      Value: 
+        Float: 0.000000
+    40: 
+      NodeName: "Cube [12]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    41: 
+      NodeName: "BoxShapeNode [18]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    42: 
+      NodeName: "Cube [11]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    43: 
+      NodeName: "Cube [11]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    44: 
+      NodeName: "BoxShapeNode [19]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    45: 
+      NodeName: "Cube [9]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    46: 
+      NodeName: "Cube [9]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    47: 
+      NodeName: "BoxShapeNode [20]"
+      PropertyName: IsStatic
+      Value: 
+        Bool: false
+    48: 
+      NodeName: "Cube [5]"
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    49: 
+      NodeName: "Cube [5]"
+      PropertyName: m_Materials
+      Value: 
+        MaterialSlots: 
+          0: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+          Overwrite: true
+    5: 
+      NodeName: Floor
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    50: 
+      NodeName: Crosshair
+      PropertyName: m_Texture
+      Value: 
+        AssetPtr: "ad168979-55cd-408e-afd2-a24cabf26922"
+    6: 
+      NodeName: Wall North
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    7: 
+      NodeName: Wall South
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    8: 
+      NodeName: Wall East
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+    9: 
+      NodeName: Wall West
+      PropertyName: m_Mesh
+      Value: 
+        AssetPtr: "33b79a6d-2f4a-40fc-93e5-3f01794c33b8"
+  PropertyCount: 51
+  RootClass: "Node$cb0b814f-6b34-4a60-9e58-6e5c479457e2"
+  RootEnabled: true
+  RootName: MyLevel
+  RootParentClass: Native$1863227
+UUID: "cb0b814f-6b34-4a60-9e58-6e5c479457e2"

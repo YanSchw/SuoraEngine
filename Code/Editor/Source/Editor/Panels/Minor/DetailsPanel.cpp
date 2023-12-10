@@ -1,7 +1,7 @@
 #include "DetailsPanel.h"
-#include "../../EditorWindow.h"
-#include "../Major/NodeClassEditor.h"
-#include "../../Util/EditorPreferences.h"
+#include "Editor/EditorWindow.h"
+#include "Editor/Panels/Major/NodeClassEditor.h"
+#include "Editor/Util/EditorPreferences.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 #include "Suora/Assets/SuoraProject.h"
@@ -11,12 +11,19 @@
 #include "Suora/GameFramework/InputModule.h"
 #include "Suora/GameFramework/Node.h"
 #include "Suora/Common/Filesystem.h"
+#include "Editor/Panels/Major/MeshEditorPanel.h"
 
 namespace Suora
 {
 
 	static Texture2D* undoTexture = nullptr;
 
+	static void DragFloat2(Vec2* vec, float x, float y, float width, float height)
+	{
+		float singleWidth = width / 2.0f;
+		EditorUI::DragFloat(&vec->x, x + singleWidth * 0.0f, y, singleWidth, height);
+		EditorUI::DragFloat(&vec->y, x + singleWidth * 1.0f, y, singleWidth, height);
+	}
 	static void DragFloat3(Vec3* vec, float x, float y, float width, float height)
 	{
 		float singleWidth = width / 3.0f;
@@ -40,7 +47,7 @@ namespace Suora
 		return PanelButtonParam;
 	}
 
-	bool DetailsPanel::DrawHeaderShutter(void* data, const std::string& label, float x, float& y, bool valueChanged, bool& reset)
+	bool DetailsPanel::DrawHeaderShutter(void* data, const String& label, float x, float& y, bool valueChanged, bool& reset)
 	{
 		y -= 34.0f;
 		DrawLabel("", y, 35.0f);
@@ -48,7 +55,7 @@ namespace Suora
 		return (EditorUI::CategoryShutter((int64_t)data, label, x, y, GetDetailWidth() - x - 35.0f, 35.0f, ShutterPanelParams()));
 	}
 
-	void DetailsPanel::DrawLabel(const std::string& label, float y, float height)
+	void DetailsPanel::DrawLabel(const String& label, float y, float height)
 	{
 		static EditorUI::ButtonParams params;
 		params.ButtonRoundness = 0.0f;
@@ -67,7 +74,7 @@ namespace Suora
 	}
 
 
-	bool DetailsPanel::DrawButton(const std::string& label, const std::string& buttonLabel, float& y)
+	bool DetailsPanel::DrawButton(const String& label, const String& buttonLabel, float& y)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -75,7 +82,7 @@ namespace Suora
 		return EditorUI::Button(buttonLabel, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, 150.0f, 25.0f);
 	}
 
-	void DetailsPanel::DrawDropDown(const std::string& label, const std::vector<std::pair<std::string, std::function<void(void)>>>& options, int index, float& y)
+	void DetailsPanel::DrawDropDown(const String& label, const std::vector<std::pair<String, std::function<void(void)>>>& options, int index, float& y)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -98,7 +105,22 @@ namespace Suora
 		return reset;
 	}
 
-	DetailsPanel::Result DetailsPanel::DrawFloat(float* f, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawInt32(int32_t* i, const String& label, float& y, bool valueChanged)
+	{
+		y -= 34.0f;
+		DrawLabel(label, y, 35.0f);
+		const float dragIntWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 150.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 150.0f;
+		int32_t before = *i;
+		EditorUI::DragInt32(i, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, dragIntWidth, 25.0f);
+
+		if (valueChanged && DrawResetButton(y, 35.0f))
+		{
+			return Result::ValueReset;
+		}
+
+		return (before == *i) ? Result::None : Result::ValueChange;
+	}
+	DetailsPanel::Result DetailsPanel::DrawFloat(float* f, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -113,7 +135,7 @@ namespace Suora
 
 		return (before == *f) ? Result::None : Result::ValueChange;
 	}
-	DetailsPanel::Result DetailsPanel::DrawBool(bool* b, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawBool(bool* b, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -131,7 +153,7 @@ namespace Suora
 
 		return Result::None;
 	}
-	DetailsPanel::Result DetailsPanel::DrawVec3(Vec3* v, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawVec3(Vec3* v, const String& label, float& y, bool valueChanged)
 	{
 		Vec3 temp = *v;
 
@@ -148,7 +170,7 @@ namespace Suora
 		return (temp != *v) ? Result::ValueChange : Result::None;
 	}
 	static std::unordered_map<Vec4*, int> _Vec4_ColorPickerResults;
-	DetailsPanel::Result DetailsPanel::DrawVec4(Vec4* v, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawVec4(Vec4* v, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -171,7 +193,7 @@ namespace Suora
 
 		return Result::None;
 	}
-	DetailsPanel::Result DetailsPanel::DrawAsset(Asset** asset, const Class& cls, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawAsset(Asset** asset, const Class& cls, const String& label, float& y, bool valueChanged)
 	{
 		y -= 59.0f;
 		DrawLabel(label, y, 60.0f);
@@ -212,13 +234,27 @@ namespace Suora
 				{
 					Result result = DrawAsset((Asset**)&materials->Materials[i], Material::StaticClass(), "Slot " + std::to_string(i), y, false);
 					if (result == Result::ValueChange) valueChanged = true;
+
+
+					// Hover over MaterialSlot will display a MeshOutline in the MeshEditorPanel
+					EditorUI::ButtonParams HoverParams = EditorUI::ButtonParams::Invisible();
+					bool hover = false;
+					HoverParams.OutHover = &hover;
+					EditorUI::Button("", 0.0f, y, GetDetailWidth(), 60.0f , HoverParams);
+					if (hover)
+					{
+						if (MeshEditorPanel* editor = GetMajorTab()->As<MeshEditorPanel>())
+						{
+							editor->m_MaterialSlotOutline = i;
+						}
+					}
 				}
 			}
 		}
 
 		return reset ? Result::ValueReset : (valueChanged ? Result::ValueChange : Result::None);
 	}
-	DetailsPanel::Result DetailsPanel::DrawClass(Class* cls, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawClass(Class* cls, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -236,7 +272,7 @@ namespace Suora
 
 		return Result::None;
 	}
-	DetailsPanel::Result DetailsPanel::DrawSubclassOf(TSubclassOf* cls, const std::string& label, float& y, bool valueChanged)
+	DetailsPanel::Result DetailsPanel::DrawSubclassOf(TSubclassOf* cls, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -255,7 +291,7 @@ namespace Suora
 		return Result::None;
 	}
 
-	DetailsPanel::Result DetailsPanel::DrawDelegate(TDelegate* delegate, const std::string& label, float& y)
+	DetailsPanel::Result DetailsPanel::DrawDelegate(TDelegate* delegate, const String& label, float& y)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
@@ -268,7 +304,7 @@ namespace Suora
 		return Result::None;
 	}
 
-	static void DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue = 0, const std::function<void(std::string)>& lambda = nullptr)
+	static void DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue = 0, const std::function<void(String)>& lambda = nullptr)
 	{
 		EditorUI::ButtonParams params;
 		params.TextColor = Vec4(0, 0, 0, 1);
@@ -333,8 +369,6 @@ namespace Suora
 			}
 		}
 
-		//Renderer3D::DrawRect(10, 10, 50, 50, 0, Color(1));
-
 		float y = GetHeight() + m_ScrollY;
 
 		if (m_Data)
@@ -348,11 +382,11 @@ namespace Suora
 			else if (detailClass.Inherits(Blueprint::StaticClass())) { ViewBlueprintClass(y, m_Data->As<Blueprint>()); }
 			else if (detailClass == ProjectSettings::StaticClass()) { ViewProjectSettings(y, m_Data->As<ProjectSettings>()); }
 			else if (detailClass == EditorPreferences::StaticClass()) { ViewEditorPreferences(y, m_Data->As<EditorPreferences>()); }
+			else if (detailClass == InputMapping::StaticClass()) { ViewInputMapping(y, m_Data->As<InputMapping>()); }
 			else
 			{
 				SuoraError("No implementation for DetailPanel -> Class: {0}", detailClass.GetClassName());
 			}
-
 		}
 
 		EditorUI::DrawRect((m_Seperator * GetWidth())-1, 0, 2, GetHeight(), 0, Color(0.2f, 0.2f, 0.2f, 0.1f));
@@ -389,10 +423,14 @@ namespace Suora
 			Vec4* v = ClassMember::AccessMember<Vec4>(obj, member->m_MemberOffset);
 			result = DrawVec4(v, mname, y, valueChangedBefore);
 		}
-		else if (member->m_Type == ClassMember::Type::AssetPtr)
+		else if (member->m_Type == ClassMember::Type::ObjectPtr)
 		{
-			Asset** asset = ClassMember::AccessMember<Asset*>(obj, member->m_MemberOffset);
-			result = DrawAsset(asset, ((ClassMember_AssetPtr*)(member))->m_AssetClass, mname, y, valueChangedBefore);
+			const Class objClass = ((ClassMember_ObjectPtr*)(member))->m_ObjectClass;
+			if (objClass.Inherits(Asset::StaticClass()))
+			{
+				Asset** asset = ClassMember::AccessMember<Asset*>(obj, member->m_MemberOffset);
+				result = DrawAsset(asset, objClass, mname, y, valueChangedBefore);
+			}
 		}
 		else if (member->m_Type == ClassMember::Type::MaterialSlots)
 		{
@@ -459,11 +497,13 @@ namespace Suora
 			node->SetEnabled(node->m_Enabled);
 		}
 
+		bool skipFirstDerivative = false;
 		if (Node3D* node3D = node->As<Node3D>())
 		{
+			skipFirstDerivative = true;
 			y -= 35;
 			static bool readTransform = true;
-			static std::function<void(std::string)> disableReadTransform = [](std::string s) { readTransform = false; };
+			static std::function<void(String)> disableReadTransform = [](String s) { readTransform = false; };
 			if (readTransform) // Doesn't work with writing values in the TextBox!
 			{
 				Transform_Pos = node3D->GetLocalPosition();
@@ -502,11 +542,45 @@ namespace Suora
 				Transform_LastNode = node;
 			}
 		}
+		if (UINode* uinode = node->As<UINode>())
+		{
+			skipFirstDerivative = true;
+			y -= 35;
+			if (EditorUI::CategoryShutter(0, "UINode", 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
+			{
+				y -= 34;
+				DrawLabel("Anchor", y, 35.0f);
+				DragFloat2(&uinode->m_Anchor, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Width", y, 35.0f);
+				EditorUI::Checkbox(&uinode->m_IsWidthRelative, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, 25.0f, 25.0f);
+				EditorUI::Text("Is Relative", Font::Instance, GetDetailWidth() * m_Seperator + 35.0f, y + 5.0f, 250.0f, 25.0f, 21.0f, Vec2(-1, 0), Color(1.0f));
+				y -= 34;
+				DrawLabel("", y, 35.0f);
+				EditorUI::DragFloat(&uinode->m_Width, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Height", y, 35.0f);
+				EditorUI::Checkbox(&uinode->m_IsHeightRelative, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, 25.0f, 25.0f);
+				EditorUI::Text("Is Relative", Font::Instance, GetDetailWidth() * m_Seperator + 35.0f, y + 5.0f, 250.0f, 25.0f, 21.0f, Vec2(-1, 0), Color(1.0f));
+				y -= 34;
+				DrawLabel("", y, 35.0f);
+				EditorUI::DragFloat(&uinode->m_Height, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Pivot", y, 35.0f);
+				DragFloat2(&uinode->m_Pivot, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Absolute Pixel Offset", y, 35.0f);
+				DragFloat3(&uinode->m_AbsolutePixelOffset, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+				y -= 34;
+				DrawLabel("Euler Rotation around Anchor", y, 35.0f);
+				DragFloat3(&uinode->m_EulerRotationAroundAnchor, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
+			}
+		}
 
 		// Node Derivates
 		Array<Class> derivates = node->GetClass().GetInheritanceTree();
 		int memberIndex = 0;
-		for (int64_t i = node->IsA<Node3D>() ? 3 : 2; i < derivates.Size(); i++)
+		for (int64_t i = skipFirstDerivative ? 3 : 2; i < derivates.Size(); i++)
 		{
 			y -= 35;
 			const ClassReflector& refl = ClassReflector::GetByClass(derivates[i]);
@@ -551,12 +625,12 @@ namespace Suora
 			if (EditorUI::CategoryShutter(0, "Shader", 0, y, GetDetailWidth(), 35.0f, ShutterPanelParams()))
 			{
 				int i = 0;
-				std::vector<std::pair<std::string, std::function<void(void)>>> options;
+				std::vector<std::pair<String, std::function<void(void)>>> options;
 				std::filesystem::path directory = AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/ShadergraphBase/";
 				std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(directory);
 				for (int j = 0; j < entries.size(); j++)
 				{
-					const std::string name = entries[j].path().filename().string();
+					const String name = entries[j].path().filename().string();
 					if (name == material->As<ShaderGraph>()->m_BaseShader) i = j;
 					options.push_back({ name, [name, material]() { material->As<ShaderGraph>()->m_BaseShader = name; } });
 				}
@@ -603,6 +677,7 @@ namespace Suora
 		y -= 35.0f;
 		if (EditorUI::CategoryShutter(0, "Mesh", 0, y, GetDetailWidth(), 35.0f, ShutterPanelParams()))
 		{
+			DrawVec3(&mesh->m_ImportScale, "Import Scale", y, false);
 		}
 		y -= 35.0f;
 		if (EditorUI::CategoryShutter(2, "Materials", 0, y, GetDetailWidth(), 35.0f, ShutterPanelParams()))
@@ -652,7 +727,7 @@ namespace Suora
 				if (graph.IsNone()) break;
 
 				y -= 35.0f;
-				DrawLabel(graphs[std::to_string(i)]["Label"].As<std::string>(), y, 35.0f);
+				DrawLabel(graphs[std::to_string(i)]["Label"].As<String>(), y, 35.0f);
 				if (EditorUI::Button("Edit Graph", GetDetailWidth() * m_Seperator + 50.0f, y + 5.0f, 120.0f, 25.0f, EditorUI::ButtonParams::Highlight()))
 				{
 					NodeClassEditor* editor = GetMajorTab()->As<NodeClassEditor>();
@@ -685,7 +760,7 @@ namespace Suora
 				typeParams.ButtonRoundness = 22.5f / 2.0f;
 				typeParams.TextDropShadow = true;
 
-				std::string Label = ScriptDataTypeToLabel(var.m_Type);
+				String Label = ScriptDataTypeToLabel(var.m_Type);
 				if (var.m_Type == ScriptDataType::ObjectPtr || var.m_Type == ScriptDataType::Class)
 					Label = Class::FromString(var.m_VarParams).GetClassName();
 				if (EditorUI::Button(Label, GetDetailWidth() * m_Seperator + 50.0f, y + 5.0f, 120.0f, 25.0f, typeParams))
@@ -723,16 +798,18 @@ namespace Suora
 		}
 	}
 
-	static void DrawInputDispatcherDropDown(Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height)
+	void DetailsPanel::DrawInputDispatcherDropDown(const String& label, Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height)
 	{
+		DrawLabel(label, y, height);
+
 		EditorUI::ButtonParams params;
 		params.ButtonColor = EditorPreferences::Get()->UiInputColor;
 		params.ButtonColorHover = EditorPreferences::Get()->UiInputColor;
-		if (EditorUI::Button(dispatcher ? dispatcher->m_Label : "None", x, y, width, height, params))
+		if (EditorUI::Button(dispatcher ? dispatcher->m_Label : "None", x, y + 5.0f, width, height - 10.0f, params))
 		{
 			EditorUI::SelectionOverlay* overlay = EditorUI::CreateOverlay<EditorUI::SelectionOverlay>(x + EditorUI::GetInputOffset().x - 300, y + EditorUI::GetInputOffset().y - 300, 400, 400);
 
-			for (auto& It : InputModule::s_RegisteredInputDispatchers)
+			for (auto& It : PlayerInputNode::s_RegisteredInputDispatchers)
 			{
 				if (It.second->m_ActionSpecifier == type)
 				{
@@ -741,7 +818,7 @@ namespace Suora
 			}
 			overlay->RefreshEntries();
 		}
-		EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("8742cec8-9ee5-4645-b036-577146904b41"))->GetTexture(), x + width - height - 2.5f, y, height, height, 0.0f, Color(1.0f));
+		EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("8742cec8-9ee5-4645-b036-577146904b41"))->GetTexture(), x + width - height - 2.5f, y + 5.0f, height, height - 10.0f, 0.0f, Color(1.0f));
 
 	}
 
@@ -766,259 +843,6 @@ namespace Suora
 			DrawAsset((Asset**)&(settings->m_EditorStartupAsset), Asset::StaticClass(), "Editor Startup Asset", y, false);
 		}
 
-#pragma region Input
-		y -= 35.0f;
-		if (EditorUI::CategoryShutter(3, "Input", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
-		{
-			static std::unordered_map<InputActionType, Array<Class>> s_InputBindables;
-
-			/** Init all InputBinding Classes */
-			if (s_InputBindables.empty())
-			{
-				Array<Class> classes = Class::GetSubclassesOf(InputBinding::StaticClass());
-				for (const Class& cls : classes)
-				{
-					InputBinding* binding = New(cls)->As<InputBinding>();
-					SuoraAssert(binding);
-					s_InputBindables[binding->m_TargetActionType].Add(cls);
-					delete binding;
-				}
-			}
-
-			y -= 400.0f;
-			EditorUI::DrawRect(0, y, GetDetailWidth(), 400.0f, 0.0f, EditorPreferences::Get()->UiColor);
-			/** InputCategories */
-			static std::weak_ptr<InputCategory> s_SelectedInputCategory = std::weak_ptr<InputCategory>();
-			{
-				static float scrollY = 0.0f;
-				float catY = y + 375.0f + scrollY;
-				EditorUI::ButtonParams Params = EditorUI::ButtonParams::Invisible();
-				Params.TextOrientation = Vec2(-0.95f, 0.0f);
-				for (auto& It : settings->m_InputSettings->m_Categories)
-				{
-					catY -= 25.0f;
-					Params.ButtonColor = (s_SelectedInputCategory.lock() == It) ? EditorPreferences::Get()->UiHighlightColor : Color(0.0f);
-					Params.ButtonColorHover = (s_SelectedInputCategory.lock() == It) ? EditorPreferences::Get()->UiHighlightColor : Color(0.0f);
-					Params.ButtonColorClicked = (s_SelectedInputCategory.lock() == It) ? EditorPreferences::Get()->UiHighlightColor : Color(0.0f);
-					if (EditorUI::Button(It->m_CategoryName, 0.0f, catY, GetDetailWidth() * 0.25f, 25.0f, Params))
-					{
-						s_SelectedInputCategory = It;
-					}
-					EditorUI::ButtonParams ParamsRightClick = EditorUI::ButtonParams::Invisible();
-					ParamsRightClick.OverrideActivationEvent = true;
-					ParamsRightClick.OverrittenActivationEvent = []() { return NativeInput::GetMouseButtonDown(Mouse::ButtonRight); };
-					if (EditorUI::Button("", 0.0f, catY, GetDetailWidth() * 0.25f, 25.0f, ParamsRightClick))
-					{
-						std::vector<EditorUI::ContextMenuElement> context;
-						Ref<InputCategory> cat = It;
-						const float width = GetDetailWidth();
-						context.push_back(EditorUI::ContextMenuElement({}, [cat, catY, width]()
-							{
-								EditorUI::_SetTextFieldStringPtr(&cat->m_CategoryName, 0.0f, catY, width * 0.25f, 25.0f, false);
-							}, "Rename Category", nullptr));
-						context.push_back(EditorUI::ContextMenuElement({}, [cat, settings]()
-							{
-								settings->m_InputSettings->m_Categories.Remove(cat);
-							}, "Remove Category", nullptr));
-						EditorUI::CreateContextMenu(context);
-					}
-				}
-
-				EditorUI::DrawRectOutline(0, y, GetDetailWidth() * 0.25f, 400.0f, 3.0f, EditorPreferences::Get()->UiForgroundColor);
-				EditorUI::DrawRect(0, y + 375.0f, GetDetailWidth() * 0.25f, 25.0f, 0.0f, EditorPreferences::Get()->UiForgroundColor);
-				EditorUI::DrawRect(0, y, GetDetailWidth() * 0.25f, 25.0f, 0.0f, EditorPreferences::Get()->UiForgroundColor);
-				EditorUI::Text("Categories", Font::Instance, 5.0f, y + 375.0f, GetDetailWidth() * 0.25f, 25.0f, 22.0f, Vec2(-0.97f, 0.0f), Color(1.0f));
-				if (EditorUI::Button("Add Category", GetDetailWidth() * 0.25f - 155.0f, y + 375.0f, 150.0f, 25.0f, EditorUI::ButtonParams::Highlight()))
-				{
-					settings->m_InputSettings->m_Categories.Add(Ref<InputCategory>(new InputCategory()));
-				}
-				float scrollDown = catY - y - 50.0f - scrollY;
-				EditorUI::ScrollbarVertical(GetDetailWidth() * 0.25f - 5.0f, y, 5.0f, 400.0f, 0.0f, y, GetDetailWidth() * 0.25f, 400.0f, 0.0f, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &scrollY);
-			}
-			/** InputActions */
-			static std::weak_ptr<InputBinding> s_SelectedInputBinding = std::weak_ptr<InputBinding>();
-			{
-				static float scrollY = 0.0f;
-				float actionY = y + 375.0f + scrollY;
-				Ref<InputCategory> category = s_SelectedInputCategory.lock();
-
-				if (category)
-				{
-					int64_t i = 1000;
-					for (auto& It : category->m_Actions)
-					{
-						actionY -= 25.0f;
-						const float __y = actionY;
-						if (EditorUI::CategoryShutter(i++, It->m_ActionName, GetDetailWidth() * 0.25f, actionY, GetDetailWidth() * 0.4f, 25.0f, EditorUI::ButtonParams::Invisible()))
-						{
-							for (auto& binding : It->m_Bindings)
-							{
-								actionY -= 25.0f;
-								EditorUI::ButtonParams Params = EditorUI::ButtonParams::Invisible();
-								Params.TextOrientation = Vec2(-0.95f, 0.0f);
-								Params.ButtonColor = (s_SelectedInputBinding.lock() == binding) ? EditorPreferences::Get()->UiHighlightColor : Color(0.0f);
-								Params.ButtonColorHover = (s_SelectedInputBinding.lock() == binding) ? EditorPreferences::Get()->UiHighlightColor : Color(0.0f);
-								Params.ButtonColorClicked = (s_SelectedInputBinding.lock() == binding) ? EditorPreferences::Get()->UiHighlightColor : Color(0.0f);
-								if (EditorUI::Button(binding->m_Label, GetDetailWidth() * 0.25f + 25.0f, actionY, GetDetailWidth() * 0.4f - 75.0f, 25.0f, Params))
-								{
-									s_SelectedInputBinding = binding;
-								}
-								EditorUI::ButtonParams ParamsRightClick = EditorUI::ButtonParams::Invisible();
-								ParamsRightClick.OverrideActivationEvent = true;
-								ParamsRightClick.OverrittenActivationEvent = []() { return NativeInput::GetMouseButtonDown(Mouse::ButtonRight); };
-								if (EditorUI::Button("", GetDetailWidth() * 0.25f + 25.0f, actionY, GetDetailWidth() * 0.4f - 75.0f, 25.0f, ParamsRightClick))
-								{
-									std::vector<EditorUI::ContextMenuElement> context;
-									Ref<InputBinding> bind = binding;
-									const float width = GetDetailWidth();
-									context.push_back(EditorUI::ContextMenuElement({}, [bind, actionY, width]()
-										{
-											EditorUI::_SetTextFieldStringPtr(&bind->m_Label, width * 0.25f + 25.0f, actionY, width * 0.4f - 75.0f, 25.0f, false);
-										}, "Rename InputBinding", nullptr));
-									context.push_back(EditorUI::ContextMenuElement({}, [bind, It]()
-										{
-											It->m_Bindings.Remove(bind);
-										}, "Remove InputBinding", nullptr));
-									EditorUI::CreateContextMenu(context);
-								}
-								EditorUI::DrawRect(GetDetailWidth() * 0.25f + 25.0f + 3.0f, actionY, 3.0f, 25.0f, 1.0f, Color(0.34117647f, 0.0156862745f, 0.25882352f, 1.0f));
-							}
-						}
-						EditorUI::DrawRect(GetDetailWidth() * 0.25f + 3.0f, __y, 3.0f, 25.0f, 1.0f, Color(0.01568627f, 0.34117647f, 0.03921568f, 1.0f));
-						EditorUI::ButtonParams ParamsRightClick = EditorUI::ButtonParams::Invisible();
-						ParamsRightClick.OverrideActivationEvent = true;
-						ParamsRightClick.OverrittenActivationEvent = []() { return NativeInput::GetMouseButtonDown(Mouse::ButtonRight); };
-						if (EditorUI::Button("", GetDetailWidth() * 0.25f, __y, GetDetailWidth() * 0.4f, 25.0f, ParamsRightClick))
-						{
-							std::vector<EditorUI::ContextMenuElement> context;
-							Ref<InputAction> action = It;
-							const float width = GetDetailWidth();
-							context.push_back(EditorUI::ContextMenuElement({}, [action, __y, width]()
-								{
-									EditorUI::_SetTextFieldStringPtr(&action->m_ActionName, width * 0.25f, __y, width * 0.4f, 25.0f, false);
-								}, "Rename Action", nullptr));
-							context.push_back(EditorUI::ContextMenuElement({}, [action, category]()
-								{
-									category->m_Actions.Remove(action);
-								}, "Remove Action", nullptr));
-
-							context.push_back(EditorUI::ContextMenuElement(
-								{
-									EditorUI::ContextMenuElement({}, [action]()
-									{
-										if (action->m_ActionType != InputActionType::Action)
-										{
-											action->m_Bindings.Clear();
-										}
-										action->m_ActionType = InputActionType::Action;
-									}, "Action (Button)", nullptr),
-									EditorUI::ContextMenuElement({}, [action]()
-									{
-										if (action->m_ActionType != InputActionType::Axis)
-										{
-											action->m_Bindings.Clear();
-										}
-										action->m_ActionType = InputActionType::Axis;
-									}, "Axis", nullptr),
-									EditorUI::ContextMenuElement({}, [action]()
-									{
-										if (action->m_ActionType != InputActionType::Axis2D)
-										{
-											action->m_Bindings.Clear();
-										}
-										action->m_ActionType = InputActionType::Axis2D;
-									}, "Axis2D", nullptr)
-								}, []() { }, "Change ActionType", nullptr));
-
-							for (auto& It : s_InputBindables[action->m_ActionType])
-							{
-								context.push_back(EditorUI::ContextMenuElement({}, [action, It]()
-									{
-										action->m_Bindings.Add(Ref<InputBinding>(New(It)->As<InputBinding>()));
-									}, "Add " + It.GetClassName(), nullptr));
-							}
-
-							EditorUI::CreateContextMenu(context);
-						}
-					}
-				}
-				else
-				{
-					EditorUI::Text("Select an InputCategory", Font::Instance, GetDetailWidth() * 0.25f, y, GetDetailWidth() * 0.4f, 400.0f, 26.0f, Vec2(0.0f), Color(1.0f));
-				}
-
-				EditorUI::DrawRectOutline(GetDetailWidth() * 0.25f, y, GetDetailWidth() * 0.4f, 400.0f, 3.0f, EditorPreferences::Get()->UiForgroundColor);
-				EditorUI::DrawRect(GetDetailWidth() * 0.25f, y + 375.0f, GetDetailWidth() * 0.4f, 25.0f, 0.0f, EditorPreferences::Get()->UiForgroundColor);
-				EditorUI::DrawRect(GetDetailWidth() * 0.25f, y, GetDetailWidth() * 0.4f, 25.0f, 0.0f, EditorPreferences::Get()->UiForgroundColor);
-				EditorUI::Text("Input Actions", Font::Instance, GetDetailWidth() * 0.25f + 5.0f, y + 375.0f, GetDetailWidth() * 0.4f, 25.0f, 22.0f, Vec2(-0.97f, 0.0f), Color(1.0f));
-				if (category && EditorUI::Button("Add Action", GetDetailWidth() * 0.65f - 155.0f, y + 375.0f, 150.0f, 25.0f, EditorUI::ButtonParams::Highlight()))
-				{
-					category->m_Actions.Add(Ref<InputAction>(new InputAction()));
-				}
-				float scrollDown = actionY - y - 50.0f - scrollY;
-				EditorUI::ScrollbarVertical(GetDetailWidth() * 0.65f - 5.0f, y, 5.0f, 400.0f, GetDetailWidth() * 0.25f, y, GetDetailWidth() * 0.4f, 400.0f, 0.0f, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &scrollY);
-			}
-			/** InputBindings */
-			{
-				static float scrollY = 0.0f;
-				float bindingsY = y + 375.0f + scrollY;
-
-				if (Ref<InputBinding> binding = s_SelectedInputBinding.lock())
-				{
-					if (binding->GetClass() == InputBinding_DirectAction::StaticClass())
-					{
-						EditorUI::Text("Bind", Font::Instance, GetDetailWidth() * 0.65f + 7.0f, y + 350.0f, GetDetailWidth() * 0.1f, 25.0f, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-						DrawInputDispatcherDropDown(binding->As<InputBinding_DirectAction>()->m_Dispatcher, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y + 350.0f, GetDetailWidth() * 0.15f, 25.0f);
-					}
-					else if (binding->GetClass() == InputBinding_DirectAxis::StaticClass())
-					{
-						EditorUI::Text("Bind", Font::Instance, GetDetailWidth() * 0.65f + 7.0f, y + 350.0f, GetDetailWidth() * 0.1f, 25.0f, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-						DrawInputDispatcherDropDown(binding->As<InputBinding_DirectAxis>()->m_Dispatcher, InputActionType::Axis, GetDetailWidth() * 0.75f + 7.0f, y + 350.0f, GetDetailWidth() * 0.15f, 25.0f);
-					}
-					else if (binding->GetClass() == InputBinding_DirectAxis2D::StaticClass())
-					{
-						EditorUI::Text("Bind", Font::Instance, GetDetailWidth() * 0.65f + 7.0f, y + 350.0f, GetDetailWidth() * 0.1f, 25.0f, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-						DrawInputDispatcherDropDown(binding->As<InputBinding_DirectAxis2D>()->m_Dispatcher, InputActionType::Axis2D, GetDetailWidth() * 0.75f + 7.0f, y + 350.0f, GetDetailWidth() * 0.15f, 25.0f);
-					}
-					else if (binding->GetClass() == InputBinding_DirectionalActionMapping::StaticClass())
-					{
-						EditorUI::Text("Bind Positive", Font::Instance, GetDetailWidth() * 0.65f + 7.0f, y + 350.0f, GetDetailWidth() * 0.1f, 25.0f, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-						DrawInputDispatcherDropDown(binding->As<InputBinding_DirectionalActionMapping>()->m_DispatcherPos, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y + 350.0f, GetDetailWidth() * 0.15f, 25.0f);
-						EditorUI::Text("Bind Negative", Font::Instance, GetDetailWidth() * 0.65f + 7.0f, y + 325.0f, GetDetailWidth() * 0.1f, 25.0f, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-						DrawInputDispatcherDropDown(binding->As<InputBinding_DirectionalActionMapping>()->m_DispatcherNeg, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y + 325.0f, GetDetailWidth() * 0.15f, 25.0f);
-					}
-					else if (binding->GetClass() == InputBinding_BidirectionalActionMapping::StaticClass())
-					{
-						EditorUI::Text("Bind Up", Font::Instance, GetDetailWidth() * 0.65f + 7.0f, y + 350.0f, GetDetailWidth() * 0.1f, 25.0f, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-						DrawInputDispatcherDropDown(binding->As<InputBinding_BidirectionalActionMapping>()->m_DispatcherUp, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y + 350.0f, GetDetailWidth() * 0.15f, 25.0f);
-						EditorUI::Text("Bind Down", Font::Instance, GetDetailWidth() * 0.65f + 7.0f, y + 325.0f, GetDetailWidth() * 0.1f, 25.0f, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-						DrawInputDispatcherDropDown(binding->As<InputBinding_BidirectionalActionMapping>()->m_DispatcherDown, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y + 325.0f, GetDetailWidth() * 0.15f, 25.0f);
-						EditorUI::Text("Bind Left", Font::Instance, GetDetailWidth() * 0.65f + 7.0f, y + 300.0f, GetDetailWidth() * 0.1f, 25.0f, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-						DrawInputDispatcherDropDown(binding->As<InputBinding_BidirectionalActionMapping>()->m_DispatcherLeft, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y + 300.0f, GetDetailWidth() * 0.15f, 25.0f);
-						EditorUI::Text("Bind Right", Font::Instance, GetDetailWidth() * 0.65f + 7.0f, y + 275.0f, GetDetailWidth() * 0.1f, 25.0f, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-						DrawInputDispatcherDropDown(binding->As<InputBinding_BidirectionalActionMapping>()->m_DispatcherRight, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y + 275.0f, GetDetailWidth() * 0.15f, 25.0f);
-					}
-					else
-					{
-						EditorUI::Text("Unkown InputBinding Class!", Font::Instance, GetDetailWidth() * 0.65f, y, GetDetailWidth() * 0.35f, 400.0f, 26.0f, Vec2(0.0f), Color(1.0f, 0.0f, 0.0f, 1.0f));
-					}
-				}
-				else
-				{
-					EditorUI::Text("Select an InputBinding", Font::Instance, GetDetailWidth() * 0.65f, y, GetDetailWidth() * 0.35f, 400.0f, 26.0f, Vec2(0.0f), Color(1.0f));
-				}
-
-				EditorUI::DrawRectOutline(GetDetailWidth() * 0.65f, y, GetDetailWidth() * 0.35f, 400.0f, 3.0f, EditorPreferences::Get()->UiForgroundColor);
-				EditorUI::DrawRect(GetDetailWidth() * 0.65f, y + 375.0f, GetDetailWidth() * 0.35f, 25.0f, 0.0f, EditorPreferences::Get()->UiForgroundColor);
-				EditorUI::DrawRect(GetDetailWidth() * 0.65f, y, GetDetailWidth() * 0.35f, 25.0f, 0.0f, EditorPreferences::Get()->UiForgroundColor);
-				EditorUI::Text("Input Bindings", Font::Instance, GetDetailWidth() * 0.65f + 5.0f, y + 375.0f, GetDetailWidth() * 0.35f, 25.0f, 22.0f, Vec2(-0.97f, 0.0f), Color(1.0f));
-				
-				float scrollDown = bindingsY - y - 50.0f - scrollY;
-				EditorUI::ScrollbarVertical(GetDetailWidth() - 5.0f, y, 5.0f, 400.0f, GetDetailWidth() * 0.65f, y, GetDetailWidth() * 0.35f, 400.0f, 0.0f, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &scrollY);
-			}
-		}
-#pragma endregion
-
 	}
 
 	void DetailsPanel::ViewEditorPreferences(float& y, EditorPreferences* settings)
@@ -1032,6 +856,144 @@ namespace Suora
 			DrawVec4(&settings->UiBackgroundColor, "Background Color", y, false);
 			DrawVec4(&settings->UiForgroundColor, "Foreground Color", y, false);
 		}
+		DrawFloat(&settings->UiScale, "UiScale", y, false);
+	}
+
+	static String InputActionTypeToString(InputActionType type)
+	{
+		switch (type)
+		{
+		case InputActionType::Action: return "Action (Button)";
+		case InputActionType::Axis: return "Axis";
+		case InputActionType::Axis2D: return "Axis2D";
+		}
+		return "unkown";
+	}
+	void DetailsPanel::ViewInputMapping(float& y, InputMapping* input)
+	{
+		static std::unordered_map<InputActionType, Array<Class>> s_InputBindables;
+
+		/** Init all InputBinding Classes */
+		if (s_InputBindables.empty())
+		{
+			Array<Class> classes = Class::GetSubclassesOf(InputBinding::StaticClass());
+			for (const Class& cls : classes)
+			{
+				InputBinding* binding = New(cls)->As<InputBinding>();
+				SuoraAssert(binding);
+				s_InputBindables[binding->m_TargetActionType].Add(cls);
+				delete binding;
+			}
+		}
+		y -= 34.0f;
+		DrawLabel("Label", y, 35.0f);
+		EditorUI::TextField(&input->m_Label, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, 350.0f, 25.0f);
+
+		y -= 34.0f;
+		DrawLabel("Type", y, 35.0f);
+		const float buttonWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 150.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 150.0f;
+		if (EditorUI::Button(InputActionTypeToString(input->m_ActionType), GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, buttonWidth, 25.0f))
+		{
+			EditorUI::CreateContextMenu(
+			{ EditorUI::ContextMenuElement({}, [input]()
+						{
+							if (input->m_ActionType != InputActionType::Action)
+							{
+								input->m_Bindings.Clear();
+							}
+							input->m_ActionType = InputActionType::Action;
+						}, "Action (Button)", nullptr), EditorUI::ContextMenuElement({}, [input]()
+						{
+							if (input->m_ActionType != InputActionType::Axis)
+							{
+								input->m_Bindings.Clear();
+							}
+							input->m_ActionType = InputActionType::Axis;
+						}, "Axis", nullptr), EditorUI::ContextMenuElement({}, [input]()
+						{
+							if (input->m_ActionType != InputActionType::Axis2D)
+							{
+								input->m_Bindings.Clear();
+							}
+							input->m_ActionType = InputActionType::Axis2D;
+						}, "Axis2D", nullptr)
+			});
+		}
+
+		y -= 34.0f;
+		DrawLabel("", y, 35.0f);
+		if (EditorUI::Button("Add Binding", GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, buttonWidth, 25.0f))
+		{
+			std::vector<EditorUI::ContextMenuElement> context;
+			const float width = GetDetailWidth();
+
+			for (auto& It : s_InputBindables[input->m_ActionType])
+			{
+				context.push_back(EditorUI::ContextMenuElement({}, [input, It]()
+				{
+						input->m_Bindings.Add(Ref<InputBinding>(New(It)->As<InputBinding>()));
+				}, "Add " + It.GetClassName(), nullptr));
+			}
+
+			EditorUI::CreateContextMenu(context);
+		}
+
+		int32_t idx = 0;
+		for (Ref<InputBinding> binding : input->m_Bindings)
+		{
+			y -= 34.0f;
+			if (!EditorUI::CategoryShutter(idx, "Binding " + std::to_string(idx++), 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
+			{
+				continue;
+			}
+
+			y -= 34.0f;
+			DrawLabel("", y, 35.0f);
+			if (EditorUI::Button("Remove Binding", GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, buttonWidth, 25.0f))
+			{
+				input->m_Bindings.Remove(binding);
+				return;
+			}
+
+			if (binding->GetClass() == InputBinding_DirectAction::StaticClass())
+			{
+				y -= 34.0f;
+				DrawInputDispatcherDropDown("", binding->As<InputBinding_DirectAction>()->m_Dispatcher, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y, GetDetailWidth() * 0.15f, 35.0f);
+			}
+			else if (binding->GetClass() == InputBinding_DirectAxis::StaticClass())
+			{
+				y -= 34.0f;
+				DrawInputDispatcherDropDown("", binding->As<InputBinding_DirectAxis>()->m_Dispatcher, InputActionType::Axis, GetDetailWidth() * 0.75f + 7.0f, y, GetDetailWidth() * 0.15f, 35.0f);
+			}
+			else if (binding->GetClass() == InputBinding_DirectAxis2D::StaticClass())
+			{
+				y -= 34.0f;
+				DrawInputDispatcherDropDown("", binding->As<InputBinding_DirectAxis2D>()->m_Dispatcher, InputActionType::Axis2D, GetDetailWidth() * 0.75f + 7.0f, y, GetDetailWidth() * 0.15f, 35.0f);
+			}
+			else if (binding->GetClass() == InputBinding_DirectionalActionMapping::StaticClass())
+			{
+				y -= 34.0f;
+				DrawInputDispatcherDropDown("Bind Positive", binding->As<InputBinding_DirectionalActionMapping>()->m_DispatcherPos, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y, GetDetailWidth() * 0.15f, 35.0f);
+				y -= 34.0f;
+				DrawInputDispatcherDropDown("Bind Negative", binding->As<InputBinding_DirectionalActionMapping>()->m_DispatcherNeg, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y, GetDetailWidth() * 0.15f, 35.0f);
+			}
+			else if (binding->GetClass() == InputBinding_BidirectionalActionMapping::StaticClass())
+			{
+				y -= 34.0f;
+				DrawInputDispatcherDropDown("Bind Up", binding->As<InputBinding_BidirectionalActionMapping>()->m_DispatcherUp, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y, GetDetailWidth() * 0.15f, 35.0f);
+				y -= 34.0f;
+				DrawInputDispatcherDropDown("Bind Down", binding->As<InputBinding_BidirectionalActionMapping>()->m_DispatcherDown, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y, GetDetailWidth() * 0.15f, 35.0f);
+				y -= 34.0f;
+				DrawInputDispatcherDropDown("Bind Left", binding->As<InputBinding_BidirectionalActionMapping>()->m_DispatcherLeft, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y, GetDetailWidth() * 0.15f, 35.0f);
+				y -= 34.0f;
+				DrawInputDispatcherDropDown("Bind Right", binding->As<InputBinding_BidirectionalActionMapping>()->m_DispatcherRight, InputActionType::Action, GetDetailWidth() * 0.75f + 7.0f, y, GetDetailWidth() * 0.15f, 35.0f);
+			}
+			else
+			{
+				SuoraVerify(false);
+			}
+		}
+
 	}
 
 	float DetailsPanel::GetScrollbarWidth() const

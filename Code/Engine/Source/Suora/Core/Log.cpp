@@ -93,18 +93,12 @@ namespace Suora
 		}
 	}
 
-	void Log::LogVirtualMessage(LogCategory category, LogLevel verbosity, const std::string& str)
-	{
-		VirtualConsole::PushMessage(ConsoleMessage(str, category, verbosity));
-		VirtualConsole::Tick();
-	}
-
 	Ref<spdlog::logger>& Log::GetLogger(LogCategory category)
 	{
 		return s_Loggers[(uint32_t)category];
 	}
 
-	std::string Log::CategoryToString(const LogCategory category)
+	String Log::CategoryToString(const LogCategory category)
 	{
 		switch (category)
 		{
@@ -122,17 +116,7 @@ namespace Suora
 			return "[None]";
 		}
 
-		return std::string();
+		return String();
 	}
 
-}
-
-std::string string_format(std::string format, const std::vector<std::stringstream>& streams)
-{
-	for (int i = 0; i < streams.size(); i++)
-	{
-		Suora::Util::ReplaceSequence(format, "{" + std::to_string(i) + "}", streams[i].str());
-	}
-
-	return format;
 }

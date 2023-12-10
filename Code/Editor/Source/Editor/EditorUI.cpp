@@ -1,5 +1,6 @@
 #include "EditorUI.h"
 #include "EditorWindow.h"
+#include "AssetPreview.h"
 #include "Util/EditorPreferences.h"
 #include "Suora/Core/Base.h"
 #include "Suora/Common/Common.h"
@@ -13,6 +14,7 @@
 #include "Suora/Renderer/RenderCommand.h"
 #include "Panels/Minor/ContentBrowser.h"
 #include "Suora/GameFramework/World.h"
+#include "Suora/GameFramework/InputModule.h"
 #include "Suora/GameFramework/Nodes/MeshNode.h"
 #include "Suora/GameFramework/Nodes/DecalNode.h"
 #include "Suora/GameFramework/Nodes/ShapeNodes.h"
@@ -31,188 +33,6 @@ static Suora::Ref<Shader> ColorCircleShader;
 
 namespace Suora
 {
-
-	struct AssetPreview
-	{
-		Ref<Framebuffer> m_Preview;
-		Ref<Framebuffer> m_GBuffer;
-		uint32_t m_LastDraw = -10000;
-		bool m_Init = false;
-		bool m_Done = false;
-		inline static RenderPipeline* s_Pipeline = nullptr;
-		Ref<World> m_World = nullptr;
-		
-		AssetPreview()
-		{
-			{
-				FramebufferSpecification spec;
-				spec.Width = 128;
-				spec.Height = 128;
-				for (int32_t i = 0; i < (int32_t)GBuffer::GBufferSlotCount; i++)
-				{
-					spec.Attachments.Attachments.push_back(RenderPipeline::GBufferSlotToBufferParams((GBuffer)i));
-				}
-				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-				m_GBuffer = Framebuffer::Create(spec);
-			}
-			{
-				FramebufferSpecification spec;
-				spec.Width = 128;
-				spec.Height = 128;
-				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
-				spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-				m_Preview = Framebuffer::Create(spec);
-			}
-		}
-		~AssetPreview()
-		{
-			m_Preview = nullptr;
-			m_World = nullptr;
-		}
-
-		void Init(Asset* asset)
-		{
-			static bool pipelineInit = false;
-			if (!pipelineInit)
-			{
-				s_Pipeline = Engine::Get()->GetRenderPipeline();
-				pipelineInit = true;
-			}
-			m_World = CreateRef<World>();
-			if (asset->IsA<Material>())
-			{
-				CameraNode* camera = m_World->Spawn<CameraNode>();
-				m_World->Spawn<SkyLightNode>();
-				m_World->Spawn<MeshNode>()->mesh = AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47"));
-				m_World->Spawn<PointLightNode>()->SetPosition(Vec3(-1.5f, 1.5f, -1.5f));
-				DirectionalLightNode* dirLight = m_World->Spawn<DirectionalLightNode>();
-				dirLight->m_ShadowMap = false;
-				dirLight->SetEulerRotation(Vec3(45, 45, 0));
-				m_World->SetMainCamera(camera);
-				camera->SetPerspectiveVerticalFOV(25.0f);
-				camera->SetPosition(Vec3(0, 0, -5));
-				camera->SetViewportSize(256, 256);
-				MeshNode* mesh = m_World->Spawn<MeshNode>();
-				mesh->mesh = AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"));
-				mesh->materials = asset->As<Material>();
-				mesh->materials.OverwritteMaterials = true;
-			}
-			if (asset->IsA<Mesh>())
-			{
-				CameraNode* camera = m_World->Spawn<CameraNode>();
-				m_World->Spawn<SkyLightNode>();
-				m_World->Spawn<MeshNode>()->mesh = AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47"));
-				DirectionalLightNode* dirLight = m_World->Spawn<DirectionalLightNode>();
-				dirLight->m_ShadowMap = true;
-				dirLight->m_Intensity = 0.75f;
-				dirLight->SetEulerRotation(Vec3(45, 45, 0));
-				m_World->Spawn<PointLightNode>()->SetPosition(Vec3(-3, 3, -3));
-				m_World->SetMainCamera(camera);
-				camera->SetPerspectiveVerticalFOV(75.0f);
-				camera->SetPosition(Vec3(asset->As<Mesh>()->m_BoundingSphereRadius * -1.0f, asset->As<Mesh>()->m_BoundingSphereRadius, asset->As<Mesh>()->m_BoundingSphereRadius * -1.20f));
-				camera->SetEulerRotation(Vec3(45, 45, 0));
-				camera->SetViewportSize(256, 256);
-				MeshNode* mesh = m_World->Spawn<MeshNode>();
-				mesh->mesh = asset->As<Mesh>();
-			}
-			if (asset->IsA<Blueprint>())
-			{
-				CameraNode* camera = m_World->Spawn<CameraNode>();
-				m_World->Spawn<SkyLightNode>();
-				m_World->Spawn<MeshNode>()->mesh = AssetManager::GetAsset<Mesh>(SuoraID("7d609382-dd13-4f97-b325-7d7a04309f47"));
-				DirectionalLightNode* dirLight = m_World->Spawn<DirectionalLightNode>();
-				dirLight->m_ShadowMap = false;
-				dirLight->SetEulerRotation(Vec3(45, 45, 0));
-				m_World->Spawn<PointLightNode>()->SetPosition(Vec3(-3, 3, -3));
-				m_World->SetMainCamera(camera);
-				camera->SetPerspectiveVerticalFOV(75.0f);
-				camera->SetPosition(Vec3(5 * -1.0f, 5, 5 * -1.0f));
-				camera->SetEulerRotation(Vec3(45, 45, 0));
-				camera->SetViewportSize(256, 256);
-				m_World->Spawn(Class(asset->As<Blueprint>()));
-			}
-		}
-		void Render(Asset* asset)
-		{
-			//if (AssetManager::s_AssetStreamPool.Size() != 0) return;
-
-			if (m_Done) return;
-			if (asset->IsMissing()) return;
-			if (asset->IsA<Mesh>() && !asset->As<Mesh>()->GetVertexArray()) return;
-			if (asset->IsA<Material>() && !AssetManager::GetAsset<Mesh>(SuoraID("5c43e991-86be-48a4-8b14-39d275818ec1"))->GetVertexArray()) return;
-
-			if (!m_Init)
-			{
-				m_Init = true;
-				Init(asset);
-				
-			}
-			Framebuffer* current = Framebuffer::GetCurrent();
-			if (!m_Preview) return;
-			m_Preview->Bind();
-
-			RenderingParams RParams;
-			if (asset->IsA<Material>())
-			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer, RParams);
-				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
-			}
-			if (asset->IsA<Mesh>())
-			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer, RParams);
-				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
-			}
-			if (asset->IsA<Blueprint>())
-			{
-				s_Pipeline->Render(*m_Preview, *m_World, *m_World->GetMainCamera(), *m_GBuffer, RParams);
-				///Engine::Get()->GetRenderPipeline()->Render(*m_Preview, *m_World, *m_World->GetMainCamera());
-			}
-			m_Done = true;
-			m_Init = false;
-			m_GBuffer = nullptr;
-			m_World = nullptr;
-
-			m_Preview->Unbind();
-			if (current) current->Bind();
-		}
-	};
-
-	static bool CanRerenderAssetPreviews = false;
-	static std::unordered_map<Asset*, Ref<AssetPreview>> AssetPreviews;
-
-	void EditorUI::RerenderAssetPreviews()
-	{
-		static bool InRenderPhase = false;
-		if (AssetManager::s_AssetStreamPool.Size() != 0 && !InRenderPhase) return;
-		InRenderPhase = true;
-		//if (Application::Get().GetRuntime() < 5.f) return;
-
-		if (!CanRerenderAssetPreviews) return;
-		CanRerenderAssetPreviews = false;
-
-		rerun:
-		int64_t Index = AssetPreviews.size() ? rand() % AssetPreviews.size() + (rand() % 3) : -1;
-		for (auto& it : AssetPreviews)
-		{
-			Index--;
-
-			/*if (it.second.m_LastDraw++ > 100)
-			{
-				AssetPreviews.erase(it.first);
-				goto rerun;
-			}*/
-
-			if (Index == 0 && it.second)
-			{
-				if (it.second->m_Init && rand() % 3 == 0) goto rerun;
-				it.second->Render(it.first);
-				break;
-			}
-		}
-
-
-
-	}
 
 	void EditorUI::Init()
 	{
@@ -236,21 +56,23 @@ namespace Suora
 			GlassBuffer = Framebuffer::Create(specs);
 		}
 
-		s_ClassIcons[Node::StaticClass()]					= AssetManager::GetAsset<Texture2D>(SuoraID("ad168979-55cd-408e-afd2-a24cabf26922"));
-		s_ClassIcons[MeshNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("b14b065c-a2c0-4dc9-9272-ab0415ada141"));
-		s_ClassIcons[DecalNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("9d81a066-2336-42f5-bf35-7bb1c4c65d66"));
-		s_ClassIcons[PointLightNode::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("f789d2bf-dcda-4e30-b2d9-3db979b7c6da"));
-		s_ClassIcons[DirectionalLightNode::StaticClass()]	= AssetManager::GetAsset<Texture2D>(SuoraID("64738d74-08a9-4383-8659-620808d5269a"));
-		s_ClassIcons[CameraNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("8952ef88-cbd0-41ab-9d3c-d4c4b39a30f9"));
-		s_ClassIcons[BoxShapeNode::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("269931d5-7e60-4934-a89a-26b7993ae0f3"));
-		s_ClassIcons[SphereShapeNode::StaticClass()]		= AssetManager::GetAsset<Texture2D>(SuoraID("7e43f48b-3dc8-4eab-b91a-b4e2e7999190"));
-		s_ClassIcons[CapsuleShapeNode::StaticClass()]		= AssetManager::GetAsset<Texture2D>(SuoraID("b7221496-4fc6-4e08-9f23-655d5edfe820"));
-		s_ClassIcons[CharacterNode::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("0660326f-a8a2-4314-bc96-9b61bdbddae3"));
-		s_ClassIcons[PostProcessEffect::StaticClass()]		= AssetManager::GetAsset<Texture2D>(SuoraID("9bdeac52-f671-4e0a-9167-aeaa30c47711"));
-		s_ClassIcons[LevelNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("3578494c-3c74-4aa5-8d34-4d28959a21f5"));
-		s_ClassIcons[Component::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("3e254a4e-cc83-4254-a462-73739fce6d61"));
-		s_ClassIcons[FolderNode::StaticClass()]				= AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
-		s_ClassIcons[FolderNode3D::StaticClass()]			= AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
+		s_ClassIcons[Node::StaticClass()]                   = AssetManager::GetAsset<Texture2D>(SuoraID("ad168979-55cd-408e-afd2-a24cabf26922"));
+		s_ClassIcons[MeshNode::StaticClass()]               = AssetManager::GetAsset<Texture2D>(SuoraID("b14b065c-a2c0-4dc9-9272-ab0415ada141"));
+		s_ClassIcons[DecalNode::StaticClass()]              = AssetManager::GetAsset<Texture2D>(SuoraID("9d81a066-2336-42f5-bf35-7bb1c4c65d66"));
+		s_ClassIcons[PointLightNode::StaticClass()]         = AssetManager::GetAsset<Texture2D>(SuoraID("f789d2bf-dcda-4e30-b2d9-3db979b7c6da"));
+		s_ClassIcons[DirectionalLightNode::StaticClass()]   = AssetManager::GetAsset<Texture2D>(SuoraID("64738d74-08a9-4383-8659-620808d5269a"));
+		s_ClassIcons[CameraNode::StaticClass()]             = AssetManager::GetAsset<Texture2D>(SuoraID("8952ef88-cbd0-41ab-9d3c-d4c4b39a30f9"));
+		s_ClassIcons[BoxShapeNode::StaticClass()]           = AssetManager::GetAsset<Texture2D>(SuoraID("269931d5-7e60-4934-a89a-26b7993ae0f3"));
+		s_ClassIcons[SphereShapeNode::StaticClass()]        = AssetManager::GetAsset<Texture2D>(SuoraID("7e43f48b-3dc8-4eab-b91a-b4e2e7999190"));
+		s_ClassIcons[CapsuleShapeNode::StaticClass()]       = AssetManager::GetAsset<Texture2D>(SuoraID("b7221496-4fc6-4e08-9f23-655d5edfe820"));
+		s_ClassIcons[CharacterNode::StaticClass()]          = AssetManager::GetAsset<Texture2D>(SuoraID("0660326f-a8a2-4314-bc96-9b61bdbddae3"));
+		s_ClassIcons[PostProcessEffect::StaticClass()]      = AssetManager::GetAsset<Texture2D>(SuoraID("0001ed8d-ef3a-4375-be4b-d03cfc4febfd"));
+		s_ClassIcons[LevelNode::StaticClass()]              = AssetManager::GetAsset<Texture2D>(SuoraID("3578494c-3c74-4aa5-8d34-4d28959a21f5"));
+		s_ClassIcons[Component::StaticClass()]              = AssetManager::GetAsset<Texture2D>(SuoraID("3e254a4e-cc83-4254-a462-73739fce6d61"));
+		s_ClassIcons[FolderNode::StaticClass()]             = AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
+		s_ClassIcons[FolderNode3D::StaticClass()]           = AssetManager::GetAsset<Texture2D>(SuoraID("fd612d87-5fb3-4585-b66e-e42f275ef262"));
+		s_ClassIcons[UIImage::StaticClass()]                = AssetManager::GetAsset<Texture2D>(SuoraID("26ed62e2-e39b-4028-aca2-7b116c74541f"));
+		s_ClassIcons[PlayerInputNode::StaticClass()]        = AssetManager::GetAsset<Texture2D>(SuoraID("f36a106a-7116-4e55-a4ef-5f9e37e8d408"));
 	}
 
 	// DrawRect
@@ -275,26 +97,7 @@ namespace Suora
 			s_Overlays[i]->m_Lifetime++;
 		}
 		
-		CanRerenderAssetPreviews = true;
-		rerun:
-		for (auto& it : AssetPreviews)
-		{
-			if (!it.second)
-			{
-				it.second = CreateRef<AssetPreview>();
-			}
-			else if (it.second->m_LastDraw++ > 1800)
-			{
-				AssetPreviews.erase(it.first);
-				goto rerun;
-			}
-		}
-
-		static int counter = 0;
-		if (counter >= 512)
-			RerenderAssetPreviews();
-		else
-			counter++;
+		AssetPreview::Tick(deltaTime);
 	}
 
 	void EditorUI::PushInput(float x, float y, float offsetX, float offsetY)
@@ -406,7 +209,7 @@ namespace Suora
 		DrawRect(x + width - thickness, y, thickness, height, 0, color);
 	}
 
-	void EditorUI::Text(const std::string& text, Font* font, float x, float y, float width, float height, float size, const Vec2& orientation, const Color& color, const Array<Color>& colors)
+	void EditorUI::Text(const String& text, Font* font, float x, float y, float width, float height, float size, const Vec2& orientation, const Color& color, const Array<Color>& colors)
 	{
 		RenderCommand::SetViewport(x, y, width, height);
 		if (!font->m_IsAtlasLoaded)
@@ -498,7 +301,7 @@ namespace Suora
 		delete[] iBase;
 	}
 
-	bool EditorUI::Button(const std::string& text, float x, float y, float width, float height, ButtonParams params)
+	bool EditorUI::Button(const String& text, float x, float y, float width, float height, ButtonParams params)
 	{
 		bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height && (GetHoveredOverlay() == s_CurrentProcessedOverlay);
 		const bool ButtonClicked = Hovering && (params.OverrideActivationEvent ? params.OverrittenActivationEvent() : NativeInput::GetMouseButtonDown(Mouse::ButtonLeft)) && CurrentWindow->m_InputEvent == params.InputMode && !WasInputConsumed() && !CurrentWindow->GetWindow()->IsCursorLocked();
@@ -559,7 +362,7 @@ namespace Suora
 		return inDrag && Buffer.x == x && Buffer.y == y && Buffer.width == width && Buffer.height == height && glm::distance(Pos, GetInput()) > offset;
 	}
 
-	bool EditorUI::DropDown(const std::vector<std::pair<std::string, std::function<void(void)>>>& options, int index, float x, float y, float width, float height)
+	bool EditorUI::DropDown(const std::vector<std::pair<String, std::function<void(void)>>>& options, int index, float x, float y, float width, float height)
 	{
 		if (Button(options[index].first, x, y, width, height))
 		{
@@ -583,7 +386,7 @@ namespace Suora
 			TextFieldCharBuffer.Add(keyCode);
 		}
 	}
-	void EditorUI::TextField(std::string* str, float x, float y, float width, float height, ButtonParams params, const std::function<void(std::string)>& lambda)
+	void EditorUI::TextField(String* str, float x, float y, float width, float height, ButtonParams params, const std::function<void(String)>& lambda)
 	{
 		if (EditorUI::Button(*str, x, y, width, height, params) && !TextField_Str && CurrentWindow->m_InputEvent == EditorInputEvent::None)
 		{
@@ -600,7 +403,7 @@ namespace Suora
 
 	}
 
-	void EditorUI::_SetTextFieldStringPtr(std::string* str, float x, float y, float width, float height, bool needsFlag)
+	void EditorUI::_SetTextFieldStringPtr(String* str, float x, float y, float width, float height, bool needsFlag)
 	{
 		TextField_StrFlag = true;
 		TextField_Str = str;
@@ -609,29 +412,53 @@ namespace Suora
 		overlay->needsFlag = needsFlag;
 	}
 
-	void EditorUI::DragFloat(float* f, float x, float y, float width, float height, const std::function<void(std::string)>& lambda)
+	void EditorUI::DragInt32(int32_t* i, float x, float y, float width, float height, const std::function<void(String)>& lambda)
+	{
+		DragNumber(i, ClassMember::Type::Integer32, x, y, width, height, lambda);
+	}
+	void EditorUI::DragFloat(float* f, float x, float y, float width, float height, const std::function<void(String)>& lambda)
+	{
+		DragNumber(f, ClassMember::Type::Float, x, y, width, height, lambda);
+	}
+	void EditorUI::DragNumber(void* n, ClassMember::Type type, float x, float y, float width, float height, const std::function<void(String)>& lambda)
 	{
 		struct DragFloatTextField : public TextFieldOverlay
 		{
-			DragFloatTextField(std::string* str, const std::function<void(std::string)>& lambda, bool needsFlag = true) : TextFieldOverlay(str, 26.0f, lambda, needsFlag) 
+			ClassMember::Type m_Type;
+			DragFloatTextField(String* str, const std::function<void(String)>& lambda, ClassMember::Type type, bool needsFlag = true) : TextFieldOverlay(str, 26.0f, lambda, needsFlag)
 			{
+				m_Type = type;
 				CursorSelectionOffset = str->size();
 			}
 			void OnDispose() override
 			{
-				if (NativeInput::GetKeyDown(Key::Tab)) DraggedFloatTabulatePtr = DraggedFloatPtr;
-				*DraggedFloatPtr = Util::StringToFloat(DraggedFloatStr);// std::stof(DraggedFloatStr);
-				DraggedFloatPtr = nullptr;
+				if (NativeInput::GetKeyDown(Key::Tab)) DraggedNumberTabulatePtr = DraggedNumberPtr;
+				switch (m_Type)
+				{
+				case ClassMember::Type::Integer32: *(int32_t*)DraggedNumberPtr = StringUtil::StringToInt32(DraggedNumberStr); break;
+				case ClassMember::Type::Float: *(float*)DraggedNumberPtr = StringUtil::StringToFloat(DraggedNumberStr); break;
+				default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+				}
+				DraggedNumberPtr = nullptr;
 			}
 		};
-		// Tabulating
-		if (f == DraggedFloatTabulatePtr) { DraggedFloatTabulatePtr = nullptr; DraggedFloatTabulateNext = true; return; }
-		if (DraggedFloatTabulateNext)
+
+		String label;
+		switch (type)
 		{
-			DraggedFloatTabulateNext = false;
-			DraggedFloatPtr = f;
-			DraggedFloatStr = Util::FloatToString(*DraggedFloatPtr);
-			DragFloatTextField* overlay = CreateOverlay<DragFloatTextField>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, &DraggedFloatStr, lambda, false);
+		case ClassMember::Type::Integer32: label = StringUtil::Int32ToString(*(int32_t*)n); break;
+		case ClassMember::Type::Float: label = StringUtil::FloatToString(*(float*)n); break;
+		default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+		}
+
+		// Tabulating
+		if (n == DraggedNumberTabulatePtr) { DraggedNumberTabulatePtr = nullptr; DraggedNumberTabulateNext = true; return; }
+		if (DraggedNumberTabulateNext)
+		{
+			DraggedNumberTabulateNext = false;
+			DraggedNumberPtr = n;
+			DraggedNumberStr = label;
+			DragFloatTextField* overlay = CreateOverlay<DragFloatTextField>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, &DraggedNumberStr, lambda, type, false);
 			return;
 		}
 
@@ -639,35 +466,52 @@ namespace Suora
 		Params.TextOrientation = Vec2(-1, 0);
 		Params.TextOffsetLeft = 5.0f;
 		Params.HoverCursor = Cursor::HorizontalResize;
-		if (Button(Util::FloatToString(*f), x, y, width, height, Params) && CurrentWindow->m_InputEvent == EditorInputEvent::None)
+		if (Button(label, x, y, width, height, Params) && CurrentWindow->m_InputEvent == EditorInputEvent::None)
 		{
 			CurrentWindow->m_InputEvent = EditorInputEvent::EditorUI_DragFloat;
-			DraggedFloatPtr = f;
-			DraggedFloatBeginValue = *f;
+			DraggedNumberPtr = n;
+			switch (type)
+			{
+			case ClassMember::Type::Integer32: DraggedInt32BeginValue = *(int32_t*)n; break;
+			case ClassMember::Type::Float: DraggedFloatBeginValue = *(float*)n; break;
+			default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+			}
 			CurrentWindow->GetWindow()->SetCursorLocked(true);
 		}
-		else if (f == DraggedFloatPtr && CurrentWindow->m_InputEvent == EditorInputEvent::EditorUI_DragFloat && !NativeInput::GetMouseButton(Mouse::ButtonLeft)) // f == DraggedFloatPtr might lead to softlocks, if DragFloat() is not called on the float* 
+		else if (n == DraggedNumberPtr && CurrentWindow->m_InputEvent == EditorInputEvent::EditorUI_DragFloat && !NativeInput::GetMouseButton(Mouse::ButtonLeft)) // f == DraggedNumberPtr might lead to softlocks, if DragFloat() is not called on the float* 
 		{
 			CurrentWindow->m_InputEvent = EditorInputEvent::None;
 			CurrentWindow->GetWindow()->SetCursorLocked(false);
-			if (*DraggedFloatPtr == DraggedFloatBeginValue)
+
+			bool isValueTheSameAsbefore = false;
+			switch (type)
 			{
-				DraggedFloatStr = Util::FloatToString(*DraggedFloatPtr);
-				DragFloatTextField* overlay = CreateOverlay<DragFloatTextField>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, &DraggedFloatStr, lambda, false);
+			case ClassMember::Type::Integer32: isValueTheSameAsbefore = *(int32_t*)DraggedNumberPtr == DraggedInt32BeginValue; break;
+			case ClassMember::Type::Float: isValueTheSameAsbefore = *(float*)DraggedNumberPtr == DraggedFloatBeginValue; break;
+			default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+			}
+			if (isValueTheSameAsbefore)
+			{
+				DraggedNumberStr = label;
+				DragFloatTextField* overlay = CreateOverlay<DragFloatTextField>(x + GetInputOffset().x, y + GetInputOffset().y, width, height, &DraggedNumberStr, lambda, type, false);
 			}
 			else
 			{
-				DraggedFloatPtr = nullptr;
+				DraggedNumberPtr = nullptr;
 			}
 		}
 
-		if (CurrentWindow->m_InputEvent == EditorInputEvent::EditorUI_DragFloat && f == DraggedFloatPtr)
-			*f += NativeInput::GetMouseDelta().x / 10;
+		if (CurrentWindow->m_InputEvent == EditorInputEvent::EditorUI_DragFloat && n == DraggedNumberPtr)
+		{
+			switch (type)
+			{
+			case ClassMember::Type::Integer32: *(int32_t*)n += NativeInput::GetMouseDelta().x / 4; break;
+			case ClassMember::Type::Float: *(float*)n += NativeInput::GetMouseDelta().x / 50.0f; break;
+			default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
+			}
+			
+		}
 
-		/*EditorUI::DrawRect(x, y, width, height, 4, Hovering ? Color(0.5f, 0.5f, 0.5f, 1.0f) : Color(0.3f, 0.3f, 0.3f, 1.0f));
-		EditorUI::DrawRect(x + 1, y + 1, width - 2, height - 2, 4, EditorPreferences::Get()->UiInputColor);*/
-
-		//EditorUI::Text(Util::FloatToString(*f), Font::Instance, x + 10, y, width * 0.75f, height, 28, Vec2(-1, 0), Color(1));
 		EditorUI::DrawTexturedRect(DragFloatTexture->GetTexture(), x + width - height, y + height * 0.05f, height * 0.9f, height * 0.9f, 0, Color(1.0f, 1.0f, 1.0f, 0.5f));
 	}
 
@@ -717,7 +561,7 @@ namespace Suora
 	static bool	   AssetDropDownDone = false;
 	struct AssetDropDownOverlay : public EditorUI::Overlay
 	{
-		inline static std::string s_SearchLabel, s_LastSearchLabel;
+		inline static String s_SearchLabel, s_LastSearchLabel;
 		Array<Asset*> m_Entries;
 		Class m_AssetClass = Class::None;
 		float m_ScrollY = 0.0f;
@@ -733,14 +577,14 @@ namespace Suora
 			m_Entries.Clear();
 			m_Entries = AssetManager::GetAssetsByClass(m_AssetClass);
 		}
-		void PullAssetEntries(const std::string& label)
+		void PullAssetEntries(const String& label)
 		{
-			const std::string lowerLabel = Util::ToLower(label);
+			const String lowerLabel = StringUtil::ToLower(label);
 			m_Entries.Clear();
 			Array<Asset*> assets = AssetManager::GetAssetsByClass(m_AssetClass);
 			for (Asset* asset : assets)
 			{
-				if (Util::ToLower(asset->GetAssetName()).find(lowerLabel) != std::string::npos) m_Entries.Add(asset);
+				if (StringUtil::ToLower(asset->GetAssetName()).find(lowerLabel) != String::npos) m_Entries.Add(asset);
 			}
 		}
 		virtual void Render(float deltaTime) override
@@ -811,7 +655,7 @@ namespace Suora
 	{
 		SuoraVerify(asset);
 		Array<Asset*> assets = AssetManager::GetAssetsByClass(assetClass);
-		std::vector<std::string> assetsPaths;
+		std::vector<String> assetsPaths;
 		assetsPaths.push_back("None");
 		for (int j = 0; j < assets.Size(); j++) assetsPaths.push_back(assets[j]->m_Name);
 
@@ -825,7 +669,7 @@ namespace Suora
 		int i = assets.IndexOf((Asset*)asset);
 		if (i == -1) i = 0; else i++;
 
-		std::string assetName = (*asset) ? (*asset)->GetAssetName() : "None";
+		String assetName = (*asset) ? (*asset)->GetAssetName() : "None";
 		ButtonParams DropDownParams;
 		if (*asset && (*asset)->IsFlagSet(AssetFlags::Missing))
 		{
@@ -891,36 +735,7 @@ namespace Suora
 
 	void EditorUI::DrawAssetPreview(Asset* asset, const Class& assetClass, float x, float y, float width, float height)
 	{
-		EditorUI::DrawTexturedRect(CheckerboardTexture->GetTexture(), x, y, width, height, 0.0f, Color(0.1f, 0.1f, 0.1f, 1));
-		if (!asset) return;
-		if (!Engine::Get()->GetRenderPipeline()->IsA<RenderPipeline>()) return;
-
-		if (Texture2D* texture = Cast<Texture2D>(asset))
-		{
-			EditorUI::DrawTexturedRect(texture->GetTexture(), x, y, width, height, 0.0f, Color(1.0f));
-		}
-		else
-		{
-			if (AssetPreviews.find(asset) == AssetPreviews.end())
-			{
-				AssetPreviews[asset] = nullptr;
-				//AssetPreviews[asset].Render(asset);
-			}
-			
-			if (!AssetPreviews[asset]) return;
-			if (AssetPreviews[asset]->m_LastDraw < 0) return;
-			AssetPreviews[asset]->m_LastDraw = 0;
-			//RerenderAssetPreviews();
-
-			if (AssetPreviews.find(asset) != AssetPreviews.end() && AssetPreviews[asset]->m_Preview && AssetPreviews[asset]->m_Done)
-			{
-				RenderPipeline::GetFullscreenPassShaderStatic()->Bind();
-				RenderPipeline::GetFullscreenPassShaderStatic()->SetInt("u_Texture", 0);
-				AssetPreviews[asset]->m_Preview->BindColorAttachmentByIndex(0, 0);
-				RenderCommand::SetViewport(x, y, width, height);
-				RenderCommand::DrawIndexed(RenderPipeline::__GetFullscreenQuad());
-			}
-		}
+		AssetPreview::DrawAssetPreview(asset, assetClass, x, y, width, height);
 	}
 
 	void EditorUI::SubclassSelectionMenu(const Class& base, const std::function<void(Class)>& lambda)
@@ -930,7 +745,7 @@ namespace Suora
 		SelectionOverlay* overlay = CreateOverlay<SelectionOverlay>(NativeInput::GetMousePosition().x,  CurrentWindow->GetWindow()->GetHeight() - NativeInput::GetMousePosition().y - 400.0f, 400.0f, 400.0f);
 		for (Class& cls : subClasses)
 		{
-			std::string className = cls.GetClassName();
+			String className = cls.GetClassName();
 			Class level = cls;
 			while (level != base)
 			{
@@ -1018,7 +833,7 @@ namespace Suora
 		return nullptr;
 	}
 
-	bool EditorUI::CategoryShutter(int64_t id, const std::string& category, float x, float& y, float width, float height, ButtonParams params)
+	bool EditorUI::CategoryShutter(int64_t id, const String& category, float x, float& y, float width, float height, ButtonParams params)
 	{
 		y += 1.0f;
 		if (CategoryShutterStates.find(id) == CategoryShutterStates.end()) CategoryShutterStates[id] = true;
@@ -1028,8 +843,8 @@ namespace Suora
 			state = !state;
 		}
 		const float imageSize = 20.0f; //25.0f;
-		Text(Util::SmartToUpperCase(category, false), Font::Instance, x + imageSize + 10 + 2, y - 2, width - height - 10, height, params.TextSize, Vec2(-1.0f, 0.0f), Color(0, 0, 0, 0.25f));
-		Text(Util::SmartToUpperCase(category, false), Font::Instance, x + imageSize + 10, y, width - height - 10, height, params.TextSize, Vec2(-1.0f, 0.0f), Color(1.0f));
+		Text(StringUtil::SmartToUpperCase(category, false), Font::Instance, x + imageSize + 10 + 2, y - 2, width - height - 10, height, params.TextSize, Vec2(-1.0f, 0.0f), Color(0, 0, 0, 0.25f));
+		Text(StringUtil::SmartToUpperCase(category, false), Font::Instance, x + imageSize + 10, y, width - height - 10, height, params.TextSize, Vec2(-1.0f, 0.0f), Color(1.0f));
 		EditorUI::DrawTexturedRect(state ? ArrowDown->GetTexture() : ArrowRight->GetTexture(), x + (imageSize / 4.0f) + 2.0f, y + (height - imageSize) / 2.0f - 2.0f, imageSize, imageSize, 0.0f, Color(0.0f, 0.0f, 0.0f, 0.2f));
 		EditorUI::DrawTexturedRect(state ? ArrowDown->GetTexture() : ArrowRight->GetTexture(), x + (imageSize / 4.0f), y + (height - imageSize) / 2.0f, imageSize, imageSize, 0.0f, Color(1.0f));
 		return state;
@@ -1075,7 +890,7 @@ namespace Suora
 		(*scrollCurrent) = Math::Clamp((*scrollCurrent), scrollUp * -1, scrollDown);
 	}
 
-	void EditorUI::Tooltip(const std::string& text, float x, float y, float width, float height)
+	void EditorUI::Tooltip(const String& text, float x, float y, float width, float height)
 	{
 		bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height;
 		if (Hovering)
@@ -1085,7 +900,7 @@ namespace Suora
 		}
 	}
 
-	void EditorUI::Tooltip(const std::string& text)
+	void EditorUI::Tooltip(const String& text)
 	{
 		tooltipFrames = 0;
 		tooltipText = text;

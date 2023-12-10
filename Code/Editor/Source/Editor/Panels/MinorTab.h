@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include <Suora.h>
+#include "Suora/Core/Base.h"
 #include "Suora/Common/Array.h"
-#include "../EditorUI.h"
+#include "Editor/EditorUI.h"
 
 namespace Suora
 {
@@ -15,7 +15,7 @@ namespace Suora
 	{
 		Ptr<MajorTab> m_MajorTab;
 	public:
-		std::string Name = "MinorTab";
+		String Name = "MinorTab";
 		Ref<Framebuffer> m_Framebuffer;
 		uint32_t Width = 100, Height = 100;
 		Texture2D* m_IconTexture = nullptr;

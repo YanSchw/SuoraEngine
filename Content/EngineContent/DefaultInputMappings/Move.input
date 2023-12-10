@@ -1,0 +1,11 @@
+Binding_0: 
+  Class: Native$43855832
+  m_DispatcherDown: Keyboard/S
+  m_DispatcherLeft: Keyboard/A
+  m_DispatcherRight: Keyboard/D
+  m_DispatcherUp: Keyboard/W
+  m_Normalize: false
+  m_TargetActionType: 3
+UUID: "b4e9d95f-13fb-4bc6-93cb-06c5dbb01f95"
+m_Label: Default.Move
+m_Type: 3

@@ -1,11 +1,11 @@
 #pragma once
-#include <string>
+#include "Suora/Common/StringUtils.h"
+#include "Suora/Common/VectorUtils.h"
 #include <inttypes.h>
-#include <glm/glm.hpp>
 
 namespace Suora
 {
-	using Color = glm::vec4;
+	class Object;
 
 	enum class ScriptDataType : int64_t
 	{
@@ -30,9 +30,9 @@ namespace Suora
 		return std::is_base_of<Object, std::remove_pointer_t<T>>::value ? ScriptDataType::ObjectPtr : ScriptDataType::None;
 	}
 
-	static ScriptDataType StringToScriptDataType(std::string str)
+	static ScriptDataType StringToScriptDataType(String str)
 	{
-		if (str.find("const") != std::string::npos && str.find("&") != std::string::npos)
+		if (str.find("const") != String::npos && str.find("&") != String::npos)
 		{
 			str.erase(str.find("const"), 5);
 			str.erase(str.find("&"), 1);
@@ -50,7 +50,7 @@ namespace Suora
 		if (str == "bool") return ScriptDataType::Bool;
 		return ScriptDataType::None;
 	}
-	static std::string ScriptDataTypeToLabel(ScriptDataType type)
+	static String ScriptDataTypeToLabel(ScriptDataType type)
 	{
 		switch (type)
 		{
@@ -70,18 +70,18 @@ namespace Suora
 	{
 		switch (type)
 		{
-		case ScriptDataType::Float: return glm::vec4(0.4f, 0.49f, 0.38f, 1.0f);
-		case ScriptDataType::Vec2: return glm::vec4(0.4f, 0.2f, 0.28f, 1.0f);
-		case ScriptDataType::Vec3: return glm::vec4(0.62f, 0.59f, 0.28f, 1.0f);
-		case ScriptDataType::Vec4: return glm::vec4(0.52f, 0.59f, 0.48f, 1.0f);
-		case ScriptDataType::ObjectPtr: return glm::vec4(0.0f, 0.64f, 0.94f, 1.0f);
-		case ScriptDataType::Class: return glm::vec4(0.67f, 0.04f, 0.74f, 1.0f);
-		case ScriptDataType::Bool: return glm::vec4(0.62f, 0.05f, 0.05f, 1.0f);
+		case ScriptDataType::Float: return Vec4(0.4f, 0.49f, 0.38f, 1.0f);
+		case ScriptDataType::Vec2: return Vec4(0.4f, 0.2f, 0.28f, 1.0f);
+		case ScriptDataType::Vec3: return Vec4(0.62f, 0.59f, 0.28f, 1.0f);
+		case ScriptDataType::Vec4: return Vec4(0.52f, 0.59f, 0.48f, 1.0f);
+		case ScriptDataType::ObjectPtr: return Vec4(0.0f, 0.64f, 0.94f, 1.0f);
+		case ScriptDataType::Class: return Vec4(0.67f, 0.04f, 0.74f, 1.0f);
+		case ScriptDataType::Bool: return Vec4(0.62f, 0.05f, 0.05f, 1.0f);
 		case ScriptDataType::None:
 		default:
-			return glm::vec4(1.0f);
+			return Vec4(1.0f);
 		}
-		return glm::vec4(1.0f);
+		return Vec4(1.0f);
 	}
 
 }

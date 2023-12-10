@@ -19,20 +19,18 @@ namespace Suora
 
 	}
 
-	void Blueprint::PreInitializeAsset(const std::string& str)
+	void Blueprint::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<std::string>();
+		m_UUID = root["UUID"].As<String>();
 		m_YamlNode_EditorOnly = root;
 
 		Yaml::Node& node = root["Node"];
-		m_ParentClass = Class::FromString(root["NodeComposition"]["ParentClass"].As<std::string>()); //Class::FromString(node["m_ParentClass"].As<std::string>());
+		m_ParentClass = Class::FromString(root["NodeComposition"]["ParentClass"].As<String>()); //Class::FromString(node["m_ParentClass"].As<String>());
 		if (m_ParentClass == Class::None)
 		{
-			m_ParentClass = Class::FromString(node["Class"].As<std::string>());
+			m_ParentClass = Class::FromString(node["Class"].As<String>());
 		}
 
 		m_Composition = root["NodeComposition"];
@@ -44,7 +42,7 @@ namespace Suora
 			{
 				Yaml::Node& delegate = node["m_DelegateEventsToBindDuringGameplay"][std::to_string(i++)];
 				if (delegate.IsNone()) break;
-				m_DelegateEventsToBindDuringGameplay.Add(DelegateEventBind(delegate["ChildName"].As<std::string>(), delegate["DelegateName"].As<std::string>(), delegate["ScriptFunctionHash"].As<size_t>()));
+				m_DelegateEventsToBindDuringGameplay.Add(DelegateEventBind(delegate["ChildName"].As<String>(), delegate["DelegateName"].As<String>(), delegate["ScriptFunctionHash"].As<size_t>()));
 			}
 		}
 
@@ -55,7 +53,7 @@ namespace Suora
 			{
 				Yaml::Node& input = node["m_InputEventsToBeBound"][std::to_string(i++)];
 				if (input.IsNone()) break;
-				m_InputEventsToBeBound.Add(InputEventBind(input["Label"].As<std::string>(), input["ScriptFunctionHash"].As<size_t>(), (InputScriptEventFlags)input["Flags"].As<uint64_t>()));
+				m_InputEventsToBeBound.Add(InputEventBind(input["Label"].As<String>(), input["ScriptFunctionHash"].As<size_t>(), (InputActionKind)input["Flags"].As<uint64_t>()));
 			}
 		}
 

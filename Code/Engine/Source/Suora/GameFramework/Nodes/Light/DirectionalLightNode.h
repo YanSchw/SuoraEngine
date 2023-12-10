@@ -15,7 +15,7 @@ namespace Suora
 		Ref<Framebuffer> m_ShadowMapBuffer;
 		float m_CascadeSize = 10.0f;
 		float m_CascadeForwardOffset = 0.0f;
-		glm::mat4 m_Matrix;
+		Mat4 m_Matrix;
 		
 		ShadowCascade(uint32_t resolution, float size, float offset);
 	};

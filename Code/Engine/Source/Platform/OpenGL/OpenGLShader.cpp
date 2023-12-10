@@ -10,7 +10,7 @@
 namespace Suora 
 {
 
-	static GLenum ShaderTypeFromString(const std::string& type)
+	static GLenum ShaderTypeFromString(const String& type)
 	{
 		if (type == "vertex")
 			return GL_VERTEX_SHADER;
@@ -21,24 +21,24 @@ namespace Suora
 		return 0;
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& filepath)
+	OpenGLShader::OpenGLShader(const String& filepath)
 	{
-		std::string source = ReadFile(filepath);
+		String source = ReadFile(filepath);
 		auto shaderSources = PreProcess(source);
 		Compile(shaderSources);
 
 		// Extract name from filepath
 		auto lastSlash = filepath.find_last_of("/\\");
-		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+		lastSlash = lastSlash == String::npos ? 0 : lastSlash + 1;
 		auto lastDot = filepath.rfind('.');
-		auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+		auto count = lastDot == String::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
 		m_Name = filepath.substr(lastSlash, count);
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+	OpenGLShader::OpenGLShader(const String& name, const String& vertexSrc, const String& fragmentSrc)
 		: m_Name(name)
 	{
-		std::unordered_map<GLenum, std::string> sources;
+		std::unordered_map<GLenum, String> sources;
 		sources[GL_VERTEX_SHADER] = vertexSrc;
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
 		Compile(sources);
@@ -57,9 +57,9 @@ namespace Suora
 		glDeleteProgram(m_RendererID);
 	}
 
-	std::string OpenGLShader::ReadFile(const std::string& filepath)
+	String OpenGLShader::ReadFile(const String& filepath)
 	{
-		std::string result;
+		String result;
 		std::ifstream in(filepath, std::ios::in | std::ios::binary); // ifstream closes itself due to RAII
 		if (in)
 		{
@@ -84,9 +84,9 @@ namespace Suora
 		return result;
 	}
 
-	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
+	std::unordered_map<GLenum, String> OpenGLShader::PreProcess(const String& source)
 	{
-		std::unordered_map<GLenum, std::string> shaderSources;
+		std::unordered_map<GLenum, String> shaderSources;
 
 		auto shaderSrc = Shader::PreProcess(source);
 		for (auto& src : shaderSrc)
@@ -98,7 +98,7 @@ namespace Suora
 		return shaderSources;
 	}
 
-	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
+	void OpenGLShader::Compile(const std::unordered_map<GLenum, String>& shaderSources)
 	{
 		GLuint program = glCreateProgram();
 		SUORA_ASSERT(shaderSources.size() <= 2, "We only support 2 shaders for now");
@@ -107,7 +107,7 @@ namespace Suora
 		for (auto& kv : shaderSources)
 		{
 			GLenum type = kv.first;
-			const std::string& source = kv.second;
+			const String& source = kv.second;
 
 			GLuint shader = glCreateShader(type);
 
@@ -182,95 +182,95 @@ namespace Suora
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::SetInt(const std::string& name, int value)
+	void OpenGLShader::SetInt(const String& name, int value)
 	{
 		UploadUniformInt(name, value);
 	}
 
-	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
+	void OpenGLShader::SetIntArray(const String& name, int* values, uint32_t count)
 	{
 		UploadUniformIntArray(name, values, count);
 	}
 
-	void OpenGLShader::SetFloat(const std::string& name, float value)
+	void OpenGLShader::SetFloat(const String& name, float value)
 	{
 		UploadUniformFloat(name, value);
 	}
 
-	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
+	void OpenGLShader::SetFloat2(const String& name, const Vec2& value)
 	{
 		UploadUniformFloat2(name, value);
 	}
 
-	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
+	void OpenGLShader::SetFloat3(const String& name, const Vec3& value)
 	{
 		UploadUniformFloat3(name, value);
 	}
 
-	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
+	void OpenGLShader::SetFloat4(const String& name, const Vec4& value)
 	{
 		UploadUniformFloat4(name, value);
 	}
 
-	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+	void OpenGLShader::SetMat4(const String& name, const Mat4& value)
 	{
 		UploadUniformMat4(name, value);
 	}
 
-	void OpenGLShader::SetBool(const std::string& name, bool value)
+	void OpenGLShader::SetBool(const String& name, bool value)
 	{
 		UploadUniformBool(name, value);
 	}
 
-	void OpenGLShader::UploadUniformInt(const std::string& name, int value)
+	void OpenGLShader::UploadUniformInt(const String& name, int value)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform1i(location, value);
 	}
 
-	void OpenGLShader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
+	void OpenGLShader::UploadUniformIntArray(const String& name, int* values, uint32_t count)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform1iv(location, count, values);
 	}
 
-	void OpenGLShader::UploadUniformFloat(const std::string& name, float value)
+	void OpenGLShader::UploadUniformFloat(const String& name, float value)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform1f(location, value);
 	}
 
-	void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
+	void OpenGLShader::UploadUniformFloat2(const String& name, const Vec2& value)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform2f(location, value.x, value.y);
 	}
 
-	void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
+	void OpenGLShader::UploadUniformFloat3(const String& name, const Vec3& value)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform3f(location, value.x, value.y, value.z);
 	}
 
-	void OpenGLShader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
+	void OpenGLShader::UploadUniformFloat4(const String& name, const Vec4& value)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform4f(location, value.x, value.y, value.z, value.w);
 	}
 
-	void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
+	void OpenGLShader::UploadUniformMat3(const String& name, const glm::mat3& matrix)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
-	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
+	void OpenGLShader::UploadUniformMat4(const String& name, const Mat4& matrix)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
-	void OpenGLShader::UploadUniformBool(const std::string& name, bool value)
+	void OpenGLShader::UploadUniformBool(const String& name, bool value)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform1i(location, value ? 1 : 0);

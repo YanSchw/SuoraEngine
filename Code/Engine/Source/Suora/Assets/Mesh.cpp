@@ -43,38 +43,37 @@ namespace Suora
 		}
 	}
 
-	void Mesh::PreInitializeAsset(const std::string& str)
+	void Mesh::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<std::string>();
-		m_IsDecimaMesh = root["Mesh"]["m_IsDecimaMesh"].As<std::string>() == "true";
+		m_UUID = root["UUID"].As<String>();
+		m_IsDecimaMesh = root["Mesh"]["m_IsDecimaMesh"].As<String>() == "true";
 		m_BoundingSphereRadius = root["Mesh"]["m_BoundingSphereRadius"].As<float>();
 		m_NegativeY_Bounds = root["Mesh"]["m_NegativeY_Bounds"].As<float>();
-
+		if (!root["Mesh"]["m_ImportScale"].IsNone())
+		{
+			m_ImportScale = Vec::FromString<Vec3>(root["Mesh"]["m_ImportScale"].As<String>());
+		}
 	}
 
-	void Mesh::InitializeAsset(const std::string& str)
+	void Mesh::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
+		Super::InitializeAsset(root);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		Yaml::Node& mesh = root["Mesh"];
 
 		// Materials
 		{
-			m_Materials.OverwritteMaterials = mesh["Materials"]["Overwrite"].As<std::string>() == "true";
+			m_Materials.OverwritteMaterials = mesh["Materials"]["Overwrite"].As<String>() == "true";
 			m_Materials.Materials.Clear();
 			int i = 0;
 			while (true)
 			{
 				Yaml::Node& material = mesh["Materials"][std::to_string(i)];
 				if (material.IsNone()) break;
-				m_Materials.Materials.Add((material.As<std::string>() != "0")
-					? AssetManager::GetAsset<Material>(material.As<std::string>())
+				m_Materials.Materials.Add((material.As<String>() != "0")
+					? AssetManager::GetAsset<Material>(material.As<String>())
 					: nullptr);
 				i++;
 			}
@@ -412,25 +411,34 @@ namespace Suora
 
 	VertexArray* Mesh::GetVertexArray()
 	{
-		if (IsMissing() || !IsSourceAssetPathValid() || IsMasterMesh())
+		if (IsMissing() || IsMasterMesh())
 		{
 			return nullptr;
 		}
 
-		if (!m_VertexArray)
+		if (m_VertexArray)
 		{
-			if (!m_AsyncMeshBuffer.get() && AssetManager::s_AssetStreamPool.Size() < ASSET_STREAM_COUNT_LIMIT)
+			return m_VertexArray.get();
+		}
+		else
+		{
+			if (!IsSourceAssetPathValid())
+			{
+				return nullptr;
+			}
+
+			if (!m_AsyncMeshBuffer.get() && AssetManager::s_AssetStreamPool.Size() < AssetManager::GetAssetStreamCountLimit())
 			{
 				AssetManager::s_AssetStreamPool.Add(this);
-				std::string filePath = GetSourceAssetPath().string();
-				
+				String filePath = GetSourceAssetPath().string();
+
 				m_AsyncMeshBuffer = CreateRef<std::future<Ref<MeshBuffer>>>(std::async(std::launch::async, &Mesh::Async_LoadMeshBuffer, this, filePath, m_MeshBuffer.Vertices, m_MeshBuffer.Indices));
 			}
 			else if (m_AsyncMeshBuffer.get() && IsFutureReady(*m_AsyncMeshBuffer.get()))
 			{
 				AssetManager::s_AssetStreamPool.Remove(this);
 
-				if (IsSubMesh() && AssetManager::s_AssetStreamPool.Contains(m_ParentMesh)) 
+				if (IsSubMesh() && AssetManager::s_AssetStreamPool.Contains(m_ParentMesh))
 					AssetManager::s_AssetStreamPool.Remove(m_ParentMesh);
 
 				const Ref<MeshBuffer> buffer = m_AsyncMeshBuffer->get();
@@ -449,7 +457,7 @@ namespace Suora
 			}
 		}
 
-		return m_VertexArray.get();
+		return nullptr;
 	}
 
 	void Mesh::RebuildMesh()
@@ -457,19 +465,25 @@ namespace Suora
 		m_VertexArray = nullptr;
 		m_MeshBuffer = MeshBuffer();
 		m_MainCluster = nullptr;
+
+		for (auto& It : m_Submeshes)
+		{
+			It->m_ImportScale = m_ImportScale;
+			It->RebuildMesh();
+		}
 	}
 
-	Ref<MeshBuffer> Mesh::Async_LoadMeshBuffer(const std::string& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i)
+	Ref<MeshBuffer> Mesh::Async_LoadMeshBuffer(const String& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i)
 	{
 		Ref<MeshBuffer> buffer = CreateRef<MeshBuffer>(v, i);
 
 		// read file via ASSIMP
-		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FixInfacingNormals/*| aiProcess_FlipUVs*/ | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
+		Ref<Assimp::Importer> importer = CreateRef<Assimp::Importer>();
+		const aiScene* scene = m_SubmeshScene ? m_SubmeshScene : importer->ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FixInfacingNormals/*| aiProcess_FlipUVs*/ | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
 		// check for errors
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 		{
-			SuoraError("ASSIMP: {0}", importer.GetErrorString());
+			SuoraError("ASSIMP: {0}", importer->GetErrorString());
 			return buffer;
 		}
 		if (scene->mNumMeshes <= 0)
@@ -486,6 +500,10 @@ namespace Suora
 				Ref<Mesh> submesh = Ref<Mesh>(new Mesh());
 				submesh->m_ParentMesh = this;
 				submesh->m_SubmeshIndex = i;
+				submesh->SetSourceAssetName(GetSourceAssetName());
+				submesh->m_SubmeshImporter = importer;
+				submesh->m_SubmeshScene = scene;
+				submesh->m_ImportScale = m_ImportScale;
 				submesh->m_Path = m_Path;
 				submesh->m_IsDecimaMesh = m_IsDecimaMesh;
 				m_Submeshes.Add(submesh);
@@ -499,11 +517,11 @@ namespace Suora
 		for (uint32_t i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
-			glm::vec3 vector;
+			Vec3 vector;
 			vector.x = mesh->mVertices[i].x;
 			vector.y = mesh->mVertices[i].y;
 			vector.z = mesh->mVertices[i].z;
-			vertex.Position = vector;
+			vertex.Position = vector * m_ImportScale;
 			if (mesh->HasNormals())
 			{
 				vector.x = mesh->mNormals[i].x;
@@ -513,7 +531,7 @@ namespace Suora
 			}
 			if (mesh->mTextureCoords[0])
 			{
-				glm::vec2 vec;
+				Vec2 vec;
 				vec.x = mesh->mTextureCoords[0][i].x;
 				vec.y = mesh->mTextureCoords[0][i].y;
 				vertex.TexCoord = vec;
@@ -528,7 +546,7 @@ namespace Suora
 				vector.z = mesh->mBitangents[i].z;
 				if (mesh->HasTangentsAndBitangents()) vertex.Bitangent = vector;
 			}
-			else vertex.TexCoord = glm::vec2(0.0f, 0.0f);
+			else vertex.TexCoord = Vec2(0.0f, 0.0f);
 
 			buffer->Vertices.push_back(vertex);
 		}
@@ -554,6 +572,9 @@ namespace Suora
 			
 		}
 
+		m_SubmeshImporter = nullptr;
+		m_SubmeshScene = nullptr;
+
 		if (IsDecimaMesh() && !m_MainCluster) Clusterfication(*buffer.get());
 
 		return buffer;
@@ -568,6 +589,7 @@ namespace Suora
 		mesh["m_IsDecimaMesh"] = m_IsDecimaMesh ? "true" : "false";
 		mesh["m_BoundingSphereRadius"] = std::to_string(m_BoundingSphereRadius);
 		mesh["m_NegativeY_Bounds"] = std::to_string(m_NegativeY_Bounds);
+		mesh["m_ImportScale"] = Vec::ToString(m_ImportScale);
 
 		
 		mesh["Materials"]["Overwrite"] = m_Materials.OverwritteMaterials ? "true" : "false";
@@ -900,7 +922,7 @@ namespace Suora
 		GroupClusters(buffer, leafCluster);
 	}
 
-	Array<std::string> Mesh::GetSupportedSourceAssetExtensions()
+	Array<String> Mesh::GetSupportedSourceAssetExtensions()
 	{
 		return {".obj", ".fbx", ".gltf"};
 	}

@@ -1,6 +1,6 @@
 #pragma once
-#include "../MinorTab.h"
-#include <Suora.h>
+#include "Editor/Panels/MinorTab.h"
+#include "Suora/Renderer/RenderPipeline.h"
 
 #define _ENUM_BODY_6476475
 
@@ -18,10 +18,7 @@ namespace Suora
 		GBuffer_MeshID,
 		GBuffer_Cluster,
 		DeferredLightPass,
-		ForwardReadyBuffer,
-		Ilum_Surfels,
-		Ilum_Probes,
-		Ilum_Debug
+		ForwardReadyBuffer
 	};
 
 	class ViewportPanel : public MinorTab
@@ -41,7 +38,7 @@ namespace Suora
 
 		int TransformGizmo_Tool = 1;
 		bool TransformGizmo_Local = false;
-		bool TransformGizmo_SnapTranslate = true;
+		bool TransformGizmo_SnapTranslate = false;
 		float TransformGizmo_SnapTranslateGrid = 0.5f;
 
 		bool TransformGizmo_Translate(Node3D* node);
@@ -60,6 +57,10 @@ namespace Suora
 		Node* AssetDragDropNode = nullptr;
 		bool AssetDragDropValidation = false;
 
+		RenderingParams m_CameraPreviewRParams;
+		Ref<Framebuffer> m_CameraPreviewBuffer;
+
+		RenderingParams m_RParams;
 		bool m_DrawDebugGizmos = false;
 		bool m_DrawDebugGizmosDuringPlay = false;
 		bool m_DrawWireframe = false;
@@ -67,6 +68,7 @@ namespace Suora
 		EditorCamera* GetEditorCamera() const { return m_EditorCamera.get(); }
 
 		virtual void Render(float deltaTime) override;
+		virtual void OnRenderOutlines() {}
 
 		friend class NodeClassEditor;
 	};

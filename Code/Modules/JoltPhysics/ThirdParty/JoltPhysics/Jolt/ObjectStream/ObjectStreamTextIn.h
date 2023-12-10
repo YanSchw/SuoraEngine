@@ -19,7 +19,7 @@ public:
 
 	///@name Input type specific operations
 	virtual bool				ReadDataType(EOSDataType &outType) override;
-	virtual bool				ReadName(String &outName) override;
+	virtual bool				ReadName(JoltString &outName) override;
 	virtual bool				ReadIdentifier(Identifier &outIdentifier) override;
 	virtual bool				ReadCount(uint32 &outCount) override;
 
@@ -31,7 +31,7 @@ public:
 	virtual bool				ReadPrimitiveData(float &outPrimitive) override;
 	virtual bool				ReadPrimitiveData(double &outPrimitive) override;
 	virtual bool				ReadPrimitiveData(bool &outPrimitive) override;
-	virtual bool				ReadPrimitiveData(String &outPrimitive) override;
+	virtual bool				ReadPrimitiveData(JoltString &outPrimitive) override;
 	virtual bool				ReadPrimitiveData(Float3 &outPrimitive) override;
 	virtual bool				ReadPrimitiveData(Double3 &outPrimitive) override;
 	virtual bool				ReadPrimitiveData(Vec3 &outPrimitive) override;
@@ -43,7 +43,7 @@ public:
 
 private:
 	bool						ReadChar(char &outChar);
-	bool						ReadWord(String &outWord);
+	bool						ReadWord(JoltString &outWord);
 };
 
 JPH_NAMESPACE_END

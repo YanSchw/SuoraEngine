@@ -1,6 +1,7 @@
 #pragma once
 #include "Suora/Core/Object/Object.h"
 #include "Suora/Core/Update.h"
+#include "Suora/Common/StringUtils.h"
 #include "Suora/Common/VectorUtils.h"
 #include "Node.generated.h"
 
@@ -17,8 +18,9 @@ namespace Suora
 {
 	class World;
 	class Node3D;
+	class UINode;
 	class LevelNode;
-	class InputModule;
+	class PlayerInputNode;
 
 	/** Baseclass for all Nodes in the GameFramework */
 	class Node : public Object
@@ -32,7 +34,7 @@ namespace Suora
 		UpdateFlag m_UpdateFlags = UpdateFlag::NeverUpdate;
 		bool m_Initialized = false;
 		bool m_Replicated = false;
-		std::string m_Name = "New Node";
+		String m_Name = "New Node";
 		bool m_Enabled = true, m_EnabledInHierarchy = true;
 		bool m_WasBeginCalled = false;
 		bool m_IsPendingKill = false;
@@ -62,13 +64,13 @@ namespace Suora
 		World* GetWorld() const;
 
 	private:
-		static bool DoesNameExistInHierarchy(const std::string& name, Node* root, Node* exclude = nullptr);
+		static bool DoesNameExistInHierarchy(const String& name, Node* root, Node* exclude = nullptr);
 
 		/** Before: m_Name was "MyNodeName [13]  ->  After: m_Name is "MyNodeName [14]" */
 		void IncrementNameIndex();
 	public:
-		void SetName(const std::string& name);
-		std::string GetName() const;
+		void SetName(const String& name);
+		String GetName() const;
 
 		FUNCTION(Callable)
 		Node* Duplicate();
@@ -99,30 +101,26 @@ namespace Suora
 		bool IsReplicated() const;
 		/**/
 
-		/** InputModule */
-		void ProcessInput();
-		virtual void SetupInputModule(InputModule* input) { }
-
 		// Child Nodes
 		Node* CreateChild(const Class& cls);
 		template<class T>
 		T* CreateChild()
 		{
-			return CreateChild(T::StaticClass())->As<T>();
+			return dynamic_cast<T*>(CreateChild(T::StaticClass()));
 		}
 		template<class T>
-		T* CreateChild(const std::string& name)
+		T* CreateChild(const String& name)
 		{
-			T* child = CreateChild(T::StaticClass())->As<T>();
+			T* child = dynamic_cast<T*>(CreateChild(T::StaticClass()));
 			child->SetName(name);
 			return child;
 		}
-		Node* GetChildByName(const std::string& name);
+		Node* GetChildByName(const String& name);
 		Node* GetChildNodeOfClass(const Class& cls, bool includeSelf = false);
 		template<class T>
 		T* GetChildNodeOfClass(bool includeSelf = false)
 		{
-			return GetChildNodeOfClass(T::StaticClass(), includeSelf)->As<T>();
+			return dynamic_cast<T*>(GetChildNodeOfClass(T::StaticClass(), includeSelf));
 		}
 		void GetChildNodesOfClass(const Class& cls, Array<Node*>& OutArray, bool includeSelf = false);
 		template<class T>
@@ -144,7 +142,7 @@ namespace Suora
 		template<class T>
 		T* GetParentNodeOfClass(bool includeSelf = false)
 		{
-			return GetParentNodeOfClass(T::StaticClass(), includeSelf)->As<T>();
+			return dynamic_cast<T*>(GetParentNodeOfClass(T::StaticClass(), includeSelf));
 		}
 		Node* IsARecursive(const Class& cls)
 		{
@@ -153,7 +151,7 @@ namespace Suora
 		template<class T>
 		T* IsARecursive()
 		{
-			return IsARecursive(T::StaticClass())->As<T>();
+			return dynamic_cast<T*>(IsARecursive(T::StaticClass()));
 		}
 
 	protected:
@@ -166,9 +164,12 @@ namespace Suora
 
 		FUNCTION(Callable, Pure)
 		virtual Node3D* GetTransform();
-
 		FUNCTION(Callable, Pure)
 		virtual Node3D* GetParentTransform();
+		FUNCTION(Callable, Pure)
+		virtual UINode* GetUITransform();
+		FUNCTION(Callable, Pure)
+		virtual UINode* GetParentUITransform();
 	protected:
 		virtual void TickTransform(bool inWorldSpace = true);
 		virtual void OnParentChange(Node* prev, Node* next);
@@ -222,7 +223,7 @@ namespace Suora
 		static Node* Deserialize(Yaml::Node& root, const bool isRootNode);
 		void ResetProperty(const ClassMember& member);
 
-		Array<std::string> m_OverwrittenProperties;
+		Array<String> m_OverwrittenProperties;
 
 
 		friend class Component;
@@ -242,8 +243,8 @@ namespace Suora
 	{
 		SUORA_CLASS(4863437);
 	private:
-		glm::mat4 m_WorldTransformMatrix = glm::mat4(1);
-		glm::mat4 m_LocalTransformMatrix = glm::mat4(1);
+		Mat4 m_WorldTransformMatrix = Mat4(1);
+		Mat4 m_LocalTransformMatrix = Mat4(1);
 	public:
 		Node3D();
 		virtual ~Node3D();
@@ -285,8 +286,8 @@ namespace Suora
 		void SetScale(const Vec3& scale);
 		void SetLocalScale(const Vec3& scale);
 
-		glm::mat4 GetTransformMatrix() const;
-		void SetTransformMatrix(const glm::mat4& mat)
+		Mat4 GetTransformMatrix() const;
+		void SetTransformMatrix(const Mat4& mat)
 		{
 			m_WorldTransformMatrix = mat;
 			RecalculateTransformMatrix();
@@ -294,8 +295,8 @@ namespace Suora
 		}
 		void RecalculateTransformMatrix();
 		void ReprojectLocalMatrixToWorld();
-		static glm::mat4 CalculateTransformMatrix(const glm::vec3& position, const glm::vec3& eulerAngles, const glm::vec3& scale);
-		static glm::mat4 CalculateTransformMatrix(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale);
+		static Mat4 CalculateTransformMatrix(const Vec3& position, const Vec3& eulerAngles, const Vec3& scale);
+		static Mat4 CalculateTransformMatrix(const Vec3& position, const Quat& rotation, const Vec3& scale);
 
 	protected:
 		void TickTransform(bool inWorldSpace = false) override;
@@ -310,8 +311,8 @@ namespace Suora
 			Vec3 scale;
 			glm::quat rotation;
 			Vec3 translation;
-			glm::vec3 skew;
-			glm::vec4 perspective;
+			Vec3 skew;
+			Vec4 perspective;
 			glm::decompose(GetTransformMatrix(), scale, rotation, translation, skew, perspective);
 			m_Position = translation;
 			m_Rotation = glm::degrees(glm::eulerAngles(glm::conjugate(rotation)));
@@ -336,7 +337,48 @@ namespace Suora
 	class UINode : public Node
 	{
 		SUORA_CLASS(8569225);
+	private:
+		Vec2 m_Anchor = Vec2(0.0f, 0.0f);
+
+		bool m_IsWidthRelative = true;
+		float m_Width = 1.0f;
+		bool m_IsHeightRelative = true;
+		float m_Height = 1.0f;
+
+		Vec2 m_Pivot = Vec2(0.0f, 0.0f);
+
+		Vec3 m_AbsolutePixelOffset = Vec3(0.0f, 0.0f, 0.0f);
+		Vec3 m_EulerRotationAroundAnchor = Vec3(0.0f, 0.0f, 0.0f);
+
 	public:
+		struct RectTransform
+		{
+			Vec3 UpperLeft	 = Vec3(-1.0f, +1.0f, 0.0f);
+			Vec3 UpperRight	 = Vec3(+1.0f, +1.0f, 0.0f);
+			//Vec3 BottomRight = Vec3(+1.0f, -1.0f, 0.0f); // Can be calculated from the other 3
+			Vec3 BottomLeft  = Vec3(-1.0f, -1.0f, 0.0f);
+
+			Vec3 GetRight() const { return UpperRight - UpperLeft; }
+			Vec3 GetDown() const  { return BottomLeft - UpperLeft; }
+			Vec3 GetHalfRight() const { return 0.5f * GetRight(); }
+			Vec3 GetHalfDown() const  { return 0.5f * GetDown(); }
+		};
+
+		void TransformToYaml(Yaml::Node& root) const;
+		void TransformFromYaml(Yaml::Node& root);
+
+		UINode* GetUITransform() override;
+		RectTransform GetRectTransform();
+
+		static Vec2 GetViewportPixelScale();
+
+	private:
+		inline static uint32_t s_UIViewportWidth = 1920;
+		inline static uint32_t s_UIViewportHeight = 1080;
+
+		friend class DetailsPanel;
+		friend class ViewportPanel;
+		friend class Runtime;
 	};
 
 	/** A special Node that cannot do anything by itself, but always alters its Parent; Cannot be unparented or spawned! */

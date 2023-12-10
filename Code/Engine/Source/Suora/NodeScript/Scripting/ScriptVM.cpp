@@ -108,7 +108,7 @@ namespace Suora
 
 		func.m_Hash = root["Hash"].As<size_t>();
 		func.m_LocalVarCount = root["LocalVarCount"].As<uint32_t>();
-		func.m_IsEvent = root["IsEvent"].As<std::string>() == "true";
+		func.m_IsEvent = root["IsEvent"].As<String>() == "true";
 
 		Yaml::Node& inst = root["Instructions"];
 		int i = 0;
@@ -173,7 +173,7 @@ namespace Suora
 	{
 		Yaml::Node& script = root["ScriptClass"];
 
-		m_ClassName = script["ClassName"].As<std::string>();
+		m_ClassName = script["ClassName"].As<String>();
 		Yaml::Node& functions = script["Functions"];
 
 		int i = 0;

@@ -39,7 +39,7 @@ namespace Suora
 
 		Yaml::Node root;
 		EditorPreferences::Get()->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(EditorPreferences::Get()->m_Path.string(), out);
 	}
@@ -90,7 +90,7 @@ namespace Suora
 
 		Yaml::Node root;
 		m_ProjectSettings->Serialize(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(m_ProjectSettings->m_Path.string(), out);
 	}

@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <string>
+#include "Suora/Common/StringUtils.h"
 #include "inttypes.h"
 
 namespace Suora
@@ -8,7 +8,7 @@ namespace Suora
 
 	struct ConsoleMessage
 	{
-		ConsoleMessage(const std::string& str, const LogCategory category, const LogLevel level)
+		ConsoleMessage(const String& str, const LogCategory category, const LogLevel level)
 			: m_Message(str), m_Category(category), m_Level(level) {}
 
 		ConsoleMessage(const std::string_view message, const char* callerPath, const char* callerFunction, const int32_t callerLine, const LogLevel level, const LogCategory category)
@@ -16,7 +16,7 @@ namespace Suora
 		{
 		}
 
-		std::string m_Message;
+		String m_Message;
 		LogCategory m_Category;
 		LogLevel m_Level;
 
@@ -34,11 +34,12 @@ namespace Suora
 		static void Clear();
 		static std::vector<ConsoleMessage> GetMessagesWithLevel(LogLevel level);
 		static std::vector<ConsoleMessage> GetLogMessages();
+		static std::vector<ConsoleMessage> GetDebugMessages();
 		static std::vector<ConsoleMessage> GetWarnMessages();
 		static std::vector<ConsoleMessage> GetErrorMessages();
 		static void PushMessage(ConsoleMessage msg);
 
-		static void IssueCommand(const std::string& cmd);
+		static void IssueCommand(const String& cmd);
 
 	};
 

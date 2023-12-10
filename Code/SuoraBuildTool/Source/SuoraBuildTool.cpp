@@ -1,19 +1,20 @@
-//#include <Suora/Core/Log.h>
-//#include <Suora/Core/Log.cpp>
-#include "Suora/Serialization/Yaml.cpp"
+
 #include <filesystem>
 #include <iostream>
-#define HEADERTOOL_IMPL
-#include "Tooling/HeaderTool/HeaderTool.h"
-#define BUILDTOOL_IMPL
-#include "Tooling/BuildTool/BuildTool.h"
 
+#include "SuoraBuildToolParams.h"
+#include "HeaderTool/HeaderTool.h"
+#include "BuildTool/BuildTool.h"
+#include "Common/Platform.h"
+#include "ThirdParty/Yaml/Yaml.h"
+#include "Common/Filesystem.h"
+#include "Common/Log.h"
 
 class SuoraBuildTool
 {
 public:
 
-	static void ProccessHeaders()
+	static void ProccessHeaders(SuoraBuildToolParams& params)
 	{
 		using namespace Suora;
 
@@ -36,7 +37,11 @@ public:
 					Yaml::Node root;
 					Yaml::Parse(root, str);
 					Yaml::Node& settings = root["Settings"];
-					enginePath = settings["Engine"]["Path"].As<std::string>();
+					std::string possibleEnginePath = settings["Engine"]["Path"].As<std::string>();
+					if (std::filesystem::exists(std::filesystem::path(possibleEnginePath)))
+					{
+						enginePath = possibleEnginePath;
+					}
 					break;
 				}
 			}
@@ -46,16 +51,16 @@ public:
 		if (enginePath != "")
 		{
 			headerTool.FetchHeaders(enginePath + "/Code");
-			headerTool.ParseHeaders(enginePath + "/Code", true);
+			headerTool.ParseHeaders(enginePath + "/Code", params.CacheHeaderWriteTimes);
 		}
 		headerTool.FetchHeaders(projectCodePath.string());
-		headerTool.ParseHeaders(projectCodePath.string(), true);
+		headerTool.ParseHeaders(projectCodePath.string(), params.CacheHeaderWriteTimes);
 
-		std::cout << "Generating Modules..." << std::endl;
+		BUILD_INFO("Generating Modules...");
 		Tools::BuildTool buildTool;
 		Tools::BuildTool::BuildCollection collection;
 		buildTool.GenerateModules(std::filesystem::path(projectCodePath).parent_path(), collection);
-		std::cout << "Generated AllModules!" << std::endl;
+		BUILD_INFO("Generated AllModules!");
 
 		if (enginePath != "")
 		{
@@ -63,14 +68,39 @@ public:
 			buildTool.GenerateBatchScriptForPremake5Solution(projectCodePath.parent_path(), enginePath);
 		}
 
-		std::cout << "Done!" << std::endl;
+		BUILD_DEBUG("Done!");
 	}
 
 };
 
-int main()
+int main(int argc, char** argv)
 {
-	SuoraBuildTool::ProccessHeaders();
+	SuoraBuildToolParams params;
+
+	for (int i = 1; i < argc; i++)
+	{
+		std::string str = argv[i];
+		if (str == "-?")
+		{
+			BUILD_DEBUG("[-v] | [-version] to show the Engine Version SuoraBuildTool supports.");
+			BUILD_DEBUG("[-donotcache] to regenerate all Headers.");
+		}
+		else if (str == "-v" || str == "-version")
+		{
+			BUILD_DEBUG("This compilation of SuoraBuildTool targets SuoraEngine Version 0.8.0");
+		}
+		else if (str == "-donotcache")
+		{
+			params.CacheHeaderWriteTimes = false;
+		}
+		else
+		{
+			BUILD_ERROR("Could not parse argument {0}!", str);
+			return EXIT_FAILURE;
+		}
+	}
+
+	SuoraBuildTool::ProccessHeaders(params);
 
 	return EXIT_SUCCESS;
 }

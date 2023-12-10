@@ -33,6 +33,10 @@ namespace Suora
 	{
 		return GetMessagesWithLevel(LogLevel::Info);
 	}
+	std::vector<ConsoleMessage> VirtualConsole::GetDebugMessages()
+	{
+		return GetMessagesWithLevel(LogLevel::Debug);
+	}
 	std::vector<ConsoleMessage> VirtualConsole::GetWarnMessages()
 	{
 		return GetMessagesWithLevel(LogLevel::Warn);
@@ -44,10 +48,10 @@ namespace Suora
 
 	void VirtualConsole::PushMessage(ConsoleMessage msg)
 	{
-		while (Util::ReplaceSequence(msg.m_Message, "\r", ""));
+		while (StringUtil::ReplaceSequence(msg.m_Message, "\r", ""));
 		m_Messages.push_back(msg);
 	}
-	void VirtualConsole::IssueCommand(const std::string& cmd)
+	void VirtualConsole::IssueCommand(const String& cmd)
 	{
 		SuoraError("Command: {0}", cmd);
 	}

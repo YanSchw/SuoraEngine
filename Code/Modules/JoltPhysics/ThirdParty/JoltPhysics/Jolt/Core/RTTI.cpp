@@ -46,7 +46,7 @@ const RTTI *RTTI::GetBaseClass(int inIdx) const
 uint32 RTTI::GetHash() const
 {
 	// Perform diffusion step to get from 64 to 32 bits (see https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function)
-	uint64 hash = HashString(mName);
+	uint64 hash = HashJoltString(mName);
 	return (uint32)(hash ^ (hash >> 32));
 }
 

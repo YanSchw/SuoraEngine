@@ -75,7 +75,7 @@ ConvexHullShape::ConvexHullShape(const ConvexHullShapeSettings &inSettings, Shap
 		builder.DetermineMaxError(max_error_face, max_error_distance, max_error_idx, coplanar_distance);
 		if (max_error_distance > 4.0f * max(coplanar_distance, inSettings.mHullTolerance)) // Coplanar distance could be bigger than the allowed tolerance if the points are far apart
 		{
-			outResult.SetError(StringFormat("Hull building failed, point %d had an error of %g (relative to tolerance: %g)", max_error_idx, (double)max_error_distance, double(max_error_distance / inSettings.mHullTolerance)));
+			outResult.SetError(JoltStringFormat("Hull building failed, point %d had an error of %g (relative to tolerance: %g)", max_error_idx, (double)max_error_distance, double(max_error_distance / inSettings.mHullTolerance)));
 			return;
 		}
 	}
@@ -180,7 +180,7 @@ ConvexHullShape::ConvexHullShape(const ConvexHullShapeSettings &inSettings, Shap
 	// Test if GetSupportFunction can support this many points
 	if (mPoints.size() > cMaxPointsInHull)
 	{
-		outResult.SetError(StringFormat("Internal error: Too many points in hull (%d), max allowed %d", mPoints.size(), cMaxPointsInHull));
+		outResult.SetError(JoltStringFormat("Internal error: Too many points in hull (%d), max allowed %d", mPoints.size(), cMaxPointsInHull));
 		return;
 	}
 
@@ -876,7 +876,7 @@ void ConvexHullShape::DrawShrunkShape(DebugRenderer *inRenderer, RMat44Arg inCen
 			inRenderer->DrawLine(position, position + 0.1f * mPlanes[point.mFaces[i]].GetNormal(), Color::sYellow);
 
 		// Draw point index
-		inRenderer->DrawText3D(position, ConvertToString(p), Color::sWhite, 0.1f);
+		inRenderer->DrawText3D(position, ConvertToJoltString(p), Color::sWhite, 0.1f);
 	}
 }
 #endif // JPH_DEBUG_RENDERER

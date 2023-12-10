@@ -27,17 +27,31 @@ namespace Suora
 		case ClassMember::Type::Vector4:
 			property["Value"]["Vec4"] = Vec::ToString<Vec4>((*ClassMember::AccessMember<Vec4>(node, member.m_MemberOffset)));
 			break;
-		case ClassMember::Type::AssetPtr:
+		case ClassMember::Type::ObjectPtr:
 			{
-			const Asset* asset = *ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset);
-			property["Value"]["AssetPtr"] = (asset) ? asset->m_UUID.GetString() : "0";
-			break;
+				const Class objClass = ((ClassMember_ObjectPtr*)(&member))->m_ObjectClass;
+				if (objClass.Inherits(Asset::StaticClass()))
+				{
+					const Asset* asset = *ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset);
+					property["Value"]["AssetPtr"] = (asset) ? asset->m_UUID.GetString() : "0";
+				}
+				else
+				{
+					SuoraError("Cannot serialize ObjectPtr");
+				}
+				break;
 			}
 		case ClassMember::Type::MaterialSlots:
 		{
 			MaterialSlots* slots = (ClassMember::AccessMember<MaterialSlots>(node, member.m_MemberOffset));
 			property["Value"]["MaterialSlots"]["Overwrite"] = slots->OverwritteMaterials ? "true" : "false";
-			if (slots->OverwritteMaterials) for (int i = 0; i < slots->Materials.Size(); i++) property["Value"]["MaterialSlots"][std::to_string(i)] = (slots->Materials[i]) ? slots->Materials[i]->m_UUID.GetString() : "0";
+			if (slots->OverwritteMaterials)
+			{
+				for (int i = 0; i < slots->Materials.Size(); i++)
+				{
+					property["Value"]["MaterialSlots"][std::to_string(i)] = (slots->Materials[i]) ? slots->Materials[i]->m_UUID.GetString() : "0";
+				}
+			}
 		} break;
 		case ClassMember::Type::Class:
 			property["Value"]["Class"] = ClassMember::AccessMember<Class>(node, member.m_MemberOffset)->ToString();
@@ -55,47 +69,63 @@ namespace Suora
 		switch (member.m_Type)
 		{
 		case ClassMember::Type::Integer32:
-			*ClassMember::AccessMember<int32_t>(node, member.m_MemberOffset) = std::stoi(property["Value"]["Int32"].As<std::string>());
+			*ClassMember::AccessMember<int32_t>(node, member.m_MemberOffset) = std::stoi(property["Value"]["Int32"].As<String>());
 			break;
 		case ClassMember::Type::Float:
-			*ClassMember::AccessMember<float>(node, member.m_MemberOffset) = std::stof(property["Value"]["Float"].As<std::string>());
+			*ClassMember::AccessMember<float>(node, member.m_MemberOffset) = std::stof(property["Value"]["Float"].As<String>());
 			break;
 		case ClassMember::Type::Bool:
-			*ClassMember::AccessMember<bool>(node, member.m_MemberOffset) = property["Value"]["Bool"].As<std::string>() == "true";
+			*ClassMember::AccessMember<bool>(node, member.m_MemberOffset) = property["Value"]["Bool"].As<String>() == "true";
 			break;
 		case ClassMember::Type::Vector3:
-			*ClassMember::AccessMember<Vec3>(node, member.m_MemberOffset) = Vec::FromString<Vec3>(property["Value"]["Vec3"].As<std::string>());
+			*ClassMember::AccessMember<Vec3>(node, member.m_MemberOffset) = Vec::FromString<Vec3>(property["Value"]["Vec3"].As<String>());
 			break;
 		case ClassMember::Type::Vector4:
-			*ClassMember::AccessMember<Vec4>(node, member.m_MemberOffset) = Vec::FromString<Vec4>(property["Value"]["Vec4"].As<std::string>());
+			*ClassMember::AccessMember<Vec4>(node, member.m_MemberOffset) = Vec::FromString<Vec4>(property["Value"]["Vec4"].As<String>());
 			break;
-		case ClassMember::Type::AssetPtr:
-			*ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset) = (property["Value"]["AssetPtr"].As<std::string>() != "0")
-						? AssetManager::GetAsset<Asset>(property["Value"]["AssetPtr"].As<std::string>())
-						: nullptr;
+		case ClassMember::Type::ObjectPtr:
+		{
+			const Class objClass = ((ClassMember_ObjectPtr*)(&member))->m_ObjectClass;
+			if (objClass.Inherits(Asset::StaticClass()))
+			{
+				Asset*& assetRef = (Asset*&)*ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset);
+				const String assetUUID = property["Value"]["AssetPtr"].As<String>();
+				Asset* asset = (assetUUID != "0" && assetUUID != "") ? AssetManager::GetAsset(objClass, SuoraID(assetUUID)) : nullptr;
+
+				if (asset)
+				{
+					SuoraAssert(asset->GetClass().Inherits(objClass));
+				}
+				assetRef = asset;
+			}
+			else
+			{
+				SuoraError("Cannot deserialize ObjectPtr");
+			}
 			break;
+		}
 		case ClassMember::Type::MaterialSlots:
 		{
 			MaterialSlots ValueMaterialSlots;
-			ValueMaterialSlots.OverwritteMaterials = property["Value"]["MaterialSlots"]["Overwrite"].As<std::string>() == "true";
+			ValueMaterialSlots.OverwritteMaterials = property["Value"]["MaterialSlots"]["Overwrite"].As<String>() == "true";
 			ValueMaterialSlots.Materials.Clear();
 			int i = 0;
 			while (true)
 			{
 				Yaml::Node& material = property["Value"]["MaterialSlots"][std::to_string(i)];
 				if (material.IsNone()) break;
-				ValueMaterialSlots.Materials.Add((material.As<std::string>() != "0")
-					? AssetManager::GetAsset<Material>(material.As<std::string>())
+				ValueMaterialSlots.Materials.Add((material.As<String>() != "0")
+					? AssetManager::GetAsset<Material>(material.As<String>())
 					: nullptr);
 				i++;
 			}
 			*ClassMember::AccessMember<MaterialSlots>(node, member.m_MemberOffset) = ValueMaterialSlots;
 		} break;
 		case ClassMember::Type::Class:
-			*ClassMember::AccessMember<Class>(node, member.m_MemberOffset) = Class::FromString(property["Value"]["Class"].As<std::string>());
+			*ClassMember::AccessMember<Class>(node, member.m_MemberOffset) = Class::FromString(property["Value"]["Class"].As<String>());
 			break;
 		case ClassMember::Type::SubclassOf:
-			*ClassMember::AccessMember<TSubclassOf>(node, member.m_MemberOffset) = Class::FromString(property["Value"]["SubclassOf"].As<std::string>());
+			*ClassMember::AccessMember<TSubclassOf>(node, member.m_MemberOffset) = Class::FromString(property["Value"]["SubclassOf"].As<String>());
 			break;
 		case ClassMember::Type::Delegate: /* Nothing */
 			break;
@@ -135,7 +165,8 @@ namespace Suora
 			Yaml::Node& child = root["Children"][std::to_string(serializer.m_ChildCount++)];
 			child["Name"] = GetName();
 			child["Enabled"] = IsEnabled() ? "true" : "false";
-			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<glm::mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<Mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+			if (this->IsA<UINode>()) this->As<UINode>()->TransformToYaml(child["UINode"]);
 			child["Class"] = GetClass().ToString();
 			child["SocketName"] = GetParent()->GetName();
 		}
@@ -144,8 +175,9 @@ namespace Suora
 			Yaml::Node& child = root["InheretedChildren"][std::to_string(serializer.m_InheretedChildCount++)];
 			child["Name"] = GetName();
 			child["Enabled"] = IsEnabled() ? "true" : "false";
-			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<glm::mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
-			std::string indicies;
+			child["Node3D"] = IsA<Node3D>() ? Vec::ToString<Mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+			if (this->IsA<UINode>()) this->As<UINode>()->TransformToYaml(child["UINode"]);
+			String indicies;
 			Node* node = this;
 			bool firstIndex = true;
 			while (!node->m_IsActorLayer && node != serializer.m_RootNode)
@@ -174,6 +206,9 @@ namespace Suora
 		root["RootClass"] = GetClass().ToString();
 		root["RootParentClass"] = GetClass().GetParentClass().ToString();
 		root["RootEnabled"] = m_Enabled ? "true" : "false";
+		root["Enabled"] = IsEnabled() ? "true" : "false";
+		root["Node3D"] = IsA<Node3D>() ? Vec::ToString<Mat4>(this->As<Node3D>()->GetTransformMatrix()) : "";
+		if (this->IsA<UINode>()) this->As<UINode>()->TransformToYaml(root["UINode"]);
 
 		NodeSerializer serializer;
 		serializer.m_RootNode = this;
@@ -196,16 +231,17 @@ namespace Suora
 	{
 		struct InheretedChildNodes
 		{
-			Array<std::string> Name;
-			Array<std::string> Indicies;
-			Array<std::string> Enabled;
-			Array<std::string> Node3DTransform;
+			Array<String> Name;
+			Array<String> Indicies;
+			Array<String> Enabled;
+			Array<String> Node3DTransform;
+			Array<Yaml::Node> NodeUITransform;
 
 			void Apply(Node* affetedNode)
 			{
 				for (int32_t i = 0; i < Name.Size(); i++)
 				{
-					std::vector<std::string> indicies = Util::SplitString(Indicies[i], '/');
+					std::vector<String> indicies = StringUtil::SplitString(Indicies[i], '/');
 					Node* node = affetedNode;
 					while (node && !indicies.empty())
 					{
@@ -218,7 +254,11 @@ namespace Suora
 						node->SetEnabled(Enabled[i] == "true");
 						if (node->IsA<Node3D>() && !Node3DTransform[i].empty())
 						{
-							node->As<Node3D>()->SetTransformMatrix(Vec::FromString<glm::mat4>(Node3DTransform[i]));
+							node->As<Node3D>()->SetTransformMatrix(Vec::FromString<Mat4>(Node3DTransform[i]));
+						}
+						if (node->IsA<UINode>())
+						{
+							node->As<UINode>()->TransformFromYaml(NodeUITransform[i]);
 						}
 					}
 				}
@@ -229,29 +269,30 @@ namespace Suora
 		{
 			if (!root["InheretedChildCount"].IsNone())
 			{
-				const int32_t inheretedChildCount = std::stoi(root["InheretedChildCount"].As<std::string>());
+				const int32_t inheretedChildCount = std::stoi(root["InheretedChildCount"].As<String>());
 				for (int32_t i = 0; i < inheretedChildCount; i++)
 				{
 					Yaml::Node& yamlChild = root["InheretedChildren"][std::to_string(i)];
-					const std::string childOwner = yamlChild["Owner"].As<std::string>();
+					const String childOwner = yamlChild["Owner"].As<String>();
 					if (m_InheretedChildren.find(childOwner) == m_InheretedChildren.end())
 						m_InheretedChildren[childOwner] = CreateRef<InheretedChildNodes>();
 
-					m_InheretedChildren[childOwner]->Name.Add(yamlChild["Name"].As<std::string>());
-					m_InheretedChildren[childOwner]->Indicies.Add(yamlChild["Indicies"].As<std::string>());
-					m_InheretedChildren[childOwner]->Enabled.Add(yamlChild["Enabled"].As<std::string>());
-					m_InheretedChildren[childOwner]->Node3DTransform.Add(yamlChild["Node3D"].As<std::string>());
+					m_InheretedChildren[childOwner]->Name.Add(yamlChild["Name"].As<String>());
+					m_InheretedChildren[childOwner]->Indicies.Add(yamlChild["Indicies"].As<String>());
+					m_InheretedChildren[childOwner]->Enabled.Add(yamlChild["Enabled"].As<String>());
+					m_InheretedChildren[childOwner]->Node3DTransform.Add(yamlChild["Node3D"].As<String>());
+					m_InheretedChildren[childOwner]->NodeUITransform.Add(yamlChild["UINode"]);
 				}
 			}
 		}
-		std::unordered_map<std::string, Ref<InheretedChildNodes>> m_InheretedChildren;
+		std::unordered_map<String, Ref<InheretedChildNodes>> m_InheretedChildren;
 	};
 
 	Node* Node::Deserialize(Yaml::Node& root, const bool isRootNode)
 	{
-		Node* node = New(Class::FromString(root["RootParentClass"].As<std::string>()), false)->As<Node>();
+		Node* node = New(Class::FromString(root["RootParentClass"].As<String>()), false)->As<Node>();
 		SUORA_ASSERT(node);
-		node->m_Name = root["RootName"].As<std::string>();
+		node->m_Name = root["RootName"].As<String>();
 
 		// Rename all Inherited Children
 		NodeDeserializer deserializer = NodeDeserializer(root);
@@ -260,22 +301,36 @@ namespace Suora
 			deserializer.m_InheretedChildren[node->GetName()]->Apply(node);
 		}
 
-		const int32_t childCount = std::stoi(root["ChildCount"].As<std::string>());
+		node->SetEnabled(true);
+		if (!root["Node3D"].IsNone() && node->IsA<Node3D>())
+		{
+			node->As<Node3D>()->SetTransformMatrix(Vec::FromString<Mat4>(root["Node3D"].As<String>()));
+		}
+		if (!root["UINode"].IsNone() && node->IsA<UINode>())
+		{
+			node->As<UINode>()->TransformFromYaml(root["UINode"]);
+		}
+
+		const int32_t childCount = std::stoi(root["ChildCount"].As<String>());
 		for (int32_t i = 0; i < childCount; i++)
 		{
 			Yaml::Node& yamlChild = root["Children"][std::to_string(i)];
-			const Class childClass = Class::FromString(yamlChild["Class"].As<std::string>());
-			const std::string childSocket = yamlChild["SocketName"].As<std::string>();
+			const Class childClass = Class::FromString(yamlChild["Class"].As<String>());
+			const String childSocket = yamlChild["SocketName"].As<String>();
 
 			Node* child = New(childClass, false)->As<Node>();
-			child->SetName(yamlChild["Name"].As<std::string>());
-			child->SetEnabled(yamlChild["Enabled"].As<std::string>() == "true");
+			child->SetName(yamlChild["Name"].As<String>());
+			child->SetEnabled(yamlChild["Enabled"].As<String>() == "true");
 			if (child->IsA<Node3D>())
 			{
 				if (!yamlChild["Node3D"].IsNone())
 				{
-					child->As<Node3D>()->SetTransformMatrix(Vec::FromString<glm::mat4>(yamlChild["Node3D"].As<std::string>()));
+					child->As<Node3D>()->SetTransformMatrix(Vec::FromString<Mat4>(yamlChild["Node3D"].As<String>()));
 				}
+			}
+			if (child->IsA<UINode>())
+			{
+				child->As<UINode>()->TransformFromYaml(yamlChild["UINode"]);
 			}
 
 			// Attach Child to Socket (if Socket exists)
@@ -305,12 +360,12 @@ namespace Suora
 
 		if (!root["PropertyCount"].IsNone())
 		{
-			const int32_t propertyCount = std::stoi(root["PropertyCount"].As<std::string>());
+			const int32_t propertyCount = std::stoi(root["PropertyCount"].As<String>());
 			for (int32_t i = 0; i < propertyCount; i++)
 			{
 				Yaml::Node& yamlProperty = root["Properties"][std::to_string(i)];
-				const std::string nodeName = yamlProperty["NodeName"].As<std::string>();
-				const std::string propertyName = yamlProperty["PropertyName"].As<std::string>();
+				const String nodeName = yamlProperty["NodeName"].As<String>();
+				const String propertyName = yamlProperty["PropertyName"].As<String>();
 				Node* applyPropertyTo = node->GetChildByName(nodeName);
 
 				if (applyPropertyTo == nullptr)

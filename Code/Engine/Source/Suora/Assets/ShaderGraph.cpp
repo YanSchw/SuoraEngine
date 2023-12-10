@@ -17,23 +17,19 @@ namespace Suora
 	{
 	}
 
-	void ShaderGraph::PreInitializeAsset(const std::string& str)
+	void ShaderGraph::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
-		Yaml::Node root;
-		Yaml::Parse(root, str);
-		m_UUID = SuoraID(root["UUID"].As<std::string>());
+		Super::PreInitializeAsset(root);
+
 	}
 
-	void ShaderGraph::InitializeAsset(const std::string& str)
+	void ShaderGraph::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
-		Yaml::Node root;
-		Yaml::Parse(root, str);
+		Super::InitializeAsset(root);
 
 		m_ShaderGraph = this;
 
-		m_BaseShader = root["m_BaseShader"].As<std::string>();
+		m_BaseShader = root["m_BaseShader"].As<String>();
 
 		ShaderNodeGraph graph;
 		graph.DeserializeNodeGraph(root);
@@ -47,7 +43,7 @@ namespace Suora
 
 	}
 
-	std::string ShaderGraph::GetBaseShaderPath() const
+	String ShaderGraph::GetBaseShaderPath() const
 	{
 		return AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/ShadergraphBase/" + m_BaseShader;
 	}
@@ -84,8 +80,8 @@ namespace Suora
 		// TODO: Opacity in Fragment shader
 		if (!m_DepthShader.get())
 		{
-			const std::string vertex = Shader::PreProcess(m_ShaderSource)["vertex"];
-			std::string fragment = "\
+			const String vertex = Shader::PreProcess(m_ShaderSource)["vertex"];
+			String fragment = "\
 #version 330 core\n\
 \n\
 in vec2 UV;\n\
@@ -119,8 +115,8 @@ void main(void)\n\
 	{
 		if (!m_FlatWhiteShader.get())
 		{
-			const std::string vertex = Shader::PreProcess(m_ShaderSource)["vertex"];
-			const std::string fragment = "\
+			const String vertex = Shader::PreProcess(m_ShaderSource)["vertex"];
+			const String fragment = "\
 #version 330 core\n\
 \n\
 in vec2 UV;\n\
@@ -139,8 +135,8 @@ void main(void)\n\
 	{
 		if (!m_IDShader.get())
 		{
-			const std::string vertex = Shader::PreProcess(m_ShaderSource)["vertex"];
-			const std::string fragment = "\
+			const String vertex = Shader::PreProcess(m_ShaderSource)["vertex"];
+			const String fragment = "\
 #version 330 core\n\
 \n\
 in vec2 UV;\n\
@@ -169,7 +165,7 @@ void main(void)\n\
 	}
 
 
-	void ShaderGraph::LoadBaseShaderInput(BaseShaderInput& input, int64_t& begin, int64_t& end, const std::string& str)
+	void ShaderGraph::LoadBaseShaderInput(BaseShaderInput& input, int64_t& begin, int64_t& end, const String& str)
 	{
 		while (str[begin++] != '"');
 		end = begin + 1;
@@ -189,16 +185,16 @@ void main(void)\n\
 		input.m_DefaultSource = str.substr(begin, end - begin - 2);
 	}
 
-	void ShaderGraph::LoadBaseShaderInputs(const std::string& path)
+	void ShaderGraph::LoadBaseShaderInputs(const String& path)
 	{
-		std::string str = Platform::ReadFromFile(path);
-		Util::RemoveCommentsFromString(str);
+		String str = Platform::ReadFromFile(path);
+		StringUtil::RemoveCommentsFromString(str);
 		int64_t begin = 0, end = 0;
 		m_BaseShaderInputs.Clear();
 		while (true)
 		{
 			begin = str.find("$VERT_INPUT", begin);
-			if (begin == std::string::npos) break;
+			if (begin == String::npos) break;
 			BaseShaderInput input;
 			input.m_InVertexShader = true;
 			LoadBaseShaderInput(input, begin, end, str);
@@ -208,7 +204,7 @@ void main(void)\n\
 		while (true)
 		{
 			begin = str.find("$FRAG_INPUT", begin);
-			if (begin == std::string::npos) break;
+			if (begin == String::npos) break;
 			BaseShaderInput input;
 			input.m_InVertexShader = false;
 			LoadBaseShaderInput(input, begin, end, str);
@@ -216,14 +212,14 @@ void main(void)\n\
 		}
 	}
 
-	void ShaderGraph::GenerateShaderInput(std::string& str, int64_t begin, VisualNode* master, bool vertex, bool& error)
+	void ShaderGraph::GenerateShaderInput(String& str, int64_t begin, VisualNode* master, bool vertex, bool& error)
 	{
 		int64_t labelBegin = begin;
 		int64_t end = begin;
 		while (str[labelBegin++] != '"');
 		end = labelBegin + 1;
 		while (str[end++] != '"');
-		std::string label = str.substr(labelBegin, end - labelBegin - 1);
+		String label = str.substr(labelBegin, end - labelBegin - 1);
 		int brackets = 1;
 		while (brackets > 0)
 		{
@@ -243,7 +239,7 @@ void main(void)\n\
 					{
 						if (pin.Target)
 						{
-							std::string src = ShaderGraphCompiler::CompileShaderNode(*(pin.Target->GetNode()), *(pin.Target), vertex, error);
+							String src = ShaderGraphCompiler::CompileShaderNode(*(pin.Target->GetNode()), *(pin.Target), vertex, error);
 							str.insert(begin, src);
 							return;
 						}
@@ -287,13 +283,13 @@ void main(void)\n\
 			graph.TickAllVisualNodesInShaderGraphContext(this);
 		}
 
-		std::string src = Platform::ReadFromFile(GetBaseShaderPath());
-		Util::RemoveCommentsFromString(src);
+		String src = Platform::ReadFromFile(GetBaseShaderPath());
+		StringUtil::RemoveCommentsFromString(src);
 
 		// Uniforms
 		Array<UniformSlot> oldSlots = m_UniformSlots;
 		m_UniformSlots.Clear();
-		std::string uniforms;
+		String uniforms;
 		for (Ref<VisualNode> node : graph.m_Nodes)
 		{
 			if (node->m_NodeID == 2)
@@ -338,13 +334,13 @@ void main(void)\n\
 		}
 
 		// Proccess BaseShader
-		while (src.find("$VERT_INPUTS") != std::string::npos) Util::ReplaceSequence(src, "$VERT_INPUTS", "" + uniforms);
-		while (src.find("$FRAG_INPUTS") != std::string::npos) Util::ReplaceSequence(src, "$FRAG_INPUTS", "" + uniforms);
+		while (src.find("$VERT_INPUTS") != String::npos) StringUtil::ReplaceSequence(src, "$VERT_INPUTS", "" + uniforms);
+		while (src.find("$FRAG_INPUTS") != String::npos) StringUtil::ReplaceSequence(src, "$FRAG_INPUTS", "" + uniforms);
 
-		while (src.find("$DEFERRED") != std::string::npos)
+		while (src.find("$DEFERRED") != String::npos)
 		{
 			// This removes the $Symbol, but marks the generated Source with a comment
-			Util::ReplaceSequence(src, "$DEFERRED", "/* DEFERRED */");
+			StringUtil::ReplaceSequence(src, "$DEFERRED", "/* DEFERRED */");
 			m_Flags = m_Flags | ShaderGraphFlags::Deferred;
 		}
 
@@ -352,14 +348,14 @@ void main(void)\n\
 		while (true)
 		{
 			begin = src.find("$VERT_INPUT", begin);
-			if (begin == std::string::npos) break;
+			if (begin == String::npos) break;
 			GenerateShaderInput(src, begin, master, true, error);
 		}
 		begin = 0;
 		while (true)
 		{
 			begin = src.find("$FRAG_INPUT", begin);
-			if (begin == std::string::npos) break;
+			if (begin == String::npos) break;
 			GenerateShaderInput(src, begin, master, false, error);
 		}
 

@@ -12,30 +12,25 @@ namespace Suora
 
 	ProjectSettings::ProjectSettings()
 	{
-		m_InputSettings = Ref<InputSettings>(new InputSettings());
 	}
 
-	void ProjectSettings::PreInitializeAsset(const std::string& str)
+	void ProjectSettings::PreInitializeAsset(Yaml::Node& root)
 	{
-		Super::PreInitializeAsset(str);
+		Super::PreInitializeAsset(root);
 		ClearFlag(AssetFlags::WasPreInitialized);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
-		m_UUID = root["UUID"].As<std::string>();
+		m_UUID = root["UUID"].As<String>();
 	}
 
-	void ProjectSettings::InitializeAsset(const std::string& str)
+	void ProjectSettings::InitializeAsset(Yaml::Node& root)
 	{
-		Super::InitializeAsset(str);
+		Super::InitializeAsset(root);
 		ClearFlag(AssetFlags::WasInitialized);
 
-		Yaml::Node root;
-		Yaml::Parse(root, str);
 		Yaml::Node& settings = root["Settings"];
 
-		m_EnginePath = settings["Engine"]["Path"].IsNone() ? "" : settings["Engine"]["Path"].As<std::string>();
-		m_IsNativeProject = settings["Engine"]["m_IsNativeProject"].As<std::string>() == "true";
+		m_EnginePath = settings["Engine"]["Path"].IsNone() ? "" : settings["Engine"]["Path"].As<String>();
+		m_IsNativeProject = settings["Engine"]["m_IsNativeProject"].As<String>() == "true";
 
 		if (s_SeekingProjectSettings)
 		{
@@ -44,21 +39,18 @@ namespace Suora
 
 		if (!settings["Engine"]["m_EditorStartupAsset"].IsNone())
 		{
-			const std::string id = settings["Engine"]["m_EditorStartupAsset"].As<std::string>();
+			const String id = settings["Engine"]["m_EditorStartupAsset"].As<String>();
 			m_EditorStartupAsset = (id != "0") ? AssetManager::GetAsset<Asset>(SuoraID(id)) : nullptr;
 		}
 
-		m_TargetFramerate = settings["Rendering"]["m_TargetFramerate"].IsNone() ? 60.0f : std::stof(settings["Rendering"]["m_TargetFramerate"].As<std::string>());
-		m_EnableDeferredRendering = settings["Rendering"]["m_EnableDeferredRendering"].IsNone() ? true : settings["Rendering"]["m_EnableDeferredRendering"].As<std::string>() == "true";
+		m_TargetFramerate = settings["Rendering"]["m_TargetFramerate"].IsNone() ? 60.0f : std::stof(settings["Rendering"]["m_TargetFramerate"].As<String>());
+		m_EnableDeferredRendering = settings["Rendering"]["m_EnableDeferredRendering"].IsNone() ? true : settings["Rendering"]["m_EnableDeferredRendering"].As<String>() == "true";
 
-		const Class gameInstanceClass = Class::FromString(settings["Game"]["m_GameInstanceClass"].As<std::string>());
+		const Class gameInstanceClass = Class::FromString(settings["Game"]["m_GameInstanceClass"].As<String>());
 		m_GameInstanceClass = gameInstanceClass != Class::None ? gameInstanceClass : GameInstance::StaticClass();
-		m_DefaultLevel = settings["Game"]["m_DefaultLevel"].IsNone() ? nullptr : AssetManager::GetAsset<Level>(SuoraID(settings["Game"]["m_DefaultLevel"].As<std::string>()));
+		m_DefaultLevel = settings["Game"]["m_DefaultLevel"].IsNone() ? nullptr : AssetManager::GetAsset<Level>(SuoraID(settings["Game"]["m_DefaultLevel"].As<String>()));
 
-		m_InputSettings = Ref<InputSettings>(new InputSettings());
-		m_InputSettings->Deserialize(settings["InputSettings"]);
-
-		m_ProjectIconTexture = settings["Game"]["m_ProjectIconTexture"].As<std::string>() != "NULL" ? AssetManager::GetAsset<Texture2D>(SuoraID(settings["Game"]["m_ProjectIconTexture"].As<std::string>())) : nullptr;
+		m_ProjectIconTexture = settings["Game"]["m_ProjectIconTexture"].As<String>() != "NULL" ? AssetManager::GetAsset<Texture2D>(SuoraID(settings["Game"]["m_ProjectIconTexture"].As<String>())) : nullptr;
 	}
 
 	void ProjectSettings::Serialize(Yaml::Node& root)
@@ -81,17 +73,15 @@ namespace Suora
 		settings["Game"]["m_GameInstanceClass"] = m_GameInstanceClass.GetClass().ToString();
 		settings["Game"]["m_DefaultLevel"] = m_DefaultLevel ? m_DefaultLevel->m_UUID.GetString() : "0";
 
-		m_InputSettings->Serialize(settings["InputSettings"]);
-
 		settings["Game"]["m_ProjectIconTexture"] = m_ProjectIconTexture ? m_ProjectIconTexture->m_UUID.GetString() : "NULL";
 	}
 
-	std::string ProjectSettings::GetEnginePath() const
+	String ProjectSettings::GetEnginePath() const
 	{
 		return m_EnginePath;
 	}
 
-	void ProjectSettings::SetEnginePath(const std::string& path)
+	void ProjectSettings::SetEnginePath(const String& path)
 	{
 		m_EnginePath = path;
 	}
@@ -100,7 +90,7 @@ namespace Suora
 	{
 		return AssetManager::GetFirstAssetOfType<ProjectSettings>();
 	}
-	std::string ProjectSettings::GetProjectName()
+	String ProjectSettings::GetProjectName()
 	{
 		return Get()->m_Path.stem().string();
 	}

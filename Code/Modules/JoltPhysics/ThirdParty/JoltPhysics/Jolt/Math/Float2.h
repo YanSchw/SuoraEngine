@@ -20,7 +20,7 @@ public:
 	bool				operator == (const Float2 &inRHS) const			{ return x == inRHS.x && y == inRHS.y; }
 	bool				operator != (const Float2 &inRHS) const			{ return x != inRHS.x || y != inRHS.y; }
 
-	/// To String
+	/// To JoltString
 	friend ostream &	operator << (ostream &inStream, const Float2 &inV)
 	{
 		inStream << inV.x << ", " << inV.y;

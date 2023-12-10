@@ -84,11 +84,18 @@ namespace Suora
 			return *(T*)m_InternalPtr.GetAddress();
 		}
 
-		template<class U, bool R>
-		bool operator==(TObjectPtr<U, R>& other) const
+		// Equality
+		template<class U, bool R> 
+		inline bool operator==(TObjectPtr<U, R>& other)
 		{
-			return m_InternalPtr == other.m_InternalPtr;
+			return m_InternalPtr.GetAddress() == other.m_InternalPtr.GetAddress();
 		}
+		template<class U>
+		inline bool operator==(U*& other)
+		{
+			return m_InternalPtr.GetAddress() == other;
+		}
+
 		TObjectPtr<T, REF_COUNTED>& operator=(T& obj)
 		{
 			m_InternalPtr = (Object*) &obj;

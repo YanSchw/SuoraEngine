@@ -30,7 +30,7 @@ public:
 	virtual Batch						CreateTriangleBatch(const Triangle *inTriangles, int inTriangleCount) override;
 	virtual Batch						CreateTriangleBatch(const Vertex *inVertices, int inVertexCount, const uint32 *inIndices, int inIndexCount) override;
 	virtual void						DrawGeometry(RMat44Arg inModelMatrix, const AABox &inWorldSpaceBounds, float inLODScaleSq, ColorArg inModelColor, const GeometryRef &inGeometry, ECullMode inCullMode, ECastShadow inCastShadow, EDrawMode inDrawMode) override;
-	virtual void						DrawText3D(RVec3Arg inPosition, const string_view &inString, ColorArg inColor, float inHeight) override;
+	virtual void						DrawText3D(RVec3Arg inPosition, const string_view &inJoltString, ColorArg inColor, float inHeight) override;
 
 	/// Mark the end of a frame
 	void								EndFrame();
@@ -66,10 +66,10 @@ public:
 	struct TextBlob
 	{
 										TextBlob() = default;
-										TextBlob(RVec3Arg inPosition, const string_view &inString, ColorArg inColor, float inHeight) : mPosition(inPosition), mString(inString), mColor(inColor), mHeight(inHeight) { }
+										TextBlob(RVec3Arg inPosition, const string_view &inJoltString, ColorArg inColor, float inHeight) : mPosition(inPosition), mJoltString(inJoltString), mColor(inColor), mHeight(inHeight) { }
 
 		RVec3							mPosition;
-		String							mString;
+		JoltString							mJoltString;
 		Color							mColor;
 		float							mHeight;
 	};

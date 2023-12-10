@@ -1,0 +1,7 @@
+Binding_0: 
+  Class: Native$1137898
+  m_Dispatcher: Keyboard/Space
+  m_TargetActionType: 1
+UUID: "e2d52698-18bf-4e85-9cb0-9f26ee695483"
+m_Label: Default.Jump
+m_Type: 1

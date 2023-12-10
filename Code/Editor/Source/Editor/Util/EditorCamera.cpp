@@ -83,7 +83,7 @@ namespace Suora
 		if (NativeInput::GetKeyDown(Key::KP6)) m_Rotation.y -= 90;
 
 		// Update Position and Rotation
-		SetPosition(Math::Lerp(GetPosition(), m_Position, 50.0f * deltaTime));
+		SetPosition(Math::LerpTowards(GetPosition(), m_Position, 50.0f * deltaTime));
 		SetEulerRotation(m_Rotation);
 		//SetEulerRotation(Math::Lerp(GetEulerRotation(), m_Rotation, 50.0f * deltaTime));
 	}

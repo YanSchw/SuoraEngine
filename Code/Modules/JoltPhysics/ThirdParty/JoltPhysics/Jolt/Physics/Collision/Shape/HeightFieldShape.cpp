@@ -365,7 +365,7 @@ HeightFieldShape::HeightFieldShape(const HeightFieldShapeSettings &inSettings, S
 		for (uint8 s : inSettings.mMaterialIndices)
 			if (s >= mMaterials.size())
 			{
-				outResult.SetError(StringFormat("Material %u is beyond material list (size: %u)", s, (uint)mMaterials.size()));
+				outResult.SetError(JoltStringFormat("Material %u is beyond material list (size: %u)", s, (uint)mMaterials.size()));
 				return;
 			}
 	}

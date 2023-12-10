@@ -122,7 +122,7 @@ void DebugRendererPlayback::Parse(StreamIn &inStream)
 			for (DebugRendererRecorder::TextBlob &text : frame.mTexts)
 			{
 				inStream.Read(text.mPosition);
-				inStream.Read(text.mString);
+				inStream.Read(text.mJoltString);
 				inStream.Read(text.mColor);
 				inStream.Read(text.mHeight);
 			}
@@ -157,7 +157,7 @@ void DebugRendererPlayback::DrawFrame(uint inFrameNumber) const
 		mRenderer.DrawTriangle(triangle.mV1, triangle.mV2, triangle.mV3, triangle.mColor, triangle.mCastShadow);
 
 	for (const DebugRendererRecorder::TextBlob &text : frame.mTexts)
-		mRenderer.DrawText3D(text.mPosition, text.mString, text.mColor, text.mHeight);
+		mRenderer.DrawText3D(text.mPosition, text.mJoltString, text.mColor, text.mHeight);
 
 	for (const DebugRendererRecorder::GeometryBlob &geom : frame.mGeometries)
 		mRenderer.DrawGeometry(geom.mModelMatrix, geom.mModelColor, mGeometries.find(geom.mGeometryID)->second, geom.mCullMode, geom.mCastShadow, geom.mDrawMode);

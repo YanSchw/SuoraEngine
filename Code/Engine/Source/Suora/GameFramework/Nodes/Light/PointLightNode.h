@@ -10,12 +10,12 @@ namespace Suora
 
 	struct PointLightMatrixStruct
 	{
-		glm::mat4 ViewTop = {};
-		glm::mat4 ViewBottom = {};
-		glm::mat4 ViewLeft = {};
-		glm::mat4 ViewRight = {};
-		glm::mat4 ViewForward = {};
-		glm::mat4 ViewBackward = {};
+		Mat4 ViewTop = {};
+		Mat4 ViewBottom = {};
+		Mat4 ViewLeft = {};
+		Mat4 ViewRight = {};
+		Mat4 ViewForward = {};
+		Mat4 ViewBackward = {};
 	};
 
 	class PointLightNode : public LightNode

@@ -26,11 +26,11 @@ namespace Suora
 	{
 		if (!node->IsEnabled()) return;
 
-		if (node->mesh && node->GetMaterials().Materials.Size() > 0 && node->GetMaterials().Materials[0] && node->GetMaterials().Materials[0]->GetShaderGraph())
+		if (node->GetMesh() && node->GetMaterials().Materials.Size() > 0 && node->GetMaterials().Materials[0] && node->GetMaterials().Materials[0]->GetShaderGraph())
 		{
-			if (node->mesh->IsDecimaMesh())
+			if (node->GetMesh()->IsDecimaMesh())
 			{
-				node->mesh->GetVertexArray(); // To load the Mesh and initiate the decimation process
+				node->GetMesh()->GetVertexArray(); // To load the Mesh and initiate the decimation process
 				if (Decima::m_DecimaMeshes.find(node) == Decima::m_DecimaMeshes.end()) return;
 				RenderCommand::SetDepthTest(node->GetMaterials().Materials[0]->m_DepthTest);
 				RenderCommand::SetCullingMode(node->GetMaterials().Materials[0]->m_BackfaceCulling ? CullingMode::Backface : CullingMode::None);
@@ -38,10 +38,10 @@ namespace Suora
 				node->GetMaterials().Materials[0]->ApplyUniforms(type);
 				node->GetMaterials().Materials[0]->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_Transform", node->GetTransformMatrix());
 
-				glm::mat4 viewProj = camera->GetProjectionMatrix() * glm::inverse(camera->GetTransformMatrix());
+				Mat4 viewProj = camera->GetProjectionMatrix() * glm::inverse(camera->GetTransformMatrix());
 				node->GetMaterials().Materials[0]->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_ViewProjection", viewProj);
 
-				const glm::mat4 normalMat = glm::transpose(glm::inverse(glm::inverse(camera->GetTransformMatrix()) * node->GetTransformMatrix()));
+				const Mat4 normalMat = glm::transpose(glm::inverse(glm::inverse(camera->GetTransformMatrix()) * node->GetTransformMatrix()));
 				node->GetMaterials().Materials[0]->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_NormalMatrix", normalMat);
 
 				node->GetMaterials().Materials[0]->GetShaderGraph()->GetShaderViaType(type)->SetInt("u_MeshID", meshID);
@@ -50,13 +50,13 @@ namespace Suora
 			}
 			else
 			{
-				Renderer3D::DrawMesh(camera, node->GetTransformMatrix(), *node->mesh, node->GetMaterials());
+				Renderer3D::DrawMesh(camera, node->GetTransformMatrix(), *node->GetMesh(), node->GetMaterials());
 			}
 		}
 
 	}
 
-	void Renderer3D::DrawMesh(CameraNode* camera, const glm::mat4& transform, Mesh& mesh, Material* material, MaterialType type)
+	void Renderer3D::DrawMesh(CameraNode* camera, const Mat4& transform, Mesh& mesh, Material* material, MaterialType type)
 	{
 		if (!material) return;
 		if (!material->GetShaderGraph()) return;
@@ -71,13 +71,9 @@ namespace Suora
 		material->ApplyUniforms(type);
 		material->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_Transform", transform);
 
-		// Projection matrix : 90° Field of View, 16:9 ratio, display range : 0.01 unit <-> 100 units
-		//glm::mat4 Projection = glm::perspectiveLH(glm::radians(camera->GetPerspectiveVerticalFOV()), camera->GetAspectRatio(), 0.01f, 100.0f);
+		material->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_ViewProjection", camera->GetViewProjectionMatrix());
 
-		glm::mat4 viewProj = camera->GetProjectionMatrix() /*Projection*/ * glm::inverse(camera->GetTransformMatrix());
-		material->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_ViewProjection", viewProj);
-
-		const glm::mat4 normalMat = glm::transpose(glm::inverse(glm::mat3(glm::inverse(camera->GetTransformMatrix()) * transform)));
+		const Mat4 normalMat = glm::transpose(glm::inverse(glm::mat3(glm::inverse(camera->GetTransformMatrix()) * transform)));
 		material->GetShaderGraph()->GetShaderViaType(type)->SetMat4("u_NormalMatrix", normalMat);
 
 		material->GetShaderGraph()->GetShaderViaType(type)->SetInt("u_MeshID", 0);
@@ -86,7 +82,7 @@ namespace Suora
 		RenderCommand::DrawIndexed(vao);
 	}
 
-	void Renderer3D::DrawMesh(CameraNode* camera, const glm::mat4& transform, Mesh& mesh, const MaterialSlots& materials, MaterialType type)
+	void Renderer3D::DrawMesh(CameraNode* camera, const Mat4& transform, Mesh& mesh, const MaterialSlots& materials, MaterialType type)
 	{
 		if (mesh.IsMasterMesh())
 		{
@@ -99,6 +95,11 @@ namespace Suora
 		{
 			if (materials.HasSlots() && materials.Materials[0]) DrawMesh(camera, transform, mesh, materials.Materials[0], type);
 		}
+	}
+
+	void Renderer3D::DrawLine3D(const Vec3& a, const Vec3& b, const Color& color)
+	{
+		SuoraVerify(false);
 	}
 
 

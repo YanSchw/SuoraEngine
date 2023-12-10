@@ -37,7 +37,6 @@ IncludeDir["entt"] = "%{wks.location}/Code/Dependencies/entt/include"
 IncludeDir["assimp"] = "%{wks.location}/Code/Dependencies/assimp/include"
 
 group "Dependencies"
-	include "Code/Dependencies/premake"
 	include "Code/Dependencies/GLFW/GLFW.lua"
 	include "Code/Dependencies/Glad/Glad.lua"
 	include "Code/Dependencies/assimp/assimp.lua"

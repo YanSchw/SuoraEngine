@@ -6,7 +6,7 @@ namespace Suora
 {
 	struct ScriptClassInternal;
 	class DetailsPanel;
-	enum class InputScriptEventFlags : uint64_t;
+	enum class InputActionKind : uint32_t;
 
 	class Blueprint : public Asset
 	{
@@ -24,20 +24,20 @@ namespace Suora
 
 		struct DelegateEventBind
 		{
-			std::string ChildName;
-			std::string DelegateName;
+			String ChildName;
+			String DelegateName;
 			size_t ScriptFunctionHash;
-			DelegateEventBind(const std::string& childName, const std::string& delegateName, size_t hash)
+			DelegateEventBind(const String& childName, const String& delegateName, size_t hash)
 				: ChildName(childName), DelegateName(delegateName), ScriptFunctionHash(hash)
 			{
 			}
 		};
 		struct InputEventBind
 		{
-			std::string Label;
+			String Label;
 			size_t ScriptFunctionHash;
-			InputScriptEventFlags Flags;
-			InputEventBind(const std::string& label, size_t hash, InputScriptEventFlags flags)
+			InputActionKind Flags;
+			InputEventBind(const String& label, size_t hash, InputActionKind flags)
 				: Label(label), ScriptFunctionHash(hash), Flags(flags)
 			{
 			}
@@ -47,7 +47,7 @@ namespace Suora
 
 	public:
 		Blueprint();
-		void PreInitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
 		Class GetNodeParentClass() const;
 		Object* CreateInstance(bool isRootNode);
 

@@ -17,6 +17,8 @@ namespace Suora
 
 	Application::Application()
 	{
+		PrintSuoraEngineAsciiArt();
+
 		m_Engine = Engine::Create();
 
 		SUORA_ASSERT(!s_Instance, "Application already exists!");
@@ -97,6 +99,20 @@ namespace Suora
 		m_Minimized = false;
 
 		return false;
+	}
+
+	void Application::PrintSuoraEngineAsciiArt()
+	{
+		SUORA_LOG(LogCategory::Core, LogLevel::Trace, "==================================================================================");
+
+		SUORA_LOG(LogCategory::Core, LogLevel::Trace, "________                               __________              _____             ");
+		SUORA_LOG(LogCategory::Core, LogLevel::Trace, "__  ___/___  ____________________ _    ___  ____/_____________ ___(_)___________ ");
+		SUORA_LOG(LogCategory::Core, LogLevel::Trace, "_____ \\_  / / /  __ \\_  ___/  __ `/    __  __/  __  __ \\_  __ `/_  /__  __ \\  _ \\");
+		SUORA_LOG(LogCategory::Core, LogLevel::Trace, "____/ // /_/ // /_/ /  /   / /_/ /     _  /___  _  / / /  /_/ /_  / _  / / /  __/");
+		SUORA_LOG(LogCategory::Core, LogLevel::Trace, "/____/ \\__,_/ \\____//_/    \\__,_/      /_____/  /_/ /_/_\\__, / /_/  /_/ /_/\\___/ ");
+		SUORA_LOG(LogCategory::Core, LogLevel::Trace, "                                                       /____/                    ");
+
+		SUORA_LOG(LogCategory::Core, LogLevel::Trace, "== Version {0}.{1}.{2} =================================================================", SUORA_VERSION_MAJOR, SUORA_VERSION_MINOR, SUORA_VERSION_PATCH);
 	}
 
 }

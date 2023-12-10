@@ -208,7 +208,7 @@ void PulleyConstraint::DrawConstraint(DebugRenderer *inRenderer) const
 	inRenderer->DrawLine(mFixedPosition2, mWorldSpacePosition2, color);
 
 	// Draw current length
-	inRenderer->DrawText3D(0.5_r * (mFixedPosition1 + mFixedPosition2), StringFormat("%.2f", (double)current_length));
+	inRenderer->DrawText3D(0.5_r * (mFixedPosition1 + mFixedPosition2), JoltStringFormat("%.2f", (double)current_length));
 }
 #endif // JPH_DEBUG_RENDERER
 

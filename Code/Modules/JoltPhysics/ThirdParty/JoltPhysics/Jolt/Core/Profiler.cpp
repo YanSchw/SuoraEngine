@@ -167,13 +167,13 @@ void Profiler::DumpInternal()
 		}
 
 	// Determine tag of this profile
-	String tag;
+	JoltString tag;
 	if (mDumpTag.empty())
 	{
 		// Next sequence number
 		static int number = 0;
 		++number;
-		tag = ConvertToString(number);
+		tag = ConvertToJoltString(number);
 	}
 	else
 	{
@@ -193,11 +193,11 @@ void Profiler::DumpInternal()
 	DumpChart(tag.c_str(), threads, key_to_aggregators, aggregators);
 }
 
-static String sHTMLEncode(const char *inString)
+static JoltString sHTMLEncode(const char *inJoltString)
 {
-	String str(inString);
-	StringReplace(str, "<", "&lt;");
-	StringReplace(str, ">", "&gt;");
+	JoltString str(inJoltString);
+	JoltStringReplace(str, "<", "&lt;");
+	JoltStringReplace(str, ">", "&gt;");
 	return str;
 }
 
@@ -205,7 +205,7 @@ void Profiler::DumpChart(const char *inTag, const Threads &inThreads, const KeyT
 {
 	// Open file
 	std::ofstream f;
-	f.open(StringFormat("profile_chart_%s.html", inTag).c_str(), std::ofstream::out | std::ofstream::trunc);
+	f.open(JoltStringFormat("profile_chart_%s.html", inTag).c_str(), std::ofstream::out | std::ofstream::trunc);
 	if (!f.is_open())
 		return;
 
@@ -251,7 +251,7 @@ void Profiler::DumpChart(const char *inTag, const Threads &inThreads, const KeyT
 				f << ",";
 			first = false;
 			Color c(s->mColor);
-			f << StringFormat("\"#%02x%02x%02x\"", c.r, c.g, c.b);
+			f << JoltStringFormat("\"#%02x%02x%02x\"", c.r, c.g, c.b);
 		}
 		f << "],\nstart: [";
 		first = true;
@@ -291,7 +291,7 @@ void Profiler::DumpChart(const char *inTag, const Threads &inThreads, const KeyT
 		if (!first)
 			f << ",";
 		first = false;
-		String name = "\"" + sHTMLEncode(a.mName) + "\"";
+		JoltString name = "\"" + sHTMLEncode(a.mName) + "\"";
 		f << name;
 	}
 	f << "],\ncalls: [";

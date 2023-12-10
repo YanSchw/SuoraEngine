@@ -11,9 +11,8 @@
 #define NODE_ID_NATIVE_FUNC 15
 #define NODE_ID_NATIVE_PURE 16
 #define NODE_ID_DELEGATE 17
-#define NODE_ID_INPUT_EVENT 18
 
-static std::string ExtractFunctionName(std::string name)
+static String ExtractFunctionName(String name)
 {
 	int i = 2;
 	while (i > 0)
@@ -111,38 +110,6 @@ namespace Suora
 						size_t hash = hashCounter++;
 						CompileEvent(blueprint, *event, *exec, graph, hash);
 						blueprint.m_DelegateEventsToBindDuringGameplay.Add(Blueprint::DelegateEventBind(event->m_InputPins[0].m_AdditionalData, event->m_InputPins[1].m_AdditionalData, hash));
-					}
-				}
-				else if (event->m_NodeID == NODE_ID_INPUT_EVENT)
-				{
-					if (event->m_InputPins[2].m_AdditionalData == "Action")
-					{
-						VisualNodePin* execPressed = nullptr;	if (event->m_OutputPins[0].Target) execPressed = &event->m_OutputPins[0];
-						VisualNodePin* execReleased = nullptr;	if (event->m_OutputPins[1].Target) execPressed = &event->m_OutputPins[1];
-						VisualNodePin* execHelt = nullptr;		if (event->m_OutputPins[2].Target) execPressed = &event->m_OutputPins[2];
-
-						if (execPressed)
-						{
-							size_t hash = hashCounter++;
-							CompileEvent(blueprint, *event, *execPressed, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputScriptEventFlags::ButtonPressed));
-						}
-						if (execReleased)
-						{
-							size_t hash = hashCounter++;
-							CompileEvent(blueprint, *event, *execReleased, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputScriptEventFlags::ButtonReleased));
-						}
-						if (execHelt)
-						{
-							size_t hash = hashCounter++;
-							CompileEvent(blueprint, *event, *execHelt, graph, hash);
-							blueprint.m_InputEventsToBeBound.Add(Blueprint::InputEventBind(event->m_InputPins[0].m_AdditionalData + "/" + event->m_InputPins[1].m_AdditionalData, hash, InputScriptEventFlags::ButtonHelt));
-						}
-					}
-					else
-					{
-						SuoraVerify(false, "Missing Implementation!");
 					}
 				}
 			}
@@ -254,7 +221,7 @@ namespace Suora
 			}
 			if (pin.PinID == (int64_t)ScriptDataType::Float)
 			{
-				const int64_t f = ScriptStack::ConvertToStack<float>(Util::StringToFloat(pin.m_AdditionalData));
+				const int64_t f = ScriptStack::ConvertToStack<float>(StringUtil::StringToFloat(pin.m_AdditionalData));
 				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::PushConstant, { f }));
 			}
 			if (pin.PinID == (int64_t)ScriptDataType::Bool)
@@ -271,7 +238,7 @@ namespace Suora
 				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::PushConstant, { x }));
 				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::PushConstant, { y }));
 				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::PushConstant, { z }));
-				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::CallNativeFunction, { (int64_t)std::hash<std::string>{}("NodeScriptLibrary::MakeVector3(float, float, float)") }));
+				func.m_Instructions.push_back(ScriptInstruction(EScriptInstruction::CallNativeFunction, { (int64_t)std::hash<String>{}("NodeScriptLibrary::MakeVector3(float, float, float)") }));
 			}
 			return true;
 		}
@@ -303,7 +270,7 @@ namespace Suora
 			Ref<VisualNode> IF = CreateRef<VisualNode>();
 			IF->m_Title = "If";
 			IF->m_NodeID = 100;
-			IF->m_Color = glm::vec4(0.8f, 0.49f, 0.38f, 1.0f);
+			IF->m_Color = Vec4(0.8f, 0.49f, 0.38f, 1.0f);
 			IF->m_Size = { 215, 105 };
 			IF->AddInputPin("InExec", Color(1.0f), 1, false, 30.0f);
 			IF->AddInputPin("Condition", GetScriptDataTypeColor(ScriptDataType::Bool), (int64_t)ScriptDataType::Bool, true);
@@ -315,7 +282,7 @@ namespace Suora
 			Ref<VisualNode> MultiplyVec3Float = CreateRef<VisualNode>();
 			MultiplyVec3Float->m_Title = "Vec3 * Float";
 			MultiplyVec3Float->m_NodeID = 200;
-			MultiplyVec3Float->m_Color = glm::vec4(0.8f, 0.49f, 0.38f, 1.0f);
+			MultiplyVec3Float->m_Color = Vec4(0.8f, 0.49f, 0.38f, 1.0f);
 			MultiplyVec3Float->m_Size = { 215, 105 };
 			MultiplyVec3Float->AddInputPin("Vec3", GetScriptDataTypeColor(ScriptDataType::Vec3), (int64_t)ScriptDataType::Vec3, true);
 			MultiplyVec3Float->AddInputPin("Float", GetScriptDataTypeColor(ScriptDataType::Float), (int64_t)ScriptDataType::Float, true);
@@ -329,13 +296,13 @@ namespace Suora
 				Ref<VisualNode> event = CreateRef<VisualNode>();
 				event->m_Title = "Events/" + ExtractFunctionName(func->m_Label);
 				event->m_NodeID = NODE_ID_EVENT;
-				event->m_Color = Color(100 / 255.0f, 19 / 255.0f, 13 / 255.0f, 1.0f); // glm::vec4(0.82f, 0.25f, 0.18f, 1.0f);
+				event->m_Color = Color(100 / 255.0f, 19 / 255.0f, 13 / 255.0f, 1.0f); // Vec4(0.82f, 0.25f, 0.18f, 1.0f);
 				event->m_Size = { 215, 105 };
 				event->AddInputPin("Hash", Color(1.0f), 0, false, 0.0f); event->m_InputPins[0].m_AdditionalData = std::to_string(func->m_Hash);
 				event->AddOutputPin("Exec", Color(1.0f), 1, true, 30.0f);
 				for (FunctionParam& param : func->m_Params)
 				{
-					event->AddOutputPin(Util::SmartToUpperCase(param.m_Name, false), GetScriptDataTypeColor(StringToScriptDataType(param.m_Type)), (int64_t)StringToScriptDataType(param.m_Type), false);
+					event->AddOutputPin(StringUtil::SmartToUpperCase(param.m_Name, false), GetScriptDataTypeColor(StringToScriptDataType(param.m_Type)), (int64_t)StringToScriptDataType(param.m_Type), false);
 				}
 
 				AddSupportedNode(event);
@@ -346,7 +313,7 @@ namespace Suora
 				Ref<VisualNode> function = CreateRef<VisualNode>();
 				function->m_Title = Class(func->m_ClassID).GetClassName() + "/" + ExtractFunctionName(func->m_Label);
 				function->m_NodeID = isPure ? NODE_ID_NATIVE_PURE : NODE_ID_NATIVE_FUNC;
-				function->m_Color = isPure ? /*glm::vec4(0.18f, 0.62f, 0.23f, 1.0f)*/Color(51.0f / 255.0f, 73.0f / 255.0f, 55.0f / 255.0f, 1.0f) : /*glm::vec4(0.18f, 0.22f, 0.63f, 1.0f)*/Color(38 / 255.0f, 61 / 255.0f, 76 / 255.0f, 1.0f);
+				function->m_Color = isPure ? /*Vec4(0.18f, 0.62f, 0.23f, 1.0f)*/Color(51.0f / 255.0f, 73.0f / 255.0f, 55.0f / 255.0f, 1.0f) : /*Vec4(0.18f, 0.22f, 0.63f, 1.0f)*/Color(38 / 255.0f, 61 / 255.0f, 76 / 255.0f, 1.0f);
 				function->m_Size = { 275, 165 };
 				function->AddInputPin("Hash", Color(1.0f), 0, false, 0.0f); function->m_InputPins[0].m_AdditionalData = std::to_string(func->m_Hash);
 				function->AddInputPin("Flags", Color(1.0f), 0, false, 0.0f); function->m_InputPins[1].m_AdditionalData = std::to_string((int32_t)func->m_Flags);
@@ -357,7 +324,7 @@ namespace Suora
 				}
 				else
 				{
-					function->m_BackgroundColor = glm::vec4(0.05f, 0.055f, 0.05f, 0.9f);
+					function->m_BackgroundColor = Vec4(0.05f, 0.055f, 0.05f, 0.9f);
 				}
 				if (!func->IsFlagSet(FunctionFlags::Static))
 				{
@@ -366,7 +333,7 @@ namespace Suora
 				}
 				for (FunctionParam& param : func->m_Params)
 				{
-					function->AddInputPin(Util::SmartToUpperCase(param.m_Name, false), GetScriptDataTypeColor(StringToScriptDataType(param.m_Type)), (int64_t)StringToScriptDataType(param.m_Type), true);
+					function->AddInputPin(StringUtil::SmartToUpperCase(param.m_Name, false), GetScriptDataTypeColor(StringToScriptDataType(param.m_Type)), (int64_t)StringToScriptDataType(param.m_Type), true);
 				}
 				if (func->m_ReturnType != "void")
 				{
@@ -374,27 +341,6 @@ namespace Suora
 				}
 
 				AddSupportedNode(function);
-			}
-		}
-
-		Ref<InputSettings> inputSettings = ProjectSettings::Get()->m_InputSettings;
-		if (inputSettings)
-		{
-			for (auto& Category : inputSettings->m_Categories)
-			{
-				for (auto& Action : Category->m_Actions)
-				{
-					Ref<VisualNode> inputEvent = CreateRef<VisualNode>();
-					inputEvent->m_Title = "Input Actions/" + Category->m_CategoryName + "/" + Action->m_ActionName;
-					inputEvent->m_NodeID = NODE_ID_INPUT_EVENT;
-					inputEvent->m_Color = Color(100 / 255.0f, 19 / 255.0f, 13 / 255.0f, 1.0f);
-					inputEvent->m_Size = { 185, 105 };
-					inputEvent->AddInputPin("CategoryName", Color(1.0f), 0, false, 0.0f); inputEvent->m_InputPins[0].m_AdditionalData = Category->m_CategoryName;
-					inputEvent->AddInputPin("ActionName", Color(1.0f), 0, false, 0.0f); inputEvent->m_InputPins[1].m_AdditionalData = Action->m_ActionName;
-					inputEvent->AddInputPin("ActionType", Color(1.0f), 0, false, 0.0f);
-
-					AddSupportedNode(inputEvent);
-				}
 			}
 		}
 
@@ -443,7 +389,7 @@ namespace Suora
 								// Do not add a None-Existing DataType to the Node! e.g. DelegateNoParams
 								//if (delegate->m_Args[i] == ScriptDataType::None) continue;
 
-								node->AddOutputPin(Util::SmartToUpperCase(delegate->m_StrArgs[i], false), GetScriptDataTypeColor(delegate->m_Args[i]), (int64_t)delegate->m_Args[i], false);
+								node->AddOutputPin(StringUtil::SmartToUpperCase(delegate->m_StrArgs[i], false), GetScriptDataTypeColor(delegate->m_Args[i]), (int64_t)delegate->m_Args[i], false);
 								VisualNodePin& pin = node->m_OutputPins[node->m_OutputPins.Last()];
 								if (pin.PinID == (int64_t)ScriptDataType::ObjectPtr)
 								{
@@ -464,48 +410,6 @@ namespace Suora
 					}
 				}
 			}
-			else if (node->m_NodeID == NODE_ID_INPUT_EVENT)
-			{
-				Ref<InputSettings> inputSettings = ProjectSettings::Get()->m_InputSettings;
-				if (inputSettings)
-				{
-					for (auto& Category : inputSettings->m_Categories)
-					{
-						for (auto& Action : Category->m_Actions)
-						{
-							if (node->m_InputPins[0].m_AdditionalData == Category->m_CategoryName && node->m_InputPins[1].m_AdditionalData == Action->m_ActionName)
-							{
-								if (Action->m_ActionType == InputActionType::Action)
-								{
-									node->m_InputPins[2].m_AdditionalData = "Action";
-									bool bRefresh = false;
-									if (node->m_OutputPins.Size() != 3)
-									{
-										bRefresh = true;
-									}
-									else
-									{
-										if (node->m_OutputPins[0].PinID != 1) bRefresh = true;
-										if (node->m_OutputPins[1].PinID != 1) bRefresh = true;
-										if (node->m_OutputPins[2].PinID != 1) bRefresh = true;
-									}
-									if (bRefresh)
-									{
-										node->m_OutputPins.Clear();
-										node->AddOutputPin("Pressed", Color(1.0f), 1, true, 30.0f);
-										node->AddOutputPin("Released", Color(1.0f), 1, true, 30.0f);
-										node->AddOutputPin("Helt", Color(1.0f), 1, true, 30.0f);
-									}
-								}
-								else
-								{
-									SuoraVerify(false, "Missing Implementation!");
-								}
-							}
-						}
-					}
-				}
-			}
 		}
 	}
 
@@ -519,7 +423,7 @@ namespace Suora
 			if (It->m_Type == ClassMember::Type::Delegate)
 			{
 				Ref<VisualNode> event = CreateRef<VisualNode>();
-				if (isChild) event->m_Title = "Children/" + node->GetName() + std::string("/") + node->GetName() + std::string(" "); else event->m_Title = "Events/";
+				if (isChild) event->m_Title = "Children/" + node->GetName() + String("/") + node->GetName() + String(" "); else event->m_Title = "Events/";
 				event->m_Title += It->m_MemberName;
 
 				event->m_NodeID = NODE_ID_DELEGATE;

@@ -40,7 +40,7 @@ class JPH_EXPORT IObjectStreamIn : public ObjectStream
 public:
 	///@name Input type specific operations
 	virtual bool				ReadDataType(EOSDataType &outType) = 0;
-	virtual bool				ReadName(String &outName) = 0;
+	virtual bool				ReadName(JoltString &outName) = 0;
 	virtual bool				ReadIdentifier(Identifier &outIdentifier) = 0;
 	virtual bool				ReadCount(uint32 &outCount) = 0;
 
@@ -53,7 +53,7 @@ public:
 	virtual bool				ReadPrimitiveData(float &outPrimitive) = 0;
 	virtual bool				ReadPrimitiveData(double &outPrimitive) = 0;
 	virtual bool				ReadPrimitiveData(bool &outPrimitive) = 0;
-	virtual bool				ReadPrimitiveData(String &outPrimitive) = 0;
+	virtual bool				ReadPrimitiveData(JoltString &outPrimitive) = 0;
 	virtual bool				ReadPrimitiveData(Float3 &outPrimitive) = 0;
 	virtual bool				ReadPrimitiveData(Double3 &outPrimitive) = 0;
 	virtual bool				ReadPrimitiveData(Vec3 &outPrimitive) = 0;
@@ -87,7 +87,7 @@ public:
 	virtual void				WritePrimitiveData(const float &inPrimitive) = 0;
 	virtual void				WritePrimitiveData(const double &inPrimitive) = 0;
 	virtual void				WritePrimitiveData(const bool &inPrimitive) = 0;
-	virtual void				WritePrimitiveData(const String &inPrimitive) = 0;
+	virtual void				WritePrimitiveData(const JoltString &inPrimitive) = 0;
 	virtual void				WritePrimitiveData(const Float3 &inPrimitive) = 0;
 	virtual void				WritePrimitiveData(const Double3 &inPrimitive) = 0;
 	virtual void				WritePrimitiveData(const Vec3 &inPrimitive) = 0;

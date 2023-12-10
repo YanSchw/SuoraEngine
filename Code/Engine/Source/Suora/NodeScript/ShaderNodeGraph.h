@@ -8,8 +8,8 @@ namespace Suora
 
 	struct ShaderGraphCompiler
 	{
-		static std::string CompileShaderNode(VisualNode& node, VisualNodePin& pin, bool vertex, bool& error);
-		static std::string CompilePin(VisualNodePin& pin, bool vertex, bool& error);
+		static String CompileShaderNode(VisualNode& node, VisualNodePin& pin, bool vertex, bool& error);
+		static String CompilePin(VisualNodePin& pin, bool vertex, bool& error);
 	};
 
 	struct ShaderNodeGraph : VisualNodeGraph
@@ -21,10 +21,10 @@ namespace Suora
 		virtual void TickAllVisualNodes() override;
 		void TickAllVisualNodesInShaderGraphContext(ShaderGraph* shaderGraph);
 
-		static ShaderGraphDataType StringToShaderGraphDataType(std::string str);
-		static std::string ShaderGraphDataTypeToLabel(ShaderGraphDataType type);
-		static std::string ShaderGraphDataTypeToString(ShaderGraphDataType type);
-		static glm::vec4 GetShaderDataTypeColor(ShaderGraphDataType type);
+		static ShaderGraphDataType StringToShaderGraphDataType(String str);
+		static String ShaderGraphDataTypeToLabel(ShaderGraphDataType type);
+		static String ShaderGraphDataTypeToString(ShaderGraphDataType type);
+		static Vec4 GetShaderDataTypeColor(ShaderGraphDataType type);
 	};
 
 }

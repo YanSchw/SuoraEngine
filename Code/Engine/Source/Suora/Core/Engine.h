@@ -41,7 +41,7 @@ namespace Suora
 		RenderPipeline* GetRenderPipeline();
 		Physics::PhysicsEngine* GetPhysicsEngine() const;
 
-		std::string GetRootPath() const;
+		String GetRootPath() const;
 		float GetDeltaTime() const;
 
 		void Tick();

@@ -7,7 +7,7 @@
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/SkyLightNode.h"
 #include "Suora/Renderer/RenderPipeline.h"
-#include "../../Util/EditorCamera.h"
+#include "Editor/Util/EditorCamera.h"
 #include "Suora/NodeScript/ShaderNodeGraph.h"
 
 namespace Suora
@@ -45,14 +45,15 @@ namespace Suora
 		Ref<DockingSpace> ds3 = CreateRef<DockingSpace>(0.25f, 0.0f, 1.0f, 1.0f, this);					m_DockspacePanel.m_DockingSpaces.Add(ds3); ds3->m_MinorTabs.Add(m_NodeEditor);
 
 		MeshNode* PlaneMesh = m_World.Spawn<MeshNode>();
-		PlaneMesh->mesh = AssetManager::GetAssetByName<Mesh>("Plane.mesh");
-		PlaneMesh->materials = AssetManager::GetAsset<Material>(SuoraID("b546f092-3f80-4dd3-a73a-b4c13d28f7f8"));
+		PlaneMesh->SetMesh(AssetManager::GetAssetByName<Mesh>("Plane.mesh"));
+		PlaneMesh->m_Materials = AssetManager::GetAsset<Material>(SuoraID("b546f092-3f80-4dd3-a73a-b4c13d28f7f8"));
 
 		MeshNode* PreviewMesh = m_World.Spawn<MeshNode>();
 		PreviewMesh->SetPosition(Vec::Up * 1.0f);
-		PreviewMesh->mesh = AssetManager::GetAssetByName<Mesh>("Sphere.mesh");
-		PreviewMesh->materials = m_ShaderGraph.Get();
-		PreviewMesh->materials.OverwritteMaterials = true;
+		PreviewMesh->SetScale(Vec3(2.0f));
+		PreviewMesh->SetMesh(AssetManager::GetAssetByName<Mesh>("Sphere.mesh"));
+		PreviewMesh->m_Materials = m_ShaderGraph.Get();
+		PreviewMesh->m_Materials.OverwritteMaterials = true;
 
 		DirectionalLightNode* Light = m_World.Spawn<DirectionalLightNode>();
 		SkyLightNode* Sky = m_World.Spawn<SkyLightNode>();
@@ -96,7 +97,7 @@ namespace Suora
 		Yaml::Node root;
 		m_ShaderGraph->Serialize(root);
 		m_NodeEditor->m_Graph->SerializeNodeGraph(root);
-		std::string out;
+		String out;
 		Yaml::Serialize(root, out);
 		Platform::WriteToFile(m_ShaderGraph->m_Path.string(), out);
 	}
@@ -132,9 +133,9 @@ namespace Suora
 		if (pin.PinID == (int64_t)ShaderGraphDataType::Float && pin.IsReceivingPin && !pin.Target)
 		{
 			while (m_TempDragFloatFields.Size() <= PinIndex) m_TempDragFloatFields.Add(0.0f);
-			const float temp = Util::StringToFloat(pin.m_AdditionalData);
+			const float temp = StringUtil::StringToFloat(pin.m_AdditionalData);
 			m_TempDragFloatFields[PinIndex] = temp;
-			EditorUI::DragFloat(&m_TempDragFloatFields[PinIndex], node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + (GetNodeGraphFont()->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom)), y + 2.0f, 100.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](std::string str) { pin.m_AdditionalData = str; });
+			EditorUI::DragFloat(&m_TempDragFloatFields[PinIndex], node.m_Position.x * m_Zoom - node.m_Size.x / 2.0f * m_Zoom - m_CameraPos.x * m_Zoom + GetWidth() / 2 + 5.0f + (GetNodeGraphFont()->GetStringWidth(pin.Label, 26.0f * m_Zoom) / 1.9f + (38.0f * m_Zoom)), y + 2.0f, 100.0f * m_Zoom, pin.PinHeight * m_Zoom - 4.0f, [&](String str) { pin.m_AdditionalData = str; });
 			if (m_TempDragFloatFields[PinIndex] != temp)
 			{
 				pin.m_AdditionalData = std::to_string(m_TempDragFloatFields[PinIndex]);

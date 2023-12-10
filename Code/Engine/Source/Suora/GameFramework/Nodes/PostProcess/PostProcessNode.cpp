@@ -32,7 +32,7 @@ namespace Suora
 	void PostProcessEffect::Init()
 	{
 	}
-	void PostProcessEffect::Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera)
+	void PostProcessEffect::Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera)
 	{
 	}
 
@@ -48,23 +48,28 @@ namespace Suora
 		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/MotionBlur.glsl");
 		{
 			FramebufferSpecification spec;
-			spec.Width = RenderPipeline::GetInternalResolution().x;
-			spec.Height = RenderPipeline::GetInternalResolution().y;
+			spec.Width = 32;
+			spec.Height = 32;
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
 			m_AccumulatedBuffer = Framebuffer::Create(spec);
 		}
 	}
-	void MotionBlur::Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera)
+	void MotionBlur::Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera)
 	{
-		RenderPipeline::SetFullscreenViewport(*RenderPipeline::GetGBuffer());
+		if (m_AccumulatedBuffer->GetSize() != Params.Resolution)
+		{
+			m_AccumulatedBuffer->Resize(Params.Resolution);
+		}
+
+		RenderPipeline::SetFullscreenViewport(*Params.GetGBuffer());
 		if (m_Accumulated)
 		{
 			m_Shader->Bind();
 			m_Shader->SetFloat("u_Intensity", m_Intensity);
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_AccumulatedBuffer, *Buffer, *m_Shader, glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y), "u_Texture", 0, false);
+			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_AccumulatedBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y), "u_Texture", 0, false);
 		}
 
-		RenderPipeline::RenderFramebufferIntoFramebuffer(*Buffer, *m_AccumulatedBuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y));
+		RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *m_AccumulatedBuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, m_AccumulatedBuffer->GetSize().x, m_AccumulatedBuffer->GetSize().y));
 		m_Accumulated = true;
 	}
 
@@ -79,69 +84,45 @@ namespace Suora
 	void ChromaticAberration::Init()
 	{
 		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/ChromaticAberration.glsl");
-		{
-			FramebufferSpecification spec;
-			spec.Width = RenderPipeline::GetInternalResolution().x;
-			spec.Height = RenderPipeline::GetInternalResolution().y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
-			m_Buffer = Framebuffer::Create(spec);
-		}
 	}
 
-	void ChromaticAberration::Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera)
+	void ChromaticAberration::Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera)
 	{
 		m_Shader->Bind();
 		m_Shader->SetFloat("u_Intensity", m_Intensity);
-		m_Shader->SetFloat2("u_Resolution", Vec2(Buffer->GetSpecification().Width, Buffer->GetSpecification().Height));
+		m_Shader->SetFloat2("u_Resolution", Vec2(SrcBuffer->GetSpecification().Width, SrcBuffer->GetSpecification().Height));
 
-		RenderPipeline::RenderFramebufferIntoFramebuffer(*Buffer, *m_Buffer, *m_Shader, glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y));
-		RenderPipeline::RenderFramebufferIntoFramebuffer(*m_Buffer, *Buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y));
+		RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y));
 	}
 
 	void FilmGrain::Init()
 	{
 		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FilmGrain.glsl");
-		{
-			FramebufferSpecification spec;
-			spec.Width = RenderPipeline::GetInternalResolution().x;
-			spec.Height = RenderPipeline::GetInternalResolution().y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
-			m_Buffer = Framebuffer::Create(spec);
-		}
 	}
-	void FilmGrain::Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera)
+	void FilmGrain::Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera)
 	{
 		m_Shader->Bind();
 		m_Shader->SetFloat("u_Intensity", m_Intensity);
-		m_Shader->SetFloat("u_Seed", Engine::Get()->GetDeltaTime());
+		m_Shader->SetFloat("u_Seed", Engine::Get()->GetDeltaTime() * rand());
 		m_Shader->SetFloat("u_Jitter", m_Jitter);
-		m_Shader->SetFloat2("u_Resolution", Vec2(Buffer->GetSpecification().Width, Buffer->GetSpecification().Height));
+		m_Shader->SetFloat2("u_Resolution", Vec2(SrcBuffer->GetSpecification().Width, SrcBuffer->GetSpecification().Height));
 
-		RenderPipeline::RenderFramebufferIntoFramebuffer(*Buffer, *m_Buffer, *m_Shader, glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y));
-		RenderPipeline::RenderFramebufferIntoFramebuffer(*m_Buffer, *Buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y));
+		RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y));
 	}
 
 	void FXAA::Init()
 	{
 		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
-		{
-			FramebufferSpecification spec;
-			spec.Width = RenderPipeline::GetInternalResolution().x;
-			spec.Height = RenderPipeline::GetInternalResolution().y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
-			m_Buffer = Framebuffer::Create(spec);
-		}
 	}
-	void FXAA::Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera)
+	void FXAA::Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera)
 	{
 		m_Shader->Bind();
 
 		m_Shader->Bind();
-		m_Shader->SetFloat2("u_Resolution", RenderPipeline::GetInternalResolution());
+		m_Shader->SetFloat2("u_Resolution", Params.Resolution);
 		for (int i = 0; i < m_Samples; i++)
 		{
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*Buffer, *m_Buffer, *m_Shader, glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y));
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_Buffer, *Buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y));
+			RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y));
 		}
 
 	}
@@ -149,21 +130,51 @@ namespace Suora
 	void ToneMapping::Init()
 	{
 		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/ToneMapping.glsl");
-		{
-			FramebufferSpecification spec;
-			spec.Width = RenderPipeline::GetInternalResolution().x;
-			spec.Height = RenderPipeline::GetInternalResolution().y;
-			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGB32F);
-			m_Buffer = Framebuffer::Create(spec);
-		}
 	}
-	void ToneMapping::Process(const Ref<Framebuffer>& Buffer, Framebuffer& InGBuffer, CameraNode& Camera)
+	void ToneMapping::Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera)
 	{
 		m_Shader->Bind();
 		m_Shader->SetInt("u_TonemapFunction", m_TonemapFunction);
 
-		RenderPipeline::RenderFramebufferIntoFramebuffer(*Buffer, *m_Buffer, *m_Shader, glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y));
-		RenderPipeline::RenderFramebufferIntoFramebuffer(*m_Buffer, *Buffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, Buffer->GetSize().x, Buffer->GetSize().y));
+		RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y));
+	}
+
+
+	void Vignette::Init()
+	{
+		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/Vignette.glsl");
+	}
+	void Vignette::Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera)
+	{
+		m_Shader->Bind();
+		m_Shader->SetFloat("u_Intensity", m_Intensity);
+		m_Shader->SetFloat("u_Extend", m_Extend);
+		m_Shader->SetFloat("u_Alpha", m_Alpha);
+		m_Shader->SetFloat4("u_VignetteColor", m_VignetteColor);
+
+		RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y));
+	}
+
+	void SSAO::Init()
+	{
+		m_Shader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/SSAO.glsl");
+	}
+	void SSAO::Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera)
+	{
+		m_Shader->Bind();
+		m_Shader->SetInt("u_Samples", m_Samples);
+		m_Shader->SetFloat("u_Radius", m_Radius);
+		m_Shader->SetFloat("u_Intensity", m_Intensity);
+		m_Shader->SetFloat("u_Alpha", m_Alpha);
+		m_Shader->SetFloat("u_NearGaussBellFactor", m_NearGaussBellFactor);
+		m_Shader->SetFloat("u_Near", Camera.GetPerspectiveNearClip());
+		m_Shader->SetFloat("u_Far", Camera.GetPerspectiveFarClip());
+		m_Shader->SetFloat2("u_Resolution", DstBuffer->GetSize());
+		m_Shader->SetFloat4("u_AOColor", m_AOColor);
+		m_Shader->SetInt("u_Depth", 6);
+		Params.GetGBuffer()->BindDepthAttachmentToSlot(6);
+
+		RenderPipeline::RenderFramebufferIntoFramebuffer(*SrcBuffer, *DstBuffer, *m_Shader, glm::ivec4(0, 0, DstBuffer->GetSize().x, DstBuffer->GetSize().y));
 	}
 
 }

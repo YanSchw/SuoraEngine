@@ -5,7 +5,7 @@ project "Editor"
 	filter {}
 	
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "on"
 
 	targetdir ("%{wks.location}/Build/" .. outputdir .. "/%{prj.name}")
@@ -19,11 +19,13 @@ project "Editor"
 
 	includedirs
 	{
+		"%{ENGINE_PATH}/Code/Editor/Source",
 		"%{ENGINE_PATH}/Code/Dependencies/spdlog/include",
 		"%{ENGINE_PATH}/Code/Engine/Source",
 		"%{ENGINE_PATH}/Code/Dependencies",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.assimp}"
 	}
 
 	links

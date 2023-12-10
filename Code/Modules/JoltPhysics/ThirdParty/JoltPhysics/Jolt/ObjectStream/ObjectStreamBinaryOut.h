@@ -31,7 +31,7 @@ public:
 	virtual void				WritePrimitiveData(const float &inPrimitive) override;
 	virtual void				WritePrimitiveData(const double &inPrimitive) override;
 	virtual void				WritePrimitiveData(const bool &inPrimitive) override;
-	virtual void				WritePrimitiveData(const String &inPrimitive) override;
+	virtual void				WritePrimitiveData(const JoltString &inPrimitive) override;
 	virtual void				WritePrimitiveData(const Float3 &inPrimitive) override;
 	virtual void				WritePrimitiveData(const Double3 &inPrimitive) override;
 	virtual void				WritePrimitiveData(const Vec3 &inPrimitive) override;
@@ -42,10 +42,10 @@ public:
 	virtual void				WritePrimitiveData(const DMat44 &inPrimitive) override;
 
 private:
-	using StringTable = UnorderedMap<String, uint32>;
+	using JoltStringTable = UnorderedMap<JoltString, uint32>;
 
-	StringTable					mStringTable;
-	uint32						mNextStringID = 0x80000000;
+	JoltStringTable					mJoltStringTable;
+	uint32						mNextJoltStringID = 0x80000000;
 };
 
 JPH_NAMESPACE_END

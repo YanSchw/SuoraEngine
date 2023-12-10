@@ -27,6 +27,13 @@ namespace Suora
 		RecalculateProjection();
 	}
 
+	void CameraNode::TickTransform(bool inWorldSpace)
+	{
+		Super::TickTransform(inWorldSpace);
+
+		m_ViewProjection = GetProjectionMatrix() * glm::inverse(GetTransformMatrix());
+	}
+
 	void CameraNode::SetPerspective(float verticalFOV, float nearClip, float farClip)
 	{
 		m_ProjectionType = ProjectionType::Perspective;
@@ -51,20 +58,20 @@ namespace Suora
 
 
 	// https://stackoverflow.com/questions/29997209/opengl-c-mouse-ray-picking-glmunproject
-	glm::vec3 CameraNode::ScreenPosToWorldDirection(const glm::vec2& pos, float windowWidth, float windowHeight) const
+	Vec3 CameraNode::ScreenPosToWorldDirection(const Vec2& pos, float windowWidth, float windowHeight) const
 	{
 		// these positions must be in range [-1, 1] (!!!), not [0, width] and [0, height]
 		const float mouseX = pos.x / (windowWidth * 0.5f) - 1.0f;
 		const float mouseY = pos.y / (windowHeight * 0.5f) - 1.0f;
 
-		glm::mat4 proj = glm::perspectiveLH(glm::radians(m_PerspectiveFOV), m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar);
-		glm::mat4 view = glm::lookAt(glm::vec3(0.0f), GetForwardVector(), GetUpVector());
+		Mat4 proj = glm::perspectiveLH(glm::radians(m_PerspectiveFOV), m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar);
+		Mat4 view = glm::lookAt(Vec3(0.0f), GetForwardVector(), GetUpVector());
 
-		glm::mat4 invVP = glm::inverse(proj * view);
-		glm::vec4 screenPos = glm::vec4(mouseX, -mouseY, 1.0f, 1.0f);
-		glm::vec4 worldPos = invVP * screenPos;
+		Mat4 invVP = glm::inverse(proj * view);
+		Vec4 screenPos = Vec4(mouseX, -mouseY, 1.0f, 1.0f);
+		Vec4 worldPos = invVP * screenPos;
 
-		glm::vec3 dir = glm::normalize(glm::vec3(worldPos));
+		Vec3 dir = glm::normalize(Vec3(worldPos));
 
 		return dir * -1.0f;
 	}
@@ -78,7 +85,7 @@ namespace Suora
 		{
 			float a, b, c, d;
 
-			void set(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2) 
+			void set(Vec3 p0, Vec3 p1, Vec3 p2) 
 			{
 				using namespace glm;
 				vec3 v = p1 - p0;
@@ -89,7 +96,7 @@ namespace Suora
 				c = n.z;
 				d = dot(-n, p0);
 			}
-			void set(glm::vec3 p, glm::vec3 n) 
+			void set(Vec3 p, Vec3 n) 
 			{
 				using namespace glm;
 				a = n.x;
@@ -98,7 +105,7 @@ namespace Suora
 				//d = p.x * n.x + p.y * n.y + p.z * n.z;
 				d = dot(-n, p);
 			}
-			float distanceTo(glm::vec3 p) const 
+			float distanceTo(Vec3 p) const 
 			{
 				return a * p.x + b * p.y + c * p.z + d;
 			}
@@ -187,6 +194,8 @@ namespace Suora
 			m_Projection = glm::orthoLH(orthoLeft, orthoRight,
 				orthoBottom, orthoTop, m_OrthographicNear, m_OrthographicFar);
 		}
+
+		TickTransform(true);
 	}
 
 }

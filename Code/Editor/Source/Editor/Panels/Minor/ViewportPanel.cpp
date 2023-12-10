@@ -1,11 +1,12 @@
 #include "ViewportPanel.h"
-#include "../MajorTab.h"
-#include "../../Util/EditorCamera.h"
-#include "../../Util/EditorPreferences.h"
+#include "Editor/Panels/MajorTab.h"
+#include "Editor/Util/EditorCamera.h"
+#include "Editor/Util/EditorPreferences.h"
 #include "Suora/Renderer/RenderCommand.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "Suora/Renderer/Shader.h"
 #include "Suora/Renderer/Renderer3D.h"
+#include "Suora/Renderer/Framebuffer.h"
 #include "Suora/Core/Engine.h"
 #include "Suora/GameFramework/GameInstance.h"
 #include "Suora/Assets/ShaderGraph.h"
@@ -14,7 +15,7 @@
 #include "Suora/GameFramework/Nodes/Light/PointLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/InputModule.h"
-#include "../Major/NodeClassEditor.h"
+#include "Editor/Panels/Major/NodeClassEditor.h"
 
 namespace Suora
 {
@@ -32,9 +33,6 @@ namespace Suora
 		case DebugView::GBuffer_Cluster: return "Cluster";
 		case DebugView::DeferredLightPass: return "DeferredLightPass";
 		case DebugView::ForwardReadyBuffer: return "ForwardReadyBuffer";
-		case DebugView::Ilum_Surfels: return "Ilum Surfels";
-		case DebugView::Ilum_Probes: return "Ilum Probes";
-		case DebugView::Ilum_Debug: return "Ilum Overview";
 		default: return "DebugView::MissingName";
 		}
 	}
@@ -79,6 +77,13 @@ namespace Suora
 			m_SelectionOutlineFramebuffer = Framebuffer::Create(spec);
 			m_SelectionOutlineShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/SelectionOutline.glsl");
 		}
+		{
+			FramebufferSpecification spec;
+			spec.Width = 256;
+			spec.Height = 144;
+			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
+			m_CameraPreviewBuffer = Framebuffer::Create(spec);
+		}
 	}
 
 	ViewportPanel::~ViewportPanel()
@@ -88,8 +93,8 @@ namespace Suora
 
 	void ViewportPanel::DrawSelectionOutline(Node3D* node, const Color& color)
 	{
-		if (m_SelectionOutlineFramebuffer->GetSize() != RenderPipeline::GetInternalResolution())
-			m_SelectionOutlineFramebuffer->Resize(RenderPipeline::GetInternalResolution());
+		if (m_SelectionOutlineFramebuffer->GetSize() != m_RParams.Resolution)
+			m_SelectionOutlineFramebuffer->Resize(m_RParams.Resolution);
 		m_SelectionOutlineFramebuffer->Bind();
 		RenderCommand::SetViewport(0, 0, m_SelectionOutlineFramebuffer->GetSize().x, m_SelectionOutlineFramebuffer->GetSize().y);
 		RenderCommand::SetClearColor(Color(0.0f));
@@ -97,9 +102,9 @@ namespace Suora
 
 		if (MeshNode* meshNode = node->As<MeshNode>())
 		{
-			if (meshNode->mesh)
+			if (meshNode->GetMesh())
 			{
-				Renderer3D::DrawMesh(GetEditorCamera(), meshNode->GetTransformMatrix(), *meshNode->mesh, meshNode->GetMaterials(), MaterialType::FlatWhite);
+				Renderer3D::DrawMesh(GetEditorCamera(), meshNode->GetTransformMatrix(), *meshNode->GetMesh(), meshNode->GetMaterials(), MaterialType::FlatWhite);
 			}
 		}
 		RenderCommand::SetDepthTest(false);
@@ -129,11 +134,11 @@ namespace Suora
 		int i = 1;
 		for (MeshNode* meshNode : nodes)
 		{
-			if (meshNode->IsEnabled() && meshNode->mesh)
+			if (meshNode->IsEnabled() && meshNode->GetMesh())
 			{
 				IDs[i] = meshNode;
 				for (Material* submaterial : meshNode->GetMaterials().Materials) if (submaterial && submaterial->GetShaderGraph()) submaterial->GetShaderGraph()->GetIDShader()->SetInt("u_ID", i);
-				Renderer3D::DrawMesh(GetEditorCamera(), meshNode->GetTransformMatrix(), *meshNode->mesh, meshNode->GetMaterials(), MaterialType::ObjectID);
+				Renderer3D::DrawMesh(GetEditorCamera(), meshNode->GetTransformMatrix(), *meshNode->GetMesh(), meshNode->GetMaterials(), MaterialType::ObjectID);
 			}
 			i++;
 		}
@@ -157,8 +162,6 @@ namespace Suora
 			SuoraError("Cannot handle 'selection' in ViewportPanel::HandleMousePick()");
 		}
 
-		//RenderPipeline::RenderFramebufferIntoFramebuffer(*fb, *m_Framebuffer, *Application::Get().m_Engine->GetRenderPipeline()->GetFullscreenPassShader());
-
 		m_Framebuffer->Bind();
 	}
 
@@ -167,7 +170,6 @@ namespace Suora
 	{
 		if (IsInputMode(EditorInputEvent::ContentBrowser_AssetDrag) && ContentBrowser::s_DraggedAsset)
 		{
-			//if (ContentBrowser::s_DraggedAsset->GetClass() != Mesh::StaticClass()) return;
 			if (IsInputValid())
 			{
 				if (!AssetDragDropNode)
@@ -176,11 +178,11 @@ namespace Suora
 					{
 						AssetDragDropNode = m_World->Spawn<MeshNode>();
 						AssetDragDropNode->SetName(ContentBrowser::s_DraggedAsset->GetAssetName());
-						AssetDragDropNode->As<MeshNode>()->mesh = ContentBrowser::s_DraggedAsset->As<Mesh>();
-						AssetDragDropNode->As<MeshNode>()->materials = AssetManager::GetAsset<Material>(SuoraID("75423845379822"));
+						AssetDragDropNode->As<MeshNode>()->SetMesh(ContentBrowser::s_DraggedAsset->As<Mesh>());
+						AssetDragDropNode->As<MeshNode>()->m_Materials = AssetManager::GetAsset<Material>(SuoraID("d83842b6-ee90-4329-a4cc-7c01977107b6"));
 						AssetDragDropNode->m_IsActorLayer = true;
-						AssetDragDropNode->m_OverwrittenProperties.Add("mesh");
-						AssetDragDropNode->m_OverwrittenProperties.Add("material");
+						AssetDragDropNode->m_OverwrittenProperties.Add("m_Mesh");
+						AssetDragDropNode->m_OverwrittenProperties.Add("m_Materials");
 					}
 					else if (ContentBrowser::s_DraggedAsset->IsA<Blueprint>())
 					{
@@ -188,10 +190,10 @@ namespace Suora
 					}
 				}
 				// Update Position each Frame
-				RenderPipeline::GetGBuffer()->Bind();
+				m_RParams.GetGBuffer()->Bind();
 				
-				const Vec2 ScreenPos = Vec2(EditorUI::GetInput().x / GetWidth() * (RenderPipeline::GetInternalResolution().x), EditorUI::GetInput().y / GetHeight() * (RenderPipeline::GetInternalResolution().y));
-				const Vec3 Position = RenderPipeline::GetGBuffer()->ReadPixel_RGB32F(ScreenPos, (int)GBuffer::WorldPosition);
+				const Vec2 ScreenPos = Vec2(EditorUI::GetInput().x / GetWidth() * (m_RParams.Resolution.x), EditorUI::GetInput().y / GetHeight() * (m_RParams.Resolution.y));
+				const Vec3 Position = m_RParams.GetGBuffer()->ReadPixel_RGB32F(ScreenPos, (int)GBuffer::WorldPosition);
 				if (AssetDragDropNode && AssetDragDropNode->IsA<Node3D>()) AssetDragDropNode->As<Node3D>()->SetPosition(Position);
 
 				if (NativeInput::GetMouseButtonUp(Mouse::ButtonLeft) && AssetDragDropNode)
@@ -224,8 +226,15 @@ namespace Suora
 
 	void ViewportPanel::Render(float deltaTime)
 	{
-		if (!m_EditorCamera) m_EditorCamera = Ref<EditorCamera>(new EditorCamera(GetMajorTab()->GetEditorWindow(), GetMajorTab()));
-		//Renderer3D::BeginUI();
+		if (!m_EditorCamera)
+		{
+			m_EditorCamera = Ref<EditorCamera>(new EditorCamera(GetMajorTab()->GetEditorWindow(), GetMajorTab()));
+		}
+		
+		// Update the UI Viewport
+		UINode::s_UIViewportWidth  = GetWidth();
+		UINode::s_UIViewportHeight = GetHeight();
+
 
 		if (m_GizmoBuffer->GetSize() != m_Framebuffer->GetSize() * 2) m_GizmoBuffer->Resize(m_Framebuffer->GetSize() * 2);
 		if (m_GizmoBufferSmooth->GetSize() != m_Framebuffer->GetSize() * 2) m_GizmoBufferSmooth->Resize(m_Framebuffer->GetSize() * 2);
@@ -271,7 +280,7 @@ namespace Suora
 			allowEditorCameraUpdate = false;
 			if (GetMajorTab()->IsA<NodeClassEditor>() && GetMajorTab()->As<NodeClassEditor>()->m_CurrentPlayState == PlayState::Playing)
 			{
-				GetMajorTab()->GetEditorWindow()->GetWindow()->SetCursorLocked(Engine::Get()->GetGameInstance()->GetInputModule()->m_LockInputCursor);
+				GetMajorTab()->GetEditorWindow()->GetWindow()->SetCursorLocked(PlayerInputNode::m_LockInputCursor);
 			}
 		}
 
@@ -285,21 +294,19 @@ namespace Suora
 
 			if (CameraNode* camera = node->As<CameraNode>())
 			{
-				FramebufferSpecification Params;
-				Params.Width = 256;
-				Params.Height = 144;
-				Params.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
-				Params.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
-				Ref<Framebuffer> TempView = Framebuffer::Create(Params);
-				RenderingParams RParams;
-				RParams.DrawWireframe = m_DrawWireframe;
-				Engine::Get()->GetRenderPipeline()->Render(*TempView, *m_World, *camera, RParams);
+				m_CameraPreviewRParams.Resolution = iVec2(GetWidth()/10, GetHeight()/10);
+				m_CameraPreviewRParams.DrawWireframe = m_DrawWireframe;
+				m_CameraPreviewBuffer->Resize(m_CameraPreviewRParams.Resolution);
+				Engine::Get()->GetRenderPipeline()->Render(*m_CameraPreviewBuffer, *m_World, *camera, m_CameraPreviewRParams);
 
 				m_Framebuffer->Bind();
-				EditorUI::DrawRect(GetWidth() - 20.0f - (float)Params.Width - 2.0f, 20.0f - 2.0f, (float)Params.Width + 4.0f, (float)Params.Height + 4.0f, 4.0f, Math::Lerp<Color>(EditorPreferences::Get()->UiHighlightColor, Color(0, 0, 0, 1), 0.25f));
-				RenderPipeline::RenderFramebufferIntoFramebuffer(*TempView, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(GetWidth() - 20.0f - Params.Width, 20.0f, Params.Width, Params.Height), "u_Texture", 0, false);
+				const float PreviewWidth = m_CameraPreviewRParams.Resolution.x;
+				const float PreviewHeight = m_CameraPreviewRParams.Resolution.y;
+				EditorUI::DrawRect(GetWidth() - 20.0f - (float)PreviewWidth - 2.0f, 20.0f - 2.0f, (float)PreviewWidth + 4.0f, (float)PreviewHeight + 4.0f, 4.0f, Math::Lerp<Color>(EditorPreferences::Get()->UiHighlightColor, Color(0, 0, 0, 1), 0.25f));
+				RenderPipeline::RenderFramebufferIntoFramebuffer(*m_CameraPreviewBuffer, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(GetWidth() - 20.0f - PreviewWidth, 20.0f, PreviewWidth, PreviewHeight), "u_Texture", 0, false);
 			}
 		}
+		OnRenderOutlines();
 
 		// Only allow mouse Input if the Users does not interact with any Overlays
 		bool mousePickReady = EditorUI::IsNotHoveringOverlays() && !EditorUI::WasInputConsumed();
@@ -314,7 +321,7 @@ namespace Suora
 		{
 			m_SelectionOutlineFramebuffer->Bind();
 			RenderCommand::Clear();
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_SelectionOutlineFramebuffer, *m_Framebuffer, *m_SelectionOutlineShader, glm::ivec4(0, 0, RenderPipeline::GetInternalResolution().x, RenderPipeline::GetInternalResolution().y), "u_Texture", 0, false);
+			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_SelectionOutlineFramebuffer, *m_Framebuffer, *m_SelectionOutlineShader, glm::ivec4(0, 0, m_RParams.Resolution.x, m_RParams.Resolution.y), "u_Texture", 0, false);
 			m_Framebuffer->Bind();
 			EditorUI::ButtonParams Params;
 			Params.ButtonColor = EditorPreferences::Get()->UiColor;
@@ -337,10 +344,7 @@ namespace Suora
 													  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::GBuffer_Cluster; }, "Cluster", nullptr)
 												  }, []() { }, "GBuffer", nullptr),
 											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::DeferredLightPass; }, "DeferredLightPass", nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::ForwardReadyBuffer; }, "ForwardReadyBuffer", nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::Ilum_Surfels; }, "Ilum Surfels", nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::Ilum_Probes; }, "Ilum Probes", nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::Ilum_Debug; }, "Ilum Overview", nullptr) }, 10.0f, GetHeight() - 35.0f);
+											  EditorUI::ContextMenuElement({}, [&]() { m_DebugView = DebugView::ForwardReadyBuffer; }, "ForwardReadyBuffer", nullptr) }, 10.0f, GetHeight() - 35.0f);
 			}
 			if (HoverOverTools) EditorUI::SetCursor(Cursor::Hand);
 			if (EditorUI::Button("View", 140.0f, GetHeight() - 35.0f, 100.0f, 25.0f, Params))

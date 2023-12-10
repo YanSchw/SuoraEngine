@@ -9,6 +9,12 @@
 #include "Material.h"
 #include "Mesh.generated.h"
 
+struct aiScene;
+namespace Assimp
+{
+	class Importer;
+}
+
 namespace Suora
 {
 	class Material;
@@ -37,8 +43,8 @@ namespace Suora
 	public:
 		Mesh();
 		~Mesh();
-		void PreInitializeAsset(const std::string& str) override;
-		void InitializeAsset(const std::string& str) override;
+		void PreInitializeAsset(Yaml::Node& root) override;
+		void InitializeAsset(Yaml::Node& root) override;
 		virtual void ReloadAsset() override;
 		virtual uint32_t GetAssetFileSize() override;
 		VertexArray* GetVertexArray();
@@ -47,13 +53,13 @@ namespace Suora
 		static void Decimate_Edge(MeshBuffer& buffer, uint32_t N);
 		static void Decimate_ClusterEdge(MeshBuffer& buffer);
 		static void Decimate_Cluster(const MeshBuffer& meshBuffer, const Ref<Cluster>& cluster);
-		Ref<MeshBuffer> Async_LoadMeshBuffer(const std::string& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i);
+		Ref<MeshBuffer> Async_LoadMeshBuffer(const String& path, const std::vector<Vertex>& v, const std::vector<uint32_t>& i);
 		void Serialize(Yaml::Node& root) override;
 		void PostProcessCluster(MeshBuffer& buffer, Ref<Cluster> cluster, int32_t& id);
 		void GroupClusters(MeshBuffer& buffer, std::vector<Ref<Cluster>> clusters);
 		void Clusterfication(MeshBuffer& buffer);
 
-
+		Vec3 m_ImportScale = Vec3(1.0f);
 		MaterialSlots m_Materials;
 
 		Array<Ref<Mesh>> m_Submeshes;
@@ -78,14 +84,17 @@ namespace Suora
 		static Mesh* Cube;
 		static Mesh* Sphere;
 
-		static Array<std::string> GetSupportedSourceAssetExtensions();
+		static Array<String> GetSupportedSourceAssetExtensions();
 
 	private:
 		bool m_IsMasterMesh = false;
 		Mesh* m_ParentMesh = nullptr;
 		int m_SubmeshIndex = -1;
+		Ref<Assimp::Importer> m_SubmeshImporter;
+		const aiScene* m_SubmeshScene = nullptr;
 
 
+		friend class DetailsPanel;
 		friend class Decima;
 	};
 }

@@ -1,6 +1,10 @@
 #pragma once
-#include <Suora.h>
 #include <filesystem>
+#include "EditorWindow.h"
+#include "Suora/Core/Base.h"
+#include "Suora/Common/StringUtils.h"
+#include "Suora/Renderer/Shader.h"
+#include "Suora/Renderer/Texture.h"
 
 namespace Suora
 {
@@ -14,8 +18,8 @@ namespace Suora
 		struct TemplateProject
 		{
 			std::filesystem::path m_TemplateProjectPath;
-			std::string m_Name;
-			std::string m_Description = "No Description available!";
+			String m_Name;
+			String m_Description = "No Description available!";
 			Ref<Texture> m_Icon;
 			Ref<Texture> m_Preview;
 
@@ -24,7 +28,7 @@ namespace Suora
 
 		struct CachedProjectInfo
 		{
-			std::string m_Version;
+			String m_Version;
 		};
 
 		Launcher(EditorWindow* editor);
@@ -32,25 +36,25 @@ namespace Suora
 		void Render(float deltaTime);
 		Window* GetWindow();
 
-		void OpenProject(const std::string& path, bool isNativeProject);
-		void CreateProject(const std::string& projectName, std::filesystem::path projectPath, Ref<TemplateProject> templateProject);
+		void OpenProject(const String& path, bool isNativeProject);
+		void CreateProject(const String& projectName, std::filesystem::path projectPath, Ref<TemplateProject> templateProject);
 
 	private:
 		void RenderProjects();
 		void RenderCreateNewProjects();
 
-		void AnalyzeProjectOnDisk(const std::string& projectPath);
+		void AnalyzeProjectOnDisk(const String& projectPath);
 
 	public:
 		uint32_t m_SelectedTab = 0;
 
-		std::unordered_map<std::string, CachedProjectInfo> m_CachedProjects;
+		std::unordered_map<String, CachedProjectInfo> m_CachedProjects;
 
 		Array<Ref<TemplateProject>> m_TemplateProjects;
 		Ref<TemplateProject> m_SelectedProject;
 
 		bool m_SelectedContentOnlyTab = false;
-		std::string m_ProjectName = "MyProject";
+		String m_ProjectName = "MyProject";
 		std::filesystem::path m_ProjectPath = std::filesystem::current_path();
 
 		friend class EditorWindow;

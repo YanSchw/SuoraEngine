@@ -15,7 +15,7 @@ namespace Suora
 			Ref<VisualNode> master = CreateRef<VisualNode>();
 			master->m_Title = "Master";
 			master->m_NodeID = 1;
-			master->m_Color = glm::vec4(0.8f, 0.64f, 0.57f, 1.0f);
+			master->m_Color = Vec4(0.8f, 0.64f, 0.57f, 1.0f);
 			master->m_Size = { 300, 500 };
 			AddSupportedNode(master);
 		}
@@ -23,21 +23,21 @@ namespace Suora
 			Ref<VisualNode> uniform = CreateRef<VisualNode>();
 			uniform->m_Title = "Uniform";
 			uniform->m_NodeID = 2;
-			uniform->m_Color = glm::vec4(0.8f, 0.64f, 0.57f, 1.0f);
+			uniform->m_Color = Vec4(0.8f, 0.64f, 0.57f, 1.0f);
 			uniform->m_Size = { 225, 235 };
-			uniform->AddInputPin("Name", glm::vec4(1.0f), 0, false);
+			uniform->AddInputPin("Name", Vec4(1.0f), 0, false);
 			uniform->m_InputPins[0].m_AdditionalData = "UniformName";
-			uniform->AddInputPin("Type", glm::vec4(1.0f), 0, false);
+			uniform->AddInputPin("Type", Vec4(1.0f), 0, false);
 			uniform->m_InputPins[1].m_AdditionalData = "1";
-			uniform->AddInputPin("Default", glm::vec4(1.0f), 0, false);
-			uniform->AddOutputPin("Uniform", glm::vec4(1.0f), 0, false);
+			uniform->AddInputPin("Default", Vec4(1.0f), 0, false);
+			uniform->AddOutputPin("Uniform", Vec4(1.0f), 0, false);
 			AddSupportedNode(uniform);
 		}
 		{
 			Ref<VisualNode> vec3 = CreateRef<VisualNode>();
 			vec3->m_Title = "Vector 3";
 			vec3->m_NodeID = 100;
-			vec3->m_Color = glm::vec4(0.4f, 0.49f, 0.38f, 1.0f);
+			vec3->m_Color = Vec4(0.4f, 0.49f, 0.38f, 1.0f);
 			vec3->m_Size = { 215, 105 };
 			vec3->AddInputPin("X", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
 			vec3->AddInputPin("Y", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -49,7 +49,7 @@ namespace Suora
 			Ref<VisualNode> vec4 = CreateRef<VisualNode>();
 			vec4->m_Title = "Vector 4";
 			vec4->m_NodeID = 101;
-			vec4->m_Color = glm::vec4(0.52f, 0.47f, 0.36f, 1.0f);
+			vec4->m_Color = Vec4(0.52f, 0.47f, 0.36f, 1.0f);
 			vec4->m_Size = { 215, 135 };
 			vec4->AddInputPin("X", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
 			vec4->AddInputPin("Y", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -62,7 +62,7 @@ namespace Suora
 			Ref<VisualNode> sampleText2D = CreateRef<VisualNode>();
 			sampleText2D->m_Title = "Sample Texture2D";
 			sampleText2D->m_NodeID = 102;
-			sampleText2D->m_Color = glm::vec4(0.6f, 0.44f, 0.38f, 1.0f);
+			sampleText2D->m_Color = Vec4(0.6f, 0.44f, 0.38f, 1.0f);
 			sampleText2D->m_Size = { 215, 185 };
 			sampleText2D->AddInputPin("Texture2D", GetShaderDataTypeColor(ShaderGraphDataType::Texture2D), (int64_t)ShaderGraphDataType::Texture2D, true);
 			sampleText2D->AddInputPin("UV", GetShaderDataTypeColor(ShaderGraphDataType::Vec2), (int64_t)ShaderGraphDataType::Vec2, true);
@@ -78,7 +78,7 @@ namespace Suora
 			Ref<VisualNode> uv = CreateRef<VisualNode>();
 			uv->m_Title = "UV";
 			uv->m_NodeID = 103;
-			uv->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			uv->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			uv->m_Size = { 215, 135 };
 			uv->AddOutputPin("Vec2", GetShaderDataTypeColor(ShaderGraphDataType::Vec2), (int64_t)ShaderGraphDataType::Vec2, false);
 			AddSupportedNode(uv);
@@ -87,7 +87,7 @@ namespace Suora
 			Ref<VisualNode> splitVec2 = CreateRef<VisualNode>();
 			splitVec2->m_Title = "Split Vec2";
 			splitVec2->m_NodeID = 104;
-			splitVec2->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			splitVec2->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			splitVec2->m_Size = { 215, 135 };
 			splitVec2->AddInputPin("Vec2", GetShaderDataTypeColor(ShaderGraphDataType::Vec2), (int64_t)ShaderGraphDataType::Vec2, true);
 			splitVec2->AddOutputPin("X", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, false);
@@ -98,7 +98,7 @@ namespace Suora
 			Ref<VisualNode> sampleNormal = CreateRef<VisualNode>();
 			sampleNormal->m_Title = "Sample Normal";
 			sampleNormal->m_NodeID = 105;
-			sampleNormal->m_Color = glm::vec4(0.6f, 0.44f, 0.38f, 1.0f);
+			sampleNormal->m_Color = Vec4(0.6f, 0.44f, 0.38f, 1.0f);
 			sampleNormal->m_Size = { 215, 185 };
 			sampleNormal->AddInputPin("RGB", GetShaderDataTypeColor(ShaderGraphDataType::Vec3), (int64_t)ShaderGraphDataType::Vec3, true);
 			sampleNormal->AddInputPin("Scale", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -110,7 +110,7 @@ namespace Suora
 			Ref<VisualNode> FragDepth = CreateRef<VisualNode>();
 			FragDepth->m_Title = "FragDepth";
 			FragDepth->m_NodeID = 106;
-			FragDepth->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			FragDepth->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			FragDepth->m_Size = { 215, 135 };
 			FragDepth->AddOutputPin("Float", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, false);
 			AddSupportedNode(FragDepth);
@@ -119,7 +119,7 @@ namespace Suora
 			Ref<VisualNode> remap = CreateRef<VisualNode>();
 			remap->m_Title = "Remap Float";
 			remap->m_NodeID = 107;
-			remap->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			remap->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			remap->m_Size = { 415, 155 };
 			remap->AddInputPin("Value", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
 			remap->AddInputPin("From A", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -133,7 +133,7 @@ namespace Suora
 			Ref<VisualNode> mul = CreateRef<VisualNode>();
 			mul->m_Title = "Float * Float";
 			mul->m_NodeID = 1001;
-			mul->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			mul->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			mul->m_Size = { 215, 135 };
 			mul->AddInputPin("A", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
 			mul->AddInputPin("B", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -144,7 +144,7 @@ namespace Suora
 			Ref<VisualNode> mul = CreateRef<VisualNode>();
 			mul->m_Title = "Vec3 * Float";
 			mul->m_NodeID = 1002;
-			mul->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			mul->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			mul->m_Size = { 215, 135 };
 			mul->AddInputPin("A", GetShaderDataTypeColor(ShaderGraphDataType::Vec3), (int64_t)ShaderGraphDataType::Vec3, true);
 			mul->AddInputPin("B", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -155,7 +155,7 @@ namespace Suora
 			Ref<VisualNode> mul = CreateRef<VisualNode>();
 			mul->m_Title = "Vec3 * Vec3";
 			mul->m_NodeID = 1003;
-			mul->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			mul->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			mul->m_Size = { 215, 135 };
 			mul->AddInputPin("A", GetShaderDataTypeColor(ShaderGraphDataType::Vec3), (int64_t)ShaderGraphDataType::Vec3, true);
 			mul->AddInputPin("B", GetShaderDataTypeColor(ShaderGraphDataType::Vec3), (int64_t)ShaderGraphDataType::Vec3, true);
@@ -166,7 +166,7 @@ namespace Suora
 			Ref<VisualNode> mul = CreateRef<VisualNode>();
 			mul->m_Title = "Vec2 * Float";
 			mul->m_NodeID = 1004;
-			mul->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			mul->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			mul->m_Size = { 215, 135 };
 			mul->AddInputPin("A", GetShaderDataTypeColor(ShaderGraphDataType::Vec2), (int64_t)ShaderGraphDataType::Vec2, true);
 			mul->AddInputPin("B", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -177,7 +177,7 @@ namespace Suora
 			Ref<VisualNode> cast = CreateRef<VisualNode>();
 			cast->m_Title = "Cast Vec3 to Vec4";
 			cast->m_NodeID = 2001;
-			cast->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			cast->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			cast->m_Size = { 215, 135 };
 			cast->AddInputPin("Vec3", GetShaderDataTypeColor(ShaderGraphDataType::Vec3), (int64_t)ShaderGraphDataType::Vec3, true);
 			cast->AddInputPin("W", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -189,7 +189,7 @@ namespace Suora
 			Ref<VisualNode> min = CreateRef<VisualNode>();
 			min->m_Title = "Min Float";
 			min->m_NodeID = 10001;
-			min->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			min->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			min->m_Size = { 215, 135 };
 			min->AddInputPin("A", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
 			min->AddInputPin("B", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -200,7 +200,7 @@ namespace Suora
 			Ref<VisualNode> max = CreateRef<VisualNode>();
 			max->m_Title = "Max Float";
 			max->m_NodeID = 10002;
-			max->m_Color = glm::vec4(0.52f, 0.87f, 0.36f, 1.0f);
+			max->m_Color = Vec4(0.52f, 0.87f, 0.36f, 1.0f);
 			max->m_Size = { 215, 135 };
 			max->AddInputPin("A", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
 			max->AddInputPin("B", GetShaderDataTypeColor(ShaderGraphDataType::Float), (int64_t)ShaderGraphDataType::Float, true);
@@ -257,7 +257,7 @@ namespace Suora
 
 	}
 
-	ShaderGraphDataType ShaderNodeGraph::StringToShaderGraphDataType(std::string str)
+	ShaderGraphDataType ShaderNodeGraph::StringToShaderGraphDataType(String str)
 	{
 		for (int i = str.size() - 1; i >= 0; i--)
 		{
@@ -269,7 +269,7 @@ namespace Suora
 		if (str == "vec4") return ShaderGraphDataType::Vec4;
 		return ShaderGraphDataType::None;
 	}
-	std::string ShaderNodeGraph::ShaderGraphDataTypeToLabel(ShaderGraphDataType type)
+	String ShaderNodeGraph::ShaderGraphDataTypeToLabel(ShaderGraphDataType type)
 	{
 		switch (type)
 		{
@@ -283,7 +283,7 @@ namespace Suora
 			return "None";
 		}
 	}
-	std::string ShaderNodeGraph::ShaderGraphDataTypeToString(ShaderGraphDataType type)
+	String ShaderNodeGraph::ShaderGraphDataTypeToString(ShaderGraphDataType type)
 	{
 		switch (type)
 		{
@@ -297,25 +297,25 @@ namespace Suora
 			return "None";
 		}
 	}
-	glm::vec4 ShaderNodeGraph::GetShaderDataTypeColor(ShaderGraphDataType type)
+	Vec4 ShaderNodeGraph::GetShaderDataTypeColor(ShaderGraphDataType type)
 	{
 		switch (type)
 		{
-		case ShaderGraphDataType::Float: return glm::vec4(0.4f, 0.49f, 0.38f, 1.0f);
-		case ShaderGraphDataType::Vec2: return glm::vec4(0.4f, 0.2f, 0.28f, 1.0f);
-		case ShaderGraphDataType::Vec3: return glm::vec4(0.62f, 0.59f, 0.28f, 1.0f);
-		case ShaderGraphDataType::Vec4: return glm::vec4(0.52f, 0.59f, 0.48f, 1.0f);
-		case ShaderGraphDataType::Texture2D: return glm::vec4(0.9f, 0.49f, 0.38f, 1.0f);
+		case ShaderGraphDataType::Float: return Vec4(0.4f, 0.49f, 0.38f, 1.0f);
+		case ShaderGraphDataType::Vec2: return Vec4(0.4f, 0.2f, 0.28f, 1.0f);
+		case ShaderGraphDataType::Vec3: return Vec4(0.62f, 0.59f, 0.28f, 1.0f);
+		case ShaderGraphDataType::Vec4: return Vec4(0.52f, 0.59f, 0.48f, 1.0f);
+		case ShaderGraphDataType::Texture2D: return Vec4(0.9f, 0.49f, 0.38f, 1.0f);
 		case ShaderGraphDataType::None:
 		default:
-			return glm::vec4(1.0f);
+			return Vec4(1.0f);
 		}
-		return glm::vec4(1.0f);
+		return Vec4(1.0f);
 	}
 
 	/*********************************************************************/
 
-	std::string ShaderGraphCompiler::CompileShaderNode(VisualNode& node, VisualNodePin& pin, bool vertex, bool& error)
+	String ShaderGraphCompiler::CompileShaderNode(VisualNode& node, VisualNodePin& pin, bool vertex, bool& error)
 	{
 		int outPinIndex = node.m_OutputPins.IndexOf(pin);
 
@@ -416,9 +416,9 @@ namespace Suora
 		return "";
 	}
 
-	std::string ShaderGraphCompiler::CompilePin(VisualNodePin& pin, bool vertex, bool& error)
+	String ShaderGraphCompiler::CompilePin(VisualNodePin& pin, bool vertex, bool& error)
 	{
-		return (pin.Target ? CompileShaderNode(*(pin.Target->GetNode()), *(pin.Target), vertex, error) : (std::to_string(Util::StringToFloat(pin.m_AdditionalData))/*pin.m_AdditionalData != "" ? pin.m_AdditionalData : "0.0"*/));
+		return (pin.Target ? CompileShaderNode(*(pin.Target->GetNode()), *(pin.Target), vertex, error) : (std::to_string(StringUtil::StringToFloat(pin.m_AdditionalData))/*pin.m_AdditionalData != "" ? pin.m_AdditionalData : "0.0"*/));
 	}
 
 }

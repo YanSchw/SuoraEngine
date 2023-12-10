@@ -1,6 +1,6 @@
 #pragma once
-#include "../MinorTab.h"
-#include <Suora.h>
+#include "Suora/Assets/AssetManager.h"
+#include "Editor/Panels/MinorTab.h"
 
 namespace Suora
 {
@@ -8,8 +8,8 @@ namespace Suora
 	{
 		struct Folder
 		{
-			std::string m_FolderName;
-			std::string m_TargetPath;
+			String m_FolderName;
+			String m_TargetPath;
 		};
 		enum class PathMode : uint32_t
 		{
@@ -34,15 +34,15 @@ namespace Suora
 		inline static Ptr<Asset> s_LastSelectedAsset = nullptr;
 		inline static Ptr<Asset> s_BrowseToAsset = nullptr;
 
-		std::string GetRootPath();
-		std::string GetCurrentDirectory() const;
+		String GetRootPath();
+		String GetCurrentDirectory() const;
 
 	private:
 		Ref<Texture> m_Checkerboard = Texture::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Textures/Checkerboard.png");
 		Ref<Texture> m_FolderIcon = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Icons/FolderNew.png");
 		Ref<Texture> m_ShadowTexture = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Textures/AssetEntryShadow.png");
 		Ref<Texture> m_ArrowRight = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Icons/ArrowRight.png");
-		std::string m_CurrentPath = AssetManager::GetEngineAssetPath();
+		String m_CurrentPath = AssetManager::GetEngineAssetPath();
 		PathMode m_CurrentMode = PathMode::ProjectPath;
 		float m_ScrollY = 0.0f;
 

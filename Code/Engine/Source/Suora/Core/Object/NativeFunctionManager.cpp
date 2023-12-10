@@ -18,9 +18,9 @@ namespace Suora
 		s_NativeFunctions[hash](stack);
 	}
 
-	NativeFunction::NativeFunction(const std::string& label, const NativeFunctionPtr& func, uint64_t id, const std::vector<FunctionParam>& params, const std::string& returnType, FunctionFlags flags)
+	NativeFunction::NativeFunction(const String& label, const NativeFunctionPtr& func, uint64_t id, const std::vector<FunctionParam>& params, const String& returnType, FunctionFlags flags)
 	{
-		m_Hash = std::hash<std::string>{}(label);
+		m_Hash = std::hash<String>{}(label);
 		m_Label = label;
 		m_ClassID = id;
 		m_Flags = flags;
