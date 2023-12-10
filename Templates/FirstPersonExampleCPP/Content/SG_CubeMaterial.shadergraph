@@ -1,0 +1,166 @@
+Material: 
+  ShaderGraph: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+  m_BackfaceCulling: true
+NodeGraph: 
+  Node_0: 
+    Color: 
+      a: 1.000000
+      b: 0.570000
+      g: 0.640000
+      r: 0.800000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: World Position Offset
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: Base Color
+      PinHeight: 25.000000
+      PinID: 3
+      Target: 1/Output/0
+      m_AdditionalData: 
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Opacity
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+    Input_3: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Metallic
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+    Input_4: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Roughness
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: 
+    Input_5: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: Emissive Color
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+    Input_6: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: Normal
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+    NodeID: 1
+    Position: 
+      x: 0.000000
+      y: "-0.940947"
+    Size: 
+      x: 300.000000
+      y: 260.000000
+    Title: Master
+  Node_1: 
+    Color: 
+      a: 1.000000
+      b: 0.380000
+      g: 0.490000
+      r: 0.400000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: X
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: .2
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Y
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: .2
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 0.380000
+        g: 0.490000
+        r: 0.400000
+      IsReceivingPin: true
+      Label: Z
+      PinHeight: 25.000000
+      PinID: 1
+      Target: NULL
+      m_AdditionalData: .65
+    NodeID: 100
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: false
+      Label: Vec3
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+    Position: 
+      x: "-430.736816"
+      y: 77.744591
+    Size: 
+      x: 215.000000
+      y: 140.000000
+    Title: Vector 3
+UUID: "97f2e4fb-fd35-44fd-b17f-f665cc5dbf0a"
+m_BaseShader: DeferredLit.glsl
