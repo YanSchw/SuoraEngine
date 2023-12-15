@@ -993,7 +993,13 @@ namespace Suora
 
 			void OnDispose() override
 			{
-				if (ParentMenu) ParentMenu->Dispose();
+				if (ParentMenu)
+				{
+					if (ParentMenu->WasMousePressedOutsideOfOverlay())
+					{
+						ParentMenu->Dispose();
+					}
+				}
 			}
 
 			void Render(float deltaTime) override
@@ -1024,7 +1030,7 @@ namespace Suora
 					t -= 25.0f;
 					bool outHover = false;
 					ContextParams.OutHover = &outHover;
-					if (EditorUI::Button("", x, t, width, 24.0f, ContextParams) && !ChildMenu && InputReady)
+					if (EditorUI::Button("", x, t, width, 24.0f, ContextParams) && InputReady)
 					{
 						if (it.SubElements.size() == 0)
 						{
