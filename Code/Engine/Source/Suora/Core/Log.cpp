@@ -109,6 +109,7 @@ namespace Suora
 		case LogCategory::AssetManagement: return "[AssetManagement]";
 		case LogCategory::Rendering: return "[Rendering]";
 		case LogCategory::Gameplay: return "[Gameplay]";
+		case LogCategory::Scripting: return "[Scripting]";
 		case LogCategory::Editor: return "[Editor]";
 		case LogCategory::None:
 		case LogCategory::COUNT:

@@ -22,6 +22,7 @@ namespace Suora
 		AssetManagement,
 		Rendering,
 		Gameplay,
+		Scripting,
 		Editor,
 		COUNT
 	};
