@@ -75,7 +75,7 @@ namespace Suora
 		template<class T>
 		T* Spawn()
 		{
-			return Spawn(T::StaticClass())->As<T>();
+			return dynamic_cast<T*>(Spawn(T::StaticClass()));
 		}
 
 		bool Raycast(const Vec3& start, const Vec3& end, HitResult& result, const RaycastParams& params = RaycastParams());

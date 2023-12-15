@@ -71,7 +71,7 @@ namespace Suora
 		template<class T>
 		static T* GetAsset(const SuoraID& id)
 		{
-			return GetAsset(T::StaticClass(), id)->As<T>();
+			return dynamic_cast<T*>(GetAsset(T::StaticClass(), id));
 		}
 		template<class T>
 		static T* GetAssetByName(const String& name)

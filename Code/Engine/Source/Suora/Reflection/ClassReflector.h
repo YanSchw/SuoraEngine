@@ -47,9 +47,9 @@ namespace Suora
 		template<class T>
 		static ClassMember::Type GetPrimitiveTypeEnumByTemplate();
 		template<class T>
-		static Ref<ClassMember> CreatePrimitive(class Object* obj, T* ptr, const String& name)
+		static Ref<ClassMember> CreatePrimitive(size_t offset, const String& name)
 		{
-			return Ref<ClassMember>(new ClassMember(name, ClassMember::OffsetOf(obj, ptr), ClassMember::GetPrimitiveTypeEnumByTemplate<T>()));
+			return Ref<ClassMember>(new ClassMember(name, offset, ClassMember::GetPrimitiveTypeEnumByTemplate<T>()));
 		}
 	};
 
