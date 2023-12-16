@@ -55,6 +55,7 @@ namespace Suora
 		static const Icon Select;
 		static const Icon Translate;
 		static const Icon TextBubble;
+		static const Icon Tickmark;
 		static const Icon Undo;
 		static const Icon NotVisisble;
 		static const Icon Visisble;

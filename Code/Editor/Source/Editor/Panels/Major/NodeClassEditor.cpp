@@ -270,18 +270,29 @@ namespace Suora
 		Super::DrawToolbar(x, y, height);
 		EditorUI::ButtonParams Params;
 		Params.TextOrientation = Vec2(0.8f, 0.0f);
+		x += 15;
 
-		if (EditorUI::Button("Compile", x + 15, y + height * 0.1f, height * 0.8f + 70.0f, height * 0.8f, Params))
+		Params.TooltipText = "Compile this Blueprints VisualScript Code";
+		if (EditorUI::Button("", x, y + height * 0.1f, height * 0.8f, height * 0.8f, Params))
 		{
 			SerializeActor();
 			SerializeAllNodeGraphs();
 			
 			BlueprintCompiler::Compile(*m_BlueprintClass);
 		}
-		EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("3e254a4e-cc83-4254-a462-73739fce6d61"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
-		x += 15 + height * 0.8f + 70.0f;
+		EditorUI::DrawTexturedRect(Icon::Cogwheel, x, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
+		EditorUI::DrawTexturedRect(Icon::Tickmark, x + height * 0.4f, y + height * 0.1f, height * 0.4f, height * 0.4f, 4, EditorPreferences::Get()->UiHighlightColor);
+		x += height * 0.8f;
 
-		if (EditorUI::Button(m_CurrentPlayState == PlayState::Editor ? "Play" : "Stop", x + 15, y + height * 0.1f, height * 0.8f + 50.0f, height * 0.8f, Params) || (m_CurrentPlayState != PlayState::Editor && NativeInput::GetKeyDown(Key::Escape) && !NativeInput::GetKey(Key::F1)) || NativeInput::GetKeyDown(Key::F5))
+		x += 15;
+		EditorUI::ButtonParams BackgroundParams;
+		BackgroundParams.ButtonColorHover = BackgroundParams.ButtonColor;
+		BackgroundParams.HoverCursor = Cursor::Default;
+		EditorUI::Button("", x, y + height * 0.1f, height * 2.7f, height * 0.8f, BackgroundParams);
+
+		x += height * 0.15f;
+		Params.TooltipText = m_CurrentPlayState == PlayState::Editor ? "Play in Editor" : "Stop PIE";
+		if (EditorUI::Button("", x, y + height * 0.15f, height * 0.7f, height * 0.7f, Params) || (m_CurrentPlayState != PlayState::Editor && NativeInput::GetKeyDown(Key::Escape) && !NativeInput::GetKey(Key::F1)) || NativeInput::GetKeyDown(Key::F5))
 		{
 			if (m_CurrentPlayState == PlayState::Editor)
 			{
@@ -294,52 +305,67 @@ namespace Suora
 			m_SelectedObject = nullptr;
 			m_DetailsPanel->m_Data = nullptr;
 		}
-		EditorUI::DrawTexturedRect(m_CurrentPlayState == PlayState::Editor ? AssetManager::GetAsset<Texture2D>(SuoraID("c503c57f-100f-4e0d-8f27-38259b174ba8"))->GetTexture() : AssetManager::GetAsset<Texture2D>(SuoraID("bf120f8b-0aca-4e28-993e-ba1e9ce4e693"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
-		x += 15 + height * 0.8f + 50.0f;
+		EditorUI::DrawTexturedRect(m_CurrentPlayState == PlayState::Editor ? Icon::Play : Icon::Stop, x, y + height * 0.15f, height * 0.7f, height * 0.7f, 4, Color(1));
+		x += height * 0.7f;
 
+		x += height * 0.15f;
 		if (m_CurrentPlayState == PlayState::Editor)
 		{
-			if (EditorUI::Button("Simulate", x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, Params) || NativeInput::GetKeyDown(Key::F6))
+			Params.TooltipText = "Simulate PIE";
+			if (EditorUI::Button("", x, y + height * 0.15f, height * 0.7f, height * 0.7f, Params) || NativeInput::GetKeyDown(Key::F6))
 			{
 				PlayInEditor();
 				m_CurrentPlayState = PlayState::Simulating;
 				m_SelectedObject = nullptr;
 				m_DetailsPanel->m_Data = nullptr;
 			}
-			EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("24294e57-bae7-4ff7-a0f2-73f9741069da"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
+			EditorUI::DrawTexturedRect(Icon::World, x, y + height * 0.15f, height * 0.7f, height * 0.7f, 4, Color(1));
 		}
 		else
 		{
 			if (m_CurrentPlayState == PlayState::Playing)
 			{
-				if (EditorUI::Button("Eject", x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, Params) || NativeInput::GetKeyDown(Key::F6))
+				Params.TooltipText = "Eject";
+				if (EditorUI::Button("", x, y + height * 0.15f, height * 0.7f, height * 0.7f, Params) || NativeInput::GetKeyDown(Key::F6))
 				{
 					m_CurrentPlayState = PlayState::Simulating;
 				}
-				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("24294e57-bae7-4ff7-a0f2-73f9741069da"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
+				EditorUI::DrawTexturedRect(Icon::ArrowUp, x, y + height * 0.15f, height * 0.7f, height * 0.7f, 4, Color(1));
 			}
 			else if (m_CurrentPlayState == PlayState::Simulating)
 			{
-				if (EditorUI::Button("Inject", x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, Params) || NativeInput::GetKeyDown(Key::F6))
+				Params.TooltipText = "Inject";
+				if (EditorUI::Button("", x, y + height * 0.15f, height * 0.7f, height * 0.7f, Params) || NativeInput::GetKeyDown(Key::F6))
 				{
 					m_CurrentPlayState = PlayState::Playing;
 				}
-				EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("24294e57-bae7-4ff7-a0f2-73f9741069da"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, Color(1));
+				EditorUI::DrawTexturedRect(Icon::ArrowDown, x, y + height * 0.15f, height * 0.7f, height * 0.7f, 4, Color(1));
 			}
 		}
-		x += 15 + height * 0.8f + 90.0f;
+		x += height * 0.7f;
 
+		x += height * 0.15f;
+		Params.TooltipText = "Continue";
+		if (EditorUI::Button("", x, y + height * 0.15f, height * 0.7f, height * 0.7f, Params) || NativeInput::GetKeyDown(Key::F7))
+		{
+			/* Placeholder */
+		}
+		EditorUI::DrawTexturedRect(Icon::Continue, x, y + height * 0.15f, height * 0.7f, height * 0.7f, 4, Color(0.5f));
+		x += height * 0.7f;
+
+		x += 20.0f;
 		if (m_SelectedObject == m_BlueprintClass)
 		{
 			Params = EditorUI::ButtonParams::Outlined();
 			Params.TextOrientation = Vec2(0.8f, 0.0f);
 		}
-		if (EditorUI::Button("Blueprint", x + 15, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, Params))
+		Params.TooltipText = "Edit this Blueprint Class";
+		if (EditorUI::Button("Blueprint", x, y + height * 0.1f, height * 0.8f + 90.0f, height * 0.8f, Params))
 		{
 			m_SelectedObject = m_BlueprintClass;
 		}
-		EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("3e254a4e-cc83-4254-a462-73739fce6d61"))->GetTexture(), x + 15, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, (m_SelectedObject == m_BlueprintClass) ? EditorPreferences::Get()->UiHighlightColor : Color(1));
-		x += 15 + height * 0.8f + 90.0f;
+		EditorUI::DrawTexturedRect(Icon::Cogwheel, x, y + height * 0.1f, height * 0.8f, height * 0.8f, 4, (m_SelectedObject == m_BlueprintClass) ? EditorPreferences::Get()->UiHighlightColor : Color(1));
+		x += height * 0.8f + 90.0f;
 	}
 
 	Ref<NodeGraphEditor> NodeClassEditor::CreateNodeClassGraphEditorInstance(Blueprint* blueprint, int i)

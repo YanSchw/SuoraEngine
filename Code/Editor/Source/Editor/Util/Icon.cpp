@@ -43,6 +43,7 @@ namespace Suora
 	const Icon Icon::Select                    = Icon(SuoraID("38654b71-4b30-43ce-b2bf-c5a516257e93"));
 	const Icon Icon::Translate                 = Icon(SuoraID("544a3477-4ec1-4a9c-acdc-1201321b26d3"));
 	const Icon Icon::TextBubble                = Icon(SuoraID("b17ddd50-8a50-4143-ac3d-028d3366495b"));
+	const Icon Icon::Tickmark                  = Icon(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b"));
 	const Icon Icon::Undo                      = Icon(SuoraID("f11389f9-2062-497a-a24c-c27c3c7b93f9"));
 	const Icon Icon::NotVisisble               = Icon(SuoraID("8dd405ad-59d9-4a13-8a2b-b610310bf600"));
 	const Icon Icon::Visisble                  = Icon(SuoraID("b63772a8-57cf-47ef-8c6f-1e3f6dbd61e6"));
