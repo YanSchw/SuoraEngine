@@ -7,6 +7,7 @@ namespace Suora
 {
 	class World;
 	class CameraNode;
+	struct RenderingParams;
 
 	class LightNode : public Node3D
 	{
@@ -18,10 +19,7 @@ namespace Suora
 		void WorldUpdate(float deltaTime) override;
 		void OnDestroyed();
 
-		virtual void ShadowMap(World& world, CameraNode& camera)
-		{
-		}
-
+		virtual void ShadowMap(World& world, CameraNode& camera, RenderingParams& params);
 
 		MEMBER()
 		float m_Intensity = 1.0f;

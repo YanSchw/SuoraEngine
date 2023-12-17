@@ -18,6 +18,7 @@ namespace Suora
 	class Node;
 	class Level;
 	class GameInstance;
+	class RenderableNode3D;
 	
 	struct HitResult
 	{
@@ -57,6 +58,11 @@ namespace Suora
 		Ptr<CameraNode> m_MainCamera;
 		Level* m_SourceLevel = nullptr;
 		Ref<Physics::PhysicsWorld> m_PhysicsWorld;
+
+		/* Rendering */
+		Array<RenderableNode3D*> m_DeferredRenderables;
+		Array<RenderableNode3D*> m_ForwardRenderables;
+		Array<RenderableNode3D*> m_ShadowRenderables;
 
 	public:
 		World();
@@ -130,5 +136,8 @@ namespace Suora
 		friend class NodeClassEditor;
 		friend class CameraNode;
 		friend class RenderPipeline;
+		friend class RenderableNode3D;
+		friend class DirectionalLightNode;
+		friend class PointLightNode;
 	};
 }

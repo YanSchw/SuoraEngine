@@ -42,7 +42,7 @@ namespace Suora
 		void WorldUpdate(float deltaTime) override;
 		void OnDestroyed();
 
-		void ShadowMap(World& world, CameraNode& camera) override;
+		void ShadowMap(World& world, CameraNode& camera, RenderingParams& params) override;
 
 	private:
 		Array<ShadowCascade> m_Cascades;

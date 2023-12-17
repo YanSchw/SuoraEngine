@@ -38,8 +38,8 @@ namespace Suora
 		void Begin() override;
 		void WorldUpdate(float deltaTime) override;
 		void OnDestroyed();
-		void Capture(World& world, CameraNode& camera, CameraNode& view, const glm::ivec2& rect);
-		void ShadowMap(World& world, CameraNode& camera) override;
+		void Capture(World& world, CameraNode& camera, RenderingParams& params, CameraNode& view, const glm::ivec2& rect);
+		void ShadowMap(World& world, CameraNode& camera, RenderingParams& params) override;
 
 	private:
 		inline static bool s_InitShadowAtlas = false;

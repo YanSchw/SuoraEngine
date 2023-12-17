@@ -31,7 +31,7 @@ namespace Suora
 		}
 	}
 
-	void PointLightNode::Capture(World& world, CameraNode& camera, CameraNode& view, const glm::ivec2& rect)
+	void PointLightNode::Capture(World& world, CameraNode& camera, RenderingParams& params, CameraNode& view, const glm::ivec2& rect)
 	{
 		s_ShadowAtlas->Bind();
 		//RenderCommand::SetViewport(rect.x, rect.y, rect.z, rect.w);
@@ -40,20 +40,17 @@ namespace Suora
 		RenderCommand::SetDepthTest(true);
 		RenderCommand::SetAlphaBlending(false);
 
-		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
-		for (MeshNode* meshNode : meshes)
+		int32_t ID = 1;
+		for (RenderableNode3D* renderable : world.m_ShadowRenderables)
 		{
-			if (meshNode->GetMesh())
+			if (renderable->IsEnabled())
 			{
-				if (meshNode->m_CastShadow)
-				{
-					Renderer3D::DrawMeshNode(&view, meshNode, MaterialType::Depth, 0);
-				}
+				renderable->RenderShadowSingleInstance(world, view, params, this, ID++);
 			}
 		}
 	}
 
-	void PointLightNode::ShadowMap(World& world, CameraNode& camera)
+	void PointLightNode::ShadowMap(World& world, CameraNode& camera, RenderingParams& params)
 	{
 		if (!s_ShadowAtlasContent.Contains(this))
 		{
@@ -107,32 +104,32 @@ namespace Suora
 		View.SetEulerRotation(Vec3(-90, 0, 0));
 		View.RecalculateProjection();
 		m_ViewMatrix.ViewTop = View.GetProjectionMatrix() * glm::inverse(View.GetTransformMatrix());
-		Capture(world, camera, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 2));
+		Capture(world, camera, params, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 2));
 	//BOTTOM:
 		View.SetEulerRotation(Vec3(90, 0, 0));
 		View.RecalculateProjection();
 		m_ViewMatrix.ViewBottom = View.GetProjectionMatrix() * glm::inverse(View.GetTransformMatrix());
-		Capture(world, camera, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 3));
+		Capture(world, camera, params, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 3));
 	//LEFT:
 		View.SetEulerRotation(Vec3(0, -90, 0));
 		View.RecalculateProjection();
 		m_ViewMatrix.ViewLeft = View.GetProjectionMatrix() * glm::inverse(View.GetTransformMatrix());
-		Capture(world, camera, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 1));
+		Capture(world, camera, params, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 1));
 	//RIGHT:
 		View.SetEulerRotation(Vec3(0, 90, 0));
 		View.RecalculateProjection();
 		m_ViewMatrix.ViewRight = View.GetProjectionMatrix() * glm::inverse(View.GetTransformMatrix());
-		Capture(world, camera, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 0));
+		Capture(world, camera, params, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 0));
 	//FORWARD:
 		View.SetEulerRotation(Vec3(0, 0, 0));
 		View.RecalculateProjection();
 		m_ViewMatrix.ViewForward = View.GetProjectionMatrix() * glm::inverse(View.GetTransformMatrix());
-		Capture(world, camera, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 4));
+		Capture(world, camera, params, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 4));
 	//BACKWARD:
 		View.SetEulerRotation(Vec3(0, 180, 0));
 		View.RecalculateProjection();
 		m_ViewMatrix.ViewBackward = View.GetProjectionMatrix() * glm::inverse(View.GetTransformMatrix());
-		Capture(world, camera, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 5));
+		Capture(world, camera, params, View, glm::ivec2(POINT_LIGHT_SHADOW_RESOLUTION * INDEX, POINT_LIGHT_SHADOW_RESOLUTION * 5));
 	}
 
 }

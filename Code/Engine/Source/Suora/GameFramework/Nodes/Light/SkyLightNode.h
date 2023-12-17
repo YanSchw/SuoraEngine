@@ -6,7 +6,6 @@
 
 namespace Suora
 {
-	class LightComponent;
 	class Texture2D;
 	class Material;
 

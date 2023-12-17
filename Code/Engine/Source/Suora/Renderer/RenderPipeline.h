@@ -104,7 +104,7 @@ namespace Suora
 		static void ClearDepth(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
 	protected:
-		void ShadowPass(World& world, CameraNode& camera);
+		void ShadowPass(World& world, CameraNode& camera, RenderingParams& params);
 
 		void DeferredPass(World& world, CameraNode& camera, RenderingParams& params);
 		void RenderGBuffer(World& world, CameraNode& camera, RenderingParams& params);
