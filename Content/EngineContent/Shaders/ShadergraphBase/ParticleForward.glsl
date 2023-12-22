@@ -9,16 +9,15 @@ out vec4 frag_Color;
 
 struct Particle
 {
-	vec4 Position;
-	vec4 Velocity;
-	float LifeTime;
+	vec4 Position; // 16
+	vec4 Scale; // 16
+	vec4 Velocity;  // 16
+	float LifeTime; // 4
+
+	// Padding 
 	uint padding_1;
 	uint padding_2;
 	uint padding_3;
-	uint padding_4;
-	uint padding_5;
-	uint padding_6;
-	uint padding_7;
 };
 
 layout(std430, binding = 0) readonly buffer ssbo
@@ -35,8 +34,7 @@ $VERT_INPUTS
 void main(void)
 {
     vec3 worldPositionOffset = $VERT_INPUT("World Position Offset", vec3, { vec3(0.0) });
-	worldPositionOffset += Particles[gl_InstanceID].Position.xyz;
-	gl_Position = u_ViewProjection * u_Transform * vec4(a_Position + worldPositionOffset, 1.0);
+	gl_Position = u_ViewProjection * u_Transform * vec4(a_Position * Particles[gl_InstanceID].Scale.xyz + Particles[gl_InstanceID].Position.xyz + worldPositionOffset, 1.0);
 	
 	frag_Color = a_Color;
 	UV = a_TexCoord;

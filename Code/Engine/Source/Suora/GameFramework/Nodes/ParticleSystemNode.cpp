@@ -30,6 +30,7 @@ namespace Suora
 			m_SSBO = ShaderStorageBuffer::Create();
 		}
 
+		SuoraVerify(sizeof(Particle) == 64);
 		m_SSBO->Write((sizeof(Particle)) * m_Particles.Size(), &m_Particles[0]);
 		m_SSBO->Bind();
 
@@ -86,14 +87,16 @@ namespace Suora
 
 		// Spawn a Particle every Frame...
 		m_Particles.Add(Particle());
-		m_Particles[m_Particles.Last()].Velocity = Vec4(-0.5f + (float)Random().NextDouble(), -0.5f + (float)Random().NextDouble(), -0.5f + (float)Random().NextDouble(), 0.0f);
-
+		m_Particles[m_Particles.Last()].Velocity = 5.0f * Vec4(-0.5f + (float)Random().NextDouble(), -0.5f + (float)Random().NextDouble(), -0.5f + (float)Random().NextDouble(), 0.0f);
+		
 		Array<uint32_t> KillIndicies;
 
 		uint32_t idx = 0;
 		for (Particle& It : m_Particles)
 		{
 			It.Position += It.Velocity * deltaTime;
+			It.Scale *= 0.9999f;
+			It.Velocity += Vec4(0.0f, -9.81f, 0.0f, 0.0f) * deltaTime;
 			It.LifeTime += deltaTime;
 
 			if (It.LifeTime >= m_LifeTime)

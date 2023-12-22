@@ -17,9 +17,10 @@ namespace Suora
 	constexpr size_t PARTICLE_STRUCT_SIZE = 64;
 	struct alignas(PARTICLE_STRUCT_SIZE) Particle
 	{
-		alignas(16) Vec4 Position = Vec4();
-		alignas(16) Vec4 Velocity = Vec4();
-		alignas(4) float LifeTime = 0.0f;
+		Vec4 Position = Vec4();
+		Vec4 Scale = Vec4(1, 1, 1, 0);
+		Vec4 Velocity = Vec4();
+		float LifeTime = 0.0f;
 	};
 
 	class ParticleSystemNode : public RenderableNode3D
