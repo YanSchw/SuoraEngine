@@ -28,6 +28,7 @@ Create custom Gameplay Logic using Visual Scripting. Easy interoperability with 
 | **GameFramework**                     | Flexible Node-based GameFramework                         |
 | **Custom EditorUI**                   | ... using the RenderingAPI as a Backend                   |
 | **Deferred Rendering**                | Deferred + Forward Rendering using scriptable Shaders     |
+| **Particle Systems**                  | ... using Instanced Rendering                             |
 
 ## Getting Started [Windows]
 - Install Visual Studio 2022 and also install **Desktop Development with C++** using the Visual Studio Installer
