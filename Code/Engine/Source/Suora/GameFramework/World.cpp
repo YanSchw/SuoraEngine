@@ -191,6 +191,7 @@ namespace Suora
 		// Kill all Nodes in m_PendingKills
 		for (Node* node : m_PendingKills)
 		{
+			node->UnInitializeNode(*this);
 			delete node;
 		}
 		m_PendingKills.Clear();

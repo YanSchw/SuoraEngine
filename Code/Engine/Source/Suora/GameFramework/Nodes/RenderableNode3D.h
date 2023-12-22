@@ -15,6 +15,7 @@ namespace Suora
 	public:
 		virtual ~RenderableNode3D();
 		virtual void InitializeNode(World& world) override;
+		virtual void UnInitializeNode(World& world) override;
 
 		virtual bool IsDeferredRenderable() const { return false; }
 		virtual bool IsForwardRenderable()  const { return false; }
@@ -24,6 +25,8 @@ namespace Suora
 		virtual void RenderForwardSingleInstance(World& world, CameraNode& camera, RenderingParams& params, int32_t ID);
 		virtual void RenderShadowSingleInstance(World& world, CameraNode& lightCamera, RenderingParams& params, LightNode* light, int32_t ID);
 	private:
+		void CleanUp();
+
 		bool m_WasInitliazed = false;
 	};
 

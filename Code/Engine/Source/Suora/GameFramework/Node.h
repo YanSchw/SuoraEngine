@@ -156,6 +156,7 @@ namespace Suora
 
 	protected:
 		virtual void InitializeNode(World& world);
+		virtual void UnInitializeNode(World& world);
 	public:
 		bool IsInitialized() const;
 		bool IsEnabled() const;

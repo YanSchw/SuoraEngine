@@ -416,6 +416,10 @@ namespace Suora
 		}
 	}
 
+	void Node::UnInitializeNode(World& world)
+	{
+	}
+
 	bool Node::IsInitialized() const
 	{
 		return m_Initialized;
