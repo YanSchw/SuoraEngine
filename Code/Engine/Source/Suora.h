@@ -47,6 +47,7 @@ namespace glm { }
 #include "Suora/GameFramework/Nodes/OrganizationNodes.h"
 #include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/Nodes/CharacterNode.h"
+#include "Suora/GameFramework/Nodes/ParticleSystemNode.h"
 #include "Suora/NodeScript/NodeScriptLibrary.h"
 
 #include "Suora/Reflection/Class.h"
