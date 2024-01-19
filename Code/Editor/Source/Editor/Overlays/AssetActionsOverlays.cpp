@@ -5,7 +5,7 @@
 #include "Suora/Assets/Mesh.h"
 #include "Suora/Assets/Level.h"
 #include "Suora/Assets/ShaderGraph.h"
-#include "Platform/Platform.h"
+#include "Suora/Platform/Platform.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 

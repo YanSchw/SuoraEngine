@@ -1,5 +1,5 @@
 #include "Precompiled.h"
-#include "Platform/Windows/WindowsWindow.h"
+#include "Suora/Platform/Windows/WindowsWindow.h"
 
 #include "Suora/Core/NativeInput.h"
 #include "Suora/Assets/SuoraProject.h"
@@ -11,7 +11,7 @@
 #include "Suora/Renderer/RendererAPI.h"
 #include "Suora/Renderer/Texture.h"
 
-#include "Platform/OpenGL/OpenGLContext.h"
+#include "Suora/Platform/OpenGL/OpenGLContext.h"
 
 #include "Windows.h"
 #include <stb_image.h>

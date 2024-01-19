@@ -2,7 +2,7 @@
 #include "Window.h"
 
 #ifdef SUORA_PLATFORM_WINDOWS
-	#include "Platform/Windows/WindowsWindow.h"
+	#include "Suora/Platform/Windows/WindowsWindow.h"
 #endif
 
 namespace Suora

@@ -6,7 +6,7 @@
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/Assets/Level.h"
 #include "Suora/GameFramework/Node.h"
-#include "Platform/Platform.h"
+#include "Suora/Platform/Platform.h"
 #include "Suora/GameFramework/InputModule.h"
 
 namespace Suora

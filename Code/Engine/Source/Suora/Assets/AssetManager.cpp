@@ -6,7 +6,7 @@
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/Assets/SuoraProject.h"
 #include "Suora/Core/Engine.h"
-#include "Platform/Platform.h"
+#include "Suora/Platform/Platform.h"
 
 #include "Mesh.h"
 #include "Material.h"

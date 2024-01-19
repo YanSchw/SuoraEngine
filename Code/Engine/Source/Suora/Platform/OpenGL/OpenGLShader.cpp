@@ -1,5 +1,5 @@
 #include "Precompiled.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "Suora/Platform/OpenGL/OpenGLShader.h"
 
 #include <fstream>
 #include <glad/glad.h>

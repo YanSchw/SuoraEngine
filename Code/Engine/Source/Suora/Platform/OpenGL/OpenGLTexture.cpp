@@ -1,5 +1,5 @@
 #include "Precompiled.h"
-#include "Platform/OpenGL/OpenGLTexture.h"
+#include "Suora/Platform/OpenGL/OpenGLTexture.h"
 
 #include <stb_image.h>
 

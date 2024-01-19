@@ -3,7 +3,7 @@
 #include "Suora/Assets/AssetManager.h"
 
 #include "Suora/Renderer/RendererAPI.h"
-#include "Platform/OpenGL/OpenGLTexture.h"
+#include "Suora/Platform/OpenGL/OpenGLTexture.h"
 
 #include <stb_image.h>
 

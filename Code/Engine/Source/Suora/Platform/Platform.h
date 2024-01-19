@@ -6,9 +6,11 @@
 
 namespace Suora
 {
-
+	/** Platform Utility Struct */
 	struct Platform
 	{
+		/** Get Time in Seconds. Should only be used to calculate time deltas, since the absolute Time may differ
+		*   depending on the Platform.                                                                            */
 		static float GetTime();
 
 		static void WriteToFile(const String& filePath, const String& content);
@@ -28,6 +30,8 @@ namespace Suora
 		static void CopyDirectory(const std::filesystem::path& src, const std::filesystem::path& dest);
 		static void RemoveFile(const std::filesystem::path& filePath);
 
+		/** Open the given file in the OS default application for the file format.
+		*   e.g. A .txt file on Windows may be opened in Notepad.                  */
 		static void OpenFileExternally(const String& filePath);
 	};
 

@@ -8,7 +8,7 @@
 #include "Suora/Core/Log.h"
 #include "Suora/Core/Assert.h"
 
-#include "Platform/Platform.h"
+#include "Suora/Platform/Platform.h"
 
 #include "Suora/Core/NativeInput.h"
 #include "Suora/Core/KeyCodes.h"

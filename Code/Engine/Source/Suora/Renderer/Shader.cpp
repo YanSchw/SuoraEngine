@@ -2,7 +2,7 @@
 #include "Suora/Renderer/Shader.h"
 
 #include "Suora/Renderer/RendererAPI.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "Suora/Platform/OpenGL/OpenGLShader.h"
 
 namespace Suora 
 {

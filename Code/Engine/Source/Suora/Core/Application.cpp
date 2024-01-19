@@ -8,7 +8,7 @@
 #include "Suora/Renderer/GraphicsContext.h"
 
 #include "Suora/Core/NativeInput.h"
-#include "Platform/Platform.h"
+#include "Suora/Platform/Platform.h"
 
 namespace Suora 
 {

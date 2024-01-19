@@ -1,6 +1,6 @@
 #include "Precompiled.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
-#include "Platform/OpenGL/OpenGLRendererAPI.h"
+#include "Suora/Platform/OpenGL/OpenGLVertexArray.h"
+#include "Suora/Platform/OpenGL/OpenGLRendererAPI.h"
 
 #include <glad/glad.h>
 #include <mutex>

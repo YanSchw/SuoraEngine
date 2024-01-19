@@ -2,7 +2,7 @@
 #include "Suora/Renderer/GraphicsContext.h"
 
 #include "Suora/Renderer/RendererAPI.h"
-#include "Platform/OpenGL/OpenGLContext.h"
+#include "Suora/Platform/OpenGL/OpenGLContext.h"
 
 namespace Suora 
 {
