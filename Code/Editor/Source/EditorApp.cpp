@@ -31,7 +31,7 @@ namespace Suora
 
 			AssetManager::LoadAsset(AssetManager::GetEngineAssetPath() + "/EditorPreferences.editor");
 
-			Font::Instance = AssetManager::GetAssetByName<Font>("SimplyMono.font");
+			Font::Instance = AssetManager::GetAssetByName<Font>("Jetbrains Mono NL Medium.font");
 
 			Modules_Init();
 			
