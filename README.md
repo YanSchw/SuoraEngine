@@ -22,13 +22,17 @@ Create custom Gameplay Logic using Visual Scripting. Easy interoperability with 
 
 **Other Features Suora offers:**
 
-| Feature                               | Description                                               |
-| -------                               | -----------                                               |
-| **Physics**                           | 3D Physics using JoltPhysics                              |
-| **GameFramework**                     | Flexible Node-based GameFramework                         |
-| **Custom EditorUI**                   | ... using the RenderingAPI as a Backend                   |
-| **Deferred Rendering**                | Deferred + Forward Rendering using scriptable Shaders     |
-| **Particle Systems**                  | ... using Instanced Rendering                             |
+| Feature                               | Description                                                                                                          |
+| -------                               | -----------                                                                                                          |
+| **Custom SuoraBuildTool**             | To extend the Engine using Modules as Plugins and to allow Reflection and Introspection                              |
+| **Custom Visual Scripting Tools**     | Node-based Visual Scripting to enable easy implementation of custom logic                                            |
+| **Physics**                           | 3D Physics using JoltPhysics                                                                                         |
+| **GameFramework**                     | Flexible Node-based GameFramework                                                                                    |
+| **Custom EditorUI**                   | using the RenderingAPI as a Backend (**Immediate**)                                                                  |
+| **InGameUI**                          | using the GameFramework and UINodes (**Retained**)                                                                   |
+| **Full Visual Editor**                | Feature complete Level- and Asset-Editor to enable authoring game content                                            |
+| **Deferred Rendering**                | Deferred + Forward Rendering using scriptable Shaders                                                                |
+| **Particle Systems**                  | using Instanced Rendering                                                                                            |
 
 ## Getting Started [Windows]
 - Install Visual Studio 2022 and also install **Desktop Development with C++** using the Visual Studio Installer
