@@ -109,31 +109,49 @@ namespace Suora
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
+
 		const float dragIntWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 150.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 150.0f;
-		int32_t before = *i;
+		
 		EditorUI::DragInt32(i, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, dragIntWidth, 25.0f);
 
 		if (valueChanged && DrawResetButton(y, 35.0f))
 		{
+			m_DrawInt32Values.Remove(i);
 			return Result::ValueReset;
 		}
 
-		return (before == *i) ? Result::None : Result::ValueChange;
+		Result outResult = Result::None;
+		if (m_DrawInt32Values.ContainsKey(i) && m_DrawInt32Values[i] != *i)
+		{
+			outResult = Result::ValueChange;
+		}
+		m_DrawInt32Values[i] = *i;
+
+		return outResult;
 	}
 	DetailsPanel::Result DetailsPanel::DrawFloat(float* f, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
+
 		const float dragFloatWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 150.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 150.0f;
-		float before = *f;
+		
 		EditorUI::DragFloat(f, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, dragFloatWidth, 25.0f);
 
 		if (valueChanged && DrawResetButton(y, 35.0f))
 		{
+			m_DrawFloatValues.Remove(f);
 			return Result::ValueReset;
 		}
 
-		return (before == *f) ? Result::None : Result::ValueChange;
+		Result outResult = Result::None;
+		if (m_DrawFloatValues.ContainsKey(f) && m_DrawFloatValues[f] != *f)
+		{
+			outResult = Result::ValueChange;
+		}
+		m_DrawFloatValues[f] = *f;
+
+		return outResult;
 	}
 	DetailsPanel::Result DetailsPanel::DrawBool(bool* b, const String& label, float& y, bool valueChanged)
 	{
@@ -169,18 +187,18 @@ namespace Suora
 
 		return (temp != *v) ? Result::ValueChange : Result::None;
 	}
-	static std::unordered_map<Vec4*, int> _Vec4_ColorPickerResults;
+	
 	DetailsPanel::Result DetailsPanel::DrawVec4(Vec4* v, const String& label, float& y, bool valueChanged)
 	{
 		y -= 34.0f;
 		DrawLabel(label, y, 35.0f);
 		const float dragFloatWidth = (GetDetailWidth() - GetDetailWidth() * m_Seperator) <= 150.0f ? (GetDetailWidth() - GetDetailWidth() * m_Seperator) : 150.0f;
-		EditorUI::ColorPicker(v, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, dragFloatWidth, 25.0f, {}, [v]() { _Vec4_ColorPickerResults[v] = 1; }, [v]() { _Vec4_ColorPickerResults[v] = 2; });
+		EditorUI::ColorPicker(v, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, dragFloatWidth, 25.0f, {}, [v, this]() { m_Vec4_ColorPickerResults[v] = 1; }, [v, this]() { m_Vec4_ColorPickerResults[v] = 2; });
 
-		if (_Vec4_ColorPickerResults.find(v) != _Vec4_ColorPickerResults.end())
+		if (m_Vec4_ColorPickerResults.ContainsKey(v))
 		{
-			int result = _Vec4_ColorPickerResults[v];
-			_Vec4_ColorPickerResults.erase(v);
+			int32_t result = m_Vec4_ColorPickerResults[v];
+			m_Vec4_ColorPickerResults.Remove(v);
 
 			if (result == 1) return Result::ValueChange;
 			else if (result == 2) return Result::ValueReset;

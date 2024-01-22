@@ -2,7 +2,7 @@
 #include "Editor/Panels/MinorTab.h"
 #include "Suora/Assets/Material.h"
 #include "Suora/GameFramework/InputModule.h"
-#include <unordered_map>
+#include "Suora/Common/Map.h"
 
 namespace Suora
 {
@@ -20,6 +20,10 @@ namespace Suora
 			ValueReset
 		};
 		using Super = MinorTab;
+	private:
+		Map<int32_t*, int32_t> m_DrawInt32Values;
+		Map<float*, float> m_DrawFloatValues;
+		Map<Vec4*, int32_t> m_Vec4_ColorPickerResults;
 	public:
 		Ptr<Object> m_Data = nullptr;
 		float m_Seperator = 0.35f;
