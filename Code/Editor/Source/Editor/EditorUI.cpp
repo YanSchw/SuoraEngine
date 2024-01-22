@@ -374,7 +374,7 @@ namespace Suora
 				element.Lambda = It.second;
 				context.push_back(element);
 			}
-			CreateContextMenu(context);
+			CreateContextMenu(context, x, y);
 		}
 
 		return false;
