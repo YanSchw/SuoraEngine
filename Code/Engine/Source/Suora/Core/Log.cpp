@@ -71,35 +71,62 @@ namespace Suora
 
 	static std::unordered_map<uint32_t, Ref<spdlog::logger>> s_Loggers;
 
-	void Log::Init()
+	static Array<String> s_CustomCategories;
+
+	void CreateSingleLogger(uint32_t categoryIdx)
 	{
 		std::vector<spdlog::sink_ptr> logSinks;
 		logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
 		logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("Suora.log", true));
+		logSinks.emplace_back(std::make_shared<VirtualConsoleSink>(true, 10, (LogCategory)categoryIdx));
 
 		logSinks[0]->set_pattern("%^[%T] %n: %v%$");
 		logSinks[1]->set_pattern("[%T] [%l] %n: %v");
+		logSinks[2]->set_pattern("%^[%T] %n: %v%$");
 
+		s_Loggers[categoryIdx] = std::make_shared<spdlog::logger>(Log::CategoryToString((LogCategory)categoryIdx), begin(logSinks), end(logSinks));
+		spdlog::register_logger(s_Loggers[categoryIdx]);
+		s_Loggers[categoryIdx]->set_level(spdlog::level::trace);
+		s_Loggers[categoryIdx]->flush_on(spdlog::level::trace);
+	}
+
+	void Log::Init()
+	{
 		for (uint32_t i = 0; i < (uint32_t)LogCategory::COUNT; i++)
 		{
-			std::vector<spdlog::sink_ptr> logSinks_IncludingVirtualConsole = logSinks;
-			logSinks_IncludingVirtualConsole.emplace_back(std::make_shared<VirtualConsoleSink>(true, 10, (LogCategory)i));
-			logSinks_IncludingVirtualConsole[2]->set_pattern("%^[%T] %n: %v%$");
-
-			s_Loggers[i] = std::make_shared<spdlog::logger>(CategoryToString((LogCategory)i), begin(logSinks_IncludingVirtualConsole), end(logSinks_IncludingVirtualConsole));
-			spdlog::register_logger(s_Loggers[i]);
-			s_Loggers[i]->set_level(spdlog::level::trace);
-			s_Loggers[i]->flush_on(spdlog::level::trace);
+			CreateSingleLogger(i);
 		}
 	}
 
 	Ref<spdlog::logger>& Log::GetLogger(LogCategory category)
 	{
-		return s_Loggers[(uint32_t)category];
+		return s_Loggers[static_cast<uint32_t>(category)];
+	}
+
+	LogCategory Log::CustomCategory(const String& label)
+	{
+		for (uint32_t i = 0; i < s_CustomCategories.Size(); i++)
+		{
+			if (s_CustomCategories[i] == label)
+			{
+				return static_cast<LogCategory>(static_cast<uint32_t>(LogCategory::COUNT) + i);
+			}
+		}
+
+		s_CustomCategories.Add("[" + label + "]");
+		const uint32_t categoryIdx = s_CustomCategories.Last() + static_cast<int32_t>(LogCategory::COUNT);
+		s_Loggers[categoryIdx] = s_Loggers[0]->clone("[" + label + "]");
+		return static_cast<LogCategory>(categoryIdx);
 	}
 
 	String Log::CategoryToString(const LogCategory category)
 	{
+		int32_t customIdx = static_cast<int32_t>(category) - static_cast<int32_t>(LogCategory::COUNT);
+		if (customIdx >= 0)
+		{
+			return s_CustomCategories[customIdx];
+		}
+
 		switch (category)
 		{
 		case LogCategory::Core: return "[Core]";
