@@ -133,7 +133,7 @@ namespace Suora
 	{
 	}
 
-	void ScriptEngine::CleanUp()
+	void BlueprintScriptEngine::CleanUp()
 	{
 		for (auto& cache : m_ScriptCache)
 		{

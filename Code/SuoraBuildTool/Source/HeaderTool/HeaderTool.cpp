@@ -205,7 +205,7 @@ struct Internal\n\
 private:\n\
 	Internal()\n\
 	{\n\
-	\tClass::GenerateNativeClassReflector(StaticClass());\n\
+	\tClass::GenerateNativeClassReflector(StaticClass(), &" + header->m_ClassName + "::ReflClass);\n\
 	}\n" + helperFunctions + "\n\n" + functionRegistors +
 "};\n\
 struct InternalAlloc\n\
@@ -230,7 +230,7 @@ private:\n\
 		
 		// Member Reflection
 		{
-			generated += "virtual void ReflClass(struct ClassReflector& desc) override \n{\n\t/*Super::ReflClass(desc);*/\n\tdesc.SetClassName(\"" + header->m_ClassName + "\");\n\tdesc.SetNativeParentClass(" + header->m_ParentClass + "::StaticClass());\n\tdesc.SetClassSize(sizeof(" + header->m_ClassName + "));\n";
+			generated += "static void ReflClass(struct ClassReflector& desc)\n{\n\t/*Super::ReflClass(desc);*/\n\tdesc.SetClassName(\"" + header->m_ClassName + "\");\n\tdesc.SetNativeParentClass(" + header->m_ParentClass + "::StaticClass());\n\tdesc.SetClassSize(sizeof(" + header->m_ClassName + "));\n";
 			size_t offset = header->m_ClassBodyBegin;
 			while (true)
 			{
@@ -338,7 +338,7 @@ private:\n\
 
 		if (memberType == "int" || memberType == "float" || memberType == "bool" || memberType == "Vec3" || memberType == "Color" || memberType == "Class")
 		{
-			str += "\t\tdesc.AddPrimitive<" + memberType + ">(" + offset + ", &" + memberName + ", \"" + memberName + "\");\n";
+			str += "\t\tdesc.AddPrimitive<" + memberType + ">(" + offset + ", \"" + memberName + "\");\n";
 		}
 		else if (memberType.substr(0, 11) == "SubclassOf<")
 		{
@@ -350,7 +350,7 @@ private:\n\
 		}
 		else if (memberType.substr(0, 8) == "Delegate")
 		{
-			str += "\t\tdesc.AddDelegate(" + offset + ", " + memberName + ".GetInternalDelegate(), \"" + memberName + "\", \"" + memberType + "\");\n";
+			str += "\t\tdesc.AddDelegate(" + offset + ", \"" + memberName + "\", \"" + memberType + "\");\n";
 		}
 		else if (memberType.find("ArrayList") == 0)
 		{
@@ -364,7 +364,7 @@ private:\n\
 			std::string type = memberType.substr(0, memberType.size() - 1);
 
 			// ObjectPtr
-			str += "\t\tdesc.AddObjectPointer<" + type + ">(" + offset + ", (Object**) &" + memberName + ", \"" + memberName + "\");\n";
+			str += "\t\tdesc.AddObjectPointer<" + type + ">(" + offset + ", \"" + memberName + "\");\n";
 		}
 		else
 		{

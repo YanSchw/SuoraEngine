@@ -3,12 +3,13 @@
 #include "Application.h"
 #include "NativeInput.h"
 
-#include "../Assets/AssetManager.h"
+#include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/SuoraProject.h"
 #include "Suora/GameFramework/GameInstance.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/Physics/PhysicsEngine.h"
+#include "Suora/NodeScript/External/ScriptEngine.h"
 
 namespace Suora
 {
@@ -39,6 +40,11 @@ namespace Suora
 
 		// Dark magic.....
 		Class::None.GetClassDefaultObject(true);
+		ClassReflector::Create(Object::StaticClass(), [](ClassReflector& desc)
+		{
+			desc.SetClassName("Object");
+			desc.SetClassSize(sizeof(Object)); 
+		});
 
 		engine->m_PreviousTime = std::chrono::steady_clock::now();
 
@@ -125,7 +131,7 @@ namespace Suora
 
 		NativeInput::Tick(deltaTime);
 
-		ScriptEngine::CleanUp();
+		BlueprintScriptEngine::CleanUp();
 
 		AssetManager::Update(deltaTime);
 

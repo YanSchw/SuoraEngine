@@ -34,7 +34,6 @@ namespace Suora
 		{
 			return (cls.GetNativeClassID() == 1);
 		}
-		virtual void ReflClass(struct ClassReflector& desc);
 
 		// Interfaces
 		void Implement(const Class& cls);

@@ -44,8 +44,9 @@ namespace Suora
 		return ClassType::None;
 	}
 
-	void Class::GenerateNativeClassReflector(const Class& cls)
+	void Class::GenerateNativeClassReflector(const Class& cls, const std::function<void(ClassReflector&)>& reflLambda)
 	{
+		ClassReflector::Create(cls, reflLambda);
 		ClassReflector::GetByClass(cls);
 		ClassInternal::s_NativeClasses.push_back(cls);
 	}

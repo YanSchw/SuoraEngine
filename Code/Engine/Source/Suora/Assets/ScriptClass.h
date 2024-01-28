@@ -26,6 +26,6 @@ namespace Suora
 		friend class NodeClassEditor;
 		friend class NodeClassNodeGraph;
 		friend struct VisualScriptCompiler;
-		friend struct ScriptEngine;
+		friend struct BlueprintScriptEngine;
 	};
 }

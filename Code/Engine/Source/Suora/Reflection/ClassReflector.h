@@ -1,7 +1,9 @@
 #pragma once
+#include <functional>
 #include "Suora/Common/StringUtils.h"
 #include "Class.h"
 #include "Suora/Common/Array.h"
+#include "Suora/Common/Map.h"
 
 namespace Suora
 {
@@ -94,25 +96,25 @@ namespace Suora
 		size_t m_ClassSize = 0;
 
 		template<class T>
-		void AddObjectPointer(size_t offset, class Object** ptr, const String& name)
+		void AddObjectPointer(size_t offset, const String& name)
 		{
 			ClassMember_ObjectPtr* objectPtr = AddMember<ClassMember_ObjectPtr>(name, offset, ClassMember::Type::ObjectPtr);
 			objectPtr->m_ObjectClass = T::StaticClass();
 		}
 		template<class ... Args>
-		void AddDelegate(size_t offset, TDelegate* d, const String& name, const String& args)
+		void AddDelegate(size_t offset, const String& name, const String& args)
 		{
 			ClassMember_Delegate* delegate = AddMember<ClassMember_Delegate>(name, offset, ClassMember::Type::Delegate);
 			delegate->FeedSignature(args);
 		}
 		
 		template<class T>
-		void AddPrimitive(size_t offset, T* ptr, const String& name)
+		void AddPrimitive(size_t offset, const String& name)
 		{
 			AddMember<ClassMember>(name, offset, ClassMember::GetPrimitiveTypeEnumByTemplate<T>());
 		}
 
-		ClassMember_ArrayList* AddArrayList(size_t offset, void* array, const String& name)
+		ClassMember_ArrayList* AddArrayList(size_t offset, const String& name)
 		{
 			ClassMember_ArrayList* member = AddMember<ClassMember_ArrayList>(name, offset, ClassMember::Type::ArrayList);
 			return member;
@@ -142,8 +144,9 @@ namespace Suora
 		Array<Ref<ClassMember>> GetAllClassMember() const;
 
 	private:
-		inline static std::unordered_map<NativeClassID, ClassReflector*> m_Reflectors;
+		inline static Map<NativeClassID, Ref<ClassReflector>> s_Reflectors;
 	public:
+		static void Create(const Class& cls, const std::function<void(ClassReflector&)>& reflLambda);
 		static const ClassReflector& GetByClass(const Class& cls);
 		static String GetClassName(const Class& cls);
 

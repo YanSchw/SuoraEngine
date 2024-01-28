@@ -16,11 +16,9 @@ namespace Suora::Physics
 	public:
 		static Ref<PhysicsEngine> Create();
 
-		virtual void Initialize()
-		{
-		}
+		virtual void Initialize() = 0;
 
-		virtual Ref<class PhysicsWorld> CreatePhysicsWorld();
+		virtual Ref<class PhysicsWorld> CreatePhysicsWorld() = 0;
 
 	public:
 		inline static SubclassOf<PhysicsEngine> s_PhysicsEngineClass = PhysicsEngine::StaticClass();

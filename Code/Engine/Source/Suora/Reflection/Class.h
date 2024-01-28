@@ -61,7 +61,7 @@ namespace Suora
 		Class GetParentClass() const;
 		ClassType GetClassType() const;
 
-		static void GenerateNativeClassReflector(const Class& cls);
+		static void GenerateNativeClassReflector(const Class& cls, const std::function<void(ClassReflector&)>& reflLambda);
 
 		Array<Class> GetInheritanceTree() const;
 

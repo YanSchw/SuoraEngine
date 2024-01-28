@@ -62,22 +62,30 @@ namespace Suora
 		return member;
 	}
 
+	void ClassReflector::Create(const Class& cls, const std::function<void(ClassReflector&)>& reflLambda)
+	{
+		Ref<ClassReflector> refl = CreateRef<ClassReflector>();
+
+		reflLambda(*refl);
+
+		s_Reflectors[cls.GetNativeClassID()] = refl;
+	}
+
 	const ClassReflector& ClassReflector::GetByClass(const Class& cls)
 	{
 		if (!cls.IsNative()) return GetByClass(cls.GetParentClass());
 
-		if (m_Reflectors.find(cls.GetNativeClassID()) == m_Reflectors.end())
+		if (!s_Reflectors.ContainsKey(cls.GetNativeClassID()))
 		{
+			// This should not happen
+			SuoraVerify(false);
+
 			ClassReflector* refl = new ClassReflector();
-
-			cls.GetClassDefaultObject()->ReflClass(*refl);
-			m_Reflectors[cls.GetNativeClassID()] = refl;
-
 			return *refl;
 		}
 		else
 		{
-			return *m_Reflectors[cls.GetNativeClassID()];
+			return *s_Reflectors[cls.GetNativeClassID()];
 		}
 	}
 
