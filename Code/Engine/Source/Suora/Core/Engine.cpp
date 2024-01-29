@@ -51,6 +51,21 @@ namespace Suora
 		engine->m_PhysicsEngine = Physics::PhysicsEngine::Create();
 		engine->m_PhysicsEngine->Initialize();
 
+		Array<Class> engineSubsystems = Class::GetSubclassesOf(EngineSubSystem::StaticClass());
+		for (const Class& It : engineSubsystems)
+		{
+			Object* alloc = New(It);
+			if (alloc)
+			{
+				Ref<EngineSubSystem> system = Ref<EngineSubSystem>(alloc->As<EngineSubSystem>());
+				engine->m_Subsystems.Add(system);
+			}
+		}
+		for (const auto It : engine->m_Subsystems)
+		{
+			It->Initialize();
+		}
+
 		return engine;
 	}
 
@@ -131,6 +146,10 @@ namespace Suora
 
 		NativeInput::Tick(deltaTime);
 
+		for (const auto It : m_Subsystems)
+		{
+			It->Tick(deltaTime);
+		}
 		BlueprintScriptEngine::CleanUp();
 
 		AssetManager::Update(deltaTime);

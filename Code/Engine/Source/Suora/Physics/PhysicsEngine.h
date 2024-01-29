@@ -4,13 +4,13 @@
 #include "Suora/Common/Array.h"
 #include "Suora/Common/Math.h"
 #include "Suora/Core/Object/Pointer.h"
-#include "Suora/Core/EngineSubSystem.h"
+#include "Suora/Core/Object/Object.h"
 #include "PhysicsEngine.generated.h"
 
 namespace Suora::Physics
 {
 
-	class PhysicsEngine : public EngineSubSystem
+	class PhysicsEngine : public Object
 	{
 		SUORA_CLASS(547893438543);
 	public:

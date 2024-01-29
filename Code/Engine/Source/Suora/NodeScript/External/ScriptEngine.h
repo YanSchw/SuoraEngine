@@ -11,8 +11,6 @@ namespace Suora
 		SUORA_CLASS(59378090843);
 	public:
 
-		virtual void Initialize() = 0;
-		virtual void Shutdown() = 0;
 	};
 
 }
