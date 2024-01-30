@@ -1,6 +1,6 @@
 
-AdditionalIncludeDir1 = "%{ENGINE_PATH}/Code/Modules/JoltPhysics/ThirdParty/JoltPhysics/"
+--AdditionalIncludeDir1 = "%{ENGINE_PATH}/Code/Modules/JoltPhysics/ThirdParty/JoltPhysics/"
 includedirs
 {
-"%{ENGINE_PATH}/Code/Modules/JoltPhysics/ThirdParty/JoltPhysics/"
+	"%{ENGINE_PATH}/Code/Modules/JoltPhysics/ThirdParty/JoltPhysics/"
 }

@@ -61,9 +61,12 @@ namespace Suora
 				engine->m_Subsystems.Add(system);
 			}
 		}
-		for (const auto It : engine->m_Subsystems)
+		for (int32_t i = engine->m_Subsystems.Last(); i >= 0; i--)
 		{
-			It->Initialize();
+			if (!engine->m_Subsystems[i]->Initialize())
+			{
+				engine->m_Subsystems.RemoveAt(i);
+			}
 		}
 
 		return engine;

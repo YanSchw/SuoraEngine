@@ -33,6 +33,9 @@ namespace Suora
 		/** Open the given file in the OS default application for the file format.
 		*   e.g. A .txt file on Windows may be opened in Notepad.                  */
 		static void OpenFileExternally(const String& filePath);
+
+		/** Execute a given Input in the OS Command Line */
+		static void CommandLine(const String& input);
 	};
 
 

@@ -222,4 +222,12 @@ namespace Suora
 		LPWSTR ptr = wtext;
 		ShellExecute(0, 0, ptr, 0, 0, SW_SHOW);
 	}
+
+	void Platform::CommandLine(const String& input)
+	{
+		LONG temp = GetWindowLong(GetConsoleWindow(), GWL_STYLE);
+		system(input.c_str());
+		ShowWindow(GetConsoleWindow(), temp);
+		//WinExec(input.c_str(), SW_HIDE);
+	}
 }

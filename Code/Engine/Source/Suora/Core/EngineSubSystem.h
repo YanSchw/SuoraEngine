@@ -19,7 +19,7 @@ namespace Suora
 		{
 		}
 
-		virtual void Initialize() = 0;
+		virtual bool Initialize() = 0;
 		virtual void Shutdown() = 0;
 		virtual void Tick(float deltaTime) = 0;
 

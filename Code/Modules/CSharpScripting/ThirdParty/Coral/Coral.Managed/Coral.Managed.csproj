@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>net8.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\..\..\..\Build\CSharp\Debug\</OutputPath>
+    <IntermediateOutputPath>..\..\..\..\..\..\Build\Intermediate\CSharp\Debug\Debug\Coral.Managed\</IntermediateOutputPath>
+    <DefineConstants></DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>CS8500</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\..\..\..\Build\CSharp\Release\</OutputPath>
+    <IntermediateOutputPath>..\..\..\..\..\..\Build\Intermediate\CSharp\Release\Coral.Managed\</IntermediateOutputPath>
+    <DefineConstants></DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>CS8500</NoWarn>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Source\AssemblyLoader.cs" />
+    <Compile Include="Source\ExtensionMethods.cs" />
+    <Compile Include="Source\GarbageCollector.cs" />
+    <Compile Include="Source\InternalCalls.cs" />
+    <Compile Include="Source\InteropTypes.cs" />
+    <Compile Include="Source\ManagedHost.cs" />
+    <Compile Include="Source\ManagedObject.cs" />
+    <Compile Include="Source\Marshalling.cs" />
+    <Compile Include="Source\TypeInterface.cs" />
+    <Compile Include="Source\TypeNotFoundException.cs" />
+    <Compile Include="Source\UniqueList.cs" />
+  </ItemGroup>
+</Project>
