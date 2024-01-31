@@ -1,6 +1,8 @@
 #include "CSharpScriptEngine.h"
+#include "CSharpProjectGenerator.h"
 #include "Suora/Platform/Platform.h"
 #include "Suora/Assets/AssetManager.h"
+#include "Suora/Core/NativeInput.h"
 
 #include "HostInstance.hpp"
 
@@ -67,11 +69,37 @@ namespace Suora
             return;
         }
 
+
+        if (NativeInput::GetKeyDown(Key::F3))
+        {
+            BuildAndReloadAllCSProjects();
+        }
     }
 
     bool CSharpScriptEngine::IsDotNetSDKPresent()
     {
         return std::filesystem::exists(Coral::HostInstance::GetHostFXRPath());
+    }
+
+    void CSharpScriptEngine::BuildAllCSProjects()
+    {
+        if (!s_SDK_Found)
+        {
+            return;
+        }
+
+        std::filesystem::path path = AssetManager::GetProjectAssetPath() + "/../Code/CSharp";
+        if (std::filesystem::exists(path))
+        {
+            for (auto dir : std::filesystem::directory_iterator(path))
+            {
+                if (dir.is_directory())
+                {
+                    CompileCSProj(dir.path() / (dir.path().filename().string() + ".csproj"));
+                }
+            }
+        }
+
     }
 
     void CSharpScriptEngine::CompileCSProj(const std::filesystem::path& csproj)
@@ -80,7 +108,22 @@ namespace Suora
         {
             return;
         }
+        CSHARP_INFO("Compiling {0}", csproj.string());
         Platform::CommandLine("dotnet build " + csproj.string() + " -c Release");
+    }
+
+    void CSharpScriptEngine::BuildAndReloadAllCSProjects()
+    {
+        if (!s_SDK_Found)
+        {
+            return;
+        }
+
+        CSharpProjectGenerator::GenerateCSProjectFiles();
+
+        BuildAllCSProjects();
+
+        ReloadAssemblies();
     }
 
     void CSharpScriptEngine::ReloadAssemblies()

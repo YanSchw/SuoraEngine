@@ -22,7 +22,9 @@ namespace Suora
 		virtual void Tick(float deltaTime) override;
 
 		bool IsDotNetSDKPresent();
+		void BuildAllCSProjects();
 		void CompileCSProj(const std::filesystem::path& csproj);
+		void BuildAndReloadAllCSProjects();
 
 		void ReloadAssemblies();
 
