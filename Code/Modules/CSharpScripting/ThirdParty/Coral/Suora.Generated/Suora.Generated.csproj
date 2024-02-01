@@ -13,8 +13,8 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\Build\CSharp\Debug\</OutputPath>
-    <IntermediateOutputPath>..\..\..\..\..\..\Build\Intermediate\CSharp\Debug\</IntermediateOutputPath>
+    <OutputPath>..\Debug\</OutputPath>
+    <IntermediateOutputPath>..\..\Intermediate\CSharp\Debug\</IntermediateOutputPath>
     <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,8 +25,8 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\Build\CSharp\Release\</OutputPath>
-    <IntermediateOutputPath>..\..\..\..\..\..\Build\Intermediate\CSharp\Release\</IntermediateOutputPath>
+    <OutputPath>..\Release\</OutputPath>
+    <IntermediateOutputPath>..\..\Intermediate\CSharp\Release\</IntermediateOutputPath>
     <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -37,16 +37,7 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\AssemblyLoader.cs" />
-    <Compile Include="Source\ExtensionMethods.cs" />
-    <Compile Include="Source\GarbageCollector.cs" />
-    <Compile Include="Source\InternalCalls.cs" />
-    <Compile Include="Source\InteropTypes.cs" />
-    <Compile Include="Source\ManagedHost.cs" />
-    <Compile Include="Source\ManagedObject.cs" />
-    <Compile Include="Source\Marshalling.cs" />
-    <Compile Include="Source\TypeInterface.cs" />
-    <Compile Include="Source\TypeNotFoundException.cs" />
-    <Compile Include="Source\UniqueList.cs" />
+    <Compile Include="Source\SuoraClassAttributes.cs" />
+    <Compile Include="Source\Object.cs" />
   </ItemGroup>
 </Project>

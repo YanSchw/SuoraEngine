@@ -66,6 +66,9 @@ namespace Suora
       <Project>{11178401-7DD7-FF37-4612-49B5B2914414}</Project>\n\
       <Name>Coral.Managed</Name>\n\
     </ProjectReference>\n\
+    <ProjectReference Include=\"../../../Build/CSharp/Generated/Suora.Generated.csproj\">\n\
+      <Name>Suora.Generated</Name>\n\
+    </ProjectReference>\n\
   </ItemGroup>\n\
 </Project>\
 ";
@@ -73,12 +76,25 @@ namespace Suora
         Platform::WriteToFile((filePath / (filePath.filename().string() + ".csproj")).string(), str);
 	}
 
+    static void GenerateSuora_GeneratedCSProjectFiles()
+    {
+        std::filesystem::path path = AssetManager::GetProjectAssetPath() + "/../Build/CSharp/Generated";
+        std::filesystem::remove_all(path);
+
+        std::filesystem::create_directories(path);
+
+        std::filesystem::path srcPath = AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Suora.Generated/";
+        std::filesystem::copy(srcPath, path, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+    }
+
 	void CSharpProjectGenerator::GenerateCSProjectFiles()
 	{
 		if (AssetManager::GetProjectAssetPath() == "")
 		{
 			return;
 		}
+
+        GenerateSuora_GeneratedCSProjectFiles();
 
 		std::filesystem::path path = AssetManager::GetProjectAssetPath() + "/../Code/CSharp";
 		if (std::filesystem::exists(path))
@@ -91,7 +107,6 @@ namespace Suora
                 }
             }
 		}
-
 	}
 
 }

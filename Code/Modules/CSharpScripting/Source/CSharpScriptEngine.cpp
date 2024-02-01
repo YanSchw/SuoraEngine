@@ -5,11 +5,13 @@
 #include "Suora/Core/NativeInput.h"
 
 #include "HostInstance.hpp"
+#include "Attribute.hpp"
 
 namespace Suora
 {
     static bool s_SDK_Found = false;
     static LogCategory s_CSharpLog = LogCategory::None;
+#define CSHARP_TRACE(...) SUORA_LOG(s_CSharpLog, LogLevel::Trace, __VA_ARGS__)
 #define CSHARP_INFO(...)  SUORA_LOG(s_CSharpLog, LogLevel::Info,  __VA_ARGS__)
 #define CSHARP_WARN(...)  SUORA_LOG(s_CSharpLog, LogLevel::Warn,  __VA_ARGS__)
 #define CSHARP_ERROR(...) SUORA_LOG(s_CSharpLog, LogLevel::Error, __VA_ARGS__)
@@ -17,6 +19,25 @@ namespace Suora
     void ExceptionCallback(std::string_view InMessage)
     {
         CSHARP_ERROR("Unhandled native exception: {0}", InMessage);
+    }
+    void MessageCallback(std::string_view InMessage, Coral::MessageLevel InLevel)
+    {
+        switch (InLevel)
+        {
+        case Coral::MessageLevel::Info:
+            CSHARP_INFO(InMessage);
+            break;
+        case Coral::MessageLevel::Warning:
+            CSHARP_WARN(InMessage);
+            break;
+        case Coral::MessageLevel::Error:
+            CSHARP_ERROR(InMessage);
+            break;
+        default:
+            CSHARP_TRACE(InMessage);
+            break;
+        }
+
     }
 
     bool CSharpScriptEngine::Initialize()
@@ -41,6 +62,7 @@ namespace Suora
         Coral::HostSettings settings =
         {
             .CoralDirectory = coralDir,
+            .MessageCallback = MessageCallback,
             .ExceptionCallback = ExceptionCallback
         };
         m_HostInstance = CreateRef<Coral::HostInstance>();
@@ -127,12 +149,19 @@ namespace Suora
         {
             return;
         }
+        auto begin = std::chrono::high_resolution_clock::now();
 
+        // Generate
         CSharpProjectGenerator::GenerateCSProjectFiles();
 
+        // Build
         BuildAllCSProjects();
 
+        // Reload
         ReloadAssemblies();
+
+        auto end = std::chrono::high_resolution_clock::now();
+        CSHARP_INFO("It took {0}ms to build and reload all C# Projects.", std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
     }
 
     void CSharpScriptEngine::ReloadAssemblies()
@@ -164,25 +193,58 @@ namespace Suora
 
         if (std::filesystem::exists(assemblyDir))
         {
+            std::filesystem::path suoraGeneratedDll = assemblyDir / "Suora.Generated.dll";
+            if (!std::filesystem::exists(suoraGeneratedDll))
+            {
+                CSHARP_ERROR("Suora.Generated.dll was not found. Could not reload Assemblies!");
+                return;
+            }
+            auto& generatedAssembly = m_AssemblyLoadContext->LoadAssembly(suoraGeneratedDll.string());
+            ProcessReloadedSuoraAssembly(generatedAssembly);
+
             for (const auto& file : std::filesystem::directory_iterator(assemblyDir))
             {
                 if (file.is_directory())
                     continue;
 
                 std::string filename = file.path().filename().string();
-                if (filename == "Coral.Managed.dll")
+                if (filename == "Coral.Managed.dll" || filename == "Suora.Generated.dll")
                     continue;
 
                 if (filename.ends_with(".dll"))
                 {
-                    CSHARP_INFO("Loading {0}", file.path().string());
-                    m_AssemblyLoadContext->LoadAssembly(file.path().string());
+                    auto& assembly = m_AssemblyLoadContext->LoadAssembly(file.path().string());
+                    ProcessReloadedAssembly(assembly);
                 }
                 
             }
         }
 
         CSHARP_INFO("Reloaded C# Script Assemblies!");
+    }
+
+    static Coral::Type SuoraClassType;
+    void CSharpScriptEngine::ProcessReloadedSuoraAssembly(const Coral::ManagedAssembly& assembly)
+    {
+        // Get a reference to the SuoraClass Attribute type
+        SuoraClassType = assembly.GetType("Suora.SuoraClass");
+    }
+
+    void CSharpScriptEngine::ProcessReloadedAssembly(const Coral::ManagedAssembly& assembly)
+    {
+        auto allTypes = assembly.GetTypes();
+
+        for (auto type : allTypes)
+        {
+            auto attribs = type->GetAttributes();
+            for (auto& attribute : attribs)
+            {
+                if (attribute.GetType() == SuoraClassType)
+                {
+                    CSHARP_WARN("SuoraClass: '{0}' with Parent '{1}'", (std::string)(type->GetFullName()), (std::string)(type->GetBaseType().GetFullName()));
+                }
+            }
+        }
     }
 
     bool CSharpScriptEngine::IsEditor()

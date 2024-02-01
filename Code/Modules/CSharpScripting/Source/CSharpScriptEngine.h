@@ -7,6 +7,7 @@ namespace Coral
 {
 	class HostInstance;
 	class AssemblyLoadContext;
+	class ManagedAssembly;
 }
 
 namespace Suora
@@ -27,6 +28,8 @@ namespace Suora
 		void BuildAndReloadAllCSProjects();
 
 		void ReloadAssemblies();
+		void ProcessReloadedSuoraAssembly(const Coral::ManagedAssembly& assembly);
+		void ProcessReloadedAssembly(const Coral::ManagedAssembly& assembly);
 
 		bool IsEditor();
 
