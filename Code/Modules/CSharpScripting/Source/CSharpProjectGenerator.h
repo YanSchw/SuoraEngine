@@ -8,6 +8,7 @@ namespace Suora
 	{
 	public:
 		static void GenerateCSProjectFiles();
+		static void GenerateVisualStudioSolution();
 	};
 
 }
