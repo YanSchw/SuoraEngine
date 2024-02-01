@@ -69,6 +69,15 @@ namespace Suora
             return;
         }
 
+        static bool s_WasProjectCSCodeCompiledOnce = false;
+        if (!s_WasProjectCSCodeCompiledOnce)
+        {
+            if (AssetManager::GetProjectAssetPath() != "")
+            {
+                BuildAndReloadAllCSProjects();
+                s_WasProjectCSCodeCompiledOnce = true;
+            }
+        }
 
         if (NativeInput::GetKeyDown(Key::F3))
         {
