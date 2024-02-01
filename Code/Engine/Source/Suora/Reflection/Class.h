@@ -28,30 +28,29 @@ namespace Suora
 	private:
 		NativeClassID m_NativeClassID = 0;
 		Blueprint* m_BlueprintClass = nullptr; // nullptr if this is a native class
-		ScriptClass* m_ScriptClass = nullptr;  // nullptr if this is a native class
+		String m_ScriptClass = "";  // empty if this is a native class
 	public:
 		explicit Class(const NativeClassID id);
 		Class(Blueprint* node);
 		explicit Class(Blueprint& node);
-		Class(ScriptClass* script);
-		explicit Class(ScriptClass& script);
+		Class(const String& scriptClass);
 
 		Class& operator=(const NativeClassID id);
 		Class& operator=(Blueprint* node);
-		Class& operator=(ScriptClass* script);
+		Class& operator=(const String& scriptClass);
 
 		NativeClassID GetNativeClassID() const;
 		Blueprint* GetBlueprintClass() const;
-		ScriptClass* GetScriptClass() const;
+		String GetScriptClass() const;
 
 		bool operator==(const Class& cls) const;
 		bool operator==(const NativeClassID id) const;
 		bool operator==(const Blueprint* node) const;
-		bool operator==(const ScriptClass* script) const;
+		bool operator==(const String& scriptClass) const;
 		bool operator!=(const Class& cls) const;
 		bool operator!=(const NativeClassID id) const;
-		bool operator!=(Blueprint* node) const;
-		bool operator!=(ScriptClass* script) const;
+		bool operator!=(const Blueprint* node) const;
+		bool operator!=(const String& scriptClass) const;
 
 		bool IsNative() const;
 		bool IsBlueprintClass() const;
@@ -73,7 +72,7 @@ namespace Suora
 		{
 			return ((std::hash<NativeClassID>()(cls.m_NativeClassID)
 				^ (std::hash<Blueprint*>()(cls.m_BlueprintClass) << 1)) >> 1)
-				^ (std::hash<ScriptClass*>()(cls.m_ScriptClass) >> 1);
+				^ (std::hash<String>()(cls.m_ScriptClass) >> 1);
 		}
 
 		String GetNativeClassName() const;
@@ -105,7 +104,7 @@ namespace std
 		{
 			return ((std::hash<Suora::NativeClassID>()(cls.GetNativeClassID())
 				^ (std::hash<Suora::Blueprint*>()(cls.GetBlueprintClass()) << 1)) >> 1)
-				^ (std::hash<Suora::ScriptClass*>()(cls.GetScriptClass()) >> 1);
+				^ (std::hash<Suora::String>()(cls.GetScriptClass()) >> 1);
 		}
 	};
 }

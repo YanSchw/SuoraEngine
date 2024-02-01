@@ -112,6 +112,11 @@ namespace Suora
 		return m_PhysicsEngine.get();
 	}
 
+	Array<Ref<EngineSubSystem>> Engine::GetEngineSubsystems() const
+	{
+		return m_Subsystems;
+	}
+
 	String Engine::GetRootPath() const
 	{
 		return m_RootPath.string();

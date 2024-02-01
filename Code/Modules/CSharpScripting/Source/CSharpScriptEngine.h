@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Suora/Core/EngineSubSystem.h"
+#include "Suora/NodeScript/External/ScriptEngine.h"
 #include "CSharpScriptEngine.generated.h"
 
 namespace Coral
@@ -12,7 +12,7 @@ namespace Coral
 
 namespace Suora
 {
-	class CSharpScriptEngine : public EngineSubSystem
+	class CSharpScriptEngine : public ScriptEngine
 	{
 		SUORA_CLASS(548798543356);
 	public:
@@ -21,6 +21,11 @@ namespace Suora
 		virtual void Shutdown() override;
 
 		virtual void Tick(float deltaTime) override;
+
+		virtual String GetScriptClassDomain() const override;
+		virtual Array<Class> GetAllScriptClasses() override;
+		virtual Class GetScriptParentClass(String scriptClass) override;
+		virtual Object* CreateScriptClassInstance(const String& scriptClass, bool isRootNode) override;
 
 		bool IsDotNetSDKPresent();
 		void BuildAllCSProjects();

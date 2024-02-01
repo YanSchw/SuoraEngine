@@ -42,6 +42,7 @@ namespace Suora
 		void DisposeGameInstance();
 		RenderPipeline* GetRenderPipeline();
 		Physics::PhysicsEngine* GetPhysicsEngine() const;
+		Array<Ref<EngineSubSystem>> GetEngineSubsystems() const;
 
 		String GetRootPath() const;
 		float GetDeltaTime() const;

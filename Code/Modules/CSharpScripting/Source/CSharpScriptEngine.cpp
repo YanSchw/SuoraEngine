@@ -3,9 +3,12 @@
 #include "Suora/Platform/Platform.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Core/NativeInput.h"
+#include "Suora/NodeScript/NodeScriptObject.h"
 
 #include "HostInstance.hpp"
 #include "Attribute.hpp"
+
+#include "Suora/GameFramework/Node.h"
 
 namespace Suora
 {
@@ -40,8 +43,17 @@ namespace Suora
 
     }
 
+    static Array<String> s_CSharpClasses;
+    struct ClassWrapper
+    {
+        Class cls = Class::None;
+    };
+    static Map<String, ClassWrapper> s_CSharpParentClasses;
+
     bool CSharpScriptEngine::Initialize()
     {
+        s_ScriptEngines.Add(this);
+
         s_CSharpLog = Log::CustomCategory("C#");
         CSHARP_INFO("Initializing C# ScriptEngine");
 
@@ -78,6 +90,8 @@ namespace Suora
     {
         CSHARP_INFO("Shutdown C# ScriptEngine"); 
 
+        s_ScriptEngines.Remove(this);
+
         if (!s_SDK_Found)
         {
             return;
@@ -105,6 +119,56 @@ namespace Suora
         {
             BuildAndReloadAllCSProjects();
         }
+    }
+
+    String CSharpScriptEngine::GetScriptClassDomain() const
+    {
+        return "CSharp";
+    }
+
+    Array<Class> CSharpScriptEngine::GetAllScriptClasses()
+    {
+        Array<Class> out;
+
+        for (String It : s_CSharpClasses)
+        {
+            out.Add(Class("CSharp$" + It));
+        }
+
+        return out;
+    }
+
+    Class CSharpScriptEngine::GetScriptParentClass(String scriptClass)
+    {
+        if (s_CSharpParentClasses.ContainsKey(scriptClass))
+        {
+            return s_CSharpParentClasses.At(scriptClass).cls;
+        }
+
+        return Class::None;
+    }
+
+    Object* CSharpScriptEngine::CreateScriptClassInstance(const String& scriptClass, bool isRootNode)
+    {
+        if (!s_CSharpClasses.Contains(scriptClass))
+        {
+            return nullptr;
+        }
+
+        Class nativeParentClass = s_CSharpParentClasses.At(scriptClass).cls;
+        while (nativeParentClass.IsScriptClass())
+        {
+            nativeParentClass = nativeParentClass.GetParentClass();
+        }
+
+        Object* obj = New(nativeParentClass);
+
+        // If needed apply NodeGraph here !
+        obj->Implement<INodeScriptObject>();
+        INodeScriptObject* interface_ = obj->GetInterface<INodeScriptObject>();
+        interface_->m_Class = Class("CSharp$" + scriptClass);
+
+        return obj;
     }
 
     bool CSharpScriptEngine::IsDotNetSDKPresent()
@@ -172,6 +236,10 @@ namespace Suora
         }
         CSHARP_INFO("Reloading C# Script Assemblies...");
 
+        // Reset
+        s_CSharpClasses.Clear();
+        s_CSharpParentClasses.Clear();
+
         if (m_AssemblyLoadContext)
         {
             m_HostInstance->UnloadAssemblyLoadContext(*m_AssemblyLoadContext);
@@ -224,10 +292,26 @@ namespace Suora
     }
 
     static Coral::Type SuoraClassType;
+    static Coral::Type NativeSuoraClassType;
     void CSharpScriptEngine::ProcessReloadedSuoraAssembly(const Coral::ManagedAssembly& assembly)
     {
         // Get a reference to the SuoraClass Attribute type
-        SuoraClassType = assembly.GetType("Suora.SuoraClass");
+        SuoraClassType       = assembly.GetType("Suora.SuoraClass");
+        NativeSuoraClassType = assembly.GetType("Suora.NativeSuoraClass");
+    }
+
+    static NativeClassID GetCoralTypeNativeClassID(Coral::Type type)
+    {
+        auto attribs = type.GetAttributes();
+        for (auto& attribute : attribs)
+        {
+            if (attribute.GetType() == NativeSuoraClassType)
+            {
+                return attribute.GetFieldValue<int64_t>("NativeID");
+            }
+        }
+
+        return 0;
     }
 
     void CSharpScriptEngine::ProcessReloadedAssembly(const Coral::ManagedAssembly& assembly)
@@ -242,6 +326,11 @@ namespace Suora
                 if (attribute.GetType() == SuoraClassType)
                 {
                     CSHARP_WARN("SuoraClass: '{0}' with Parent '{1}'", (std::string)(type->GetFullName()), (std::string)(type->GetBaseType().GetFullName()));
+                    s_CSharpClasses.Add((String)(type->GetFullName()));
+
+                    Coral::Type parentClass = type->GetBaseType();
+                    NativeClassID nativeClassID = GetCoralTypeNativeClassID(parentClass);
+                    s_CSharpParentClasses[(String)(type->GetFullName())] = ClassWrapper(nativeClassID != 0 ? Class(nativeClassID) : Class("CSharp$" + (String)(parentClass.GetFullName())));
                 }
             }
         }
