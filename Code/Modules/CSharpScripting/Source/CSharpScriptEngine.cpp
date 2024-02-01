@@ -36,7 +36,7 @@ namespace Suora
         Platform::CopyDirectory(AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.runtimeconfig.json",
                                 AssetManager::GetEngineAssetPath() + "/../Build/CSharp/Release");
 
-        CSHARP_INFO("Setting up .NET Host");
+        CSHARP_INFO("Setting up .NET Core Host");
         auto coralDir = AssetManager::GetEngineAssetPath() + "/../Build/CSharp/Release";
         Coral::HostSettings settings =
         {

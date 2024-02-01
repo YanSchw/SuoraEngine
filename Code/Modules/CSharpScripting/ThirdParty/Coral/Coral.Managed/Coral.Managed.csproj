@@ -48,5 +48,6 @@
     <Compile Include="Source\TypeInterface.cs" />
     <Compile Include="Source\TypeNotFoundException.cs" />
     <Compile Include="Source\UniqueList.cs" />
+    <Compile Include="Suora\SuoraClassAttribute.cs" />
   </ItemGroup>
 </Project>

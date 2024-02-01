@@ -42,7 +42,6 @@ namespace Suora
     <DefineConstants></DefineConstants>\n\
     <ErrorReport>prompt</ErrorReport>\n\
     <WarningLevel>4</WarningLevel>\n\
-    <NoWarn>CS8500</NoWarn>\n\
   </PropertyGroup>\n\
   <PropertyGroup Condition=\" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' \">\n\
     <PlatformTarget>AnyCPU</PlatformTarget>\n\
@@ -54,7 +53,6 @@ namespace Suora
     <DefineConstants></DefineConstants>\n\
     <ErrorReport>prompt</ErrorReport>\n\
     <WarningLevel>4</WarningLevel>\n\
-    <NoWarn>CS8500</NoWarn>\n\
   </PropertyGroup>\n\
   <ItemGroup Condition=\" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' \">\n\
   </ItemGroup>\n\
@@ -62,6 +60,12 @@ namespace Suora
   </ItemGroup>\n\
   <ItemGroup>\n\
     " + compilerSources + "\n\
+  </ItemGroup>\n\
+  <ItemGroup>\n\
+    <ProjectReference Include=\"" + AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.csproj\">\n\
+      <Project>{11178401-7DD7-FF37-4612-49B5B2914414}</Project>\n\
+      <Name>Coral.Managed</Name>\n\
+    </ProjectReference>\n\
   </ItemGroup>\n\
 </Project>\
 ";
