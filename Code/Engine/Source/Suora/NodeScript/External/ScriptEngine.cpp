@@ -8,17 +8,11 @@ namespace Suora
 
 	ScriptEngine* ScriptEngine::GetScriptEngineByDomain(const String& domain)
 	{
-		auto subsystems = Engine::Get()->GetEngineSubsystems();
-
-		for (auto It : subsystems)
+		for (auto It : s_ScriptEngines)
 		{
-			ScriptEngine* scriptEngine = It->As<ScriptEngine>();
-			if (scriptEngine)
+			if (It->GetScriptClassDomain() == domain)
 			{
-				if (scriptEngine->GetScriptClassDomain() == domain)
-				{
-					return scriptEngine;
-				}
+				return It;
 			}
 		}
 
