@@ -85,6 +85,32 @@ namespace Suora
 
         std::filesystem::path srcPath = AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Suora.Generated/";
         std::filesystem::copy(srcPath, path, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+
+        // Generate...
+        {
+            String gen = "using System;\nusing Suora;\n\nnamespace Suora\n{\n";
+
+            Array<Class> allClasses = Class::GetAllClasses();
+            for (const Class& cls : allClasses)
+            {
+                if (!cls.IsNative())
+                    continue;
+                if (cls.GetNativeClassID() == 1)
+                    continue;
+
+                gen += "\t[NativeSuoraClass(NativeID = " + std::to_string(cls.GetNativeClassID()) + ")]\n";
+
+                String parentNativeClass = (cls.GetParentClass() == Object::StaticClass()) ? "Suora.SuoraObject" : "Suora." + cls.GetParentClass().GetClassName();
+                gen += "\tpublic class " + cls.GetClassName() + " : " + parentNativeClass + "\n\t{\n";
+
+                gen += "\t}\n\n";
+
+            }
+
+            gen += "}";
+            Platform::WriteToFile((path / "Source/AllNativeClasses.cs").string(), gen);
+        }
+
     }
 
 	void CSharpProjectGenerator::GenerateCSProjectFiles()
