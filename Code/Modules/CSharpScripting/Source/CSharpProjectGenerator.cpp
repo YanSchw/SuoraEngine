@@ -200,6 +200,10 @@ EndProject\n";
                 }
             }
         }
+        else
+        {
+            return;
+        }
 
         String str = "\
 Microsoft Visual Studio Solution File, Format Version 12.00\n\
