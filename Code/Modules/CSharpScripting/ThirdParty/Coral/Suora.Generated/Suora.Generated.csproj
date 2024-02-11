@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Source\SuoraClassAttributes.cs" />
     <Compile Include="Source\Object.cs" />
+    <Compile Include="Source\Debug.cs" />
     <Compile Include="Source\AllNativeClasses.cs" />
   </ItemGroup>
 </Project>
