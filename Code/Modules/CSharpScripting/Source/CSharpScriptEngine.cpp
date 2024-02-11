@@ -1,5 +1,6 @@
 #include "CSharpScriptEngine.h"
 #include "CSharpProjectGenerator.h"
+#include "CSharpManagedObject.h"
 #include "Suora/Platform/Platform.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Core/NativeInput.h"
@@ -7,6 +8,8 @@
 
 #include "HostInstance.hpp"
 #include "Attribute.hpp"
+#include "TypeCache.hpp"
+#include "GC.hpp"
 
 #include "Suora/GameFramework/Node.h"
 
@@ -49,6 +52,8 @@ namespace Suora
         Class cls = Class::None;
     };
     static Map<String, ClassWrapper> s_CSharpParentClasses;
+    static Map<String, Coral::Type*> s_CSharpManagedTypes;
+    static Map<String, String> s_CSharpAssemblyQualifiedNames;
 
     bool CSharpScriptEngine::Initialize()
     {
@@ -162,11 +167,15 @@ namespace Suora
         }
 
         Object* obj = New(nativeParentClass);
+        SuoraVerify(obj);
 
         // If needed apply NodeGraph here !
         obj->Implement<INodeScriptObject>();
         INodeScriptObject* interface_ = obj->GetInterface<INodeScriptObject>();
         interface_->m_Class = Class("CSharp$" + scriptClass);
+
+        obj->Implement<ICSharpManagedObject>();
+        CreateManagedObject(obj, scriptClass);
 
         return obj;
     }
@@ -238,7 +247,9 @@ namespace Suora
 
         // Reset
         s_CSharpClasses.Clear();
+        s_CSharpAssemblyQualifiedNames.Clear();
         s_CSharpParentClasses.Clear();
+        s_CSharpManagedTypes.Clear();
 
         if (m_AssemblyLoadContext)
         {
@@ -291,10 +302,12 @@ namespace Suora
         CSHARP_INFO("Reloaded C# Script Assemblies!");
     }
 
+    static Coral::Type SuoraObjectType;
     static Coral::Type SuoraClassType;
     static Coral::Type NativeSuoraClassType;
     void CSharpScriptEngine::ProcessReloadedSuoraAssembly(const Coral::ManagedAssembly& assembly)
     {
+        SuoraObjectType        = assembly.GetType("Suora.SuoraObject");
         // Get a reference to the SuoraClass Attribute type
         SuoraClassType       = assembly.GetType("Suora.SuoraClass");
         NativeSuoraClassType = assembly.GetType("Suora.NativeSuoraClass");
@@ -325,12 +338,15 @@ namespace Suora
             {
                 if (attribute.GetType() == SuoraClassType)
                 {
-                    CSHARP_WARN("SuoraClass: '{0}' with Parent '{1}'", (std::string)(type->GetFullName()), (std::string)(type->GetBaseType().GetFullName()));
+                    CSHARP_WARN("SuoraClass: '{0}' with Parent '{1}'", (String)(type->GetFullName()), (String)(type->GetBaseType().GetFullName()));
                     s_CSharpClasses.Add((String)(type->GetFullName()));
+                    s_CSharpAssemblyQualifiedNames[(String)(type->GetFullName())] = (String)(type->GetAssemblyQualifiedName());
 
                     Coral::Type parentClass = type->GetBaseType();
                     NativeClassID nativeClassID = GetCoralTypeNativeClassID(parentClass);
                     s_CSharpParentClasses[(String)(type->GetFullName())] = ClassWrapper(nativeClassID != 0 ? Class(nativeClassID) : Class("CSharp$" + (String)(parentClass.GetFullName())));
+
+                    s_CSharpManagedTypes[(String)(type->GetFullName())] = type;
                 }
             }
         }
@@ -339,6 +355,36 @@ namespace Suora
     bool CSharpScriptEngine::IsEditor()
     {
         return true;
+    }
+
+    //static Map<Object*, Coral::ManagedObject> s_AllocatedManagedObjects;
+
+    void CSharpScriptEngine::CreateManagedObject(Object* obj, const String& managedType)
+    {
+        SuoraVerify(obj);
+
+        String typeStr = (managedType != "") ? managedType : "Suora." + obj->GetNativeClass().GetClassName();
+
+
+        //s_AllocatedManagedObjects[obj] = s_CSharpManagedTypes.At(typeStr)->CreateInstance();
+        auto str = Coral::String::New(s_CSharpAssemblyQualifiedNames[typeStr]);
+        SuoraObjectType.InvokeStaticMethod("CreateSuoraObject", str, (void*)obj);
+        Coral::String::Free(str);
+    }
+
+    void CSharpScriptEngine::DestroyManagedObject(Object* obj)
+    {
+        SuoraVerify(obj);
+
+        SuoraObjectType.InvokeStaticMethod("DestroySuoraObject", (void*)obj);
+        Coral::GC::Collect();
+        //s_AllocatedManagedObjects[obj].Destroy();
+        //s_AllocatedManagedObjects.Remove(obj);
+    }
+
+    CSharpScriptEngine* CSharpScriptEngine::Get()
+    {
+        return ScriptEngine::GetScriptEngineByDomain("CSharp")->As<CSharpScriptEngine>();
     }
 
 }

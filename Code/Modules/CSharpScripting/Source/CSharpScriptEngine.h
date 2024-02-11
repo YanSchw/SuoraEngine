@@ -38,6 +38,12 @@ namespace Suora
 
 		bool IsEditor();
 
+		/** Leave managedType empty to auto detect it */
+		void CreateManagedObject(Object* obj, const String& managedType = "");
+		void DestroyManagedObject(Object* obj);
+
+		static CSharpScriptEngine* Get();
+
 	private:
 		Ref<Coral::HostInstance> m_HostInstance;
 		Ref<Coral::AssemblyLoadContext> m_AssemblyLoadContext;
