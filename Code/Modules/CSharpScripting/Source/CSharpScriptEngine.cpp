@@ -357,16 +357,12 @@ namespace Suora
         return true;
     }
 
-    //static Map<Object*, Coral::ManagedObject> s_AllocatedManagedObjects;
-
     void CSharpScriptEngine::CreateManagedObject(Object* obj, const String& managedType)
     {
         SuoraVerify(obj);
 
         String typeStr = (managedType != "") ? managedType : "Suora." + obj->GetNativeClass().GetClassName();
 
-
-        //s_AllocatedManagedObjects[obj] = s_CSharpManagedTypes.At(typeStr)->CreateInstance();
         auto str = Coral::String::New(s_CSharpAssemblyQualifiedNames[typeStr]);
         SuoraObjectType.InvokeStaticMethod("CreateSuoraObject", str, (void*)obj);
         Coral::String::Free(str);
@@ -378,8 +374,6 @@ namespace Suora
 
         SuoraObjectType.InvokeStaticMethod("DestroySuoraObject", (void*)obj);
         Coral::GC::Collect();
-        //s_AllocatedManagedObjects[obj].Destroy();
-        //s_AllocatedManagedObjects.Remove(obj);
     }
 
     CSharpScriptEngine* CSharpScriptEngine::Get()
