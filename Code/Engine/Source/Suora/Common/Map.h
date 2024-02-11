@@ -39,6 +39,11 @@ namespace Suora
 			m_Map.clear();
 		}
 
+		size_t Size()
+		{
+			return m_Map.size();
+		}
+
 		// Iterators
 
 		typename std::unordered_map<K, V>::iterator begin() { return m_Map.begin(); }
