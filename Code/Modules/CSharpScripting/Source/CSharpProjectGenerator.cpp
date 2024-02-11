@@ -8,10 +8,10 @@
 namespace Suora
 {
 
-	static void GenerateSingleCSProj(const std::filesystem::path& filePath)
+	static void GenerateSingleCSProj(const std::filesystem::path& dir)
 	{
         String compilerSources = "";
-        for (auto It : std::filesystem::recursive_directory_iterator(filePath))
+        for (auto It : std::filesystem::recursive_directory_iterator(dir))
         {
             if (It.is_directory())
                 continue;
@@ -74,7 +74,7 @@ namespace Suora
 </Project>\
 ";
 
-        Platform::WriteToFile((filePath / (filePath.filename().string() + ".csproj")).string(), str);
+        Platform::WriteToFile((dir / (dir.filename().string() + ".csproj")).string(), str);
 	}
 
     static void GenerateSuora_GeneratedCSProjectFiles()
