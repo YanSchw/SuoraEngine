@@ -46,6 +46,11 @@ namespace Suora
 
     }
 
+    // Internal Calls
+    void DebugLogInfo(Coral::String InString)  { CSHARP_INFO((String)InString);  }
+    void DebugLogWarn(Coral::String InString)  { CSHARP_WARN((String)InString);  }
+    void DebugLogError(Coral::String InString) { CSHARP_ERROR((String)InString); }
+
     static Array<String> s_CSharpClasses;
     struct ClassWrapper
     {
@@ -305,12 +310,17 @@ namespace Suora
     static Coral::Type SuoraObjectType;
     static Coral::Type SuoraClassType;
     static Coral::Type NativeSuoraClassType;
-    void CSharpScriptEngine::ProcessReloadedSuoraAssembly(const Coral::ManagedAssembly& assembly)
+    void CSharpScriptEngine::ProcessReloadedSuoraAssembly(Coral::ManagedAssembly& assembly)
     {
-        SuoraObjectType        = assembly.GetType("Suora.SuoraObject");
+        SuoraObjectType      = assembly.GetType("Suora.SuoraObject");
         // Get a reference to the SuoraClass Attribute type
         SuoraClassType       = assembly.GetType("Suora.SuoraClass");
         NativeSuoraClassType = assembly.GetType("Suora.NativeSuoraClass");
+
+        assembly.AddInternalCall("Suora.Debug", "LogInfo",  reinterpret_cast<void*>(&DebugLogInfo));
+        assembly.AddInternalCall("Suora.Debug", "LogWarn",  reinterpret_cast<void*>(&DebugLogWarn));
+        assembly.AddInternalCall("Suora.Debug", "LogError", reinterpret_cast<void*>(&DebugLogError));
+        assembly.UploadInternalCalls();
     }
 
     static NativeClassID GetCoralTypeNativeClassID(Coral::Type type)
@@ -327,7 +337,7 @@ namespace Suora
         return 0;
     }
 
-    void CSharpScriptEngine::ProcessReloadedAssembly(const Coral::ManagedAssembly& assembly)
+    void CSharpScriptEngine::ProcessReloadedAssembly(Coral::ManagedAssembly& assembly)
     {
         auto allTypes = assembly.GetTypes();
 

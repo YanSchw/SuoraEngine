@@ -33,8 +33,8 @@ namespace Suora
 		void BuildAndReloadAllCSProjects();
 
 		void ReloadAssemblies();
-		void ProcessReloadedSuoraAssembly(const Coral::ManagedAssembly& assembly);
-		void ProcessReloadedAssembly(const Coral::ManagedAssembly& assembly);
+		void ProcessReloadedSuoraAssembly(Coral::ManagedAssembly& assembly);
+		void ProcessReloadedAssembly(Coral::ManagedAssembly& assembly);
 
 		bool IsEditor();
 

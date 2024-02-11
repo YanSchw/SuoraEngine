@@ -112,6 +112,15 @@ namespace Suora
             Platform::WriteToFile((path / "Source/AllNativeClasses.cs").string(), gen);
         }
 
+        String SuoraGeneratedPath = path.string() + "/Suora.Generated.csproj";
+        String csproj = Platform::ReadFromFile(SuoraGeneratedPath);
+        StringUtil::ReplaceSequence(csproj, "PATH_TO_CORAL_MANAGED", "\
+<ProjectReference Include=\"" + AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.csproj\">\n\
+      <Project>{11178401-7DD7-FF37-4612-49B5B2914414}</Project>\n\
+      <Name>Coral.Managed</Name>\n\
+    </ProjectReference>");
+        Platform::WriteToFile(SuoraGeneratedPath, csproj);
+
     }
 
 	void CSharpProjectGenerator::GenerateCSProjectFiles()
