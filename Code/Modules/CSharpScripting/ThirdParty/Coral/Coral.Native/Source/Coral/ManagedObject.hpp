@@ -96,7 +96,7 @@ namespace Coral {
 
 	private:
 		void* m_Handle = nullptr;
-		const Type* m_Type;
+		const Type* m_Type = nullptr;
 
 	private:
 		friend class ManagedAssembly;
