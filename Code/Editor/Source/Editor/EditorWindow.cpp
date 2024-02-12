@@ -329,9 +329,10 @@ namespace Suora
 
 
 			int x = 250.0f * ui + 2;
-			//m_SidebarWidth = Math::Lerp(m_SidebarWidth, !disableSidebarInput && EditorUI::GetInput().x <= m_SidebarWidth * ui ? 35.0f + 150.0f : 35.0f, 8.0f * deltaTime);
-			m_HeroToolHeight = Math::Lerp(m_HeroToolHeight, m_HeroToolOpened ? 350.0f : 0.0f, 8.0f * deltaTime);
+			m_HeroToolHeight += (m_HeroToolOpened ? 100.0f : -100.0f) * deltaTime;
+			m_HeroToolHeight = Math::LerpTowards(m_HeroToolHeight, m_HeroToolOpened ? 350.0f : 0.0f, 10.0f * deltaTime);
 			m_HeroToolHeight = glm::clamp(m_HeroToolHeight, 0.0f, 350.0f);
+
 			for (int i = 0; i < Tabs.Size(); i++)
 			{
 				EditorUI::ButtonParams Params = EditorUI::ButtonParams::Invisible();
