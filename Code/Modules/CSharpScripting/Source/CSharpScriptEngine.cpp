@@ -4,6 +4,7 @@
 #include "Suora/Platform/Platform.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Core/NativeInput.h"
+#include "Suora/Core/Application.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
 
 #include "HostInstance.hpp"
@@ -365,9 +366,9 @@ namespace Suora
         }
     }
 
-    bool CSharpScriptEngine::IsEditor()
+    bool CSharpScriptEngine::IsEditor() const
     {
-        return true;
+        return Application::Get().IsEditor();
     }
 
     void CSharpScriptEngine::CreateManagedObject(Object* obj, const String& managedType)

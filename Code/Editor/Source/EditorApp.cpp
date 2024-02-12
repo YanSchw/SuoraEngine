@@ -62,6 +62,10 @@ namespace Suora
 		{
 			m_StopPIE_Flag = true;
 		}
+		virtual bool IsEditor() const override
+		{
+			return true;
+		}
 
 	};
 

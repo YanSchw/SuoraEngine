@@ -36,7 +36,7 @@ namespace Suora
 		void ProcessReloadedSuoraAssembly(Coral::ManagedAssembly& assembly);
 		void ProcessReloadedAssembly(Coral::ManagedAssembly& assembly);
 
-		bool IsEditor();
+		bool IsEditor() const;
 
 		/** Leave managedType empty to auto detect it */
 		void CreateManagedObject(Object* obj, const String& managedType = "");

@@ -51,6 +51,10 @@ namespace Suora
 	{
 		m_Running = false;
 	}
+	bool Application::IsEditor() const
+	{
+		return false;
+	}
 
 	void Application::OnEvent(Event& e)
 	{
