@@ -229,6 +229,31 @@ namespace Suora
 		{
 			Platform::CopyDirectory(scriptsPath, std::filesystem::path(projectPath).append("Scripts"));
 		}
+		Platform::WriteToFile(std::filesystem::path(projectPath).append(".gitignore").string(), "\
+# Binaries\n\
+**/bin/\n\
+**/obj/\n\
+**/Build/\n\
+**/Scripts/\n\
+\n\
+# Suora files\n\
+*.log\n\
+*.edpref\n\
+\n\
+# Visual Studio files and folder\n\
+.vs/\n\
+**.sln\n\
+**.csproj\n\
+**.vcxproj\n\
+**.vcxproj.filters\n\
+**.vcxproj.user\n\
+\n\
+# Generated Headers\n\
+**.generated.h\n\
+\n\
+# Generated Modules\n\
+**.module.cpp\n\
+**.generated.lua");
 
 		std::filesystem::path projectSettingsPath;
 		std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(projectPath);
