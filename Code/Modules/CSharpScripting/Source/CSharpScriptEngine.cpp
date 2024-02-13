@@ -6,6 +6,7 @@
 #include "Suora/Core/NativeInput.h"
 #include "Suora/Core/Application.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
+#include "InternalCalls.h"
 
 #include "HostInstance.hpp"
 #include "Attribute.hpp"
@@ -327,6 +328,7 @@ namespace Suora
         assembly.AddInternalCall("Suora.Debug", "LogInfo",  reinterpret_cast<void*>(&DebugLogInfo));
         assembly.AddInternalCall("Suora.Debug", "LogWarn",  reinterpret_cast<void*>(&DebugLogWarn));
         assembly.AddInternalCall("Suora.Debug", "LogError", reinterpret_cast<void*>(&DebugLogError));
+        assembly.AddInternalCall("Suora.Node",  "InternalSetUpdateFlag", reinterpret_cast<void*>(&Node_SetUpdateFlag));
         assembly.UploadInternalCalls();
     }
 

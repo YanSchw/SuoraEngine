@@ -11,10 +11,10 @@ namespace Suora
     public partial class Node : SuoraObject
     {
 
-        internal static unsafe delegate*<int, void> InternalSetUpdateFlag;
+        internal static unsafe delegate*<IntPtr, int, void> InternalSetUpdateFlag;
         public void SetUpdateFlag(UpdateFlag flag)
         {
-            unsafe { InternalSetUpdateFlag((int)flag); }
+            unsafe { InternalSetUpdateFlag(SuoraObject.GetNativePtrFromManagedObject(this), (int)flag); }
         }
         
         public virtual void Begin() { }
