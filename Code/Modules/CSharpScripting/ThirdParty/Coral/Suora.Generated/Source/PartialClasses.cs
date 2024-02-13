@@ -5,6 +5,7 @@ namespace Suora
 
     public enum UpdateFlag : int
     {
+        NeverUpdate = 0,
         WorldUpdate = 1
     }
     
