@@ -41,6 +41,7 @@
     <Compile Include="Source\Object.cs" />
     <Compile Include="Source\Debug.cs" />
     <Compile Include="Source\AllNativeClasses.cs" />
+    <Compile Include="Source\PartialClasses.cs" />
   </ItemGroup>
   <ItemGroup>
 	PATH_TO_CORAL_MANAGED

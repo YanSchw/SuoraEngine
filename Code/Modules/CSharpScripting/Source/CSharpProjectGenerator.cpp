@@ -102,7 +102,7 @@ namespace Suora
                 gen += "\t[NativeSuoraClass(NativeID = " + std::to_string(cls.GetNativeClassID()) + ")]\n";
 
                 String parentNativeClass = (cls.GetParentClass() == Object::StaticClass()) ? "Suora.SuoraObject" : "Suora." + cls.GetParentClass().GetClassName();
-                gen += "\tpublic class " + cls.GetClassName() + " : " + parentNativeClass + "\n\t{\n";
+                gen += "\tpublic partial class " + cls.GetClassName() + " : " + parentNativeClass + "\n\t{\n";
 
                 gen += "\t}\n\n";
 

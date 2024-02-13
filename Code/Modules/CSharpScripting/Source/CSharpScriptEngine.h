@@ -26,6 +26,7 @@ namespace Suora
 		virtual Array<Class> GetAllScriptClasses() override;
 		virtual Class GetScriptParentClass(String scriptClass) override;
 		virtual Object* CreateScriptClassInstance(const String& scriptClass, bool isRootNode) override;
+		virtual void InvokeManagedEvent(Object* obj, size_t hash, ScriptStack& stack) override;
 
 		bool IsDotNetSDKPresent();
 		void BuildAllCSProjects();

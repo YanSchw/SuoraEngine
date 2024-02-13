@@ -22,6 +22,8 @@ namespace Suora
 
 		virtual Object* CreateScriptClassInstance(const String& scriptClass, bool isRootNode) = 0;
 
+		virtual void InvokeManagedEvent(Object* obj, size_t hash, ScriptStack& stack) = 0;
+
 		static ScriptEngine* GetScriptEngineByDomain(const String& domain);
 
 	protected:

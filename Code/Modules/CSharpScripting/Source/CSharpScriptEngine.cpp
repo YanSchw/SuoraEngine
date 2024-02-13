@@ -180,8 +180,9 @@ namespace Suora
 
         // If needed apply NodeGraph here !
         obj->Implement<INodeScriptObject>();
-        INodeScriptObject* interface_ = obj->GetInterface<INodeScriptObject>();
-        interface_->m_Class = Class("CSharp$" + scriptClass);
+        INodeScriptObject* nodeScriptObject = obj->GetInterface<INodeScriptObject>();
+        nodeScriptObject->m_Class = Class("CSharp$" + scriptClass);
+        nodeScriptObject->m_ScriptEngine = this;
 
         obj->Implement<ICSharpManagedObject>();
         CreateManagedObject(obj, scriptClass);
@@ -312,11 +313,13 @@ namespace Suora
     }
 
     static Coral::Type SuoraObjectType;
+    static Coral::Type NodeType;
     static Coral::Type SuoraClassType;
     static Coral::Type NativeSuoraClassType;
     void CSharpScriptEngine::ProcessReloadedSuoraAssembly(Coral::ManagedAssembly& assembly)
     {
-        SuoraObjectType      = assembly.GetType("Suora.SuoraObject");
+        SuoraObjectType = assembly.GetType("Suora.SuoraObject");
+        NodeType        = assembly.GetType("Suora.Node");
         // Get a reference to the SuoraClass Attribute type
         SuoraClassType       = assembly.GetType("Suora.SuoraClass");
         NativeSuoraClassType = assembly.GetType("Suora.NativeSuoraClass");
@@ -388,6 +391,24 @@ namespace Suora
 
         SuoraObjectType.InvokeStaticMethod("DestroySuoraObject", (void*)obj);
         Coral::GC::Collect();
+    }
+    
+    void CSharpScriptEngine::InvokeManagedEvent(Object* obj, size_t hash, ScriptStack& stack)
+    {
+        // For Testing purpose
+        if (hash == std::hash<String>()("Node::Begin()"))
+        {
+            NodeType.InvokeStaticMethod("InvokeManagedEvent_Begin", (void*)obj);
+        }
+        else if (hash == std::hash<String>()("Node::OnNodeDestroy()"))
+        {
+            NodeType.InvokeStaticMethod("InvokeManagedEvent_OnNodeDestroy", (void*)obj);
+        }
+        else if (hash == std::hash<String>()("Node::WorldUpdate(float)"))
+        {
+            float deltaTime = ScriptStack::ConvertFromStack<float>(stack.Pop());
+            NodeType.InvokeStaticMethod("InvokeManagedEvent_WorldUpdate", (void*)obj, deltaTime);
+        }
     }
 
     CSharpScriptEngine* CSharpScriptEngine::Get()

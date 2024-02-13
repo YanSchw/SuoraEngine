@@ -35,6 +35,16 @@ namespace Suora
 			s_ManagedObjectToNativePtr.Remove(s_NativePtrToManagedObject[ptr]);
 			s_NativePtrToManagedObject.Remove(ptr);
 		}
+
+		public static SuoraObject GetManagedObjectFromNativePtr(IntPtr ptr)
+		{
+			return s_NativePtrToManagedObject.GetValueOrDefault(ptr, null);
+		}
+
+		public static IntPtr GetNativePtrFromManagedObject(SuoraObject obj)
+		{
+			return s_ManagedObjectToNativePtr.GetValueOrDefault(obj, IntPtr.Zero);
+		}
 		
 		
 	}
