@@ -329,6 +329,11 @@ namespace Suora
         assembly.AddInternalCall("Suora.Debug", "LogWarn",  reinterpret_cast<void*>(&DebugLogWarn));
         assembly.AddInternalCall("Suora.Debug", "LogError", reinterpret_cast<void*>(&DebugLogError));
         assembly.AddInternalCall("Suora.Node",  "InternalSetUpdateFlag", reinterpret_cast<void*>(&Node_SetUpdateFlag));
+        assembly.AddInternalCall("Suora.Node3D", "InternalSetPosition", reinterpret_cast<void*>(&Node3D_SetPosition));
+        assembly.AddInternalCall("Suora.Node3D", "InternalAddWorldOffset", reinterpret_cast<void*>(&Node3D_AddWorldOffset));
+        assembly.AddInternalCall("Suora.Node3D", "InternalSetRotation", reinterpret_cast<void*>(&Node3D_SetRotation));
+        assembly.AddInternalCall("Suora.Node3D", "InternalRotateEuler", reinterpret_cast<void*>(&Node3D_RotateEuler));
+        assembly.AddInternalCall("Suora.Node3D", "InternalSetScale", reinterpret_cast<void*>(&Node3D_SetScale));
         assembly.UploadInternalCalls();
     }
 
