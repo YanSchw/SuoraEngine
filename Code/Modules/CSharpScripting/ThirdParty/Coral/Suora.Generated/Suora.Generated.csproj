@@ -42,6 +42,7 @@
     <Compile Include="Source\Debug.cs" />
     <Compile Include="Source\AllNativeClasses.cs" />
     <Compile Include="Source\PartialClasses.cs" />
+    <Compile Include="Source\Vec3.cs" />
   </ItemGroup>
   <ItemGroup>
 	PATH_TO_CORAL_MANAGED
