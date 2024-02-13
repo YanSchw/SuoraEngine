@@ -10,11 +10,18 @@ SuoraEngine is an open-source C++ Engine for building 3D real-time rendering and
 ![Screenshot of the Suora Engine editor](Docs/Images/SuoraInEditorScreenshot.png)
 
 ## Current Features
-In its current state, Suora's most remarkable features are:
 
 #### Gameplay Programming
 ![Gameplay Programming](Docs/Images/SuoraCPP_Programming.png)
 Gameplay Programming using C++ and a custom C++ Reflection System using SuoraHeaderTool and SuoraBuildTool. Everything is devided into C++ Modules, which can be compiled incrementally.
+Full Clean Engine Build within **5 Minutes**.
+Incremental C++ Build (Compile + Editor Startup) in **<15 Seconds**. 
+
+#### Gameplay Scripting (Experimental)
+![Gameplay Scripting](Docs/Images/SuoraCSharp_Scripting.png)
+Gameplay Scripting using C#. Extend Native C++ Classes and Functionality with C# and .Net Core 8.
+[.Net Core 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) is required!
+Full C# Build + HotReload in **<5 Seconds**.
 
 #### Visual Scripting (Experimental)
 ![Visual Scripting](Docs/Images/VisualScripting.png)
