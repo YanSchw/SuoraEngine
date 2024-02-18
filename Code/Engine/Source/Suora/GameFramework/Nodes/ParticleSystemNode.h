@@ -42,7 +42,7 @@ namespace Suora
 		void SetMesh(Mesh* mesh);
 		Mesh* GetMesh() const;
 
-		MEMBER()
+		PROPERTY()
 		Material* m_Material = nullptr;
 
 	private:
@@ -52,10 +52,10 @@ namespace Suora
 		virtual void RenderForwardSingleInstance(World& world, CameraNode& camera, RenderingParams& params, int32_t ID) override;
 		virtual void RenderShadowSingleInstance(World& world, CameraNode& lightCamera, RenderingParams& params, LightNode* light, int32_t ID) override;
 
-		MEMBER()
+		PROPERTY()
 		Mesh* m_Mesh = nullptr;
 
-		MEMBER()
+		PROPERTY()
 		float m_LifeTime = 5.0f;
 
 		Ref<ShaderStorageBuffer> m_SSBO;

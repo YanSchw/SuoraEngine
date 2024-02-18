@@ -11,8 +11,8 @@ namespace Suora
 
 	static void Multiply_Vec3_Float(ScriptStack& stack)
 	{
-		float f = ScriptStack::ConvertFromStack<float>(stack.Pop());
-		Vec3 vec = ScriptStack::ConvertFromStack<Vec3>(stack.Pop());
+		float f = stack.PopItem<float>();
+		Vec3 vec = stack.PopItem<Vec3>();
 
 		Vec3 result = vec * f;
 		stack.Proccess<Vec3>(result);

@@ -21,10 +21,10 @@ namespace Suora
 
 		virtual void ShadowMap(World& world, CameraNode& camera, RenderingParams& params);
 
-		MEMBER()
+		PROPERTY()
 		float m_Intensity = 1.0f;
 
-		MEMBER()
+		PROPERTY()
 		bool m_ShadowMap = false;
 
 	};

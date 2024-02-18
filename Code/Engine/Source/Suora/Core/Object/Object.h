@@ -166,7 +166,7 @@ enum
 	__NodeEventDispatch(__function_hash, __stack);\
 }
 
-#define MEMBER(...)
+#define PROPERTY(...)
 enum
 {
 	VisibleOnly,
@@ -201,3 +201,4 @@ namespace Suora
 #include "Suora/NodeScript/ScriptStack.h"
 #include "Suora/Reflection/SubclassOf.h"
 #include "Suora/Reflection/New.h"
+#include "Suora/Reflection/Property.h"

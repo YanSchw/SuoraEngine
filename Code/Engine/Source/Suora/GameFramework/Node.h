@@ -222,7 +222,7 @@ namespace Suora
 	public:
 		void Serialize(Yaml::Node& root);
 		static Node* Deserialize(Yaml::Node& root, const bool isRootNode);
-		void ResetProperty(const ClassMember& member);
+		void ResetProperty(const ClassMemberProperty& member);
 
 		Array<String> m_OverwrittenProperties;
 

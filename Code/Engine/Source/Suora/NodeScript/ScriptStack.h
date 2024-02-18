@@ -52,6 +52,17 @@ namespace Suora
 		}
 
 		template<class T>
+		void PushItem(T item)
+		{
+			Push(ConvertToStack<T>(item));
+		}
+		template<class T>
+		T PopItem()
+		{
+			return ConvertFromStack<T>(Pop());
+		}
+
+		template<class T>
 		static int64_t ConvertToStack(T value);
 
 		template<class T>

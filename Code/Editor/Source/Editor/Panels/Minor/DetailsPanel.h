@@ -37,7 +37,7 @@ namespace Suora
 
 		virtual void Render(float deltaTime) override;
 
-		void DrawClassMember(float& x, float& y, Node* obj, ClassMember* member, int memberIndex);
+		void DrawClassMember(float& x, float& y, Node* obj, ClassMemberProperty* member, int memberIndex);
 
 		/** UI Utility */
 		bool DrawHeaderShutter(void* data, const String& label, float x, float& y, bool valueChanged, bool& reset);

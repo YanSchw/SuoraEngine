@@ -26,21 +26,21 @@ namespace Suora
 		bool IsGrounded();
 
 
-		MEMBER()
+		PROPERTY()
 		float m_CapsuleRadius = 0.5f;
-		MEMBER()
+		PROPERTY()
 		float m_CapsuleHalfHeight = 1.0f;
 
-		MEMBER()
+		PROPERTY()
 		float SlopeLimitDeg = 45.5f;
-		MEMBER()
+		PROPERTY()
 		float StepOffset = 0.15f;
 
 		uint32_t LayerID = 0;
 
-		MEMBER()
+		PROPERTY()
 		bool DisableGravity = false;
-		MEMBER()
+		PROPERTY()
 		float m_GravityScale = 1.0f;
 
 	protected:

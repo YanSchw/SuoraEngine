@@ -8,31 +8,31 @@
 namespace Suora
 {
 
-	static void WritePropertyValue(Yaml::Node& property, const ClassMember& member, Node* node)
+	static void WritePropertyValue(Yaml::Node& property, const ClassMemberProperty& member, Node* node)
 	{
-		switch (member.m_Type)
+		switch (member.m_Property->GetType())
 		{
-		case ClassMember::Type::Integer32:
-			property["Value"]["Int32"] = std::to_string(*ClassMember::AccessMember<int32_t>(node, member.m_MemberOffset));
+		case PropertyType::Int32:
+			property["Value"]["Int32"] = std::to_string(*ClassMemberProperty::AccessMember<int32_t>(node, member.m_MemberOffset));
 			break;
-		case ClassMember::Type::Float:
-			property["Value"]["Float"] = std::to_string(*ClassMember::AccessMember<float>(node, member.m_MemberOffset));
+		case PropertyType::Float:
+			property["Value"]["Float"] = std::to_string(*ClassMemberProperty::AccessMember<float>(node, member.m_MemberOffset));
 			break;
-		case ClassMember::Type::Bool:
-			property["Value"]["Bool"] = (*ClassMember::AccessMember<bool>(node, member.m_MemberOffset)) ? "true" : "false";
+		case PropertyType::Bool:
+			property["Value"]["Bool"] = (*ClassMemberProperty::AccessMember<bool>(node, member.m_MemberOffset)) ? "true" : "false";
 			break;
-		case ClassMember::Type::Vector3:
-			property["Value"]["Vec3"] = Vec::ToString<Vec3>((*ClassMember::AccessMember<Vec3>(node, member.m_MemberOffset)));
+		case PropertyType::Vec3:
+			property["Value"]["Vec3"] = Vec::ToString<Vec3>((*ClassMemberProperty::AccessMember<Vec3>(node, member.m_MemberOffset)));
 			break;
-		case ClassMember::Type::Vector4:
-			property["Value"]["Vec4"] = Vec::ToString<Vec4>((*ClassMember::AccessMember<Vec4>(node, member.m_MemberOffset)));
+		case PropertyType::Vec4:
+			property["Value"]["Vec4"] = Vec::ToString<Vec4>((*ClassMemberProperty::AccessMember<Vec4>(node, member.m_MemberOffset)));
 			break;
-		case ClassMember::Type::ObjectPtr:
+		case PropertyType::ObjectPtr:
 			{
-				const Class objClass = ((ClassMember_ObjectPtr*)(&member))->m_ObjectClass;
+				const Class objClass = ((ObjectPtrProperty*)(member.m_Property.get()))->m_ObjectClass;
 				if (objClass.Inherits(Asset::StaticClass()))
 				{
-					const Asset* asset = *ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset);
+					const Asset* asset = *ClassMemberProperty::AccessMember<Asset*>(node, member.m_MemberOffset);
 					property["Value"]["AssetPtr"] = (asset) ? asset->m_UUID.GetString() : "0";
 				}
 				else
@@ -41,9 +41,9 @@ namespace Suora
 				}
 				break;
 			}
-		case ClassMember::Type::MaterialSlots:
+		case PropertyType::MaterialSlots:
 		{
-			MaterialSlots* slots = (ClassMember::AccessMember<MaterialSlots>(node, member.m_MemberOffset));
+			MaterialSlots* slots = (ClassMemberProperty::AccessMember<MaterialSlots>(node, member.m_MemberOffset));
 			property["Value"]["MaterialSlots"]["Overwrite"] = slots->OverwritteMaterials ? "true" : "false";
 			if (slots->OverwritteMaterials)
 			{
@@ -53,42 +53,42 @@ namespace Suora
 				}
 			}
 		} break;
-		case ClassMember::Type::Class:
-			property["Value"]["Class"] = ClassMember::AccessMember<Class>(node, member.m_MemberOffset)->ToString();
+		case PropertyType::Class:
+			property["Value"]["Class"] = ClassMemberProperty::AccessMember<Class>(node, member.m_MemberOffset)->ToString();
 			break;
-		case ClassMember::Type::SubclassOf:
-			property["Value"]["SubclassOf"] = ClassMember::AccessMember<TSubclassOf>(node, member.m_MemberOffset)->GetClass().ToString();
+		case PropertyType::SubclassOf:
+			property["Value"]["SubclassOf"] = ClassMemberProperty::AccessMember<TSubclassOf>(node, member.m_MemberOffset)->GetClass().ToString();
 			break;
-		case ClassMember::Type::Delegate: /* Nothing */
+		case PropertyType::Delegate: /* Nothing */
 			break;
 		default: SuoraError("{0}, ReflectionType missing!", __FUNCTION__); break;
 		}
 	}
-	static void ReadPropertyValue(Yaml::Node& property, const ClassMember& member, Node* node)
+	static void ReadPropertyValue(Yaml::Node& property, const ClassMemberProperty& member, Node* node)
 	{
-		switch (member.m_Type)
+		switch (member.m_Property->GetType())
 		{
-		case ClassMember::Type::Integer32:
-			*ClassMember::AccessMember<int32_t>(node, member.m_MemberOffset) = std::stoi(property["Value"]["Int32"].As<String>());
+		case PropertyType::Int32:
+			*ClassMemberProperty::AccessMember<int32_t>(node, member.m_MemberOffset) = std::stoi(property["Value"]["Int32"].As<String>());
 			break;
-		case ClassMember::Type::Float:
-			*ClassMember::AccessMember<float>(node, member.m_MemberOffset) = std::stof(property["Value"]["Float"].As<String>());
+		case PropertyType::Float:
+			*ClassMemberProperty::AccessMember<float>(node, member.m_MemberOffset) = std::stof(property["Value"]["Float"].As<String>());
 			break;
-		case ClassMember::Type::Bool:
-			*ClassMember::AccessMember<bool>(node, member.m_MemberOffset) = property["Value"]["Bool"].As<String>() == "true";
+		case PropertyType::Bool:
+			*ClassMemberProperty::AccessMember<bool>(node, member.m_MemberOffset) = property["Value"]["Bool"].As<String>() == "true";
 			break;
-		case ClassMember::Type::Vector3:
-			*ClassMember::AccessMember<Vec3>(node, member.m_MemberOffset) = Vec::FromString<Vec3>(property["Value"]["Vec3"].As<String>());
+		case PropertyType::Vec3:
+			*ClassMemberProperty::AccessMember<Vec3>(node, member.m_MemberOffset) = Vec::FromString<Vec3>(property["Value"]["Vec3"].As<String>());
 			break;
-		case ClassMember::Type::Vector4:
-			*ClassMember::AccessMember<Vec4>(node, member.m_MemberOffset) = Vec::FromString<Vec4>(property["Value"]["Vec4"].As<String>());
+		case PropertyType::Vec4:
+			*ClassMemberProperty::AccessMember<Vec4>(node, member.m_MemberOffset) = Vec::FromString<Vec4>(property["Value"]["Vec4"].As<String>());
 			break;
-		case ClassMember::Type::ObjectPtr:
+		case PropertyType::ObjectPtr:
 		{
-			const Class objClass = ((ClassMember_ObjectPtr*)(&member))->m_ObjectClass;
+			const Class objClass = ((ObjectPtrProperty*)(member.m_Property.get()))->m_ObjectClass;
 			if (objClass.Inherits(Asset::StaticClass()))
 			{
-				Asset*& assetRef = (Asset*&)*ClassMember::AccessMember<Asset*>(node, member.m_MemberOffset);
+				Asset*& assetRef = (Asset*&)*ClassMemberProperty::AccessMember<Asset*>(node, member.m_MemberOffset);
 				const String assetUUID = property["Value"]["AssetPtr"].As<String>();
 				Asset* asset = (assetUUID != "0" && assetUUID != "") ? AssetManager::GetAsset(objClass, SuoraID(assetUUID)) : nullptr;
 
@@ -104,7 +104,7 @@ namespace Suora
 			}
 			break;
 		}
-		case ClassMember::Type::MaterialSlots:
+		case PropertyType::MaterialSlots:
 		{
 			MaterialSlots ValueMaterialSlots;
 			ValueMaterialSlots.OverwritteMaterials = property["Value"]["MaterialSlots"]["Overwrite"].As<String>() == "true";
@@ -119,15 +119,15 @@ namespace Suora
 					: nullptr);
 				i++;
 			}
-			*ClassMember::AccessMember<MaterialSlots>(node, member.m_MemberOffset) = ValueMaterialSlots;
+			*ClassMemberProperty::AccessMember<MaterialSlots>(node, member.m_MemberOffset) = ValueMaterialSlots;
 		} break;
-		case ClassMember::Type::Class:
-			*ClassMember::AccessMember<Class>(node, member.m_MemberOffset) = Class::FromString(property["Value"]["Class"].As<String>());
+		case PropertyType::Class:
+			*ClassMemberProperty::AccessMember<Class>(node, member.m_MemberOffset) = Class::FromString(property["Value"]["Class"].As<String>());
 			break;
-		case ClassMember::Type::SubclassOf:
-			*ClassMember::AccessMember<TSubclassOf>(node, member.m_MemberOffset) = Class::FromString(property["Value"]["SubclassOf"].As<String>());
+		case PropertyType::SubclassOf:
+			*ClassMemberProperty::AccessMember<TSubclassOf>(node, member.m_MemberOffset) = Class::FromString(property["Value"]["SubclassOf"].As<String>());
 			break;
-		case ClassMember::Type::Delegate: /* Nothing */
+		case PropertyType::Delegate: /* Nothing */
 			break;
 		default: SuoraError("{0}, ReflectionType missing!", __FUNCTION__); break;
 		}
@@ -144,8 +144,8 @@ namespace Suora
 	static void SerializeProperties(Yaml::Node& root, NodeSerializer& serializer, Node* node)
 	{
 		const ClassReflector& refl = ClassReflector::GetByClass(node->GetNativeClass());
-		const auto allMembers = refl.GetAllClassMember();
-		for (const Ref<ClassMember>& mem : allMembers)
+		const auto allMembers = refl.GetAllClassMemberProperties();
+		for (const Ref<ClassMemberProperty>& mem : allMembers)
 		{
 			if (node->m_OverwrittenProperties.Contains(mem->m_MemberName))
 			{
@@ -374,8 +374,8 @@ namespace Suora
 				}
 
 				const ClassReflector& refl = ClassReflector::GetByClass(applyPropertyTo->GetNativeClass());
-				const auto allMembers = refl.GetAllClassMember();
-				for (const Ref<ClassMember>& mem : allMembers)
+				const auto allMembers = refl.GetAllClassMemberProperties();
+				for (const Ref<ClassMemberProperty>& mem : allMembers)
 				{
 					if (mem->m_MemberName == propertyName)
 					{
@@ -400,7 +400,7 @@ namespace Suora
 		return node;
 	}
 
-	void Node::ResetProperty(const ClassMember& member)
+	void Node::ResetProperty(const ClassMemberProperty& member)
 	{
 		Ref<Node> root;
 		Node* original = nullptr;

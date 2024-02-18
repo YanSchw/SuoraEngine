@@ -414,60 +414,61 @@ namespace Suora
 		EditorUI::ScrollbarVertical(GetWidth() - 10, 0, 10, GetHeight(), 0, 0, GetWidth(), GetHeight(), 0, scrollDown > 0 ? 0 : Math::Abs(scrollDown), &m_ScrollY);
 	}
 
-	void DetailsPanel::DrawClassMember(float& x, float& y, Node* obj, ClassMember* member, int memberIndex)
+	void DetailsPanel::DrawClassMember(float& x, float& y, Node* obj, ClassMemberProperty* member, int memberIndex)
 	{
 		//y -= 10.0f;
-		const auto type = member->m_Type;
+		const auto type = member->m_Property->GetType();
 		const auto mname = member->m_MemberName;
 		const bool valueChangedBefore = obj->m_OverwrittenProperties.Contains(mname);
 		Result result = Result::None;
-		if (type == ClassMember::Type::Float)
+
+		if (type == PropertyType::Float)
 		{
-			float* f = ClassMember::AccessMember<float>(obj, member->m_MemberOffset);
+			float* f = ClassMemberProperty::AccessMember<float>(obj, member->m_MemberOffset);
 			result = DrawFloat(f, mname, y, valueChangedBefore);
 		}
-		else if (member->m_Type == ClassMember::Type::Bool)
+		else if (type == PropertyType::Bool)
 		{
-			bool* b = ClassMember::AccessMember<bool>(obj, member->m_MemberOffset);
+			bool* b = ClassMemberProperty::AccessMember<bool>(obj, member->m_MemberOffset);
 			result = DrawBool(b, mname, y, valueChangedBefore);
 		}
-		else if (member->m_Type == ClassMember::Type::Vector3)
+		else if (type == PropertyType::Vec3)
 		{
-			Vec3* v = ClassMember::AccessMember<Vec3>(obj, member->m_MemberOffset);
+			Vec3* v = ClassMemberProperty::AccessMember<Vec3>(obj, member->m_MemberOffset);
 			result = DrawVec3(v, mname, y, valueChangedBefore);
 		}
-		else if (member->m_Type == ClassMember::Type::Vector4)
+		else if (type == PropertyType::Vec4)
 		{
-			Vec4* v = ClassMember::AccessMember<Vec4>(obj, member->m_MemberOffset);
+			Vec4* v = ClassMemberProperty::AccessMember<Vec4>(obj, member->m_MemberOffset);
 			result = DrawVec4(v, mname, y, valueChangedBefore);
 		}
-		else if (member->m_Type == ClassMember::Type::ObjectPtr)
+		else if (type == PropertyType::ObjectPtr)
 		{
-			const Class objClass = ((ClassMember_ObjectPtr*)(member))->m_ObjectClass;
+			const Class objClass = ((ObjectPtrProperty*)(member->m_Property.get()))->m_ObjectClass;
 			if (objClass.Inherits(Asset::StaticClass()))
 			{
-				Asset** asset = ClassMember::AccessMember<Asset*>(obj, member->m_MemberOffset);
+				Asset** asset = ClassMemberProperty::AccessMember<Asset*>(obj, member->m_MemberOffset);
 				result = DrawAsset(asset, objClass, mname, y, valueChangedBefore);
 			}
 		}
-		else if (member->m_Type == ClassMember::Type::MaterialSlots)
+		else if (type == PropertyType::MaterialSlots)
 		{
-			MaterialSlots* materials = ClassMember::AccessMember<MaterialSlots>(obj, member->m_MemberOffset);
+			MaterialSlots* materials = ClassMemberProperty::AccessMember<MaterialSlots>(obj, member->m_MemberOffset);
 			result = DrawMaterialSlots(materials, y, valueChangedBefore);
 		}
-		else if (member->m_Type == ClassMember::Type::Class)
+		else if (type == PropertyType::Class)
 		{
-			Class* cls = ClassMember::AccessMember<Class>(obj, member->m_MemberOffset);
+			Class* cls = ClassMemberProperty::AccessMember<Class>(obj, member->m_MemberOffset);
 			result = DrawClass(cls, mname, y, valueChangedBefore);
 		}
-		else if (member->m_Type == ClassMember::Type::SubclassOf)
+		else if (type == PropertyType::SubclassOf)
 		{
-			TSubclassOf* cls = ClassMember::AccessMember<TSubclassOf>(obj, member->m_MemberOffset);
+			TSubclassOf* cls = ClassMemberProperty::AccessMember<TSubclassOf>(obj, member->m_MemberOffset);
 			result = DrawSubclassOf(cls, mname, y, valueChangedBefore);
 		}
-		else if (member->m_Type == ClassMember::Type::Delegate)
+		else if (type == PropertyType::Delegate)
 		{
-			TDelegate* delegate = ClassMember::AccessMember<TDelegate>(obj, member->m_MemberOffset);
+			TDelegate* delegate = ClassMemberProperty::AccessMember<TDelegate>(obj, member->m_MemberOffset);
 			result = DrawDelegate(delegate, mname, y);
 		}
 		else
@@ -604,7 +605,7 @@ namespace Suora
 			const ClassReflector& refl = ClassReflector::GetByClass(derivates[i]);
 			if (EditorUI::CategoryShutter(1000 + i, refl.m_ClassName, 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
 			{
-				for (Ref<ClassMember> member : refl.m_ClassMembers)
+				for (Ref<ClassMemberProperty> member : refl.m_ClassProperties)
 				{
 					float x = 0;
 					DrawClassMember(x, y, node, member.get(), memberIndex++);
@@ -613,7 +614,7 @@ namespace Suora
 			}
 			else
 			{
-				memberIndex += refl.m_ClassMembers.Size();
+				memberIndex += refl.m_ClassProperties.Size();
 			}
 		}
 

@@ -414,18 +414,18 @@ namespace Suora
 
 	void EditorUI::DragInt32(int32_t* i, float x, float y, float width, float height, const std::function<void(String)>& lambda)
 	{
-		DragNumber(i, ClassMember::Type::Integer32, x, y, width, height, lambda);
+		DragNumber(i, PropertyType::Int32, x, y, width, height, lambda);
 	}
 	void EditorUI::DragFloat(float* f, float x, float y, float width, float height, const std::function<void(String)>& lambda)
 	{
-		DragNumber(f, ClassMember::Type::Float, x, y, width, height, lambda);
+		DragNumber(f, PropertyType::Float, x, y, width, height, lambda);
 	}
-	void EditorUI::DragNumber(void* n, ClassMember::Type type, float x, float y, float width, float height, const std::function<void(String)>& lambda)
+	void EditorUI::DragNumber(void* n, PropertyType type, float x, float y, float width, float height, const std::function<void(String)>& lambda)
 	{
 		struct DragFloatTextField : public TextFieldOverlay
 		{
-			ClassMember::Type m_Type;
-			DragFloatTextField(String* str, const std::function<void(String)>& lambda, ClassMember::Type type, bool needsFlag = true) : TextFieldOverlay(str, 26.0f, lambda, needsFlag)
+			PropertyType m_Type;
+			DragFloatTextField(String* str, const std::function<void(String)>& lambda, PropertyType type, bool needsFlag = true) : TextFieldOverlay(str, 26.0f, lambda, needsFlag)
 			{
 				m_Type = type;
 				CursorSelectionOffset = str->size();
@@ -435,8 +435,8 @@ namespace Suora
 				if (NativeInput::GetKeyDown(Key::Tab)) DraggedNumberTabulatePtr = DraggedNumberPtr;
 				switch (m_Type)
 				{
-				case ClassMember::Type::Integer32: *(int32_t*)DraggedNumberPtr = StringUtil::StringToInt32(DraggedNumberStr); break;
-				case ClassMember::Type::Float: *(float*)DraggedNumberPtr = StringUtil::StringToFloat(DraggedNumberStr); break;
+				case PropertyType::Int32: *(int32_t*)DraggedNumberPtr = StringUtil::StringToInt32(DraggedNumberStr); break;
+				case PropertyType::Float: *(float*)DraggedNumberPtr = StringUtil::StringToFloat(DraggedNumberStr); break;
 				default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
 				}
 				DraggedNumberPtr = nullptr;
@@ -446,8 +446,8 @@ namespace Suora
 		String label;
 		switch (type)
 		{
-		case ClassMember::Type::Integer32: label = StringUtil::Int32ToString(*(int32_t*)n); break;
-		case ClassMember::Type::Float: label = StringUtil::FloatToString(*(float*)n); break;
+		case PropertyType::Int32: label = StringUtil::Int32ToString(*(int32_t*)n); break;
+		case PropertyType::Float: label = StringUtil::FloatToString(*(float*)n); break;
 		default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
 		}
 
@@ -472,8 +472,8 @@ namespace Suora
 			DraggedNumberPtr = n;
 			switch (type)
 			{
-			case ClassMember::Type::Integer32: DraggedInt32BeginValue = *(int32_t*)n; break;
-			case ClassMember::Type::Float: DraggedFloatBeginValue = *(float*)n; break;
+			case PropertyType::Int32: DraggedInt32BeginValue = *(int32_t*)n; break;
+			case PropertyType::Float: DraggedFloatBeginValue = *(float*)n; break;
 			default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
 			}
 			CurrentWindow->GetWindow()->SetCursorLocked(true);
@@ -486,8 +486,8 @@ namespace Suora
 			bool isValueTheSameAsbefore = false;
 			switch (type)
 			{
-			case ClassMember::Type::Integer32: isValueTheSameAsbefore = *(int32_t*)DraggedNumberPtr == DraggedInt32BeginValue; break;
-			case ClassMember::Type::Float: isValueTheSameAsbefore = *(float*)DraggedNumberPtr == DraggedFloatBeginValue; break;
+			case PropertyType::Int32: isValueTheSameAsbefore = *(int32_t*)DraggedNumberPtr == DraggedInt32BeginValue; break;
+			case PropertyType::Float: isValueTheSameAsbefore = *(float*)DraggedNumberPtr == DraggedFloatBeginValue; break;
 			default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
 			}
 			if (isValueTheSameAsbefore)
@@ -505,8 +505,8 @@ namespace Suora
 		{
 			switch (type)
 			{
-			case ClassMember::Type::Integer32: *(int32_t*)n += NativeInput::GetMouseDelta().x / 4; break;
-			case ClassMember::Type::Float: *(float*)n += NativeInput::GetMouseDelta().x / 50.0f; break;
+			case PropertyType::Int32: *(int32_t*)n += NativeInput::GetMouseDelta().x / 4; break;
+			case PropertyType::Float: *(float*)n += NativeInput::GetMouseDelta().x / 50.0f; break;
 			default: SuoraVerify(false, "EditorUI::DragNumber missing Implementation"); return;
 			}
 			

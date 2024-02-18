@@ -71,7 +71,7 @@ namespace Suora::Tools
 
 		void GenerateClassSymbols(HeaderTool::Header* header, std::map<HeaderOutput, std::string>* output);
 		void GenerateTemplateInnerMember(std::string& str, std::string inner, const std::string& index);
-		void GenerateMemberReflection(const std::string& className, std::string& str, const std::string& meta, std::string member);
+		void GeneratePropertyReflection(const std::string& className, std::string& str, const std::string& meta, std::string member);
 		FunctionMeta GenerateFunctionReflection(const std::string& className, const std::string& classID, const std::string& meta, const std::string& func);
 
 		void AddHeader(Ref<Header> ref);

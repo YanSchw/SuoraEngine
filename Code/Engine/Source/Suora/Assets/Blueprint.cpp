@@ -90,12 +90,12 @@ namespace Suora
 			}
 
 			const ClassReflector& refl = applicant->GetClass().GetClassReflector();
-			Array<Ref<ClassMember>> members = refl.GetAllClassMember();
-			for (Ref<ClassMember> member : members)
+			Array<Ref<ClassMemberProperty>> members = refl.GetAllClassMemberProperties();
+			for (Ref<ClassMemberProperty> member : members)
 			{
-				if (member->m_Type == ClassMember::Type::Delegate && member->m_MemberName == It.DelegateName)
+				if (member->m_Property->GetType() == PropertyType::Delegate && member->m_MemberName == It.DelegateName)
 				{
-					TDelegate* delegate = ClassMember::AccessMember<TDelegate>(applicant, member->m_MemberOffset);
+					TDelegate* delegate = ClassMemberProperty::AccessMember<TDelegate>(applicant, member->m_MemberOffset);
 					delegate->Bindings.Add(TDelegate::SciptDelegateBinding(node, It.ScriptFunctionHash));
 				}
 			}

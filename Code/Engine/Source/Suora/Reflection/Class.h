@@ -82,6 +82,12 @@ namespace Suora
 		String ToString() const;
 		static Class FromString(const String& str);
 
+		template<class T>
+		static Class FromTemplate()
+		{
+			return T::StaticClass();
+		}
+
 		Object* GetClassDefaultObject(bool clear = false) const;
 
 	};

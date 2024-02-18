@@ -566,7 +566,7 @@ namespace Suora
 	public:
 		static void DragInt32(int32_t* i, float x, float y, float width, float height, const std::function<void(String)>& lambda = nullptr);
 		static void DragFloat(float* f, float x, float y, float width, float height, const std::function<void(String)>& lambda = nullptr);
-		static void DragNumber(void* n, ClassMember::Type type, float x, float y, float width, float height, const std::function<void(String)>& lambda = nullptr);
+		static void DragNumber(void* n, PropertyType type, float x, float y, float width, float height, const std::function<void(String)>& lambda = nullptr);
 
 	private:
 		inline static float* SliderFloat_F = nullptr;

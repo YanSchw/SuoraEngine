@@ -14,8 +14,9 @@ namespace Suora
 		ASSET_EXTENSION(".node");
 
 	private:
-		MEMBER()
+		PROPERTY()
 		Class m_ParentClass = Class::None;
+
 		Yaml::Node m_Composition;
 		Ref<ScriptClassInternal> m_ScriptClass;
 		Yaml::Node m_YamlNode_EditorOnly;

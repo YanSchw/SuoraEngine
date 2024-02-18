@@ -32,16 +32,16 @@ namespace Suora
 		uint32_t m_ClusterCount = 0;
 
 	private:
-		MEMBER() 
+		PROPERTY()
 		Mesh* m_Mesh = nullptr;
 	public:
-		MEMBER() 
+		PROPERTY()
 		MaterialSlots m_Materials;
 		
-		MEMBER()
+		PROPERTY()
 		bool m_CastShadow = true;
 
-		MEMBER()
+		PROPERTY()
 		bool m_ContributeGI = true;
 
 	public:
