@@ -422,7 +422,12 @@ namespace Suora
 		const bool valueChangedBefore = obj->m_OverwrittenProperties.Contains(mname);
 		Result result = Result::None;
 
-		if (type == PropertyType::Float)
+		if (type == PropertyType::Int32)
+		{
+			int32_t* i = ClassMemberProperty::AccessMember<int32_t>(obj, member->m_MemberOffset);
+			result = DrawInt32(i, mname, y, valueChangedBefore);
+		}
+		else if (type == PropertyType::Float)
 		{
 			float* f = ClassMemberProperty::AccessMember<float>(obj, member->m_MemberOffset);
 			result = DrawFloat(f, mname, y, valueChangedBefore);
