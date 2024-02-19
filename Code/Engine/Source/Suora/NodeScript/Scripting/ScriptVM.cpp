@@ -54,22 +54,22 @@ namespace Suora
 				break;
 
 			case EScriptInstruction::PushConstant:
-				stack.Push(instruction.m_Args[0]);
+				stack.Push(instruction.m_Args[0], ScriptDataType::None);
 				break;
 			case EScriptInstruction::PushSelf:
-				stack.Push((int64_t)obj);
+				stack.Push((int64_t)obj, ScriptDataType::ObjectPtr);
 				break;
 			case EScriptInstruction::PushToLocalVar:
 				LocalVars[instruction.m_Args[0]] = stack.Pop();
 				break;
 			case EScriptInstruction::PushLocalVar:
-				stack.Push(LocalVars[instruction.m_Args[0]]);
+				stack.Push(LocalVars[instruction.m_Args[0]], ScriptDataType::None);
 				break;
 			case EScriptInstruction::Pop:
 				stack.Pop();
 				break;
 			case EScriptInstruction::UpStack:
-				stack.Push(stack.Peek());
+				stack.Push(stack.Peek(), stack.PeekType());
 				break;
 
 			case EScriptInstruction::Multiply_Vec3_Float:
