@@ -7,6 +7,7 @@
 #include "Suora/Core/Application.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
 #include "InternalCalls.h"
+#include "CSScriptStack.h"
 
 #include "HostInstance.hpp"
 #include "Attribute.hpp"
@@ -324,6 +325,7 @@ namespace Suora
         // Get a reference to the SuoraClass Attribute type
         SuoraClassType       = assembly.GetType("Suora.SuoraClass");
         NativeSuoraClassType = assembly.GetType("Suora.NativeSuoraClass");
+        CSScriptStack::ScriptStackType = assembly.GetType("Suora.ScriptStack");
 
         assembly.AddInternalCall("Suora.Debug", "LogInfo",  reinterpret_cast<void*>(&DebugLogInfo));
         assembly.AddInternalCall("Suora.Debug", "LogWarn",  reinterpret_cast<void*>(&DebugLogWarn));
@@ -335,6 +337,7 @@ namespace Suora
         assembly.AddInternalCall("Suora.Node3D", "InternalRotateEuler", reinterpret_cast<void*>(&Node3D_RotateEuler));
         assembly.AddInternalCall("Suora.Node3D", "InternalSetScale", reinterpret_cast<void*>(&Node3D_SetScale));
         assembly.UploadInternalCalls();
+        CSScriptStack::UploadInternalCalls(assembly);
     }
 
     static NativeClassID GetCoralTypeNativeClassID(Coral::Type type)

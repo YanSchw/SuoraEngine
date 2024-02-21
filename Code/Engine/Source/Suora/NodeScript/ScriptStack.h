@@ -3,6 +3,7 @@
 #include <vector>
 #include <stack>
 #include <inttypes.h>
+#include "Suora/Core/Base.h"
 #include "Suora/Common/StringUtils.h"
 #include "Suora/Common/Array.h"
 #include "Suora/Common/VectorUtils.h"
