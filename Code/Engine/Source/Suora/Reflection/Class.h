@@ -64,6 +64,7 @@ namespace Suora
 
 		Array<Class> GetInheritanceTree() const;
 
+		static Array<Class> GetAllNativeClasses();
 		static Array<Class> GetAllClasses();
 		static Array<Class> GetSubclassesOf(const Class& base);
 		template<class T> static Array<Class> GetSubclassesOf() { return GetSubclassesOf(T::StaticClass()); }

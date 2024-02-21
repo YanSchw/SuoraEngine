@@ -1,4 +1,5 @@
 #include "CSharpProjectGenerator.h"
+#include "CSharpCodeGenerator.h"
 #include "CoreMinimal.h"
 #include "Suora/Platform/Platform.h"
 #include "Suora/Assets/AssetManager.h"
@@ -89,26 +90,8 @@ namespace Suora
 
         // Generate...
         {
-            String gen = "using System;\nusing Suora;\n\nnamespace Suora\n{\n";
-
-            Array<Class> allClasses = Class::GetAllClasses();
-            for (const Class& cls : allClasses)
-            {
-                if (!cls.IsNative())
-                    continue;
-                if (cls.GetNativeClassID() == 1)
-                    continue;
-
-                gen += "\t[NativeSuoraClass(NativeID = " + std::to_string(cls.GetNativeClassID()) + ")]\n";
-
-                String parentNativeClass = (cls.GetParentClass() == Object::StaticClass()) ? "Suora.SuoraObject" : "Suora." + cls.GetParentClass().GetClassName();
-                gen += "\tpublic partial class " + cls.GetClassName() + " : " + parentNativeClass + "\n\t{\n";
-
-                gen += "\t}\n\n";
-
-            }
-
-            gen += "}";
+            String gen;
+            CSharpCodeGenerator::Generate_AllNativeClasses_CS(gen);
             Platform::WriteToFile((path / "Source/AllNativeClasses.cs").string(), gen);
         }
 

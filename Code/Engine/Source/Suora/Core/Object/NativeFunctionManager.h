@@ -47,6 +47,10 @@ namespace Suora
 	{
 		return static_cast<FunctionFlags>(static_cast<int32_t>(a) | static_cast<int32_t>(b));
 	}
+	inline FunctionFlags operator&(FunctionFlags a, FunctionFlags b)
+	{
+		return static_cast<FunctionFlags>(static_cast<int32_t>(a) & static_cast<int32_t>(b));
+	}
 
 	struct NativeFunction
 	{

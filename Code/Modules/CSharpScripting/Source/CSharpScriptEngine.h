@@ -12,6 +12,8 @@ namespace Coral
 
 namespace Suora
 {
+	struct NativeFunction;
+
 	class CSharpScriptEngine : public ScriptEngine
 	{
 		SUORA_CLASS(548798543356);
@@ -44,6 +46,8 @@ namespace Suora
 		void DestroyManagedObject(Object* obj);
 
 		static CSharpScriptEngine* Get();
+
+		static NativeFunction* GetNativeFunctionFromHash(size_t hash);
 
 	private:
 		Ref<Coral::HostInstance> m_HostInstance;

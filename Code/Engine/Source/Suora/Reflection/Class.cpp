@@ -69,9 +69,14 @@ namespace Suora
 		return out;
 	}
 
+	Array<Class> Class::GetAllNativeClasses()
+	{
+		return ClassInternal::s_NativeClasses;
+	}
+
 	Array<Class> Class::GetAllClasses()
 	{
-		Array<Class> classes = ClassInternal::s_NativeClasses;
+		Array<Class> classes = GetAllNativeClasses();
 		classes.Add(Object::StaticClass());
 		
 		for (ScriptEngine* It : ScriptEngine::s_ScriptEngines)

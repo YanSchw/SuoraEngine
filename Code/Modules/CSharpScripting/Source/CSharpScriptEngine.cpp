@@ -5,6 +5,7 @@
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Core/NativeInput.h"
 #include "Suora/Core/Application.h"
+#include "Suora/Core/Object/NativeFunctionManager.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
 #include "InternalCalls.h"
 #include "CSScriptStack.h"
@@ -318,14 +319,22 @@ namespace Suora
     static Coral::Type NodeType;
     static Coral::Type SuoraClassType;
     static Coral::Type NativeSuoraClassType;
+    static Map<NativeClassID, Coral::Type> NativeToManagedTypes;
     void CSharpScriptEngine::ProcessReloadedSuoraAssembly(Coral::ManagedAssembly& assembly)
     {
+        NativeToManagedTypes.Clear();
         SuoraObjectType = assembly.GetType("Suora.SuoraObject");
         NodeType        = assembly.GetType("Suora.Node");
         // Get a reference to the SuoraClass Attribute type
         SuoraClassType       = assembly.GetType("Suora.SuoraClass");
         NativeSuoraClassType = assembly.GetType("Suora.NativeSuoraClass");
         CSScriptStack::ScriptStackType = assembly.GetType("Suora.ScriptStack");
+
+        Array<Class> nativeClasses = Class::GetAllNativeClasses();
+        for (Class It : nativeClasses)
+        {
+            NativeToManagedTypes[It.GetNativeClassID()] = assembly.GetType("Suora." + It.GetClassName());
+        }
 
         assembly.AddInternalCall("Suora.Debug", "LogInfo",  reinterpret_cast<void*>(&DebugLogInfo));
         assembly.AddInternalCall("Suora.Debug", "LogWarn",  reinterpret_cast<void*>(&DebugLogWarn));
@@ -405,25 +414,40 @@ namespace Suora
     
     void CSharpScriptEngine::InvokeManagedEvent(Object* obj, size_t hash, ScriptStack& stack)
     {
-        // For Testing purpose
-        if (hash == std::hash<String>()("Node::Begin()"))
-        {
-            NodeType.InvokeStaticMethod("InvokeManagedEvent_Begin", (void*)obj);
-        }
-        else if (hash == std::hash<String>()("Node::OnNodeDestroy()"))
-        {
-            NodeType.InvokeStaticMethod("InvokeManagedEvent_OnNodeDestroy", (void*)obj);
-        }
-        else if (hash == std::hash<String>()("Node::WorldUpdate(float)"))
-        {
-            float deltaTime = ScriptStack::ConvertFromStack<float>(stack.Pop());
-            NodeType.InvokeStaticMethod("InvokeManagedEvent_WorldUpdate", (void*)obj, deltaTime);
-        }
+        NativeFunction* func = GetNativeFunctionFromHash(hash);
+        SuoraVerify(func);
+
+        Coral::Type managedType = NativeToManagedTypes[func->m_ClassID];
+
+        CSScriptStack::UploadScriptStack(stack);
+
+        // Finally Call Managed Event
+        managedType.InvokeStaticMethod("InvokeManagedEvent_" + std::to_string(hash), (void*)obj);
     }
 
     CSharpScriptEngine* CSharpScriptEngine::Get()
     {
         return ScriptEngine::GetScriptEngineByDomain("CSharp")->As<CSharpScriptEngine>();
+    }
+
+    NativeFunction* CSharpScriptEngine::GetNativeFunctionFromHash(size_t hash)
+    {
+        static Map<size_t, NativeFunction*> s_FuncHashToNativeFunction;
+
+        if (!s_FuncHashToNativeFunction.ContainsKey(hash))
+        {
+            Array<NativeFunction*> funcs = NativeFunction::s_NativeFunctions;
+            for (NativeFunction* It : funcs)
+            {
+                if (It->m_Hash == hash)
+                {
+                    s_FuncHashToNativeFunction[hash] = It;
+                    break;
+                }
+            }
+        }
+
+        return s_FuncHashToNativeFunction.At(hash);
     }
 
 }
