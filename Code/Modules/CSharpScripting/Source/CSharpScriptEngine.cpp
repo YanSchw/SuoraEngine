@@ -340,11 +340,7 @@ namespace Suora
         assembly.AddInternalCall("Suora.Debug", "LogWarn",  reinterpret_cast<void*>(&DebugLogWarn));
         assembly.AddInternalCall("Suora.Debug", "LogError", reinterpret_cast<void*>(&DebugLogError));
         assembly.AddInternalCall("Suora.Node",  "InternalSetUpdateFlag", reinterpret_cast<void*>(&Node_SetUpdateFlag));
-        assembly.AddInternalCall("Suora.Node3D", "InternalSetPosition", reinterpret_cast<void*>(&Node3D_SetPosition));
-        assembly.AddInternalCall("Suora.Node3D", "InternalAddWorldOffset", reinterpret_cast<void*>(&Node3D_AddWorldOffset));
-        assembly.AddInternalCall("Suora.Node3D", "InternalSetRotation", reinterpret_cast<void*>(&Node3D_SetRotation));
-        assembly.AddInternalCall("Suora.Node3D", "InternalRotateEuler", reinterpret_cast<void*>(&Node3D_RotateEuler));
-        assembly.AddInternalCall("Suora.Node3D", "InternalSetScale", reinterpret_cast<void*>(&Node3D_SetScale));
+        assembly.AddInternalCall("Suora.SuoraObject", "s_CallNativeFunction", reinterpret_cast<void*>(&CSharpScriptEngine::CallNativeFunctionFromManagedHost));
         assembly.UploadInternalCalls();
         CSScriptStack::UploadInternalCalls(assembly);
     }
@@ -448,6 +444,21 @@ namespace Suora
         }
 
         return s_FuncHashToNativeFunction.At(hash);
+    }
+
+    void CSharpScriptEngine::CallNativeFunctionFromManagedHost(uint64_t hash)
+    {
+        NativeFunction* func = GetNativeFunctionFromHash((size_t)hash);
+        SuoraVerify(func);
+
+        ScriptStack stack = CSScriptStack::Get();
+
+        NativeFunctionManager::Call((size_t)hash, stack);
+
+        if (func->m_ReturnType != "void")
+        {
+            CSScriptStack::UploadScriptStack(stack);
+        }
     }
 
 }

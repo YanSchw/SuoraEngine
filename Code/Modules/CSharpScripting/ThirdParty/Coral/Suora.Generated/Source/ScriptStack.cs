@@ -6,6 +6,8 @@ namespace Suora
 	internal enum ScriptStackType
 	{
 		Int32,
+		UInt32,
+		Bool,
 		Float,
 		Vec3,
 		ObjectPtr
@@ -71,6 +73,48 @@ namespace Suora
 		internal static void UploadInt32(Int32 item)
 		{
 			s_Slot.PushInt32(item);
+		}
+		#endregion
+		
+		#region UInt32
+		internal static unsafe delegate*<UInt32, void> SendUInt32ToCPP;
+		private List<UInt32> m_StackUInt32 = new List<UInt32>();
+		internal void PushUInt32(UInt32 item)
+		{
+			m_StackUInt32.Add(item);
+			m_StackTypes.Add(ScriptStackType.UInt32);
+		}
+		internal UInt32 PopUInt32()
+		{
+			m_StackTypes.RemoveAt(m_StackTypes.Count - 1);
+			UInt32 value = m_StackUInt32[m_StackUInt32.Count - 1];
+			m_StackUInt32.RemoveAt(m_StackUInt32.Count - 1);
+			return value;
+		}
+		internal static void UploadUInt32(UInt32 item)
+		{
+			s_Slot.PushUInt32(item);
+		}
+		#endregion
+		
+		#region Bool
+		internal static unsafe delegate*<bool, void> SendBoolToCPP;
+		private List<bool> m_StackBool = new List<bool>();
+		internal void PushBool(bool item)
+		{
+			m_StackBool.Add(item);
+			m_StackTypes.Add(ScriptStackType.Bool);
+		}
+		internal bool PopBool()
+		{
+			m_StackTypes.RemoveAt(m_StackTypes.Count - 1);
+			bool value = m_StackBool[m_StackBool.Count - 1];
+			m_StackBool.RemoveAt(m_StackBool.Count - 1);
+			return value;
+		}
+		internal static void UploadBool(bool item)
+		{
+			s_Slot.PushBool(item);
 		}
 		#endregion
 		

@@ -20,6 +20,8 @@ namespace Suora
 			switch (stack.PeekType())
 			{
 			case ScriptDataType::Int32: ScriptStackType.InvokeStaticMethod("UploadInt32", stack.PopItem<int32_t>()); break;
+			case ScriptDataType::UInt32: ScriptStackType.InvokeStaticMethod("UploadUInt32", stack.PopItem<uint32_t>()); break;
+			case ScriptDataType::Bool: ScriptStackType.InvokeStaticMethod("UploadBool", stack.PopItem<bool>()); break;
 			case ScriptDataType::Float: ScriptStackType.InvokeStaticMethod("UploadFloat", stack.PopItem<float>()); break;
 			case ScriptDataType::Vec3:
 			{
@@ -40,6 +42,7 @@ namespace Suora
 	{
 		assembly.AddInternalCall("Suora.ScriptStack", "PrepareSlotInCPP", reinterpret_cast<void*>(&CSScriptStack::ReceivePrepareSlot));
 		assembly.AddInternalCall("Suora.ScriptStack", "SendInt32ToCPP", reinterpret_cast<void*>(&CSScriptStack::ReceiveInt32));
+		assembly.AddInternalCall("Suora.ScriptStack", "SendUInt32ToCPP", reinterpret_cast<void*>(&CSScriptStack::ReceiveUInt32));
 		assembly.AddInternalCall("Suora.ScriptStack", "SendFloatToCPP", reinterpret_cast<void*>(&CSScriptStack::ReceiveFloat));
 		assembly.AddInternalCall("Suora.ScriptStack", "SendVec3ToCPP", reinterpret_cast<void*>(&CSScriptStack::ReceiveVec3));
 		assembly.AddInternalCall("Suora.ScriptStack", "SendObjectPtrToCPP", reinterpret_cast<void*>(&CSScriptStack::ReceiveObjectPtr));
@@ -64,6 +67,15 @@ namespace Suora
 	void CSScriptStack::ReceiveInt32(int32_t value)
 	{
 		s_Slot->PushItem<int32_t>(value);
+	}
+	void CSScriptStack::ReceiveUInt32(uint32_t value)
+	{
+		s_Slot->PushItem<uint32_t>(value);
+	}
+
+	void CSScriptStack::ReceiveBool(bool value)
+	{
+		s_Slot->PushItem<bool>(value);
 	}
 
 	void CSScriptStack::ReceiveFloat(float value)

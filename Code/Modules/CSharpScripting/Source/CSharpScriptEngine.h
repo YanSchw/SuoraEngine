@@ -1,10 +1,14 @@
 #pragma once
 
+#include <future>
 #include "Suora/NodeScript/External/ScriptEngine.h"
 #include "CSharpScriptEngine.generated.h"
 
+#include "Type.hpp"
+
 namespace Coral
 {
+	class Type;
 	class HostInstance;
 	class AssemblyLoadContext;
 	class ManagedAssembly;
@@ -49,8 +53,11 @@ namespace Suora
 
 		static NativeFunction* GetNativeFunctionFromHash(size_t hash);
 
+		
 	private:
 		Ref<Coral::HostInstance> m_HostInstance;
 		Ref<Coral::AssemblyLoadContext> m_AssemblyLoadContext;
+
+		static void CallNativeFunctionFromManagedHost(uint64_t hash);
 	};
 }

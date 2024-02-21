@@ -46,6 +46,12 @@ namespace Suora
 			return s_ManagedObjectToNativePtr.GetValueOrDefault(obj, IntPtr.Zero);
 		}
 		
+	
+		internal static unsafe delegate*<UInt64, void> s_CallNativeFunction;
+		internal static void CallNativeFunction(UInt64 hash)
+		{
+			unsafe { s_CallNativeFunction(hash); }
+		}
 		
 	}
 	

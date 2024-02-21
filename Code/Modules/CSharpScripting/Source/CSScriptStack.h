@@ -26,6 +26,8 @@ namespace Suora
 	private:
 		static void ReceivePrepareSlot();
 		static void ReceiveInt32(int32_t value);
+		static void ReceiveUInt32(uint32_t value);
+		static void ReceiveBool(bool value);
 		static void ReceiveFloat(float value);
 		static void ReceiveVec3(float x, float y, float z);
 		static void ReceiveObjectPtr(void* ptr);

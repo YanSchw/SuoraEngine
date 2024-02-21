@@ -4,6 +4,12 @@
 namespace Suora
 {
 
+    static String FunctionLabelToFunctionName(const String& label)
+    {
+        return StringUtil::SplitString(StringUtil::SplitString(label, ':')[2], '(')[0];
+    }
+
+
     static Map<NativeClassID, Array<NativeFunction*>> s_NativeIdToFunctionTable;
 
     static void PrepareNativeIdToFunctionTable()
@@ -45,20 +51,32 @@ namespace Suora
         code += "}";
     }
 
+    static String ToManagedArgType(const String& InNative)
+    {
+        String type = InNative;
+        StringUtil::ReplaceSequence(type, "const", "");
+        StringUtil::ReplaceSequence(type, "&", "");
+        StringUtil::ReplaceSequence(type, " ", "");
+        if (type.ends_with("*"))
+        {
+            type.erase(type.size() - 1, 1);
+        }
+
+        StringUtil::ReplaceSequence(type, "uint32_t", "UInt32");
+        StringUtil::ReplaceSequence(type, "int32_t", "Int32");
+        StringUtil::ReplaceSequence(type, "uint64_t", "UInt64");
+        StringUtil::ReplaceSequence(type, "int64_t", "Int64");
+
+        return type;
+    }
+
     static String GeneratedFunctionArguments(NativeFunction* func)
     {
         String args = "";
 
         for (int i = 0; i < func->m_Params.size(); i++)
         {
-            String type = func->m_Params[i].m_Type;
-            StringUtil::ReplaceSequence(type, "const", "");
-            StringUtil::ReplaceSequence(type, "&", "");
-            StringUtil::ReplaceSequence(type, " ", "");
-            if (type.ends_with("*"))
-            {
-                type.erase(type.size() - 1, 1);
-            }
+            const String type = ToManagedArgType(func->m_Params[i].m_Type);
 
             args += type + " " + func->m_Params[i].m_Name;
 
@@ -80,7 +98,7 @@ namespace Suora
             if (It->IsFlagSet(FunctionFlags::NodeEvent))
             {
                 code += "\t\t// Generated Managed Event from NativeEvent: " + It->m_Label + "\n";
-                const String funcName = StringUtil::SplitString(StringUtil::SplitString(It->m_Label, ':')[2], '(')[0];
+                const String funcName = FunctionLabelToFunctionName(It->m_Label);
                 code += "\t\tpublic virtual void " + funcName + "(" + GeneratedFunctionArguments(It) + ") {}\n";
 
                 code += "\t\tinternal static void InvokeManagedEvent_" + std::to_string(It->m_Hash) + "(IntPtr ptr)\n\t\t{\n";
@@ -94,6 +112,8 @@ namespace Suora
                     switch (StringToScriptDataType(It->m_Params[i].m_Type))
                     {
                     case ScriptDataType::Int32: code += "stack.PopInt32()"; break;
+                    case ScriptDataType::UInt32: code += "stack.PopUInt32()"; break;
+                    case ScriptDataType::Bool: code += "stack.PopBool()"; break;
                     case ScriptDataType::Float: code += "stack.PopFloat()"; break;
                     case ScriptDataType::Vec3: code += "stack.PopVec3()"; break;
                     case ScriptDataType::ObjectPtr: 
@@ -124,9 +144,67 @@ namespace Suora
 
                 code += "\t\t}\n\n";
             }
-            else
+            else if (It->IsFlagSet(FunctionFlags::Callable))
             {
+                const bool isStatic = It->IsFlagSet(FunctionFlags::Static);
+                code += "\t\t// Generated Managed Callable Function from: " + String(isStatic ? "static " : "") + It->m_ReturnType + " " + It->m_Label + "\n";
+                const String funcName = FunctionLabelToFunctionName(It->m_Label);
+                code += "\t\tpublic " + String(isStatic ? "static " : "") + ToManagedArgType(It->m_ReturnType) + " " + funcName + "(" + GeneratedFunctionArguments(It) + ")\n";
+                code += "\t\t{\n";
 
+                code += "\t\t\tScriptStack stack = new ScriptStack();\n";
+
+                // Push Args
+                for (int i = 0; i < It->m_Params.size(); i++)
+                {
+                    code += "\t\t\t";
+                    switch (StringToScriptDataType(It->m_Params[i].m_Type))
+                    {
+                    case ScriptDataType::Int32: code += "stack.PushInt32(" + It->m_Params[i].m_Name + ")"; break;
+                    case ScriptDataType::UInt32: code += "stack.PushUInt32(" + It->m_Params[i].m_Name + ")"; break;
+                    case ScriptDataType::Bool: code += "stack.PushBool(" + It->m_Params[i].m_Name + ")"; break;
+                    case ScriptDataType::Float: code += "stack.PushFloat(" + It->m_Params[i].m_Name + ")"; break;
+                    case ScriptDataType::Vec3: code += "stack.PushVec3(" + It->m_Params[i].m_Name + ")"; break;
+                    case ScriptDataType::ObjectPtr: code += "stack.PushObjectPtr(" + It->m_Params[i].m_Name + ")"; break;
+                    case ScriptDataType::None:
+                    default: SuoraError("Missing Implementation: {0}", It->m_Params[i].m_Type); break;
+                    }
+                    code += ";\n";
+                }
+
+                if (!isStatic)
+                {
+                    code += "\t\t\tstack.PushObjectPtr(this); // Push Self \n";
+                }
+                code += "\t\t\tstack.SendToCPP();\n";
+                code += "\t\t\tSuoraObject.CallNativeFunction(" + std::to_string(It->m_Hash) + ");\n";
+
+                if (It->m_ReturnType != "void")
+                {
+                    code += "\t\t\tstack = ScriptStack.Get();\n";
+                    code += "\t\t\treturn ";
+
+                    switch (StringToScriptDataType(It->m_ReturnType))
+                    {
+                    case ScriptDataType::Int32: code += "stack.PopInt32()"; break;
+                    case ScriptDataType::UInt32: code += "stack.PopUInt32()"; break;
+                    case ScriptDataType::Bool: code += "stack.PopBool()"; break;
+                    case ScriptDataType::Float: code += "stack.PopFloat()"; break;
+                    case ScriptDataType::Vec3: code += "stack.PopVec3()"; break;
+                    case ScriptDataType::ObjectPtr:
+                    {
+                        String type = String(It->m_ReturnType);
+                        type.erase(type.size() - 1, 1);
+                        code += "(" + type + ")(stack.PopObjectPtr())";
+                        break;
+                    }
+                    case ScriptDataType::None:
+                    default: SuoraError("Missing Implementation: {0}", It->m_ReturnType); break;
+                    }
+                    code += ";\n";
+                }
+
+                code += "\t\t}\n\n";
             }
         }
     }
