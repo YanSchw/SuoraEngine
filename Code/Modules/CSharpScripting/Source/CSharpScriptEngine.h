@@ -53,7 +53,20 @@ namespace Suora
 
 		static NativeFunction* GetNativeFunctionFromHash(size_t hash);
 
-		
+		/*
+			This is a Hack to prevent the FATAL 'attempted to call a UnmanagedCallersOnly method from managed code' Exception.
+			This Issue was caused when nesting InvokeStaticMethod()-Calls within C# to C++ delegates.
+			Using std::async() fixes this problem since it seems to be a CallStack issue.
+		*/
+		template <typename... TArgs>
+		static void AsyncInvokeStaticMethod(Coral::Type& InType, std::string_view InMethodName, TArgs&&... InParameters)
+		{
+			std::async(std::launch::async, [&]()
+			{
+				InType.InvokeStaticMethod(InMethodName, std::forward<TArgs>(InParameters)...);
+			}).get();
+		}
+
 	private:
 		Ref<Coral::HostInstance> m_HostInstance;
 		Ref<Coral::AssemblyLoadContext> m_AssemblyLoadContext;

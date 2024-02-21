@@ -11,7 +11,7 @@ namespace Suora
 
 	void CSScriptStack::UploadScriptStack(ScriptStack stack)
 	{
-		ScriptStackType.InvokeStaticMethod("PrepareSlot");
+		CSharpScriptEngine::AsyncInvokeStaticMethod(ScriptStackType, "PrepareSlot");
 
 		stack.Invert();
 
@@ -19,17 +19,17 @@ namespace Suora
 		{
 			switch (stack.PeekType())
 			{
-			case ScriptDataType::Int32: ScriptStackType.InvokeStaticMethod("UploadInt32", stack.PopItem<int32_t>()); break;
-			case ScriptDataType::UInt32: ScriptStackType.InvokeStaticMethod("UploadUInt32", stack.PopItem<uint32_t>()); break;
-			case ScriptDataType::Bool: ScriptStackType.InvokeStaticMethod("UploadBool", stack.PopItem<bool>()); break;
-			case ScriptDataType::Float: ScriptStackType.InvokeStaticMethod("UploadFloat", stack.PopItem<float>()); break;
+			case ScriptDataType::Int32: CSharpScriptEngine::AsyncInvokeStaticMethod(ScriptStackType, "UploadInt32", stack.PopItem<int32_t>()); break;
+			case ScriptDataType::UInt32: CSharpScriptEngine::AsyncInvokeStaticMethod(ScriptStackType, "UploadUInt32", stack.PopItem<uint32_t>()); break;
+			case ScriptDataType::Bool: CSharpScriptEngine::AsyncInvokeStaticMethod(ScriptStackType, "UploadBool", stack.PopItem<bool>()); break;
+			case ScriptDataType::Float: CSharpScriptEngine::AsyncInvokeStaticMethod(ScriptStackType, "UploadFloat", stack.PopItem<float>()); break;
 			case ScriptDataType::Vec3:
 			{
 				Vec3 vec = stack.PopItem<Vec3>();
-				ScriptStackType.InvokeStaticMethod("UploadVec3", vec.x, vec.y, vec.z);
+				CSharpScriptEngine::AsyncInvokeStaticMethod(ScriptStackType, "UploadVec3", vec.x, vec.y, vec.z);
 				break;
 			}
-			case ScriptDataType::ObjectPtr: ScriptStackType.InvokeStaticMethod("UploadObjectPtr", (void*)stack.PopItem<Object*>()); break;
+			case ScriptDataType::ObjectPtr: CSharpScriptEngine::AsyncInvokeStaticMethod(ScriptStackType, "UploadObjectPtr", (void*)stack.PopItem<Object*>()); break;
 			case ScriptDataType::None:
 			default:
 				SuoraVerify(false, "Missing Implementation!");

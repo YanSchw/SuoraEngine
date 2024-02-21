@@ -396,7 +396,7 @@ namespace Suora
         String typeStr = (managedType != "") ? managedType : "Suora." + obj->GetNativeClass().GetClassName();
 
         auto str = Coral::String::New(s_CSharpAssemblyQualifiedNames[typeStr]);
-        SuoraObjectType.InvokeStaticMethod("CreateSuoraObject", str, (void*)obj);
+        CSharpScriptEngine::AsyncInvokeStaticMethod(SuoraObjectType, "CreateSuoraObject", str, (void*)obj);
         Coral::String::Free(str);
     }
 
@@ -404,7 +404,7 @@ namespace Suora
     {
         SuoraVerify(obj);
 
-        SuoraObjectType.InvokeStaticMethod("DestroySuoraObject", (void*)obj);
+        CSharpScriptEngine::AsyncInvokeStaticMethod(SuoraObjectType, "DestroySuoraObject", (void*)obj);
         Coral::GC::Collect();
     }
     
@@ -418,7 +418,7 @@ namespace Suora
         CSScriptStack::UploadScriptStack(stack);
 
         // Finally Call Managed Event
-        managedType.InvokeStaticMethod("InvokeManagedEvent_" + std::to_string(hash), (void*)obj);
+        CSharpScriptEngine::AsyncInvokeStaticMethod(managedType, "InvokeManagedEvent_" + std::to_string(hash), (void*)obj);
     }
 
     CSharpScriptEngine* CSharpScriptEngine::Get()
