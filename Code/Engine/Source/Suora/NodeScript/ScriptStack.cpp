@@ -229,4 +229,8 @@ namespace Suora
 			m_TypeStack = temp;
 		}
 	}
+	bool ScriptStack::IsEmpty() const
+	{
+		return m_TypeStack.empty();
+	}
 }

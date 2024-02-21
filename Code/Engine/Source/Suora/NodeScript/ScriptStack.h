@@ -22,6 +22,8 @@ namespace Suora
 		int64_t Pop();
 		void Invert();
 
+		bool IsEmpty() const;
+
 		template<class T>
 		void Proccess(T value)
 		{
