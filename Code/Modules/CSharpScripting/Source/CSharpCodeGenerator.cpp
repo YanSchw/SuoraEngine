@@ -104,7 +104,7 @@ namespace Suora
                         break;
                     }
                     case ScriptDataType::None:
-                    default: SuoraError("Missing Implementation!"); break;
+                    default: SuoraError("Missing Implementation: {0}", It->m_Params[i].m_Type); break;
                     }
                     code += ";\n";
                 }
