@@ -420,21 +420,6 @@ namespace Suora
 					It->ViewObject(m_Data, y);
 				}
 			}
-
-			Class detailClass = m_Data->GetNativeClass();
-			if      (detailClass.Inherits(Node::StaticClass())) { /*ViewNode(y, m_Data->As<Node>());*/ }
-			else if (detailClass == Material::StaticClass()) { /*ViewMaterial(y, m_Data->As<Material>(), false);*/ }
-			else if (detailClass == Mesh::StaticClass()) { /*ViewMesh(y, m_Data->As<Mesh>());*/ }
-			else if (detailClass == ShaderGraph::StaticClass()) { /*ViewMaterial(y, m_Data->As<Material>(), true);*/ }
-			else if (detailClass == Texture2D::StaticClass()) { /*ViewTexture2D(y, m_Data->As<Texture2D>());*/ }
-			else if (detailClass.Inherits(Blueprint::StaticClass())) { /*ViewBlueprintClass(y, m_Data->As<Blueprint>());*/ }
-			else if (detailClass == ProjectSettings::StaticClass()) { /*ViewProjectSettings(y, m_Data->As<ProjectSettings>());*/ }
-			else if (detailClass == EditorPreferences::StaticClass()) { /*ViewEditorPreferences(y, m_Data->As<EditorPreferences>());*/ }
-			else if (detailClass == InputMapping::StaticClass()) { /*ViewInputMapping(y, m_Data->As<InputMapping>());*/ }
-			else
-			{
-				SuoraError("No implementation for DetailPanel -> Class: {0}", detailClass.GetClassName());
-			}
 		}
 
 		EditorUI::DrawRect((m_Seperator * GetWidth())-1, 0, 2, GetHeight(), 0, Color(0.2f, 0.2f, 0.2f, 0.1f));
