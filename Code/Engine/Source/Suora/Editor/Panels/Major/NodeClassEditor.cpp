@@ -149,9 +149,9 @@ namespace Suora
 		m_DetailsPanel->m_Data = m_BlueprintClass;
 		m_NodeOutliner = CreateRef<LevelOutliner>(this);
 
-		Ref<DockingSpace> ds1 = CreateRef<DockingSpace>(0, 0.0f, 0.2f, 0.5f, this);			m_DockspacePanel.m_DockingSpaces.Add(ds1); ds1->m_MinorTabs.Add(m_DetailsPanel);
-		Ref<DockingSpace> ds2 = CreateRef<DockingSpace>(0, 0.5f, 0.2f, 1.0f, this);			m_DockspacePanel.m_DockingSpaces.Add(ds2); ds2->m_MinorTabs.Add(m_NodeOutliner);
-		m_MainDockingSpace = CreateRef<DockingSpace>(0.2f, 0.0f, 1.0f, 1.0f, this);			m_DockspacePanel.m_DockingSpaces.Add(m_MainDockingSpace); m_MainDockingSpace->m_MinorTabs.Add(m_ViewportPanel);
+		Ref<DockingSpace> ds1 = CreateRef<DockingSpace>(0, 0.0f, 0.25f, 0.5f, this);			m_DockspacePanel.m_DockingSpaces.Add(ds1); ds1->m_MinorTabs.Add(m_DetailsPanel);
+		Ref<DockingSpace> ds2 = CreateRef<DockingSpace>(0, 0.5f, 0.25f, 1.0f, this);			m_DockspacePanel.m_DockingSpaces.Add(ds2); ds2->m_MinorTabs.Add(m_NodeOutliner);
+		m_MainDockingSpace = CreateRef<DockingSpace>(0.25f, 0.0f, 1.0f, 1.0f, this);			m_DockspacePanel.m_DockingSpaces.Add(m_MainDockingSpace); m_MainDockingSpace->m_MinorTabs.Add(m_ViewportPanel);
 
 	}
 
