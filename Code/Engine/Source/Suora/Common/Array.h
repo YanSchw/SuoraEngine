@@ -132,6 +132,13 @@ namespace Suora
 			this->m_Data = data;
 		}
 
+		// Ascending: a < b
+		// Descending: a > b
+		void Sort(const std::function<bool(const T&, const T&)>& lambda)
+		{
+			std::ranges::sort(m_Data, lambda);
+		}
+
 		// Iterators
 
 		typename std::vector<T>::iterator begin() { return m_Data.begin(); }
