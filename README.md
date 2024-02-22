@@ -5,7 +5,7 @@
   </a>
 </p>
 
-SuoraEngine is an open-source C++ Engine for building 3D real-time rendering and interactive Applications or Content, especially Video Games.
+SuoraEngine is an open-source C++ Engine for building 3D real-time rendering Applications and interactive Content, especially Video Games.
 
 ![Screenshot of the Suora Engine editor](Docs/Images/SuoraInEditorScreenshot.png)
 
