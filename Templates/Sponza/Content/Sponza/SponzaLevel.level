@@ -96,7 +96,7 @@ NodeComposition:
       NodeName: ToneMapping
       PropertyName: m_TonemapFunction
       Value: 
-        Float: 0.480001
+        Int32: 0
   PropertyCount: 7
   RootClass: "Node$369b6f34-df9e-42e0-a25b-5fce6f8c769f"
   RootEnabled: true
