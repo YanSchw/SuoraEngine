@@ -57,7 +57,6 @@ namespace Suora
 
 		static void DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue = 0, const std::function<void(String)>& lambda = nullptr);
 
-		void ViewTexture2D(float& y, Texture2D* texture);
 		void ViewBlueprintClass(float& y, Blueprint* blueprint);
 		void ViewProjectSettings(float& y, ProjectSettings* settings);
 		void ViewEditorPreferences(float& y, EditorPreferences* settings);

@@ -18,6 +18,7 @@
 #include "NodeDetails.h"
 #include "MaterialDetails.h"
 #include "MeshDetails.h"
+#include "Texture2DDetails.h"
 
 namespace Suora
 {
@@ -421,7 +422,7 @@ namespace Suora
 			else if (detailClass == Material::StaticClass()) { /*ViewMaterial(y, m_Data->As<Material>(), false);*/ }
 			else if (detailClass == Mesh::StaticClass()) { /*ViewMesh(y, m_Data->As<Mesh>());*/ }
 			else if (detailClass == ShaderGraph::StaticClass()) { /*ViewMaterial(y, m_Data->As<Material>(), true);*/ }
-			else if (detailClass == Texture2D::StaticClass()) { ViewTexture2D(y, m_Data->As<Texture2D>()); }
+			else if (detailClass == Texture2D::StaticClass()) { /*ViewTexture2D(y, m_Data->As<Texture2D>());*/ }
 			else if (detailClass.Inherits(Blueprint::StaticClass())) { ViewBlueprintClass(y, m_Data->As<Blueprint>()); }
 			else if (detailClass == ProjectSettings::StaticClass()) { ViewProjectSettings(y, m_Data->As<ProjectSettings>()); }
 			else if (detailClass == EditorPreferences::StaticClass()) { ViewEditorPreferences(y, m_Data->As<EditorPreferences>()); }
@@ -519,10 +520,7 @@ namespace Suora
 		}
 	}
 
-	void DetailsPanel::ViewTexture2D(float& y, Texture2D* texture)
-	{
-
-	}
+	
 
 	void DetailsPanel::ViewBlueprintClass(float& y, Blueprint* blueprint)
 	{
