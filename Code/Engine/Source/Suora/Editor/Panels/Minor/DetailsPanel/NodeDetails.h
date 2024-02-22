@@ -14,6 +14,8 @@ namespace Suora
 		virtual void ViewObject(Object* obj, float& y) override;
 		void ViewNode(float& y, Node* node);
 
+		void DrawClassMember(float& x, float& y, Node* obj, ClassMemberProperty* member, int memberIndex);
+
 		// Transform Util
 		void* Transform_LastNode = nullptr;
 		Vec3 Transform_Pos = Vec::Zero;

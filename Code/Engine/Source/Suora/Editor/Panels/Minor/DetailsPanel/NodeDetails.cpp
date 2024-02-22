@@ -148,7 +148,7 @@ namespace Suora
 				for (Ref<ClassMemberProperty> member : refl.m_ClassProperties)
 				{
 					float x = 0;
-					GetDetailsPanel()->DrawClassMember(x, y, node, member.get(), memberIndex++);
+					DrawClassMember(x, y, node, member.get(), memberIndex++);
 				}
 
 			}
@@ -159,6 +159,87 @@ namespace Suora
 		}
 
 		y -= 50;
+	}
+
+
+	void NodeDetails::DrawClassMember(float& x, float& y, Node* obj, ClassMemberProperty* member, int memberIndex)
+	{
+		//y -= 10.0f;
+		const auto type = member->m_Property->GetType();
+		const auto mname = member->m_MemberName;
+		const bool valueChangedBefore = obj->m_OverwrittenProperties.Contains(mname);
+		DetailsPanel::Result result = DetailsPanel::Result::None;
+
+		if (type == PropertyType::Int32)
+		{
+			int32_t* i = ClassMemberProperty::AccessMember<int32_t>(obj, member->m_MemberOffset);
+			result = DrawInt32(i, mname, y, valueChangedBefore);
+		}
+		else if (type == PropertyType::Float)
+		{
+			float* f = ClassMemberProperty::AccessMember<float>(obj, member->m_MemberOffset);
+			result = DrawFloat(f, mname, y, valueChangedBefore);
+		}
+		else if (type == PropertyType::Bool)
+		{
+			bool* b = ClassMemberProperty::AccessMember<bool>(obj, member->m_MemberOffset);
+			result = DrawBool(b, mname, y, valueChangedBefore);
+		}
+		else if (type == PropertyType::Vec3)
+		{
+			Vec3* v = ClassMemberProperty::AccessMember<Vec3>(obj, member->m_MemberOffset);
+			result = DrawVec3(v, mname, y, valueChangedBefore);
+		}
+		else if (type == PropertyType::Vec4)
+		{
+			Vec4* v = ClassMemberProperty::AccessMember<Vec4>(obj, member->m_MemberOffset);
+			result = DrawVec4(v, mname, y, valueChangedBefore);
+		}
+		else if (type == PropertyType::ObjectPtr)
+		{
+			const Class objClass = ((ObjectPtrProperty*)(member->m_Property.get()))->m_ObjectClass;
+			if (objClass.Inherits(Asset::StaticClass()))
+			{
+				Asset** asset = ClassMemberProperty::AccessMember<Asset*>(obj, member->m_MemberOffset);
+				result = DrawAsset(asset, objClass, mname, y, valueChangedBefore);
+			}
+		}
+		else if (type == PropertyType::MaterialSlots)
+		{
+			MaterialSlots* materials = ClassMemberProperty::AccessMember<MaterialSlots>(obj, member->m_MemberOffset);
+			result = DrawMaterialSlots(materials, y, valueChangedBefore);
+		}
+		else if (type == PropertyType::Class)
+		{
+			Class* cls = ClassMemberProperty::AccessMember<Class>(obj, member->m_MemberOffset);
+			result = DrawClass(cls, mname, y, valueChangedBefore);
+		}
+		else if (type == PropertyType::SubclassOf)
+		{
+			TSubclassOf* cls = ClassMemberProperty::AccessMember<TSubclassOf>(obj, member->m_MemberOffset);
+			result = DrawSubclassOf(cls, mname, y, valueChangedBefore);
+		}
+		else if (type == PropertyType::Delegate)
+		{
+			TDelegate* delegate = ClassMemberProperty::AccessMember<TDelegate>(obj, member->m_MemberOffset);
+			result = DrawDelegate(delegate, mname, y);
+		}
+		else
+		{
+			SuoraError("{0}: Missing ClassMember implementation!", __FUNCTION__);
+		}
+
+		if (result == DetailsPanel::Result::ValueReset)
+		{
+			obj->ResetProperty(*member);
+		}
+		else if (result == DetailsPanel::Result::ValueChange)
+		{
+			if (!obj->m_OverwrittenProperties.Contains(mname))
+			{
+				obj->m_OverwrittenProperties.Add(mname);
+			}
+		}
 	}
 
 }
