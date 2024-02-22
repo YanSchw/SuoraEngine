@@ -66,7 +66,7 @@ namespace Suora
 	bool MinorTab::IsInputValid()
 	{
 		const Vec2& pos = EditorUI::GetInput();
-		return pos.x >= 0 && pos.x <= GetWidth() && pos.y >= 0 && pos.y <= GetHeight();
+		return pos.x >= 0 && pos.x <= GetWidth() && pos.y >= 0 && pos.y <= GetHeight() && !GetMajorTab()->GetEditorWindow()->GetWindow()->IsCursorLocked();
 	}
 
 	bool MinorTab::IsInputMode(EditorInputEvent event)

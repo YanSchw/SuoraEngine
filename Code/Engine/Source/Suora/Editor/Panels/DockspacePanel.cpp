@@ -14,7 +14,7 @@ namespace Suora
 	{
 		float const ui = EditorPreferences::Get()->UiScale;
 
-		if (!EditorUI::IsNotHoveringOverlays())
+		if (!EditorUI::IsNotHoveringOverlays() || GetEditorWindow()->GetWindow()->IsCursorLocked())
 		{
 			return;
 		}
