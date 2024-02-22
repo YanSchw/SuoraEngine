@@ -57,10 +57,6 @@ namespace Suora
 
 		static void DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue = 0, const std::function<void(String)>& lambda = nullptr);
 
-		void ViewInputMapping(float& y, class InputMapping* input);
-
-		void DrawInputDispatcherDropDown(const String& label, Ref<InputDispatcher>& dispatcher, InputActionType type, float x, float y, float width, float height);
-		
 		bool m_ScrollbarNeeded = false;
 		float GetScrollbarWidth() const;
 

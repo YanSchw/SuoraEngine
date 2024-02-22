@@ -188,7 +188,7 @@ namespace Suora
 
 		inline static std::unordered_map<String, Ref<InputDispatcher>> s_RegisteredInputDispatchers;
 
-		friend class DetailsPanel;
+		friend class InputMappingDetails;
 		friend class GameInstance;
 	};
 
