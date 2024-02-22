@@ -549,7 +549,7 @@ NodeComposition:
       NodeName: ToneMapping
       PropertyName: m_TonemapFunction
       Value: 
-        Float: 0.000000
+        Int32: 0
     40: 
       NodeName: "Cube [12]"
       PropertyName: m_Materials

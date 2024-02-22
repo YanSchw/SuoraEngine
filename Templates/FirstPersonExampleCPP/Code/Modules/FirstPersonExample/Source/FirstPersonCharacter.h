@@ -14,7 +14,7 @@ public:
 	void Look(const Vec2& axis2D);
 	void Jump();
 	
-	MEMBER()
+	PROPERTY()
 	float m_MovementSpeed = 2.0f;
 
 private:
