@@ -368,6 +368,11 @@ namespace Suora
 				m_Implementations.Add(Impl);
 			}
 		}
+
+		m_Implementations.Sort([](const Ref<DetailsPanelImplementation>& a, const Ref<DetailsPanelImplementation>& b)
+		{
+			return a->GetOrderIndex() < b->GetOrderIndex();
+		});
 	}
 
 	DetailsPanel::~DetailsPanel()
