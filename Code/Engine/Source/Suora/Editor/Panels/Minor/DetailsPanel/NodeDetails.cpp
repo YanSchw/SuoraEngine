@@ -141,6 +141,11 @@ namespace Suora
 		int memberIndex = 0;
 		for (int64_t i = skipFirstDerivative ? 3 : 2; i < derivates.Size(); i++)
 		{
+			if (!derivates[i].IsNative())
+			{
+				continue;
+			}
+
 			y -= 35;
 			const ClassReflector& refl = ClassReflector::GetByClass(derivates[i]);
 			if (EditorUI::CategoryShutter(1000 + i, refl.m_ClassName, 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
