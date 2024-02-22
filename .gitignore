@@ -3,6 +3,7 @@
 !vendor/premake/bin/
 bin-int/
 **/Build/
+Binaries/
 
 
 # Suora files
