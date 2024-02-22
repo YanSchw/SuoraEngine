@@ -13,18 +13,14 @@ namespace Suora
 
 	class DetailsPanel : public MinorTab
 	{
+	public:
 		enum class Result : uint32_t
 		{
 			None = 0,
 			ValueChange,
 			ValueReset
 		};
-		using Super = MinorTab;
-	private:
-		Map<int32_t*, int32_t> m_DrawInt32Values;
-		Map<float*, float> m_DrawFloatValues;
-		Map<Vec4*, int32_t> m_Vec4_ColorPickerResults;
-	public:
+
 		Ptr<Object> m_Data = nullptr;
 		float m_Seperator = 0.35f;
 		float m_ScrollY = 0.0f;
@@ -76,5 +72,13 @@ namespace Suora
 		bool m_ScrollbarNeeded = false;
 		float GetScrollbarWidth() const;
 
+		static EditorUI::ButtonParams ShutterPanelParams();
+
+	private:
+		Map<int32_t*, int32_t> m_DrawInt32Values;
+		Map<float*, float> m_DrawFloatValues;
+		Map<Vec4*, int32_t> m_Vec4_ColorPickerResults;
+
+		using Super = MinorTab;
 	};
 }

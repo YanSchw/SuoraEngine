@@ -33,7 +33,7 @@ namespace Suora
 		EditorUI::DragFloat(&vec->z, x + singleWidth * 2.0f, y, singleWidth, height);
 	}
 
-	static EditorUI::ButtonParams ShutterPanelParams()
+	EditorUI::ButtonParams DetailsPanel::ShutterPanelParams()
 	{
 		EditorUI::ButtonParams PanelButtonParam;
 		PanelButtonParam.ButtonColor = EditorPreferences::Get()->UiForgroundColor;//Color(0.22f, 0.215f, 0.22f, 1.0f);
