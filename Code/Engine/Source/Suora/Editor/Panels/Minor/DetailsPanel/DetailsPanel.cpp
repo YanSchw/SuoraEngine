@@ -20,6 +20,7 @@
 #include "MeshDetails.h"
 #include "Texture2DDetails.h"
 #include "BlueprintDetails.h"
+#include "ProjectDetails.h"
 
 namespace Suora
 {
@@ -425,7 +426,7 @@ namespace Suora
 			else if (detailClass == ShaderGraph::StaticClass()) { /*ViewMaterial(y, m_Data->As<Material>(), true);*/ }
 			else if (detailClass == Texture2D::StaticClass()) { /*ViewTexture2D(y, m_Data->As<Texture2D>());*/ }
 			else if (detailClass.Inherits(Blueprint::StaticClass())) { /*ViewBlueprintClass(y, m_Data->As<Blueprint>());*/ }
-			else if (detailClass == ProjectSettings::StaticClass()) { ViewProjectSettings(y, m_Data->As<ProjectSettings>()); }
+			else if (detailClass == ProjectSettings::StaticClass()) { /*ViewProjectSettings(y, m_Data->As<ProjectSettings>());*/ }
 			else if (detailClass == EditorPreferences::StaticClass()) { ViewEditorPreferences(y, m_Data->As<EditorPreferences>()); }
 			else if (detailClass == InputMapping::StaticClass()) { ViewInputMapping(y, m_Data->As<InputMapping>()); }
 			else
@@ -548,28 +549,7 @@ namespace Suora
 
 	}
 
-	void DetailsPanel::ViewProjectSettings(float& y, ProjectSettings* settings)
-	{
-		y -= 35.0f;
-		if (EditorUI::CategoryShutter(0, "Rendering", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
-		{
-			DrawFloat(&settings->m_TargetFramerate, "Target Framerate", y, false);
-			DrawBool(&settings->m_EnableDeferredRendering, "Enable Deferred Rendering", y, false);
-		}
-		y -= 35.0f;
-		if (EditorUI::CategoryShutter(1, "Game", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
-		{
-			DrawSubclassOf((TSubclassOf*)&settings->m_GameInstanceClass, "GameInstanceClass", y, false);
-			DrawAsset((Asset**)(&settings->m_DefaultLevel), Level::StaticClass(), "DefaultLevel", y, false);
-			DrawAsset((Asset**)(&settings->m_ProjectIconTexture), Texture2D::StaticClass(), "ProjectIconTexture", y, false);
-		}
-		y -= 35.0f;
-		if (EditorUI::CategoryShutter(2, "Editor", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
-		{
-			DrawAsset((Asset**)&(settings->m_EditorStartupAsset), Asset::StaticClass(), "Editor Startup Asset", y, false);
-		}
-
-	}
+	
 
 	void DetailsPanel::ViewEditorPreferences(float& y, EditorPreferences* settings)
 	{
