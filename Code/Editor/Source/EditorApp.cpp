@@ -6,9 +6,9 @@
 
 #include "Suora/Core/Object/Object.h"
 
-#include "Editor/EditorWindow.h"
-#include "Editor/EditorUI.h"
-#include "Editor/Util/EditorPreferences.h"
+#include "Suora/Editor/EditorWindow.h"
+#include "Suora/Editor/EditorUI.h"
+#include "Suora/Editor/Util/EditorPreferences.h"
 
 extern void Modules_Init();
 
@@ -31,7 +31,7 @@ namespace Suora
 
 			AssetManager::LoadAsset(AssetManager::GetEngineAssetPath() + "/EditorPreferences.editor");
 
-			Font::Instance = AssetManager::GetAssetByName<Font>("SimplyMono.font");
+			Font::Instance = AssetManager::GetAssetByName<Font>("Jetbrains Mono NL Medium.font");
 
 			Modules_Init();
 			
@@ -61,6 +61,10 @@ namespace Suora
 		virtual void Close() override
 		{
 			m_StopPIE_Flag = true;
+		}
+		virtual bool IsEditor() const override
+		{
+			return true;
 		}
 
 	};

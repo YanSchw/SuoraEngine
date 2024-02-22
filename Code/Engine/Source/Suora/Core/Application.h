@@ -34,6 +34,7 @@ namespace Suora
 		Window& GetWindow() { return *m_Window; }
 
 		virtual void Close();
+		virtual bool IsEditor() const;
 
 		static Application& Get() { return *s_Instance; }
 		static bool IsApplicationInitialized();

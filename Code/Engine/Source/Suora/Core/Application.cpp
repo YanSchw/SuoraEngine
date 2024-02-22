@@ -8,7 +8,7 @@
 #include "Suora/Renderer/GraphicsContext.h"
 
 #include "Suora/Core/NativeInput.h"
-#include "Platform/Platform.h"
+#include "Suora/Platform/Platform.h"
 
 namespace Suora 
 {
@@ -50,6 +50,10 @@ namespace Suora
 	void Application::Close()
 	{
 		m_Running = false;
+	}
+	bool Application::IsEditor() const
+	{
+		return false;
 	}
 
 	void Application::OnEvent(Event& e)

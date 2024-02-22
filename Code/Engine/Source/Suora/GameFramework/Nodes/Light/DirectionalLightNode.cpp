@@ -43,7 +43,7 @@ namespace Suora
 	{
 	}
 
-	void DirectionalLightNode::ShadowMap(World& world, CameraNode& camera)
+	void DirectionalLightNode::ShadowMap(World& world, CameraNode& camera, RenderingParams& params)
 	{
 		if (!IsEnabled()) return;
 		RenderCommand::SetClearColor(Vec4(0.0f));
@@ -60,8 +60,6 @@ namespace Suora
 		m_LightCamera.GetTransform()->SetRotation(GetTransform()->GetRotation());
 		m_LightCamera.GetTransform()->SetScale(Vec3(1.0f));
 		m_LightCamera.SetOrthographic(5.0f, -500.0f, 500.0f);
-
-		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
 		
 		for (ShadowCascade& cascade : m_Cascades)
 		{
@@ -69,11 +67,13 @@ namespace Suora
 			m_LightCamera.SetOrthographic(cascade.m_CascadeSize, -m_ShadowDistance, m_ShadowDistance);
 			cascade.m_ShadowMapBuffer->Bind();
 			cascade.m_Matrix = m_LightCamera.GetProjectionMatrix();
-			for (MeshNode* meshNode : meshes)
+			
+			int32_t ID = 1;
+			for (RenderableNode3D* renderable : world.m_ShadowRenderables)
 			{
-				if (meshNode->m_CastShadow)
+				if (renderable->IsEnabled())
 				{
-					Renderer3D::DrawMeshNode(&m_LightCamera, meshNode, MaterialType::Depth, 0);
+					renderable->RenderShadowSingleInstance(world, m_LightCamera, params, this, ID++);
 				}
 			}
 		}

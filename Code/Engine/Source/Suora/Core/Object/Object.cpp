@@ -34,12 +34,6 @@ namespace Suora
 		return GetNativeClass();
 	}
 
-	void Object::ReflClass(ClassReflector& desc)
-	{
-		desc.SetClassName("Object");
-		desc.SetClassSize(sizeof(Object));
-	}
-
 	void Object::Implement(const Class& cls)
 	{
 		if (Implements(cls)) return;

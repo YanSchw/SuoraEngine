@@ -23,23 +23,23 @@ namespace Suora
 		SUORA_CLASS(6527498345);
 	public:
 
-		MEMBER()
+		PROPERTY()
 		Color m_Color = Color(1.0f);
 
-		MEMBER()
+		PROPERTY()
 		float m_Radius = 4.5f;
 
-		MEMBER()
+		PROPERTY()
 		float m_LightCullRange = 85.0f;
-		MEMBER()
+		PROPERTY()
 		float m_LightCullFalloff = 25.0f;
 
 		PointLightNode();
 		void Begin() override;
 		void WorldUpdate(float deltaTime) override;
 		void OnDestroyed();
-		void Capture(World& world, CameraNode& camera, CameraNode& view, const glm::ivec2& rect);
-		void ShadowMap(World& world, CameraNode& camera) override;
+		void Capture(World& world, CameraNode& camera, RenderingParams& params, CameraNode& view, const glm::ivec2& rect);
+		void ShadowMap(World& world, CameraNode& camera, RenderingParams& params) override;
 
 	private:
 		inline static bool s_InitShadowAtlas = false;

@@ -6,7 +6,8 @@ namespace Suora
 {
 	class Engine;
 
-	/** To be extended... */
+	/** EngineSubSystems extend the Core Engine with anonymous Subsystems and Functionality.
+	*   The Engine always has to work independent of EngineSubsystems. */
 	class EngineSubSystem : public Object
 	{
 		SUORA_CLASS(7564982331);
@@ -17,6 +18,10 @@ namespace Suora
 		virtual ~EngineSubSystem()
 		{
 		}
+
+		virtual bool Initialize() = 0;
+		virtual void Shutdown() = 0;
+		virtual void Tick(float deltaTime) = 0;
 
 		friend class Engine;
 	};

@@ -1,6 +1,7 @@
 #include "Precompiled.h"
 #include "NodeScriptObject.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
+#include "Suora/NodeScript/External/ScriptEngine.h"
 #include "Suora/Assets/Blueprint.h"
 #include "Suora/GameFramework/InputModule.h"
 #include "Suora/GameFramework/GameInstance.h"
@@ -22,6 +23,12 @@ namespace Suora
 	bool INodeScriptObject::TryDispatchNodeEvent(size_t hash, ScriptStack& stack)
 	{
 		bool called = false;
+
+		if (m_ScriptEngine)
+		{
+			ScriptStack STACK = stack;
+			m_ScriptEngine->InvokeManagedEvent(GetRootObject(), hash, STACK);
+		}
 
 		for (Ref<ScriptClassInternal> script : m_ScriptClasses)
 		{

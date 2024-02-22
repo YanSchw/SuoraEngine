@@ -18,10 +18,12 @@ namespace Suora
 	class AssetManager;
 	class GameInstance;
 	class RenderPipeline;
+	class EngineSubSystem;
 
 	/** The Engine controls its Subsystems and GameFlow */
 	class Engine final
 	{
+		Array<Ref<EngineSubSystem>> m_Subsystems;
 		Ref<GameInstance> m_GameInstance;
 		Ref<RenderPipeline> m_RenderPipeline = nullptr;
 		Ref<Physics::PhysicsEngine> m_PhysicsEngine = nullptr;
@@ -40,6 +42,7 @@ namespace Suora
 		void DisposeGameInstance();
 		RenderPipeline* GetRenderPipeline();
 		Physics::PhysicsEngine* GetPhysicsEngine() const;
+		Array<Ref<EngineSubSystem>> GetEngineSubsystems() const;
 
 		String GetRootPath() const;
 		float GetDeltaTime() const;

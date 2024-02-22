@@ -4,6 +4,7 @@
 #include "Common/Filesystem.h"
 #include "Common/StringUtils.h"
 #include "Common/Platform.h"
+#include "PropertyGenerator.h"
 
 #include <iostream>
 #include <fstream>
@@ -205,7 +206,7 @@ struct Internal\n\
 private:\n\
 	Internal()\n\
 	{\n\
-	\tClass::GenerateNativeClassReflector(StaticClass());\n\
+	\tClass::GenerateNativeClassReflector(StaticClass(), &" + header->m_ClassName + "::ReflClass);\n\
 	}\n" + helperFunctions + "\n\n" + functionRegistors +
 "};\n\
 struct InternalAlloc\n\
@@ -228,13 +229,13 @@ private:\n\
 		generated += "virtual bool CastImpl(const Class& cls) const override \n{";
 		generated += "\n\treturn cls.GetNativeClassID() == " + header->m_ClassID + " ? true : Super::CastImpl(cls);\n}\n";
 		
-		// Member Reflection
+		// Property Reflection
 		{
-			generated += "virtual void ReflClass(struct ClassReflector& desc) override \n{\n\t/*Super::ReflClass(desc);*/\n\tdesc.SetClassName(\"" + header->m_ClassName + "\");\n\tdesc.SetNativeParentClass(" + header->m_ParentClass + "::StaticClass());\n\tdesc.SetClassSize(sizeof(" + header->m_ClassName + "));\n";
+			generated += "static void ReflClass(struct ClassReflector& desc)\n{\n\t/*Super::ReflClass(desc);*/\n\tdesc.SetClassName(\"" + header->m_ClassName + "\");\n\tdesc.SetNativeParentClass(" + header->m_ParentClass + "::StaticClass());\n\tdesc.SetClassSize(sizeof(" + header->m_ClassName + "));\n";
 			size_t offset = header->m_ClassBodyBegin;
 			while (true)
 			{
-				offset = header->str.find("MEMBER", offset + 1);
+				offset = header->str.find("PROPERTY", offset + 1);
 				if (offset == std::string::npos || offset > header->m_ClassBodyEnd) break;
 				std::string meta, member;
 				while (header->str[offset] != '(') { offset++; }
@@ -250,7 +251,7 @@ private:\n\
 					offset++;
 					if (header->str[offset] != '\n' && header->str[offset] != '\t') member += header->str[offset];
 				}
-				GenerateMemberReflection(header->m_ClassName, generated, meta, member);
+				GeneratePropertyReflection(header->m_ClassName, generated, meta, member);
 			}
 			generated += "}\n";
 		}
@@ -303,7 +304,7 @@ private:\n\
 		str += "\n";
 	}
 
-	void HeaderTool::GenerateMemberReflection(const std::string& className, std::string& str, const std::string& meta, std::string member)
+	void HeaderTool::GeneratePropertyReflection(const std::string& className, std::string& str, const std::string& meta, std::string member)
 	{
 		// Receive Member Info
 		bool erase = false;
@@ -336,40 +337,7 @@ private:\n\
 		str += "\t/* " + member + "*/\n";
 		str += "\t{\n";
 
-		if (memberType == "int" || memberType == "float" || memberType == "bool" || memberType == "Vec3" || memberType == "Color" || memberType == "Class")
-		{
-			str += "\t\tdesc.AddPrimitive<" + memberType + ">(" + offset + ", &" + memberName + ", \"" + memberName + "\");\n";
-		}
-		else if (memberType.substr(0, 11) == "SubclassOf<")
-		{
-			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", " + offset + ", ClassMember::Type::SubclassOf);\n";
-		}
-		else if (memberType == "MaterialSlots")
-		{
-			str += "\t\tdesc.AddMember<ClassMember>(\"" + memberName + "\", " + offset + ", ClassMember::Type::MaterialSlots);\n";
-		}
-		else if (memberType.substr(0, 8) == "Delegate")
-		{
-			str += "\t\tdesc.AddDelegate(" + offset + ", " + memberName + ".GetInternalDelegate(), \"" + memberName + "\", \"" + memberType + "\");\n";
-		}
-		else if (memberType.find("ArrayList") == 0)
-		{
-			std::string inner = memberType.substr(10, memberType.size() - 11);
-			GenerateTemplateInnerMember(str, inner, "_ArrayInner");
-			str += "\t\tClassMember_ArrayList* array = desc.AddArrayList(" + offset + ", &" + memberName + ", \"" + memberName + "\");\n";
-			str += "\t\tarray->m_ArraySubMember = _ArrayInner;\n";
-		}
-		else if (memberType[memberType.size() - 1] == '*') // if (memberType.find("*") != std::string::npos)
-		{
-			std::string type = memberType.substr(0, memberType.size() - 1);
-
-			// ObjectPtr
-			str += "\t\tdesc.AddObjectPointer<" + type + ">(" + offset + ", (Object**) &" + memberName + ", \"" + memberName + "\");\n";
-		}
-		else
-		{
-			str += "#error The Suora Header-Tool could not parse Member of Type   [ " + memberType + " ] (!)\n";
-		}
+		str += "\t\tdesc.AddClassProperty(\"" + memberName + "\", " + offset + ", " + PropertyGenerator::GeneratePropertyRef(memberType) + ");\n";
 
 		str += "\t}\n";
 	}
@@ -484,13 +452,13 @@ private:\n\
 		const std::string registor = "inline static NativeFunction Function_" + functionName + " = NativeFunction(\"" + label + "\", &" + functionName + ", (NativeClassID)" + classID + ", " + registor_Params + ", \"" + returnType + "\", " + functionFlags + ");";
 
 		std::string Function = "static void " + functionName + "(ScriptStack& stack)\n{\n";
-		if (!isStatic) Function += className + "* self = (" + className + "*) stack.Pop();\n";
+		if (!isStatic) Function += className + "* self = (" + className + "*) stack.PopItem<Object*>();\n";
 
 		if (Parameters[0] != "")
 		{
 			for (int i = Parameters.size() - 1; i >= 0; i--)
 			{
-				Function += "const auto arg" + std::to_string(i) + " = (" + Parameters[i] + ") ScriptStack::ConvertFromStack<" + ((Parameters[i][Parameters[i].size() - 1] == '*') ? "Object*" : Parameters[i]) + ">(stack.Pop());\n";
+				Function += "const auto arg" + std::to_string(i) + " = (" + Parameters[i] + ") stack.PopItem<" + ((Parameters[i][Parameters[i].size() - 1] == '*') ? "Object*" : Parameters[i]) + ">();\n";
 			}
 		}
 
@@ -506,7 +474,7 @@ private:\n\
 			}
 		}
 		Function += ");\n";
-		if (returnType != "void") Function += "stack.Push(ScriptStack::ConvertToStack<" + ((returnType[returnType.size() - 1] == '*') ? "Object*" : returnType) + ">("+ ((returnType[returnType.size() - 1] == '*') ? "(Object*)" : "") +"ret));\n";
+		if (returnType != "void") Function += "stack.PushItem<" + ((returnType[returnType.size() - 1] == '*') ? "Object*" : returnType) + ">("+ ((returnType[returnType.size() - 1] == '*') ? "(Object*)" : "") + "ret);\n";
 
 		Function += "\n}";
 

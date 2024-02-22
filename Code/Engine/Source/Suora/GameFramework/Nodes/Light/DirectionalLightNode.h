@@ -25,16 +25,16 @@ namespace Suora
 		SUORA_CLASS(45738744712);
 	public:
 
-		MEMBER()
+		PROPERTY()
 		Color m_Color = Color(1.0f);
 
-		MEMBER()
+		PROPERTY()
 		float m_Radius = 4.5f;
 
-		MEMBER()
+		PROPERTY()
 		bool m_SoftShadows = true;
 
-		MEMBER()
+		PROPERTY()
 		float m_ShadowDistance = 500.0f;
 
 		DirectionalLightNode();
@@ -42,7 +42,7 @@ namespace Suora
 		void WorldUpdate(float deltaTime) override;
 		void OnDestroyed();
 
-		void ShadowMap(World& world, CameraNode& camera) override;
+		void ShadowMap(World& world, CameraNode& camera, RenderingParams& params) override;
 
 	private:
 		Array<ShadowCascade> m_Cascades;

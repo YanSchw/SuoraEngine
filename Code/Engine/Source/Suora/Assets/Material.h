@@ -77,7 +77,7 @@ namespace Suora
 
 		friend class ShaderGraph;
 		friend class Renderer3D;
-		friend class DetailsPanel;
+		friend class MaterialDetails;
 	};
 
 	struct MaterialSlots

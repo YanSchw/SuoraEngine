@@ -1,6 +1,5 @@
 #pragma once
 #include "Suora/Core/Object/Object.h"
-#include "Suora/Core/EngineSubSystem.h"
 #include "VertexArray.h"
 #include "Suora/Common/VectorUtils.h"
 #include <glm/glm.hpp>
@@ -81,7 +80,7 @@ namespace Suora
 	};
 
 	/** All Rendering is maintained here */
-	class RenderPipeline : public EngineSubSystem
+	class RenderPipeline : public Object
 	{
 		SUORA_CLASS(6453444876);
 	public:
@@ -104,7 +103,7 @@ namespace Suora
 		static void ClearDepth(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
 	protected:
-		void ShadowPass(World& world, CameraNode& camera);
+		void ShadowPass(World& world, CameraNode& camera, RenderingParams& params);
 
 		void DeferredPass(World& world, CameraNode& camera, RenderingParams& params);
 		void RenderGBuffer(World& world, CameraNode& camera, RenderingParams& params);

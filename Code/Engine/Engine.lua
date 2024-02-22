@@ -46,8 +46,7 @@ project "Engine"
 	{
 		"GLFW",
 		"Glad",
-		"assimp",
-		"opengl32.lib"
+		"assimp"
 	}
 
 	filter "system:windows"

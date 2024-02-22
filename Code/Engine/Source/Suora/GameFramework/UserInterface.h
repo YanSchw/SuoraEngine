@@ -31,10 +31,10 @@ namespace Suora
 	public:
 		virtual void RenderUI(const Mat4& view, class Framebuffer& target) override;
 
-		MEMBER()
+		PROPERTY()
 		Texture2D* m_Texture = nullptr;
 
-		MEMBER()
+		PROPERTY()
 		Color m_Tint = Color(1.0f);
 
 	private:

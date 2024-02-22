@@ -5,16 +5,23 @@
   </a>
 </p>
 
-SuoraEngine is an open-source C++ Engine for building 3D real-time rendering and interactive Applications or Content, especially Video Games.
+SuoraEngine is an open-source C++ Engine for building 3D real-time rendering Applications and interactive Content, especially Video Games.
 
 ![Screenshot of the Suora Engine editor](Docs/Images/SuoraInEditorScreenshot.png)
 
 ## Current Features
-In its current state, Suora's most remarkable features are:
 
 #### Gameplay Programming
 ![Gameplay Programming](Docs/Images/SuoraCPP_Programming.png)
 Gameplay Programming using C++ and a custom C++ Reflection System using SuoraHeaderTool and SuoraBuildTool. Everything is devided into C++ Modules, which can be compiled incrementally.
+Full Clean Engine Build within **5 Minutes**.
+Incremental C++ Build (Compile + Editor Startup) in **<15 Seconds**. 
+
+#### Gameplay Scripting (Experimental)
+![Gameplay Scripting](Docs/Images/SuoraCSharp_Scripting.png)
+Gameplay Scripting using C#. Extend Native C++ Classes and Functionality with C# and .Net Core 8.
+[.Net Core 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) is required!
+Full C# Build + HotReload in **<5 Seconds**.
 
 #### Visual Scripting (Experimental)
 ![Visual Scripting](Docs/Images/VisualScripting.png)
@@ -22,14 +29,20 @@ Create custom Gameplay Logic using Visual Scripting. Easy interoperability with 
 
 **Other Features Suora offers:**
 
-| Feature                               | Description                                               |
-| -------                               | -----------                                               |
-| **Physics**                           | 3D Physics using JoltPhysics                              |
-| **GameFramework**                     | Flexible Node-based GameFramework                         |
-| **Custom EditorUI**                   | ... using the RenderingAPI as a Backend                   |
-| **Deferred Rendering**                | Deferred + Forward Rendering using scriptable Shaders     |
+| Feature                               | Description                                                                                                          |
+| -------                               | -----------                                                                                                          |
+| **Custom SuoraBuildTool**             | To extend the Engine using Modules as Plugins and to allow Reflection and Introspection                              |
+| **Custom Visual Scripting Tools**     | Node-based Visual Scripting to enable easy implementation of custom logic                                            |
+| **Physics**                           | 3D Physics using JoltPhysics                                                                                         |
+| **GameFramework**                     | Flexible Node-based GameFramework                                                                                    |
+| **Custom EditorUI**                   | using the RenderingAPI as a Backend (**Immediate**)                                                                  |
+| **InGameUI**                          | using the GameFramework and UINodes (**Retained**)                                                                   |
+| **Full Visual Editor**                | Feature complete Level- and Asset-Editor to enable authoring game content                                            |
+| **Deferred Rendering**                | Deferred + Forward Rendering using scriptable Shaders                                                                |
+| **Particle Systems**                  | using Instanced Rendering                                                                                            |
 
 ## Getting Started [Windows]
+- Download the latest Engine Release on GitHub
 - Install Visual Studio 2022 and also install **Desktop Development with C++** using the Visual Studio Installer
 ![Screenshot of VS2022-Installer-Workloads](Docs/Images/VS2022-Installer-Workloads.png)
 - To create a new or open an existing Suora Project, start the Launcher in /Binaries/
@@ -43,8 +56,13 @@ Create custom Gameplay Logic using Visual Scripting. Easy interoperability with 
 
 ## Build the Engine Yourself
 - Clone the repository: git clone --recursive https://github.com/YanSchw/SuoraEngine
-- Execute the Buildscript in /Binaries/Scripts/{...}
-  - Or build SuoraBuildTool yourself in /Code/SuoraBuildTool
+- Compile SuoraBuildTool (Or use a Precompiled Version from the latest Release)
+  - Navigate to /Code/SuoraBuildTool
+  - Execute GenerateSolutionForStandaloneCompilation.bat
+  - Open the **.sln** using VS2022
+  - Compile SuoraBuildTool in **Release** Mode
+  - Copy and Paste the **SuoraBuildTool.exe** into **/Binaries/Scripts/**
+- Execute the BuildTool in /Binaries/Scripts/{...}
 - Generate the Solution using /GenerateSolution.bat
 - Open the Solution using Visual Studio 2022
 - Build using VS2022

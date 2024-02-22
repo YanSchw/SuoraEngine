@@ -14,8 +14,9 @@ namespace Suora
 		ASSET_EXTENSION(".node");
 
 	private:
-		MEMBER()
+		PROPERTY()
 		Class m_ParentClass = Class::None;
+
 		Yaml::Node m_Composition;
 		Ref<ScriptClassInternal> m_ScriptClass;
 		Yaml::Node m_YamlNode_EditorOnly;
@@ -60,7 +61,7 @@ namespace Suora
 		friend class Level;
 		friend class World;
 		friend class GameInstance;
-		friend class DetailsPanel;
+		friend class BlueprintDetails;
 		friend class NodeClassEditor;
 		friend class NodeClassNodeGraph;
 		friend class CreateClassOverlay;

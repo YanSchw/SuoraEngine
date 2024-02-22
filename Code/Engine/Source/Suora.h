@@ -8,7 +8,7 @@
 #include "Suora/Core/Log.h"
 #include "Suora/Core/Assert.h"
 
-#include "Platform/Platform.h"
+#include "Suora/Platform/Platform.h"
 
 #include "Suora/Core/NativeInput.h"
 #include "Suora/Core/KeyCodes.h"
@@ -47,6 +47,7 @@ namespace glm { }
 #include "Suora/GameFramework/Nodes/OrganizationNodes.h"
 #include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/Nodes/CharacterNode.h"
+#include "Suora/GameFramework/Nodes/ParticleSystemNode.h"
 #include "Suora/NodeScript/NodeScriptLibrary.h"
 
 #include "Suora/Reflection/Class.h"

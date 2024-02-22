@@ -22,6 +22,7 @@ namespace Suora
 		AssetManagement,
 		Rendering,
 		Gameplay,
+		Scripting,
 		Editor,
 		COUNT
 	};
@@ -42,9 +43,10 @@ namespace Suora
 		static void Init();
 
 		static Ref<spdlog::logger>& GetLogger(LogCategory category);
-	private:
-		static String CategoryToString(const LogCategory category);
 
+		static LogCategory CustomCategory(const String& label);
+
+		static String CategoryToString(const LogCategory category);
 	};
 
 }

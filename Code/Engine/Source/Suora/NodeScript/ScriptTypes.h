@@ -10,6 +10,9 @@ namespace Suora
 	enum class ScriptDataType : int64_t
 	{
 		None = 10,
+		Int32,
+		Int64,
+		UInt32,
 		Float,
 		Vec2,
 		Vec3,
@@ -41,6 +44,9 @@ namespace Suora
 		{
 			if (str[i] == ' ') str.erase(i, 1);
 		}
+		if (str == "int" || str == "int32_t") return ScriptDataType::Int32;
+		if (str == "int64_t") return ScriptDataType::Int64;
+		if (str == "uint32_t") return ScriptDataType::UInt32;
 		if (str == "float") return ScriptDataType::Float;
 		if (str == "Vec2") return ScriptDataType::Vec2;
 		if (str == "Vec3") return ScriptDataType::Vec3;

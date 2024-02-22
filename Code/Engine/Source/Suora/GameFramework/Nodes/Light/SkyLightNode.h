@@ -6,7 +6,6 @@
 
 namespace Suora
 {
-	class LightComponent;
 	class Texture2D;
 	class Material;
 
@@ -15,13 +14,13 @@ namespace Suora
 		SUORA_CLASS(547896459);
 	public:
 
-		MEMBER()
+		PROPERTY()
 		Texture2D* m_SkyTexture = nullptr;
 
-		/*MEMBER()
+		/*PROPERTY()
 		Material* m_SkyMaterial = nullptr;*/
 
-		MEMBER()
+		PROPERTY()
 		Color m_Color = Color(1.0f);
 
 		SkyLightNode();

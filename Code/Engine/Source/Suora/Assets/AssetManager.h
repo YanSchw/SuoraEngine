@@ -4,7 +4,6 @@
 #include <filesystem>
 #include "Asset.h"
 #include "Suora/Core/Object/Object.h"
-#include "Suora/Core/EngineSubSystem.h"
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Common/SuoraID.h"
 #include "Suora/Common/Array.h"
@@ -17,7 +16,7 @@ namespace Suora
 	class Texture2D;
 
 	/* The AssetManager class is responsible for managing assets in the Suora Engine. */
-	class AssetManager : public EngineSubSystem
+	class AssetManager
 	{
 	private:
 		// Static members
@@ -71,7 +70,7 @@ namespace Suora
 		template<class T>
 		static T* GetAsset(const SuoraID& id)
 		{
-			return GetAsset(T::StaticClass(), id)->As<T>();
+			return dynamic_cast<T*>(GetAsset(T::StaticClass(), id));
 		}
 		template<class T>
 		static T* GetAssetByName(const String& name)

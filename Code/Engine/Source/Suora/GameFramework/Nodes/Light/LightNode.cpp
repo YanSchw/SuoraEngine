@@ -23,4 +23,8 @@ namespace Suora
 
 	}
 
+	void LightNode::ShadowMap(World& world, CameraNode& camera, RenderingParams& params)
+	{
+	}
+
 }

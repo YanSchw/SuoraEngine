@@ -3,7 +3,7 @@
 
 #include "Suora/Renderer/RendererAPI.h"
 
-#include "Platform/OpenGL/OpenGLBuffer.h"
+#include "Suora/Platform/OpenGL/OpenGLBuffer.h"
 
 namespace Suora 
 {

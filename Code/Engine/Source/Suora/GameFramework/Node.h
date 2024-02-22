@@ -156,6 +156,7 @@ namespace Suora
 
 	protected:
 		virtual void InitializeNode(World& world);
+		virtual void UnInitializeNode(World& world);
 	public:
 		bool IsInitialized() const;
 		bool IsEnabled() const;
@@ -221,7 +222,7 @@ namespace Suora
 	public:
 		void Serialize(Yaml::Node& root);
 		static Node* Deserialize(Yaml::Node& root, const bool isRootNode);
-		void ResetProperty(const ClassMember& member);
+		void ResetProperty(const ClassMemberProperty& member);
 
 		Array<String> m_OverwrittenProperties;
 
@@ -231,7 +232,7 @@ namespace Suora
 		friend class World;
 		friend class GameInstance;
 		friend class Level;
-		friend class DetailsPanel;
+		friend class NodeDetails;
 		friend class ViewportPanel;
 		friend class LevelOutliner;
 		friend class NodeClassEditor;
@@ -328,7 +329,7 @@ namespace Suora
 		Vec3 GetForwardVector() const;
 
 		friend class Node;
-		friend class DetailsPanel;
+		friend class NodeDetails;
 		friend class ViewportPanel;
 		friend class Physics::PhysicsWorld;
 	};
@@ -376,7 +377,7 @@ namespace Suora
 		inline static uint32_t s_UIViewportWidth = 1920;
 		inline static uint32_t s_UIViewportHeight = 1080;
 
-		friend class DetailsPanel;
+		friend class NodeDetails;
 		friend class ViewportPanel;
 		friend class Runtime;
 	};

@@ -358,12 +358,12 @@ namespace Suora
 				Class cls = Class::FromString(node->m_InputPins[2].m_AdditionalData);
 
 				const ClassReflector& refl = cls.GetClassReflector();
-				Array<Ref<ClassMember>> members = refl.GetAllClassMember();
-				for (Ref<ClassMember> It : members)
+				Array<Ref<ClassMemberProperty>> members = refl.GetAllClassMemberProperties();
+				for (Ref<ClassMemberProperty> It : members)
 				{
-					if (It->m_Type == ClassMember::Type::Delegate && It->m_MemberName == node->m_InputPins[1].m_AdditionalData)
+					if (It->m_Property->GetType() == PropertyType::Delegate && It->m_MemberName == node->m_InputPins[1].m_AdditionalData)
 					{
-						ClassMember_Delegate* delegate = (ClassMember_Delegate*)It.get();
+						DelegateProperty* delegate = (DelegateProperty*)It->m_Property.get();
 						bool bRefreshPins = false;
 						if (node->m_OutputPins.Size() - 1 != delegate->m_Args.Size())
 						{
@@ -417,10 +417,10 @@ namespace Suora
 	{
 		const ClassReflector& refl = node->GetClass().GetClassReflector();
 
-		Array<Ref<ClassMember>> members = refl.GetAllClassMember();
-		for (Ref<ClassMember> It : members)
+		Array<Ref<ClassMemberProperty>> members = refl.GetAllClassMemberProperties();
+		for (Ref<ClassMemberProperty> It : members)
 		{
-			if (It->m_Type == ClassMember::Type::Delegate)
+			if (It->m_Property->GetType() == PropertyType::Delegate)
 			{
 				Ref<VisualNode> event = CreateRef<VisualNode>();
 				if (isChild) event->m_Title = "Children/" + node->GetName() + String("/") + node->GetName() + String(" "); else event->m_Title = "Events/";

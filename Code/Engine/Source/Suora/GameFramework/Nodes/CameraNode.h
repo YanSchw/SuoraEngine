@@ -96,11 +96,11 @@ namespace Suora
 
 		float m_AspectRatio = 1.0f;
 
-		MEMBER()
+		PROPERTY()
 		bool m_AutoPossess = true;
-		MEMBER()
+		PROPERTY()
 		bool m_IsPossessable = true;
-		MEMBER()
+		PROPERTY()
 		Color m_ClearColor = Color(0, 0, 0, 1);
 
 		friend class World;

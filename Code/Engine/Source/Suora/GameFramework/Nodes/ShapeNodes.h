@@ -40,39 +40,39 @@ namespace Suora
 		void SetBodyType(BodyType type);
 		BodyType GetBodyType() const;
 
-		MEMBER()
+		PROPERTY()
 		bool IsTrigger = false;
 
-		MEMBER()
+		PROPERTY()
 		float m_Mass = 1.0f;
 
-		MEMBER()
+		PROPERTY()
 		bool m_AllowSleep = true;
 
-		MEMBER()
+		PROPERTY()
 		float m_LinearDrag = 0.0f;
 
-		MEMBER()
+		PROPERTY()
 		float m_AngularDrag = 0.05f;
 
-		MEMBER()
+		PROPERTY()
 		bool m_IsContinuous = false;
 
-		MEMBER()
+		PROPERTY()
 		float m_GravityScale = 1.0f;
 
-		MEMBER()
+		PROPERTY()
 		bool IsStatic = true;
 
 		ShapeType GetType() const { return Type; }
 
-		MEMBER() Delegate<ShapeNode*> OnTriggerEnter;
-		MEMBER() Delegate<ShapeNode*> OnTriggerStay;
-		MEMBER() Delegate<ShapeNode*> OnTriggerExit;
+		PROPERTY() Delegate<ShapeNode*> OnTriggerEnter;
+		PROPERTY() Delegate<ShapeNode*> OnTriggerStay;
+		PROPERTY() Delegate<ShapeNode*> OnTriggerExit;
 
-		MEMBER() Delegate<ShapeNode*> OnCollisionEnter;
-		MEMBER() Delegate<ShapeNode*> OnCollisionStay;
-		MEMBER() Delegate<ShapeNode*> OnCollisionExit;
+		PROPERTY() Delegate<ShapeNode*> OnCollisionEnter;
+		PROPERTY() Delegate<ShapeNode*> OnCollisionStay;
+		PROPERTY() Delegate<ShapeNode*> OnCollisionExit;
 
 		friend class Physics::PhysicsWorld;
 	};
@@ -86,7 +86,7 @@ namespace Suora
 
 		Vec3 GetBoxExtends() const;
 
-		MEMBER()
+		PROPERTY()
 		Vec3 m_HalfExtends = Vec::One * 0.5f;
 	};
 	class SphereShapeNode : public ShapeNode
@@ -98,7 +98,7 @@ namespace Suora
 
 		float GetSphereRadius() const;
 
-		MEMBER()
+		PROPERTY()
 		float m_Radius = 0.5f;
 	};
 	class CapsuleShapeNode : public ShapeNode

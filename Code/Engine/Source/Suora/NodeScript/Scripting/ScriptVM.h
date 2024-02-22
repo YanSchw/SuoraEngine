@@ -81,7 +81,7 @@ namespace Suora
 		void* Data = nullptr;
 		ScriptDataType Type = ScriptDataType::None;
 	};
-	struct ScriptEngine
+	struct BlueprintScriptEngine
 	{
 		inline static std::vector<ScriptGarbage> m_ScriptCache;
 

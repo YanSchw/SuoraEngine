@@ -2,7 +2,7 @@
 #include "Suora/Renderer/VertexArray.h"
 
 #include "Suora/Renderer/RendererAPI.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
+#include "Suora/Platform/OpenGL/OpenGLVertexArray.h"
 #include "Suora/Renderer/Vertex.h"
 #include "Buffer.h"
 

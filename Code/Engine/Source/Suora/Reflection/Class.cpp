@@ -3,9 +3,9 @@
 #include "ClassReflector.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/Blueprint.h"
-#include "Suora/Assets/ScriptClass.h"
 #include "Suora/Common/Array.h"
-#include "Suora/Common/Random.h"
+#include "Suora/Core/Engine.h"
+#include "Suora/NodeScript/External/ScriptEngine.h"
 
 namespace Suora
 {
@@ -26,7 +26,11 @@ namespace Suora
 		case ClassType::BlueprintClass:
 			return m_BlueprintClass->GetNodeParentClass();
 		case ClassType::ScriptClass:
-			return m_ScriptClass->GetScriptParentClass();
+		{
+			std::vector<String> split = StringUtil::SplitString(m_ScriptClass, '$');
+			ScriptEngine* scriptEngine = ScriptEngine::GetScriptEngineByDomain(split[0]);
+			return scriptEngine ? scriptEngine->GetScriptParentClass(split[1]) : Class::None;
+		}
 		case ClassType::None:
 		default:
 			SuoraError("Class::GetParentClass() implementation missing!");
@@ -44,8 +48,9 @@ namespace Suora
 		return ClassType::None;
 	}
 
-	void Class::GenerateNativeClassReflector(const Class& cls)
+	void Class::GenerateNativeClassReflector(const Class& cls, const std::function<void(ClassReflector&)>& reflLambda)
 	{
+		ClassReflector::Create(cls, reflLambda);
 		ClassReflector::GetByClass(cls);
 		ClassInternal::s_NativeClasses.push_back(cls);
 	}
@@ -64,21 +69,29 @@ namespace Suora
 		return out;
 	}
 
+	Array<Class> Class::GetAllNativeClasses()
+	{
+		return ClassInternal::s_NativeClasses;
+	}
+
 	Array<Class> Class::GetAllClasses()
 	{
-		Array<Class> classes = ClassInternal::s_NativeClasses;
+		Array<Class> classes = GetAllNativeClasses();
 		classes.Add(Object::StaticClass());
+		
+		for (ScriptEngine* It : ScriptEngine::s_ScriptEngines)
+		{
+			Array<Class> scriptClasses = It->GetAllScriptClasses();
+			for (const Class& scriptClass : scriptClasses)
+			{
+				classes.Add(scriptClass);
+			}
+		}
 
 		const Array<Blueprint*> blueprints = AssetManager::GetAssets<Blueprint>();
 		for (Blueprint* bp : blueprints)
 		{
 			classes.Add(Class(bp));
-		}
-
-		const Array<ScriptClass*> sclasses = AssetManager::GetAssets<ScriptClass>();
-		for (ScriptClass* sclass : sclasses)
-		{
-			classes.Add(Class(sclass));
 		}
 
 		return classes;
@@ -115,6 +128,10 @@ namespace Suora
 		case ClassType::BlueprintClass:
 			return m_BlueprintClass->GetAssetName();
 		case ClassType::ScriptClass:
+		{
+			std::vector<String> split = StringUtil::SplitString(m_ScriptClass, '$');
+			return split[1];
+		}
 		case ClassType::None:
 			return "None";
 		default:
@@ -137,9 +154,13 @@ namespace Suora
 		{
 			str.append(std::to_string(GetNativeClassID()));
 		}
-		else
+		else if (IsBlueprintClass())
 		{
 			str.append(GetBlueprintClass()->m_UUID.GetString());
+		}
+		else
+		{
+			return GetScriptClass();
 		}
 
 		return str;
@@ -157,6 +178,11 @@ namespace Suora
 		{
 			const String uid = str.substr(5, str.size() - 5);
 			return Class(AssetManager::GetAsset<Blueprint>(uid));
+		}
+
+		if (str.find("$") != String::npos)
+		{
+			return Class(str);
 		}
 
 		return Class::None;
@@ -195,33 +221,29 @@ namespace Suora
 	{
 		m_BlueprintClass = &node;
 	}
-	Class::Class(ScriptClass* script)
+	Class::Class(const String& scriptClass)
 	{
-		m_ScriptClass = script;
-	}
-	Class::Class(ScriptClass& script)
-	{
-		m_ScriptClass = &script;
+		m_ScriptClass = scriptClass;
 	}
 	Class& Class::operator=(const NativeClassID id)
 	{
 		m_NativeClassID = id;
 		m_BlueprintClass = nullptr;
-		m_ScriptClass = nullptr;
+		m_ScriptClass = "";
 		return *this;
 	}
 	Class& Class::operator=(Blueprint* node)
 	{
 		m_NativeClassID = 0;
 		m_BlueprintClass = node;
-		m_ScriptClass = nullptr;
+		m_ScriptClass = "";
 		return *this;
 	}
-	Class& Class::operator=(ScriptClass* script)
+	Class& Class::operator=(const String& scriptClass)
 	{
 		m_NativeClassID = 0;
 		m_BlueprintClass = nullptr;
-		m_ScriptClass = script;
+		m_ScriptClass = scriptClass;
 		return *this;
 	}
 	NativeClassID Class::GetNativeClassID() const
@@ -232,7 +254,7 @@ namespace Suora
 	{
 		return m_BlueprintClass;
 	}
-	ScriptClass* Class::GetScriptClass() const
+	String Class::GetScriptClass() const
 	{
 		return m_ScriptClass;
 	}
@@ -248,9 +270,9 @@ namespace Suora
 	{
 		return node == m_BlueprintClass;
 	}
-	bool Class::operator==(const ScriptClass* script) const
+	bool Class::operator==(const String& scriptClass) const
 	{
-		return script == m_ScriptClass;
+		return scriptClass == m_ScriptClass;
 	}
 	bool Class::operator!=(const Class& cls) const
 	{
@@ -260,17 +282,17 @@ namespace Suora
 	{
 		return !operator==(id);
 	}
-	bool Class::operator!=(Blueprint* node) const
+	bool Class::operator!=(const Blueprint* node) const
 	{
 		return !operator==(node);
 	}
-	bool Class::operator!=(ScriptClass* script) const
+	bool Class::operator!=(const String& scriptClass) const
 	{
-		return !operator==(script);
+		return !operator==(scriptClass);
 	}
 	bool Class::IsNative() const
 	{
-		return !m_BlueprintClass && !m_ScriptClass;
+		return !m_BlueprintClass && m_ScriptClass.empty();
 	}
 	bool Class::IsBlueprintClass() const
 	{
@@ -278,6 +300,6 @@ namespace Suora
 	}
 	bool Class::IsScriptClass() const
 	{
-		return m_ScriptClass;
+		return !m_ScriptClass.empty();
 	}
 }

@@ -17,7 +17,7 @@ namespace Suora
     }
 	void Font::LoadFontMetaFromFile(FilePath path, FilePath texturePath)
 	{
-		if (!File::GetFileExtension(DirectoryEntry(path))._Equal(".font")) static_assert("Font file needed!");
+		if (File::GetFileExtension(DirectoryEntry(path)) != ".font") static_assert("Font file needed!");
 		m_FontPath = texturePath.string();
 		//Instance = this;
 
@@ -29,20 +29,20 @@ namespace Suora
 				String str;
 				reader >> str;
 
-				if (str.substr(0, 11)._Equal("lineHeight="))
+				if (str.substr(0, 11) == "lineHeight=")
 				{
 					str = str.substr(11, str.size() - 11);
 					m_LineHeight = std::stof(str);
 					continue;
 				}
-				if (str.substr(0, 5)._Equal("size="))
+				if (str.substr(0, 5) == "size=")
 				{
 					str = str.substr(5, str.size() - 5);
 					m_FontSize = std::stof(str);
 					continue;
 				}
 
-				if (!str._Equal("char")) continue;
+				if (str != "char") continue;
 
 				String id;			reader >> id;						id = id.substr(3, id.size() - 3);
 				String x;			reader >> x;						x = x.substr(2, x.size() - 2);

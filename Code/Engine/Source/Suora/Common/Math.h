@@ -31,6 +31,17 @@ namespace Suora
 			return max;
 		}
 
+		template<class T>
+		static T Min(const T a, const T b)
+		{
+			return glm::min(a, b);
+		}
+		template<class T>
+		static T Max(const T a, const T b)
+		{
+			return glm::max(a, b);
+		}
+
 		template<class T, class V>
 		inline static T Lerp(const T& a, const T& b, const V v)
 		{

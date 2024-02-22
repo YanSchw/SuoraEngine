@@ -18,15 +18,15 @@ namespace Suora
 		Scope<CameraNode> m_Projection;
 
 	public:
-		MEMBER() 
+		PROPERTY()
 		Material* material = nullptr;
-		MEMBER()
+		PROPERTY()
 		float Width = 1.0f;
-		MEMBER()
+		PROPERTY()
 		float Height = 1.0f;
-		MEMBER()
+		PROPERTY()
 		float Near = 0.01f;
-		MEMBER()
+		PROPERTY()
 		float Far = 3.0f;
 
 		DecalNode();

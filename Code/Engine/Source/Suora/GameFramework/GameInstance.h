@@ -1,5 +1,5 @@
 #pragma once
-#include "Suora/Core/EngineSubSystem.h"
+#include "Suora/Core/Object/Object.h"
 #include "GameInstance.generated.h"
 
 namespace Suora
@@ -11,7 +11,7 @@ namespace Suora
 	class Engine;
 
 	/** GameInstanced is created and managed by the Engine. All GameState and GameFlow happends here. */
-	class GameInstance : public EngineSubSystem
+	class GameInstance : public Object
 	{
 		SUORA_CLASS(89437688);
 	public:

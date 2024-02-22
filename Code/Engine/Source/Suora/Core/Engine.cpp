@@ -3,12 +3,13 @@
 #include "Application.h"
 #include "NativeInput.h"
 
-#include "../Assets/AssetManager.h"
+#include "Suora/Assets/AssetManager.h"
 #include "Suora/Assets/SuoraProject.h"
 #include "Suora/GameFramework/GameInstance.h"
 #include "Suora/Renderer/RenderPipeline.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
 #include "Suora/Physics/PhysicsEngine.h"
+#include "Suora/NodeScript/External/ScriptEngine.h"
 
 namespace Suora
 {
@@ -39,11 +40,34 @@ namespace Suora
 
 		// Dark magic.....
 		Class::None.GetClassDefaultObject(true);
+		ClassReflector::Create(Object::StaticClass(), [](ClassReflector& desc)
+		{
+			desc.SetClassName("Object");
+			desc.SetClassSize(sizeof(Object)); 
+		});
 
 		engine->m_PreviousTime = std::chrono::steady_clock::now();
 
 		engine->m_PhysicsEngine = Physics::PhysicsEngine::Create();
 		engine->m_PhysicsEngine->Initialize();
+
+		Array<Class> engineSubsystems = Class::GetSubclassesOf(EngineSubSystem::StaticClass());
+		for (const Class& It : engineSubsystems)
+		{
+			Object* alloc = New(It);
+			if (alloc)
+			{
+				Ref<EngineSubSystem> system = Ref<EngineSubSystem>(alloc->As<EngineSubSystem>());
+				engine->m_Subsystems.Add(system);
+			}
+		}
+		for (int32_t i = engine->m_Subsystems.Last(); i >= 0; i--)
+		{
+			if (!engine->m_Subsystems[i]->Initialize())
+			{
+				engine->m_Subsystems.RemoveAt(i);
+			}
+		}
 
 		return engine;
 	}
@@ -88,6 +112,11 @@ namespace Suora
 		return m_PhysicsEngine.get();
 	}
 
+	Array<Ref<EngineSubSystem>> Engine::GetEngineSubsystems() const
+	{
+		return m_Subsystems;
+	}
+
 	String Engine::GetRootPath() const
 	{
 		return m_RootPath.string();
@@ -125,7 +154,11 @@ namespace Suora
 
 		NativeInput::Tick(deltaTime);
 
-		ScriptEngine::CleanUp();
+		for (const auto It : m_Subsystems)
+		{
+			It->Tick(deltaTime);
+		}
+		BlueprintScriptEngine::CleanUp();
 
 		AssetManager::Update(deltaTime);
 

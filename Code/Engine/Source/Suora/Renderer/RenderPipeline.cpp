@@ -83,7 +83,7 @@ namespace Suora
 
 		params.ValidateBuffers();
 
-		ShadowPass(world, camera);
+		ShadowPass(world, camera, params);
 
 		SetFullscreenViewport(*params.GetGBuffer());
 
@@ -166,14 +166,14 @@ namespace Suora
 
 	}
 
-	void RenderPipeline::ShadowPass(World& world, CameraNode& camera)
+	void RenderPipeline::ShadowPass(World& world, CameraNode& camera, RenderingParams& params)
 	{
 		Array<LightNode*> lights = world.FindNodesByClass<LightNode>();
 		for (LightNode* light : lights)
 		{
 			if (light->m_ShadowMap)
 			{
-				light->ShadowMap(world, camera);
+				light->ShadowMap(world, camera, params);
 			}
 		}
 	}
@@ -199,18 +199,19 @@ namespace Suora
 		RenderCommand::Clear();
 		RenderCommand::SetAlphaBlending(false);
 		SetFullscreenViewport(*params.GetGBuffer());
+
 		RenderCommand::SetWireframeMode(params.DrawWireframe);
 
-		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
-		int32_t meshID = 0;
-		for (MeshNode* meshNode : meshes)
+		int32_t ID = 1;
+		for (RenderableNode3D* renderable : world.m_DeferredRenderables)
 		{
-			if (meshNode->GetMesh() && meshNode->GetMaterials().Materials.Size() > 0 && meshNode->GetMaterials().Materials[0] && meshNode->GetMaterials().Materials[0]->IsDeferred())
+			if (renderable->IsEnabled())
 			{
-				Renderer3D::DrawMeshNode(&camera, meshNode, MaterialType::Material, ++meshID);
-				
+				renderable->RenderDeferredSingleInstance(world, camera, params, ID++);
 			}
+			
 		}
+
 		RenderCommand::SetWireframeMode(false);
 	}
 
@@ -411,14 +412,14 @@ namespace Suora
 
 		RenderCommand::SetWireframeMode(params.DrawWireframe);
 
-		Array<MeshNode*> meshes = world.FindNodesByClass<MeshNode>();
-		int32_t meshID = 0;
-		for (MeshNode* meshNode : meshes)
+		int32_t ID = 1;
+		for (RenderableNode3D* renderable : world.m_ForwardRenderables)
 		{
-			if (meshNode->GetMesh() && meshNode->GetMaterials().Materials.Size() > 0 && meshNode->GetMaterials().Materials[0] && meshNode->GetMaterials().Materials[0]->GetShaderGraph() && !meshNode->GetMaterials().Materials[0]->IsDeferred())
+			if (renderable->IsEnabled())
 			{
-				Renderer3D::DrawMeshNode(&camera, meshNode, MaterialType::Material, ++meshID);
+				renderable->RenderForwardSingleInstance(world, camera, params, ID++);
 			}
+
 		}
 
 		RenderCommand::SetWireframeMode(false);

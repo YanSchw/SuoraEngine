@@ -46,7 +46,7 @@ namespace Suora
 		MotionBlur();
 		~MotionBlur();
 
-		MEMBER()
+		PROPERTY()
 		float m_Intensity = 0.125f;
 
 		virtual void Init() override;
@@ -66,8 +66,8 @@ namespace Suora
 		ChromaticAberration();
 		~ChromaticAberration();
 
-		MEMBER()
-			float m_Intensity = 0.04f;
+		PROPERTY()
+		float m_Intensity = 0.04f;
 
 		virtual void Init() override;
 		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera) override;
@@ -80,8 +80,8 @@ namespace Suora
 		SUORA_CLASS(47368441);
 
 	public:
-		MEMBER() float m_Intensity = 0.4f;
-		MEMBER() float m_Jitter = 1.65f;
+		PROPERTY() float m_Intensity = 0.4f;
+		PROPERTY() float m_Jitter = 1.65f;
 
 		virtual void Init() override;
 		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera) override;
@@ -96,7 +96,7 @@ namespace Suora
 
 	public:
 
-		MEMBER() float m_Samples = 1; // TODO: should be int
+		PROPERTY() int m_Samples = 1; 
 
 		virtual void Init() override;
 		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera) override;
@@ -113,8 +113,8 @@ namespace Suora
 		virtual void Init() override;
 		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera) override;
 
-		MEMBER()
-		float m_TonemapFunction = 3; /// TODO: Should be int
+		PROPERTY()
+		int m_TonemapFunction = 3; /// TODO: Should be int
 
 	private:
 		Ref<Shader> m_Shader;
@@ -126,10 +126,10 @@ namespace Suora
 		SUORA_CLASS(47863233);
 
 	public:
-		MEMBER() float m_Intensity = 40.0f;
-		MEMBER() float m_Extend = 0.15f;
-		MEMBER() float m_Alpha = 0.5f;
-		MEMBER() Color m_VignetteColor = Color(0, 0, 0, 1);
+		PROPERTY() float m_Intensity = 40.0f;
+		PROPERTY() float m_Extend = 0.15f;
+		PROPERTY() float m_Alpha = 0.5f;
+		PROPERTY() Color m_VignetteColor = Color(0, 0, 0, 1);
 
 		virtual void Init() override;
 		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera) override;
@@ -142,12 +142,12 @@ namespace Suora
 	{
 		SUORA_CLASS(5477844901);
 	public:
-		MEMBER() float m_Samples = 32.0f;
-		MEMBER() float m_Radius = 3.5f;
-		MEMBER() float m_Intensity = 0.25f; // 0.45f
-		MEMBER() float m_Alpha = 1.0f;
-		MEMBER() float m_NearGaussBellFactor = 25.0f;
-		MEMBER() Color m_AOColor = Color(0.0f, 0.0f, 0.0f, 1.0f);
+		PROPERTY() float m_Samples = 32.0f;
+		PROPERTY() float m_Radius = 3.5f;
+		PROPERTY() float m_Intensity = 0.25f; // 0.45f
+		PROPERTY() float m_Alpha = 1.0f;
+		PROPERTY() float m_NearGaussBellFactor = 25.0f;
+		PROPERTY() Color m_AOColor = Color(0.0f, 0.0f, 0.0f, 1.0f);
 
 		virtual void Init() override;
 		virtual void Process(const Ref<Framebuffer>& SrcBuffer, const Ref<Framebuffer>& DstBuffer, RenderingParams& Params, CameraNode& Camera) override;

@@ -18,6 +18,7 @@ namespace Suora
 	class Node;
 	class Level;
 	class GameInstance;
+	class RenderableNode3D;
 	
 	struct HitResult
 	{
@@ -58,6 +59,11 @@ namespace Suora
 		Level* m_SourceLevel = nullptr;
 		Ref<Physics::PhysicsWorld> m_PhysicsWorld;
 
+		/* Rendering */
+		Array<RenderableNode3D*> m_DeferredRenderables;
+		Array<RenderableNode3D*> m_ForwardRenderables;
+		Array<RenderableNode3D*> m_ShadowRenderables;
+
 	public:
 		World();
 		~World();
@@ -75,7 +81,7 @@ namespace Suora
 		template<class T>
 		T* Spawn()
 		{
-			return Spawn(T::StaticClass())->As<T>();
+			return dynamic_cast<T*>(Spawn(T::StaticClass()));
 		}
 
 		bool Raycast(const Vec3& start, const Vec3& end, HitResult& result, const RaycastParams& params = RaycastParams());
@@ -130,5 +136,8 @@ namespace Suora
 		friend class NodeClassEditor;
 		friend class CameraNode;
 		friend class RenderPipeline;
+		friend class RenderableNode3D;
+		friend class DirectionalLightNode;
+		friend class PointLightNode;
 	};
 }
