@@ -14,6 +14,9 @@
 #include "Suora/Common/Filesystem.h"
 #include "Suora/Editor/Panels/Major/MeshEditorPanel.h"
 
+// Default Details
+#include "NodeDetails.h"
+
 namespace Suora
 {
 
@@ -323,7 +326,7 @@ namespace Suora
 		return Result::None;
 	}
 
-	static void DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue = 0, const std::function<void(String)>& lambda = nullptr)
+	void DetailsPanel::DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue, const std::function<void(String)>& lambda)
 	{
 		EditorUI::ButtonParams params;
 		params.TextColor = Vec4(0, 0, 0, 1);
@@ -341,15 +344,15 @@ namespace Suora
 		if (EditorUI::Button("Z", x + singleWidth * 2.0f, y, height, height, params)) vec->z = defaultVecResetValue;
 		EditorUI::DragFloat(&vec->z, x + singleWidth * 2.0f + height, y, singleWidth - height, height, lambda);
 	}
-	static std::unordered_map<Quat*, Vec3> _DrawQuatCache;
-	static void DrawQuatControl(Quat* rot, float x, float y, float width, float height, float defaultVecResetValue = 0)
-	{
-		//Vec3 vec = glm::degrees(glm::eulerAngles(*rot));
-		if (_DrawQuatCache.find(rot) == _DrawQuatCache.end()) _DrawQuatCache[rot] = glm::degrees(glm::eulerAngles(*rot));
-		
-		DrawVec3Control(&_DrawQuatCache[rot], x, y, width, height, defaultVecResetValue);
-		*rot = Quat(glm::radians(_DrawQuatCache[rot]));
-	}
+	//static std::unordered_map<Quat*, Vec3> _DrawQuatCache;
+	//static void DrawQuatControl(Quat* rot, float x, float y, float width, float height, float defaultVecResetValue = 0)
+	//{
+	//	//Vec3 vec = glm::degrees(glm::eulerAngles(*rot));
+	//	if (_DrawQuatCache.find(rot) == _DrawQuatCache.end()) _DrawQuatCache[rot] = glm::degrees(glm::eulerAngles(*rot));
+	//	
+	//	DrawVec3Control(&_DrawQuatCache[rot], x, y, width, height, defaultVecResetValue);
+	//	*rot = Quat(glm::radians(_DrawQuatCache[rot]));
+	//}
 
 
 	DetailsPanel::DetailsPanel(MajorTab* majorTab)
@@ -357,6 +360,17 @@ namespace Suora
 	{
 		Name = "Details";
 		undoTexture = AssetManager::GetAssetByName<Texture2D>("Undo.texture");
+
+		Array<Class> implementations = Class::GetSubclassesOf(DetailsPanelImplementation::StaticClass());
+		for (const auto& It : implementations)
+		{
+			auto Impl = Ref<DetailsPanelImplementation>(New(It)->As<DetailsPanelImplementation>());
+			if (Impl)
+			{
+				Impl->SetDetailsPanel(this);
+				m_Implementations.Add(Impl);
+			}
+		}
 	}
 
 	DetailsPanel::~DetailsPanel()
@@ -392,8 +406,16 @@ namespace Suora
 
 		if (m_Data)
 		{
+			for (Ref<DetailsPanelImplementation> It : m_Implementations)
+			{
+				if (It)
+				{
+					It->ViewObject(m_Data, y);
+				}
+			}
+
 			Class detailClass = m_Data->GetNativeClass();
-			if      (detailClass.Inherits(Node::StaticClass())) { ViewNode(y, m_Data->As<Node>()); }
+			if      (detailClass.Inherits(Node::StaticClass())) { /*ViewNode(y, m_Data->As<Node>());*/ }
 			else if (detailClass == Material::StaticClass()) { ViewMaterial(y, m_Data->As<Material>(), false); }
 			else if (detailClass == Mesh::StaticClass()) { ViewMesh(y, m_Data->As<Mesh>()); }
 			else if (detailClass == ShaderGraph::StaticClass()) { ViewMaterial(y, m_Data->As<Material>(), true); }
@@ -493,138 +515,6 @@ namespace Suora
 				obj->m_OverwrittenProperties.Add(mname);
 			}
 		}
-	}
-
-	void DetailsPanel::ViewNode(float& y, Node* node)
-	{
-
-		if (!node)
-		{
-			EditorUI::Text("Select a Node to view its Details.", Font::Instance, 0, 0, GetWidth(), GetHeight(), 36, Vec2(0, 0), Color(1));
-			return;
-		}
-
-		bool NodeEnabled = node->m_Enabled;
-
-		y -= 40;
-		EditorUI::Button("", 0.0f, y, 40.0f, 40.0f, ShutterPanelParams());
-		EditorUI::DrawTexturedRect(EditorUI::GetClassIcon(node->GetClass())->GetTexture(), 5.0f, y + 5.0f, 30.0f, 30.0f, 0.0f, Color(1));
-		EditorUI::Button("", 40.0f, y, GetDetailWidth() - 80.0f, 40.0f, ShutterPanelParams());
-		EditorUI::TextField(&node->m_Name, 45.0f, y + 7.5f, (GetDetailWidth() - 40.0f) / 2.0f, 25.0f);
-		node->SetName(node->GetName());
-		EditorUI::Button("", GetDetailWidth() - 40.0f, y, 40.0f, 40.0f, ShutterPanelParams());
-		EditorUI::Checkbox(&node->m_Enabled, GetDetailWidth() - 40.0f + 7.5f, y + 7.5f, 25.0f, 25.0f);
-		y -= 10;
-		EditorUI::Text("=======================================================================", Font::Instance, 0.0f, y + 5.0f, GetDetailWidth(), 5.0f, 18.0f, Vec2(0.0f), Color(0.65f));
-
-		if (NodeEnabled != node->m_Enabled)
-		{
-			node->SetEnabled(node->m_Enabled);
-		}
-
-		bool skipFirstDerivative = false;
-		if (Node3D* node3D = node->As<Node3D>())
-		{
-			skipFirstDerivative = true;
-			y -= 35;
-			static bool readTransform = true;
-			static std::function<void(String)> disableReadTransform = [](String s) { readTransform = false; };
-			if (readTransform) // Doesn't work with writing values in the TextBox!
-			{
-				Transform_Pos = node3D->GetLocalPosition();
-				Transform_Rot = node3D->GetEulerRotation();
-				Transform_Scale = node3D->GetLocalScale();
-				if (Transform_Rot.x == -0.0f || Transform_Rot.x == 0.0f) Transform_Rot.x = 0.0f; if (Transform_Rot.x == -180.0f) Transform_Rot.x = 180.0f;
-				if (Transform_Rot.y == -0.0f || Transform_Rot.y == 0.0f) Transform_Rot.y = 0.0f; if (Transform_Rot.y == -180.0f) Transform_Rot.y = 180.0f;
-				if (Transform_Rot.z == -0.0f || Transform_Rot.z == 0.0f) Transform_Rot.z = 0.0f; if (Transform_Rot.z == -180.0f) Transform_Rot.z = 180.0f;
-			}
-			readTransform = true;
-			if (EditorUI::CategoryShutter(0, "Node3D", 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
-			{
-				y -= 34;
-				DrawLabel("Position", y, 35.0f);
-				//static Vec3 position;
-				DrawVec3Control(&Transform_Pos, GetDetailWidth() * m_Seperator, y + 4.5f, GetDetailWidth() - GetDetailWidth() * m_Seperator - 35.0f, 25, 0.0f, disableReadTransform);
-				node3D->SetLocalPosition(Transform_Pos);
-				y -= 34;
-				DrawLabel("Rotation", y, 35.0f);
-				if (!GetMajorTab()->IsA<NodeClassEditor>()
-					|| (GetMajorTab()->IsA<NodeClassEditor>() && GetMajorTab()->As<NodeClassEditor>()->m_CurrentPlayState == PlayState::Editor)
-					|| true)
-				{
-					//static Vec3 rot;
-					DrawVec3Control(&Transform_Rot, GetDetailWidth() * m_Seperator, y + 4.5f, GetDetailWidth() - GetDetailWidth() * m_Seperator - 35.0f, 25, 0.0f, disableReadTransform);
-					node3D->SetEulerRotation(Transform_Rot);
-				}
-				y -= 34;
-				DrawLabel("Scale", y, 35.0f);
-				//static Vec3 scale;
-				DrawVec3Control(&Transform_Scale, GetDetailWidth() * m_Seperator, y + 4.5f, GetDetailWidth() - GetDetailWidth() * m_Seperator - 35.0f, 25, 1.0f, disableReadTransform);
-				node3D->SetLocalScale(Transform_Scale);
-				y -= 15; // Padding Bottom
-				node3D->TickTransform(true);
-
-				Transform_LastNode = node;
-			}
-		}
-		if (UINode* uinode = node->As<UINode>())
-		{
-			skipFirstDerivative = true;
-			y -= 35;
-			if (EditorUI::CategoryShutter(0, "UINode", 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
-			{
-				y -= 34;
-				DrawLabel("Anchor", y, 35.0f);
-				DragFloat2(&uinode->m_Anchor, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
-				y -= 34;
-				DrawLabel("Width", y, 35.0f);
-				EditorUI::Checkbox(&uinode->m_IsWidthRelative, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, 25.0f, 25.0f);
-				EditorUI::Text("Is Relative", Font::Instance, GetDetailWidth() * m_Seperator + 35.0f, y + 5.0f, 250.0f, 25.0f, 21.0f, Vec2(-1, 0), Color(1.0f));
-				y -= 34;
-				DrawLabel("", y, 35.0f);
-				EditorUI::DragFloat(&uinode->m_Width, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
-				y -= 34;
-				DrawLabel("Height", y, 35.0f);
-				EditorUI::Checkbox(&uinode->m_IsHeightRelative, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, 25.0f, 25.0f);
-				EditorUI::Text("Is Relative", Font::Instance, GetDetailWidth() * m_Seperator + 35.0f, y + 5.0f, 250.0f, 25.0f, 21.0f, Vec2(-1, 0), Color(1.0f));
-				y -= 34;
-				DrawLabel("", y, 35.0f);
-				EditorUI::DragFloat(&uinode->m_Height, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
-				y -= 34;
-				DrawLabel("Pivot", y, 35.0f);
-				DragFloat2(&uinode->m_Pivot, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
-				y -= 34;
-				DrawLabel("Absolute Pixel Offset", y, 35.0f);
-				DragFloat3(&uinode->m_AbsolutePixelOffset, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
-				y -= 34;
-				DrawLabel("Euler Rotation around Anchor", y, 35.0f);
-				DragFloat3(&uinode->m_EulerRotationAroundAnchor, GetDetailWidth() * m_Seperator + 5.0f, y + 5.0f, GetDetailWidth() * (0.8f - m_Seperator), 25.0f);
-			}
-		}
-
-		// Node Derivates
-		Array<Class> derivates = node->GetClass().GetInheritanceTree();
-		int memberIndex = 0;
-		for (int64_t i = skipFirstDerivative ? 3 : 2; i < derivates.Size(); i++)
-		{
-			y -= 35;
-			const ClassReflector& refl = ClassReflector::GetByClass(derivates[i]);
-			if (EditorUI::CategoryShutter(1000 + i, refl.m_ClassName, 0, y, GetDetailWidth(), 35, ShutterPanelParams()))
-			{
-				for (Ref<ClassMemberProperty> member : refl.m_ClassProperties)
-				{
-					float x = 0;
-					DrawClassMember(x, y, node, member.get(), memberIndex++);
-				}
-
-			}
-			else
-			{
-				memberIndex += refl.m_ClassProperties.Size();
-			}
-		}
-
-		y -= 50;
 	}
 
 	void DetailsPanel::ViewMaterial(float& y, Material* material, bool isShaderGraph)

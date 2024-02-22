@@ -4,12 +4,15 @@
 #include "Suora/GameFramework/InputModule.h"
 #include "Suora/Common/Map.h"
 
+#include "DetailsPanel.generated.h"
+
 namespace Suora
 {
 
 	class Material;
 	class Texture2D;
 	class ProjectSettings;
+	class DetailsPanelImplementation;
 
 	class DetailsPanel : public MinorTab
 	{
@@ -52,13 +55,8 @@ namespace Suora
 		Result DrawSubclassOf(TSubclassOf* cls, const String& label, float& y, bool valueChanged);
 		Result DrawDelegate(TDelegate* delegate, const String& label, float& y);
 
-		// Transform Util
-		void* Transform_LastNode = nullptr;
-		Vec3 Transform_Pos = Vec::Zero;
-		Vec3 Transform_Rot = Vec::Zero;
-		Vec3 Transform_Scale = Vec::One;
+		static void DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue = 0, const std::function<void(String)>& lambda = nullptr);
 
-		void ViewNode(float& y, Node* node);
 		void ViewMaterial(float& y, Material* material, bool isShaderGraph);
 		void ViewMesh(float& y, Mesh* mesh);
 		void ViewTexture2D(float& y, Texture2D* texture);
@@ -79,6 +77,43 @@ namespace Suora
 		Map<float*, float> m_DrawFloatValues;
 		Map<Vec4*, int32_t> m_Vec4_ColorPickerResults;
 
+		Array<Ref<DetailsPanelImplementation>> m_Implementations;
+
 		using Super = MinorTab;
 	};
+
+	class DetailsPanelImplementation : public Object
+	{
+		SUORA_CLASS(87953422398);
+	public:
+		// To be overwritten
+		virtual void ViewObject(Object* obj, float& y) = 0;
+		virtual int32_t GetOrderIndex() const { return 0; }
+
+		// Helperfunctions
+		DetailsPanel* GetDetailsPanel() const { return m_DetailsPanel; }
+
+		// MinorTab
+		int GetWidth() const { return GetDetailsPanel()->GetWidth(); }
+		int GetHeight() const { return GetDetailsPanel()->GetHeight(); }
+		Vec2 GetMinorMousePos() const { return GetDetailsPanel()->GetMinorMousePos(); }
+		MajorTab* GetMajorTab() const { return GetDetailsPanel()->GetMajorTab(); }
+		bool IsInputValid() { return GetDetailsPanel()->IsInputValid(); }
+		bool IsInputMode(EditorInputEvent event) { return GetDetailsPanel()->IsInputMode(event); }
+		void SetInputMode(EditorInputEvent event) { return GetDetailsPanel()->SetInputMode(event); }
+
+		// DetailsPanel
+		int GetDetailWidth() const { return GetDetailsPanel()->GetDetailWidth(); }
+		static EditorUI::ButtonParams ShutterPanelParams() { return DetailsPanel::ShutterPanelParams(); }
+		float GetSeperator() const { return GetDetailsPanel()->m_Seperator; }
+
+		void DrawLabel(const String& label, float y, float height) { GetDetailsPanel()->DrawLabel(label, y, height); }
+
+	private:
+		void SetDetailsPanel(DetailsPanel* panel) { m_DetailsPanel = panel; }
+		DetailsPanel* m_DetailsPanel = nullptr;
+
+		friend class DetailsPanel;
+	};
+
 }
