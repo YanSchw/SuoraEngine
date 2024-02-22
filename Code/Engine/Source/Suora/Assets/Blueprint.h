@@ -61,7 +61,7 @@ namespace Suora
 		friend class Level;
 		friend class World;
 		friend class GameInstance;
-		friend class DetailsPanel;
+		friend class BlueprintDetails;
 		friend class NodeClassEditor;
 		friend class NodeClassNodeGraph;
 		friend class CreateClassOverlay;
