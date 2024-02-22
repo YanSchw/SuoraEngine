@@ -81,7 +81,7 @@ namespace Suora
 				GetDetailsPanel()->DrawVec3Control(&Transform_Pos, GetDetailWidth() * GetSeperator(), y + 4.5f, GetDetailWidth() - GetDetailWidth() * GetSeperator() - 35.0f, 25, 0.0f, disableReadTransform);
 				node3D->SetLocalPosition(Transform_Pos);
 				y -= 34;
-				GetDetailsPanel()->DrawLabel("Rotation", y, 35.0f);
+				DrawLabel("Rotation", y, 35.0f);
 				if (!GetMajorTab()->IsA<NodeClassEditor>()
 					|| (GetMajorTab()->IsA<NodeClassEditor>() && GetMajorTab()->As<NodeClassEditor>()->m_CurrentPlayState == PlayState::Editor)
 					|| true)

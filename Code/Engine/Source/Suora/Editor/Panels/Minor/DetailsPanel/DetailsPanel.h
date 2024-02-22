@@ -57,7 +57,6 @@ namespace Suora
 
 		static void DrawVec3Control(Vec3* vec, float x, float y, float width, float height, float defaultVecResetValue = 0, const std::function<void(String)>& lambda = nullptr);
 
-		void ViewMaterial(float& y, Material* material, bool isShaderGraph);
 		void ViewMesh(float& y, Mesh* mesh);
 		void ViewTexture2D(float& y, Texture2D* texture);
 		void ViewBlueprintClass(float& y, Blueprint* blueprint);
@@ -107,7 +106,21 @@ namespace Suora
 		static EditorUI::ButtonParams ShutterPanelParams() { return DetailsPanel::ShutterPanelParams(); }
 		float GetSeperator() const { return GetDetailsPanel()->m_Seperator; }
 
+		bool DrawHeaderShutter(void* data, const String& label, float x, float& y, bool valueChanged, bool& reset) { return GetDetailsPanel()->DrawHeaderShutter(data, label, x, y, valueChanged, reset); }
 		void DrawLabel(const String& label, float y, float height) { GetDetailsPanel()->DrawLabel(label, y, height); }
+		bool DrawButton(const String& label, const String& buttonLabel, float& y) { return GetDetailsPanel()->DrawButton(label, buttonLabel, y); }
+		void DrawDropDown(const String& label, const std::vector<std::pair<String, std::function<void(void)>>>& options, int index, float& y) { GetDetailsPanel()->DrawDropDown(label, options, index, y); }
+		bool DrawResetButton(float y, float height) { return GetDetailsPanel()->DrawResetButton(y, height); }
+		DetailsPanel::Result DrawInt32(int32_t* i, const String& label, float& y, bool valueChanged) { return GetDetailsPanel()->DrawInt32(i, label, y, valueChanged); }
+		DetailsPanel::Result DrawFloat(float* f, const String& label, float& y, bool valueChanged) { return GetDetailsPanel()->DrawFloat(f, label, y, valueChanged); }
+		DetailsPanel::Result DrawBool(bool* b, const String& label, float& y, bool valueChanged) { return GetDetailsPanel()->DrawBool(b, label, y, valueChanged); }
+		DetailsPanel::Result DrawVec3(Vec3* v, const String& label, float& y, bool valueChanged) { return GetDetailsPanel()->DrawVec3(v, label, y, valueChanged); }
+		DetailsPanel::Result DrawVec4(Vec4* v, const String& label, float& y, bool valueChanged) { return GetDetailsPanel()->DrawVec4(v, label, y, valueChanged); }
+		DetailsPanel::Result DrawAsset(Asset** asset, const Class& cls, const String& label, float& y, bool valueChanged) { return GetDetailsPanel()->DrawAsset(asset, cls, label, y, valueChanged); }
+		DetailsPanel::Result DrawMaterialSlots(MaterialSlots* materials, float& y, bool valueChanged) { return GetDetailsPanel()->DrawMaterialSlots(materials, y, valueChanged); }
+		DetailsPanel::Result DrawClass(Class* cls, const String& label, float& y, bool valueChanged) { return GetDetailsPanel()->DrawClass(cls, label, y, valueChanged); }
+		DetailsPanel::Result DrawSubclassOf(TSubclassOf* cls, const String& label, float& y, bool valueChanged) { return GetDetailsPanel()->DrawSubclassOf(cls, label, y, valueChanged); }
+		DetailsPanel::Result DrawDelegate(TDelegate* delegate, const String& label, float& y) { return GetDetailsPanel()->DrawDelegate(delegate, label, y); }
 
 	private:
 		void SetDetailsPanel(DetailsPanel* panel) { m_DetailsPanel = panel; }
