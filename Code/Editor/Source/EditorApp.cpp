@@ -6,9 +6,9 @@
 
 #include "Suora/Core/Object/Object.h"
 
-#include "Editor/EditorWindow.h"
-#include "Editor/EditorUI.h"
-#include "Editor/Util/EditorPreferences.h"
+#include "Suora/Editor/EditorWindow.h"
+#include "Suora/Editor/EditorUI.h"
+#include "Suora/Editor/Util/EditorPreferences.h"
 
 extern void Modules_Init();
 
