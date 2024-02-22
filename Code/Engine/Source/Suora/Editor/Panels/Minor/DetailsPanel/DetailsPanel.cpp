@@ -17,6 +17,7 @@
 // Default Details
 #include "NodeDetails.h"
 #include "MaterialDetails.h"
+#include "MeshDetails.h"
 
 namespace Suora
 {
@@ -418,7 +419,7 @@ namespace Suora
 			Class detailClass = m_Data->GetNativeClass();
 			if      (detailClass.Inherits(Node::StaticClass())) { /*ViewNode(y, m_Data->As<Node>());*/ }
 			else if (detailClass == Material::StaticClass()) { /*ViewMaterial(y, m_Data->As<Material>(), false);*/ }
-			else if (detailClass == Mesh::StaticClass()) { ViewMesh(y, m_Data->As<Mesh>()); }
+			else if (detailClass == Mesh::StaticClass()) { /*ViewMesh(y, m_Data->As<Mesh>());*/ }
 			else if (detailClass == ShaderGraph::StaticClass()) { /*ViewMaterial(y, m_Data->As<Material>(), true);*/ }
 			else if (detailClass == Texture2D::StaticClass()) { ViewTexture2D(y, m_Data->As<Texture2D>()); }
 			else if (detailClass.Inherits(Blueprint::StaticClass())) { ViewBlueprintClass(y, m_Data->As<Blueprint>()); }
@@ -515,28 +516,6 @@ namespace Suora
 			{
 				obj->m_OverwrittenProperties.Add(mname);
 			}
-		}
-	}
-
-	
-
-	void DetailsPanel::ViewMesh(float& y, Mesh* mesh)
-	{
-		y -= 35.0f;
-		if (EditorUI::CategoryShutter(0, "Mesh", 0, y, GetDetailWidth(), 35.0f, ShutterPanelParams()))
-		{
-			DrawVec3(&mesh->m_ImportScale, "Import Scale", y, false);
-		}
-		y -= 35.0f;
-		if (EditorUI::CategoryShutter(2, "Materials", 0, y, GetDetailWidth(), 35.0f, ShutterPanelParams()))
-		{
-			DrawMaterialSlots(&mesh->m_Materials, y, false);
-		}
-		y -= 35.0f;
-		if (EditorUI::CategoryShutter(3, "Decima", 0, y, GetDetailWidth(), 35.0f, ShutterPanelParams()))
-		{
-			DrawBool(&mesh->m_IsDecimaMesh, "IsDecimaMesh", y, false);
-			y -= 20;
 		}
 	}
 
