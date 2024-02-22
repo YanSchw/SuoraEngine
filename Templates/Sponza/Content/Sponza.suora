@@ -2,7 +2,7 @@ Settings:
   Engine: 
     Path: "NoPath"
     VersionMajor: 0
-    VersionMinor: 9
+    VersionMinor: 10
     VersionPatch: 0
     m_EditorStartupAsset: "369b6f34-df9e-42e0-a25b-5fce6f8c769f"
     m_IsNativeProject: false
