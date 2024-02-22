@@ -21,6 +21,7 @@
 #include "Texture2DDetails.h"
 #include "BlueprintDetails.h"
 #include "ProjectDetails.h"
+#include "EditorPreferencesDetails.h"
 
 namespace Suora
 {
@@ -427,7 +428,7 @@ namespace Suora
 			else if (detailClass == Texture2D::StaticClass()) { /*ViewTexture2D(y, m_Data->As<Texture2D>());*/ }
 			else if (detailClass.Inherits(Blueprint::StaticClass())) { /*ViewBlueprintClass(y, m_Data->As<Blueprint>());*/ }
 			else if (detailClass == ProjectSettings::StaticClass()) { /*ViewProjectSettings(y, m_Data->As<ProjectSettings>());*/ }
-			else if (detailClass == EditorPreferences::StaticClass()) { ViewEditorPreferences(y, m_Data->As<EditorPreferences>()); }
+			else if (detailClass == EditorPreferences::StaticClass()) { /*ViewEditorPreferences(y, m_Data->As<EditorPreferences>());*/ }
 			else if (detailClass == InputMapping::StaticClass()) { ViewInputMapping(y, m_Data->As<InputMapping>()); }
 			else
 			{
@@ -547,22 +548,6 @@ namespace Suora
 		}
 		EditorUI::DrawTexturedRect(AssetManager::GetAsset<Texture2D>(SuoraID("8742cec8-9ee5-4645-b036-577146904b41"))->GetTexture(), x + width - height - 2.5f, y + 5.0f, height, height - 10.0f, 0.0f, Color(1.0f));
 
-	}
-
-	
-
-	void DetailsPanel::ViewEditorPreferences(float& y, EditorPreferences* settings)
-	{
-		y -= 35.0f;
-		if (EditorUI::CategoryShutter(0, "Theme", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
-		{
-			DrawAsset((Asset**)&Font::Instance, Font::StaticClass(), "Editor Font", y, false);
-			DrawVec4(&settings->UiHighlightColor, "HighlightColor", y, false);
-			DrawVec4(&settings->UiColor, "Main Color", y, false);
-			DrawVec4(&settings->UiBackgroundColor, "Background Color", y, false);
-			DrawVec4(&settings->UiForgroundColor, "Foreground Color", y, false);
-		}
-		DrawFloat(&settings->UiScale, "UiScale", y, false);
 	}
 
 	static String InputActionTypeToString(InputActionType type)
