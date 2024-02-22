@@ -42,6 +42,7 @@ Create custom Gameplay Logic using Visual Scripting. Easy interoperability with 
 | **Particle Systems**                  | using Instanced Rendering                                                                                            |
 
 ## Getting Started [Windows]
+- Download the latest Engine Release on GitHub
 - Install Visual Studio 2022 and also install **Desktop Development with C++** using the Visual Studio Installer
 ![Screenshot of VS2022-Installer-Workloads](Docs/Images/VS2022-Installer-Workloads.png)
 - To create a new or open an existing Suora Project, start the Launcher in /Binaries/
@@ -55,8 +56,13 @@ Create custom Gameplay Logic using Visual Scripting. Easy interoperability with 
 
 ## Build the Engine Yourself
 - Clone the repository: git clone --recursive https://github.com/YanSchw/SuoraEngine
-- Execute the Buildscript in /Binaries/Scripts/{...}
-  - Or build SuoraBuildTool yourself in /Code/SuoraBuildTool
+- Compile SuoraBuildTool (Or use a Precompiled Version from the latest Release)
+  - Navigate to /Code/SuoraBuildTool
+  - Execute GenerateSolutionForStandaloneCompilation.bat
+  - Open the **.sln** using VS2022
+  - Compile SuoraBuildTool in **Release** Mode
+  - Copy and Paste the **SuoraBuildTool.exe** into **/Binaries/Scripts/**
+- Execute the BuildTool in /Binaries/Scripts/{...}
 - Generate the Solution using /GenerateSolution.bat
 - Open the Solution using Visual Studio 2022
 - Build using VS2022
