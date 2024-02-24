@@ -43,6 +43,7 @@ Create custom Gameplay Logic using Visual Scripting. Easy interoperability with 
 
 ## Getting Started [Windows]
 - Download the latest Engine Release on GitHub
+- Install the [.Net Core 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - Install Visual Studio 2022 and also install **Desktop Development with C++** using the Visual Studio Installer
 ![Screenshot of VS2022-Installer-Workloads](Docs/Images/VS2022-Installer-Workloads.png)
 - To create a new or open an existing Suora Project, start the Launcher in /Binaries/
