@@ -66,8 +66,6 @@ namespace Suora
 
     bool CSharpScriptEngine::Initialize()
     {
-        s_ScriptEngines.Add(this);
-
         s_CSharpLog = Log::CustomCategory("C#");
         CSHARP_INFO("Initializing C# ScriptEngine");
 
@@ -77,6 +75,8 @@ namespace Suora
             CSHARP_ERROR(".NET SDK 8 not found on System. C# Script Engine cannot be used!");
             return false;
         }
+
+        s_ScriptEngines.Add(this);
 
         // Compile Coral.Managed.dll
         CSHARP_INFO("Compiling Coral.Managed.dll");
