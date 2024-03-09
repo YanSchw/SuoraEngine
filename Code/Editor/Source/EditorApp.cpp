@@ -23,7 +23,8 @@ namespace Suora
 
 		bool m_StopPIE_Flag = false;
 
-		Editor()
+		Editor(const ApplicationParams& params)
+			: Application(params)
 		{
 			AssetManager::s_AssetHotReloading = true;
 
@@ -62,16 +63,14 @@ namespace Suora
 		{
 			m_StopPIE_Flag = true;
 		}
-		virtual bool IsEditor() const override
-		{
-			return true;
-		}
 
 	};
 
 	Application* CreateApplication()
 	{
-		return new Editor();
+		ApplicationParams params;
+		params.IsEditor = true;
+		return new Editor(params);
 	}
 
 }
