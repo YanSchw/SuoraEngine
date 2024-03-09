@@ -76,6 +76,15 @@ namespace Suora
             return false;
         }
 
+        if (!IsEditor())
+        {
+            if (!std::filesystem::exists(AssetManager::GetProjectAssetPath() + "../Binaries/CSharp/"))
+            {
+                CSHARP_INFO("No C# Binaries found!");
+                return false;
+            }
+        }
+
         s_ScriptEngines.Add(this);
 
         // Compile Coral.Managed.dll
