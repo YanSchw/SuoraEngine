@@ -42,7 +42,30 @@ namespace Suora
 		}
 		else
 		{
-			SUORA_ERROR(Log::CustomCategory("Export"), "Native build required!!");
+			SUORA_INFO(Log::CustomCategory("Export"), "Native build is required.");
+
+			if (!std::filesystem::exists(settings->m_MSBuildPath))
+			{
+				SUORA_ERROR(Log::CustomCategory("Export"), "MSBuild Path is Invalid!");
+				return;
+			}
+
+			std::filesystem::path buildToolPath = std::filesystem::path(AssetManager::GetEngineAssetPath()).parent_path().append("Binaries").append("Scripts").append("SuoraBuildTool.exe");
+
+			if (!std::filesystem::exists(buildToolPath))
+			{
+				SUORA_ERROR(Log::CustomCategory("Export"), "SuoraBuildTool.exe cannot be located!");
+				return;
+			}
+
+			Platform::CreateDirectory(AssetManager::GetProjectAssetPath() + "/../Build/Premake5Projects/Scripts/");
+			std::filesystem::copy_file(buildToolPath, AssetManager::GetProjectAssetPath() + "/../Build/Premake5Projects/Scripts/SuoraBuildTool.exe");
+
+			Platform::CreateDirectory(AssetManager::GetProjectAssetPath() + "/../Build/AllModules/Scripts/");
+			std::filesystem::copy_file(buildToolPath, AssetManager::GetProjectAssetPath() + "/../Build/AllModules/Scripts/SuoraBuildTool.exe");
+
+			Platform::CommandLine("call \"" + settings->m_MSBuildPath.string() + "\" \"" + (AssetManager::GetProjectAssetPath() + "/../Build/Premake5Projects/Runtime.vcxproj") + "\" /p:configuration=Dist /p:platform=x64");
+			std::filesystem::copy_file(AssetManager::GetProjectAssetPath() + "/../Build/Dist-windows-x86_64/Runtime/Runtime.exe", settings->m_OutputPath / (ProjectSettings::Get()->GetProjectName() + ".exe"));
 		}
 	}
 
