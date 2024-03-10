@@ -325,7 +325,7 @@ namespace Suora
                 if (file.is_directory())
                     continue;
 
-                std::string filename = file.path().filename().string();
+                String filename = file.path().filename().string();
                 if (filename == "Coral.Managed.dll" || filename == "Suora.Generated.dll")
                     continue;
 
