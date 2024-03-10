@@ -117,6 +117,17 @@ namespace Suora
 		// Content
 		ExportContent(settings);
 
+		// AdditionalProjectExportTask
+		Array<Class> cls = Class::GetSubclassesOf(AdditionalProjectExportTask::StaticClass());
+		for (const auto& It : cls)
+		{
+			auto Impl = Ref<AdditionalProjectExportTask>(New(It)->As<AdditionalProjectExportTask>());
+			if (Impl)
+			{
+				Impl->Execute(settings);
+			}
+		}
+
 		auto end = std::chrono::high_resolution_clock::now();
 		SUORA_INFO(Log::CustomCategory("Export"), "It took {0} seconds to export the project.", std::chrono::duration_cast<std::chrono::seconds>(end - begin).count());
 		Platform::ShowInExplorer(settings->m_OutputPath);

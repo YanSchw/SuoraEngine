@@ -17,6 +17,13 @@ namespace Suora
 		std::filesystem::path m_MSBuildPath;
 	};
 
+	class AdditionalProjectExportTask : public Object
+	{
+		SUORA_CLASS(548937543879);
+	public:
+		virtual void Execute(ExportSettings* settings) = 0;
+	};
+
 	class ExportProjectPanel : public MajorTab
 	{
 		SUORA_CLASS(589743678432);
