@@ -63,6 +63,18 @@ namespace Suora
 		{
 			return m_Data[index];
 		}
+		inline T& FirstItem()
+		{
+			return m_Data[0];
+		}
+		inline T& SecondItem()
+		{
+			return m_Data[1];
+		}
+		inline T& LastItem()
+		{
+			return m_Data[Last()];
+		}
 		inline T& operator[](int32_t index)
 		{
 			return m_Data[index];
@@ -88,6 +100,18 @@ namespace Suora
 		void Remove(const T& item)
 		{
 			RemoveAt(IndexOf(item));
+		}
+		inline void RemoveFirstItem()
+		{
+			RemoveAt(0);
+		}
+		inline void RemoveSecondItem()
+		{
+			RemoveAt(1);
+		}
+		inline void RemoveLastItem()
+		{
+			RemoveAt(Last());
 		}
 
 		bool Contains(const T& item) const
@@ -117,9 +141,15 @@ namespace Suora
 		{
 			return (int32_t)m_Data.size();
 		}
+		// Returns the last valid index [ Size() - 1 ]
 		inline int32_t Last() const
 		{
 			return Size() - 1;
+		}
+
+		bool IsEmpty() const
+		{
+			return m_Data.empty();
 		}
 
 		std::vector<T>& GetData()
