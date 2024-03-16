@@ -27,7 +27,7 @@ namespace Suora
 			String filename = file.path().filename().string();
 			if (filename.ends_with(".dll"))
 			{
-				std::filesystem::copy_file(file.path(), settings->m_OutputPath / "Binaries" / "CSharp" / filename);
+				std::filesystem::copy_file(file.path(), settings->m_OutputPath / "Binaries" / "CSharp" / filename, std::filesystem::copy_options::overwrite_existing);
 			}
 		}
 

@@ -59,13 +59,13 @@ namespace Suora
 			}
 
 			Platform::CreateDirectory(AssetManager::GetProjectAssetPath() + "/../Build/Premake5Projects/Scripts/");
-			std::filesystem::copy_file(buildToolPath, AssetManager::GetProjectAssetPath() + "/../Build/Premake5Projects/Scripts/SuoraBuildTool.exe");
+			std::filesystem::copy_file(buildToolPath, AssetManager::GetProjectAssetPath() + "/../Build/Premake5Projects/Scripts/SuoraBuildTool.exe", std::filesystem::copy_options::overwrite_existing);
 
 			Platform::CreateDirectory(AssetManager::GetProjectAssetPath() + "/../Build/AllModules/Scripts/");
-			std::filesystem::copy_file(buildToolPath, AssetManager::GetProjectAssetPath() + "/../Build/AllModules/Scripts/SuoraBuildTool.exe");
+			std::filesystem::copy_file(buildToolPath, AssetManager::GetProjectAssetPath() + "/../Build/AllModules/Scripts/SuoraBuildTool.exe", std::filesystem::copy_options::overwrite_existing);
 
 			Platform::CommandLine("call \"" + settings->m_MSBuildPath.string() + "\" \"" + (AssetManager::GetProjectAssetPath() + "/../Build/Premake5Projects/Runtime.vcxproj") + "\" /p:configuration=Dist /p:platform=x64");
-			std::filesystem::copy_file(AssetManager::GetProjectAssetPath() + "/../Build/Dist-windows-x86_64/Runtime/Runtime.exe", settings->m_OutputPath / (ProjectSettings::Get()->GetProjectName() + ".exe"));
+			std::filesystem::copy_file(AssetManager::GetProjectAssetPath() + "/../Build/Dist-windows-x86_64/Runtime/Runtime.exe", settings->m_OutputPath / (ProjectSettings::Get()->GetProjectName() + ".exe"), std::filesystem::copy_options::overwrite_existing);
 		}
 	}
 
