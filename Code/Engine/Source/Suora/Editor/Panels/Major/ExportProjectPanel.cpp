@@ -38,7 +38,7 @@ namespace Suora
 		if (!ProjectSettings::Get()->m_IsNativeProject && std::filesystem::exists(runtimePath))
 		{
 			SUORA_INFO(Log::CustomCategory("Export"), "Using Precompiled Runtime Binaries.");
-			std::filesystem::copy_file(runtimePath, settings->m_OutputPath / (ProjectSettings::Get()->GetProjectName() + ".exe"));
+			std::filesystem::copy_file(runtimePath, settings->m_OutputPath / (ProjectSettings::Get()->GetProjectName() + ".exe"), std::filesystem::copy_options::overwrite_existing);
 		}
 		else
 		{
