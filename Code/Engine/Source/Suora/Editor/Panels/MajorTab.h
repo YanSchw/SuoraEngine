@@ -33,7 +33,7 @@ namespace Suora
 		virtual bool IsEditItem() const { return false; }
 		virtual bool IsWindowItem() const { return false; }
 
-		std::function<void(MajorTab*)> m_Lambda = nullptr;
+		std::function<void(void)> m_Lambda = nullptr;
 	};
 
 	class MajorTab : public Object

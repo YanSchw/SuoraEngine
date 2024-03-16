@@ -62,7 +62,7 @@ namespace Suora
 			for (const Ref<MajorMenuItem>& item : Items)
 			{
 				if (item->IsFileItem())
-					fileItems.push_back(EditorUI::ContextMenuElement{ {}, [&]() { item->m_Lambda(this); }, item->GetLabel(), nullptr });
+					fileItems.push_back(EditorUI::ContextMenuElement{ {}, item->m_Lambda, item->GetLabel(), nullptr });
 			}
 			fileItems.push_back(EditorUI::ContextMenuElement{ {}, [&]() { SaveAsset(); }, "Save Asset", nullptr });
 			fileItems.push_back(EditorUI::ContextMenuElement{ {}, [&]() { OpenExportProjectTab(); }, "Export Project", nullptr });
@@ -74,7 +74,7 @@ namespace Suora
 			for (const Ref<MajorMenuItem>& item : Items)
 			{
 				if (item->IsEditItem())
-					editItems.push_back(EditorUI::ContextMenuElement{ {}, [&]() { item->m_Lambda(this); }, item->GetLabel(), nullptr });
+					editItems.push_back(EditorUI::ContextMenuElement{ {}, item->m_Lambda, item->GetLabel(), nullptr });
 			}
 			editItems.push_back(EditorUI::ContextMenuElement{ {}, [&]() { GetEditorWindow()->OpenAsset(ProjectSettings::Get()); }, "Edit ProjectSettings", nullptr });
 			editItems.push_back(EditorUI::ContextMenuElement{ {}, [&]() { GetEditorWindow()->OpenAsset(EditorPreferences::Get()); }, "Edit EditorPreferences", nullptr });
@@ -86,7 +86,7 @@ namespace Suora
 			for (const Ref<MajorMenuItem>& item : Items)
 			{
 				if (item->IsWindowItem())
-					windowItems.push_back(EditorUI::ContextMenuElement{ {}, [&]() { item->m_Lambda(this); }, item->GetLabel(), nullptr });
+					windowItems.push_back(EditorUI::ContextMenuElement{ {}, item->m_Lambda, item->GetLabel(), nullptr });
 			}
 			EditorUI::CreateContextMenu(windowItems, x + 150, y + height * 0.2f);
 		}
