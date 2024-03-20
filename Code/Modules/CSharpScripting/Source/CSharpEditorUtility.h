@@ -15,4 +15,14 @@ namespace Suora
 		CSharpGenerateSolutionMenuItem();
 	};
 
+	class CSharpBuildAndReloadMenuItem : public MajorMenuItem
+	{
+		SUORA_CLASS(45789843843);
+	public:
+		virtual String GetLabel() const { return "Build & Reload C# Projects  (F3)"; }
+		virtual bool IsFileItem() const { return true; }
+
+		CSharpBuildAndReloadMenuItem();
+	};
+
 }

@@ -10,4 +10,9 @@ namespace Suora
 		m_Lambda = []() { CSharpProjectGenerator::GenerateVisualStudioSolution(); };
 	}
 
+	CSharpBuildAndReloadMenuItem::CSharpBuildAndReloadMenuItem()
+	{
+		m_Lambda = []() { CSharpScriptEngine::Get()->BuildAndReloadAllCSProjects(); };
+	}
+
 }
