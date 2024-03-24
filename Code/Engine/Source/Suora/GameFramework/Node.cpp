@@ -320,7 +320,7 @@ namespace Suora
 			{
 				SUORA_ERROR(LogCategory::Gameplay, "Cannot create Component, without given BaseClass '" + node->As<Component>()->GetRequiredBaseClass().GetClassName() + "'");
 				delete node;
-				return;
+				return nullptr;
 			}
 		}
 		
