@@ -11,6 +11,7 @@ namespace Suora
 	public:
 		virtual String GetLabel() const { return "Generate C# Solution"; }
 		virtual bool IsFileItem() const { return true; }
+		virtual bool Filter() override;
 
 		CSharpGenerateSolutionMenuItem();
 	};
@@ -21,6 +22,7 @@ namespace Suora
 	public:
 		virtual String GetLabel() const { return "Build & Reload C# Projects  (F3)"; }
 		virtual bool IsFileItem() const { return true; }
+		virtual bool Filter() override;
 
 		CSharpBuildAndReloadMenuItem();
 	};
