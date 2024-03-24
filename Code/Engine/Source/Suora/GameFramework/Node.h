@@ -389,6 +389,11 @@ namespace Suora
 	public:
 		void Begin() override;
 		virtual void SetParent(Node* parent, bool keepWorldTransform = true) override;
+
+		void SetRequiredBaseClass(const Class& baseClass);
+		Class GetRequiredBaseClass() const;
+	private:
+		Class m_ParentBaseclass = Node::StaticClass();
 	};
 
 	/** Rootclass of all Levels in the Engine. Is ignored if Node::GetRootNode() was called. */

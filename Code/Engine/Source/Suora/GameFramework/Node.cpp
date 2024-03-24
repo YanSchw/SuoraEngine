@@ -313,6 +313,16 @@ namespace Suora
 		Node* node = (Node*)New(cls);
 		SUORA_ASSERT(node);
 		SUORA_ASSERT(node->IsA<Node>(), "You can only add Nodes as Children.");
+
+		if (node->IsA<Component>())
+		{
+			if (!GetClass().Inherits(node->As<Component>()->GetRequiredBaseClass()))
+			{
+				SUORA_ERROR(LogCategory::Gameplay, "Cannot create Component, without given BaseClass '" + node->As<Component>()->GetRequiredBaseClass().GetClassName() + "'");
+				delete node;
+				return;
+			}
+		}
 		
 		node->SetParent(this);
 
@@ -919,6 +929,16 @@ namespace Suora
 		{
 			SuoraWarn("A Component may never be reparented!");
 		}
+	}
+
+	void Component::SetRequiredBaseClass(const Class& baseClass)
+	{
+		m_ParentBaseclass = baseClass;
+	}
+
+	Class Component::GetRequiredBaseClass() const
+	{
+		return m_ParentBaseclass;
 	}
 
 }
