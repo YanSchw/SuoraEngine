@@ -21,7 +21,7 @@ namespace Suora
 		static void DrawMesh(CameraNode* camera, const Mat4& transform, Mesh& mesh, Material* material, MaterialType type = MaterialType::Material);
 		static void DrawMesh(CameraNode* camera, const Mat4& transform, Mesh& mesh, const MaterialSlots& materials, MaterialType type = MaterialType::Material);
 
-		static void DrawLine3D(const Vec3& a, const Vec3& b, const Color& color);
+		static void DrawLine3D(CameraNode* camera, const Vec3& a, const Vec3& b, const Color& color);
 	};
 
 }

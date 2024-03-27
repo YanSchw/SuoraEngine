@@ -1,0 +1,114 @@
+Material: 
+  ShaderGraph: "0c7be0af-edd6-4f4e-8cce-bd61f2f9d82b"
+  Uniform_0: 
+    m_Label: u_Color
+    m_Type: 4
+    m_Vec4: 1.000000/1.000000/1.000000/0.650000
+  m_BackfaceCulling: false
+NodeGraph: 
+  Node_0: 
+    Color: 
+      a: 1.000000
+      b: 0.570000
+      g: 0.640000
+      r: 0.800000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 0.280000
+        g: 0.590000
+        r: 0.620000
+      IsReceivingPin: true
+      Label: World Position Offset
+      PinHeight: 25.000000
+      PinID: 3
+      Target: NULL
+      m_AdditionalData: 
+
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 0.480000
+        g: 0.590000
+        r: 0.520000
+      IsReceivingPin: true
+      Label: Base Color
+      PinHeight: 25.000000
+      PinID: 4
+      Target: 1/Output/0
+      m_AdditionalData: 
+
+    NodeID: 1
+    Position: 
+      x: 320.000000
+      y: 0.000000
+    Size: 
+      x: 300.000000
+      y: 110.000000
+    Title: Master
+  Node_1: 
+    Color: 
+      a: 1.000000
+      b: 0.480000
+      g: 0.590000
+      r: 0.520000
+    Input_0: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Name
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: u_Color
+    Input_1: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Type
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 4
+    Input_2: 
+      Color: 
+        a: 1.000000
+        b: 1.000000
+        g: 1.000000
+        r: 1.000000
+      IsReceivingPin: false
+      Label: Default
+      PinHeight: 25.000000
+      PinID: 0
+      Target: NULL
+      m_AdditionalData: 
+
+    NodeID: 2
+    Output_0: 
+      Color: 
+        a: 1.000000
+        b: 0.480000
+        g: 0.590000
+        r: 0.520000
+      IsReceivingPin: false
+      Label: Uniform
+      PinHeight: 25.000000
+      PinID: 4
+      Target: NULL
+      m_AdditionalData: 
+
+    Position: 
+      x: "-220.000000"
+      y: 0.000000
+    Size: 
+      x: 225.000000
+      y: 200.000000
+    Title: Uniform
+UUID: "0c7be0af-edd6-4f4e-8cce-bd61f2f9d82b"
+m_BaseShader: ForwardUnlit.glsl

@@ -97,9 +97,25 @@ namespace Suora
 		}
 	}
 
-	void Renderer3D::DrawLine3D(const Vec3& a, const Vec3& b, const Color& color)
+	void Renderer3D::DrawLine3D(CameraNode* camera, const Vec3& a, const Vec3& b, const Color& color)
 	{
-		SuoraVerify(false);
+		static ShaderGraph* shaderGraph = AssetManager::GetAsset<ShaderGraph>(SuoraID("0c7be0af-edd6-4f4e-8cce-bd61f2f9d82b"));
+		shaderGraph->m_UniformSlots[0].m_Vec4 = color;
+
+		std::vector<Vertex> verticies;
+		verticies.push_back(a);
+		verticies.push_back(b);
+		verticies.push_back(a);
+
+		std::vector<uint32_t> indicies = { 0, 1, 2 };
+
+		Mesh mesh;
+		mesh.m_VertexArray = Ref<VertexArray>(VertexArray::Create(MeshBuffer(verticies, indicies)));
+
+		RenderCommand::SetWireframeMode(true);
+		RenderCommand::SetWireframeThickness(3.0f);
+		Renderer3D::DrawMesh(camera, Mat4(1), mesh, shaderGraph, MaterialType::Material);
+		RenderCommand::SetWireframeMode(false);
 	}
 
 
