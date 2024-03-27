@@ -66,6 +66,10 @@ namespace Suora
 				{
 					DrawVec3(&slot.m_Vec3, slot.m_Label, y, false);
 				}
+				else if (slot.m_Type == ShaderGraphDataType::Vec4)
+				{
+					DrawVec4(&slot.m_Vec4, slot.m_Label, y, false);
+				}
 				else if (slot.m_Type == ShaderGraphDataType::Texture2D)
 				{
 					DrawAsset((Asset**)&slot.m_Texture2D, Texture2D::StaticClass(), slot.m_Label, y, false);
