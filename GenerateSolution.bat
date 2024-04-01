@@ -5,7 +5,7 @@ REM Generate Project Files for SuoraBuildTool
 call "Code\SuoraBuildTool\GenerateSolutionForStandaloneCompilation.bat"
 
 REM Make Directory for SuoraBuildTool.exe
-mkdir "\Binaries\Scripts\"
+mkdir "Binaries\Scripts\"
 
 set MSBUILD_EXE="C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe"
 
