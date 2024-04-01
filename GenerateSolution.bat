@@ -9,6 +9,7 @@ mkdir "\Binaries\Scripts\"
 
 set MSBUILD_EXE="C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\MSBuild.exe"
 
+if not exist %MSBUILD_EXE% goto MSBUILD_ERROR
 %MSBUILD_EXE% "Code\SuoraBuildTool\SuoraBuildTool.vcxproj" /p:configuration=Dist /p:platform=x64
 
 copy "Code\SuoraBuildTool\Build\Dist-windows-x86_64\SuoraBuildTool\SuoraBuildTool.exe" "Binaries\Scripts\SuoraBuildTool.exe"
@@ -19,3 +20,10 @@ pushd %~dp0\
 call Code\Dependencies\premake\PremakeBinaries\premake5.exe vs2022
 popd
 PAUSE
+exit
+
+:MSBUILD_ERROR
+echo Cannot find MSBuild.exe   Path:
+echo %MSBUILD_EXE%
+pause
+exit
