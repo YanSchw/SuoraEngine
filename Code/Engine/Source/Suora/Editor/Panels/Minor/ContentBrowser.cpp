@@ -19,7 +19,7 @@
 namespace Suora
 {
 
-	static bool IsPathDirectSubpathOf(const String& directory, const FilePath& file)
+	static bool IsPathDirectSubpathOf(const String& directory, const Path& file)
 	{
 		return file.parent_path() == std::filesystem::path(directory);
 	}
@@ -108,14 +108,14 @@ namespace Suora
 					Array<String> meshExtensions = Mesh::GetSupportedSourceAssetExtensions();
 					for (auto ext : textureExtensions)
 					{
-						if (File::GetFileExtension(file) == ext)
+						if (FileUtils::GetFileExtension(file) == ext)
 						{
 							Texture2DImports.push_back(EditorUI::ContextMenuElement{ {}, [width, height, file, currentPath]() { EditorUI::CreateOverlay<ImportTexture2DOverlay>(width / 2 - 425.0f, height / 2 - 275.0f, 850.0f, 550.0f, file.path(), currentPath); }, "Import " + file.path().filename().string(), nullptr});
 						}
 					}
 					for (auto ext : meshExtensions)
 					{
-						if (File::GetFileExtension(file) == ext)
+						if (FileUtils::GetFileExtension(file) == ext)
 						{
 							MeshImports.push_back(EditorUI::ContextMenuElement{ {}, [width, height, file, currentPath]() { EditorUI::CreateOverlay<ImportMeshOverlay>(width / 2 - 425.0f, height / 2 - 275.0f, 850.0f, 550.0f, file.path(), currentPath); }, "Import " + file.path().filename().string(), nullptr });
 						}

@@ -43,7 +43,7 @@ namespace Suora
 		return asset;
 	}
 
-	void AssetManager::Initialize(const FilePath& contentPath)
+	void AssetManager::Initialize(const Path& contentPath)
 	{
 		ProjectSettings::s_SeekingProjectSettings = true;
 		HotReload(contentPath, ProjectSettings::StaticClass());
@@ -86,7 +86,7 @@ namespace Suora
 
 	void AssetManager::HotReload(const std::filesystem::path& contentPath, const Class& baseClass)
 	{
-		std::vector<DirectoryEntry> Entries = File::GetAllAbsoluteEntriesOfPath(contentPath);
+		std::vector<DirectoryEntry> Entries = FileUtils::GetAllAbsoluteEntriesOfPath(contentPath);
 		
 		for (auto& file : Entries)
 		{
@@ -94,14 +94,14 @@ namespace Suora
 
 			Asset* asset = nullptr;
 
-			const String ext = File::GetFileExtension(file);
+			const String ext = FileUtils::GetFileExtension(file);
 			const Class cls = Asset::GetAssetClassByExtension(ext);
 			if (!cls.Inherits(baseClass)) continue;
 			if (cls != Asset::StaticClass()) asset = Cast<Asset>(New(cls));
 
 			if (asset)
 			{
-				const FilePath path = file;
+				const Path path = file;
 				asset->m_Path = path;
 				asset->m_Name = path.filename().string();
 				s_Assets.Add(asset);
@@ -240,13 +240,13 @@ namespace Suora
 		DirectoryEntry file = DirectoryEntry(path);
 		Asset* asset = nullptr;
 
-		const String ext = File::GetFileExtension(file);
+		const String ext = FileUtils::GetFileExtension(file);
 		const Class cls = Asset::GetAssetClassByExtension(ext);
 		if (cls != Asset::StaticClass()) asset = Cast<Asset>(New(cls));
 
 		if (asset)
 		{
-			const FilePath path = file;
+			const Path path = file;
 			asset->m_Path = path;
 			asset->m_Name = path.filename().string();
 			s_Assets.Add(asset);

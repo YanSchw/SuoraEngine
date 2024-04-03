@@ -77,10 +77,10 @@ namespace Suora
 		Platform::CopyDirectory(AssetManager::GetProjectAssetPath(), settings->m_OutputPath / "Content");
 
 		// Remove Copied .suora File
-		std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(settings->m_OutputPath / "Content");
+		std::vector<DirectoryEntry> entries = FileUtils::GetAllAbsoluteEntriesOfPath(settings->m_OutputPath / "Content");
 		for (auto file : entries)
 		{
-			const String ext = File::GetFileExtension(file);
+			const String ext = FileUtils::GetFileExtension(file);
 			if (ext == ".suora")
 			{
 				std::filesystem::remove(file);

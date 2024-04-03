@@ -28,7 +28,7 @@ namespace Suora
 		Ref<RenderPipeline> m_RenderPipeline = nullptr;
 		Ref<Physics::PhysicsEngine> m_PhysicsEngine = nullptr;
 		std::chrono::time_point<std::chrono::steady_clock> m_PreviousTime;
-		FilePath m_RootPath;
+		Path m_RootPath;
 
 		float m_DeltaTime = 0.0f;
 

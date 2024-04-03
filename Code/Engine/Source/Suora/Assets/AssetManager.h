@@ -34,7 +34,7 @@ namespace Suora
 		inline static uint32_t s_AssetHotReloadingCount = 8;
 
 		// Initializes the AssetManager with the provided content path.
-		static void Initialize(const FilePath& contentPath);
+		static void Initialize(const Path& contentPath);
 		~AssetManager();
 
 		/* Hot reloads assets with optional parameters for content path and base class. 

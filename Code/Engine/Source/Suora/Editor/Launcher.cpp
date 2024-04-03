@@ -257,10 +257,10 @@ namespace Suora
 **.generated.lua");
 
 		std::filesystem::path projectSettingsPath;
-		std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(projectPath);
+		std::vector<DirectoryEntry> entries = FileUtils::GetAllAbsoluteEntriesOfPath(projectPath);
 		for (auto file : entries)
 		{
-			const String ext = File::GetFileExtension(file);
+			const String ext = FileUtils::GetFileExtension(file);
 			if (ext == ".suora")
 			{
 				projectSettingsPath = std::filesystem::path(file.path()).parent_path().append(projectName + ".suora");

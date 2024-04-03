@@ -289,7 +289,7 @@ namespace Suora
 								Array<Texture2D*> allTextures = AssetManager::GetAssets<Texture2D>();
 								for (int j = 0; j < allTextures.Size(); j++)
 								{
-									if (File::IsPathSubpathOf(m_Directory, allTextures[j]->m_Path))
+									if (FileUtils::IsPathSubpathOf(m_Directory, allTextures[j]->m_Path))
 									{
 										if (allTextures[j]->GetSourceAssetName() == String(textureBaseColor.C_Str()))
 										{
@@ -309,7 +309,7 @@ namespace Suora
 								Array<Texture2D*> allTextures = AssetManager::GetAssets<Texture2D>();
 								for (int j = 0; j < allTextures.Size(); j++)
 								{
-									if (File::IsPathSubpathOf(m_Directory, allTextures[j]->m_Path))
+									if (FileUtils::IsPathSubpathOf(m_Directory, allTextures[j]->m_Path))
 									{
 										if (allTextures[j]->GetSourceAssetName() == String(textureNormal.C_Str()))
 										{

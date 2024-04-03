@@ -34,7 +34,7 @@ namespace Suora
 	public:
 		String m_Name = "Missing Asset";
 		SuoraID m_UUID;
-		FilePath m_Path;
+		Path m_Path;
 		std::filesystem::file_time_type m_LastWriteTime;
 		AssetFlags m_Flags = AssetFlags::None;
 

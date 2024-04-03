@@ -37,9 +37,9 @@ namespace Suora
 		Font();
 		Font(const String& ttf);
 
-		Font(FilePath path, FilePath texturePath);
+		Font(Path path, Path texturePath);
 
-		void LoadFontMetaFromFile(FilePath path, FilePath texturePath);
+		void LoadFontMetaFromFile(Path path, Path texturePath);
 
 		const FontMeta& GetMeta(char character)
 		{
