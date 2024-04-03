@@ -47,6 +47,7 @@ namespace Suora
 			DrawVec4(&settings->UiColor, "Main Color", y, false);
 			DrawVec4(&settings->UiBackgroundColor, "Background Color", y, false);
 			DrawVec4(&settings->UiForgroundColor, "Foreground Color", y, false);
+			DrawVec4(&settings->UiTextColor, "Text Color", y, false);
 		}
 		DrawFloat(&settings->UiScale, "UiScale", y, false);
 	}
