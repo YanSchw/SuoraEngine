@@ -295,7 +295,7 @@ namespace Suora
 
 			if (CameraNode* camera = node->As<CameraNode>())
 			{
-				m_CameraPreviewRParams.Resolution = iVec2(GetWidth()/10, GetHeight()/10);
+				m_CameraPreviewRParams.Resolution = iVec2(GetWidth()/4, GetHeight()/4);
 				m_CameraPreviewRParams.DrawWireframe = m_DrawWireframe;
 				m_CameraPreviewBuffer->Resize(m_CameraPreviewRParams.Resolution);
 				Engine::Get()->GetRenderPipeline()->Render(*m_CameraPreviewBuffer, *m_World, *camera, m_CameraPreviewRParams);

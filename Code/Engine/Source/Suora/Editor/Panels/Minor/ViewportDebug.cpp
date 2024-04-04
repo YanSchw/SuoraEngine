@@ -93,6 +93,8 @@ namespace Suora
 		Array<CameraNode*> cameras = world->FindNodesByClass<CameraNode>();
 		for (CameraNode* cam : cameras)
 		{
+			cam->SetAspectRatio(static_cast<float>(GetWidth()) / static_cast<float>(GetHeight()));
+			cam->RecalculateProjection();
 			Node3D tr;
 			tr.SetPosition(cam->GetPosition());
 			tr.SetRotation(cam->GetRotation());
