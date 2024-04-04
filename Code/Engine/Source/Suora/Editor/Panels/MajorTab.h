@@ -5,7 +5,7 @@
 #include "Suora/Common/Array.h"
 #include "Minor/LevelOutliner.h"
 #include "Minor/ContentBrowser.h"
-#include "Minor/ViewportPanel.h"
+#include "Minor/ViewportPanel/ViewportPanel.h"
 #include "Minor/DetailsPanel/DetailsPanel.h"
 #include "Minor/NodeGraphEditor.h"
 #include "Suora/GameFramework/Nodes/MeshNode.h"

@@ -12,10 +12,12 @@
 #include "Suora/GameFramework/Nodes/Light/PointLightNode.h"
 #include "Suora/Editor/Util/EditorCamera.h"
 
+#include "ViewportModules.h"
+
 namespace Suora
 {
 
-	static Material* GizmoMaterial(bool useIdShader, int* i, const Vec3& color, const SuoraID& uuid = SuoraID("72b2a0e4-6541-4907-9527-47aa742ede45"))
+	Material* ViewportDebugGizmo::GizmoMaterial(bool useIdShader, int* i, const Vec3& color, const SuoraID& uuid)
 	{
 		Material* mat = AssetManager::GetAsset<Material>(uuid);
 		if (UniformSlot* uniform = mat->GetUniformSlot("Color"))
@@ -28,12 +30,21 @@ namespace Suora
 		}
 		return mat;
 	}
-	void ViewportPanel::DrawDebugShapes(World* world, CameraNode* camera, int* pickingID, std::unordered_map<int, Node*>* pickingMap)
+	void ViewportPanel::DrawDebugShapes(World* world, CameraNode* camera, int* pickingID, Map<int, Node*>* pickingMap)
 	{
 		const bool HandlingMousePick = pickingID;
 		if (NativeInput::GetKeyDown(Key::G)) m_DrawDebugGizmos = !m_DrawDebugGizmos;
 		if (!m_DrawDebugGizmos) return;
 		if (!HandlingMousePick) m_GizmoBuffer->Bind();
+
+		for (Ref<ViewportDebugGizmo> It : m_ViewportDebugGizmos)
+		{
+			if (It)
+			{
+				It->DrawDebugGizmos(world, camera, pickingID, pickingMap, HandlingMousePick);
+			}
+		}
+
 		RenderCommand::SetWireframeMode(true);
 		RenderCommand::SetWireframeThickness(3.0f);
 
@@ -44,7 +55,7 @@ namespace Suora
 			tr.SetPosition(box->GetPosition());
 			tr.SetRotation(box->GetRotation());
 			tr.SetScale(2.0f * box->GetBoxExtends());
-			Material* mat = GizmoMaterial(HandlingMousePick, pickingID, box->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(0.0f, 1.0f, 1.0f));
+			Material* mat = ViewportDebugGizmo::GizmoMaterial(HandlingMousePick, pickingID, box->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(0.0f, 1.0f, 1.0f));
 			Texture2D* old = mat->m_UniformSlots[0].m_Texture2D;
 			mat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("55c17fb8-b445-431c-a59f-9ad9242d7c5c"));
 			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("33b79a6d-2f4a-40fc-93e5-3f01794c33b8")), mat, HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
@@ -63,7 +74,7 @@ namespace Suora
 			tr.SetPosition(sphere->GetPosition());
 			tr.SetRotation(sphere->GetRotation());
 			tr.SetScale(Vec3(sphere->GetSphereRadius()));
-			Material* mat = GizmoMaterial(HandlingMousePick, pickingID, sphere->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(0.0f, 1.0f, 1.0f));
+			Material* mat = ViewportDebugGizmo::GizmoMaterial(HandlingMousePick, pickingID, sphere->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(0.0f, 1.0f, 1.0f));
 			Texture2D* old = mat->m_UniformSlots[0].m_Texture2D;
 			mat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("37b37d49-abe8-4609-929f-fec01e7bbcab"));
 			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("005ab997-d566-4cb0-bcea-dc3ab5563cf5")), mat, HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
@@ -80,7 +91,7 @@ namespace Suora
 			Node3D tr;
 			tr.SetPosition(capsule->GetPosition());
 			tr.SetScale(Vec3(capsule->m_Radius * 2.0f, capsule->m_Height / 2.0f, capsule->m_Radius * 2.0f));
-			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("77d60b2a-790a-42d6-9760-4b3cb3b853d5")), GizmoMaterial(HandlingMousePick, pickingID, capsule->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(1.0f)), HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
+			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("77d60b2a-790a-42d6-9760-4b3cb3b853d5")), ViewportDebugGizmo::GizmoMaterial(HandlingMousePick, pickingID, capsule->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(1.0f)), HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
 			if (HandlingMousePick)
 			{
 				(*pickingMap)[*pickingID] = capsule;
@@ -90,72 +101,14 @@ namespace Suora
 		RenderCommand::SetWireframeMode(false);
 		RenderCommand::SetWireframeThickness(1.0f);
 
-		Array<CameraNode*> cameras = world->FindNodesByClass<CameraNode>();
-		for (CameraNode* cam : cameras)
-		{
-			cam->SetAspectRatio(static_cast<float>(GetWidth()) / static_cast<float>(GetHeight()));
-			cam->RecalculateProjection();
-			Node3D tr;
-			tr.SetPosition(cam->GetPosition());
-			tr.SetRotation(cam->GetRotation());
-			tr.SetScale(Vec3(0.1f));
-			Renderer3D::DrawMesh(camera, cam->GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("c37609b9-9067-4e3a-ac04-c493ed2d8009")), GizmoMaterial(HandlingMousePick, pickingID, Vec3(1.0f), SuoraID("317cf1ef-ac75-46d8-a62f-184891456960")), HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
-
-			Vec3 corners[4];
-			{
-				Vec4 pos = glm::inverse(cam->GetViewProjectionMatrix()) * Vec4(-1.0f, 1.0f, 1.0f, 1.0f);
-				pos.x /= pos.w;
-				pos.y /= pos.w;
-				pos.z /= pos.w;
-				Vec3 end = glm::normalize(((Vec3)pos) - cam->GetPosition()) * 15.0f + cam->GetPosition();
-				corners[0] = end;
-				Renderer3D::DrawLine3D(camera, cam->GetPosition(), end, Color(0.66f, 1.0f, 0.66f, 0.5f));
-			}
-			{
-				Vec4 pos = glm::inverse(cam->GetViewProjectionMatrix()) * Vec4(1.0f, 1.0f, 1.0f, 1.0f);
-				pos.x /= pos.w;
-				pos.y /= pos.w;
-				pos.z /= pos.w;
-				Vec3 end = glm::normalize(((Vec3)pos) - cam->GetPosition()) * 15.0f + cam->GetPosition();
-				corners[1] = end;
-				Renderer3D::DrawLine3D(camera, cam->GetPosition(), end, Color(0.66f, 1.0f, 0.66f, 0.5f));
-			}
-			{
-				Vec4 pos = glm::inverse(cam->GetViewProjectionMatrix()) * Vec4(-1.0f, -1.0f, 1.0f, 1.0f);
-				pos.x /= pos.w;
-				pos.y /= pos.w;
-				pos.z /= pos.w;
-				Vec3 end = glm::normalize(((Vec3)pos) - cam->GetPosition()) * 15.0f + cam->GetPosition();
-				corners[2] = end;
-				Renderer3D::DrawLine3D(camera, cam->GetPosition(), end, Color(0.66f, 1.0f, 0.66f, 0.5f));
-			}
-			{
-				Vec4 pos = glm::inverse(cam->GetViewProjectionMatrix()) * Vec4(1.0f, -1.0f, 1.0f, 1.0f);
-				pos.x /= pos.w;
-				pos.y /= pos.w;
-				pos.z /= pos.w;
-				Vec3 end = glm::normalize(((Vec3)pos) - cam->GetPosition()) * 15.0f + cam->GetPosition();
-				corners[3] = end;
-				Renderer3D::DrawLine3D(camera, cam->GetPosition(), end, Color(0.66f, 1.0f, 0.66f, 0.5f));
-			}
-			Renderer3D::DrawLine3D(camera, corners[0], corners[1], Color(0.66f, 1.0f, 0.66f, 0.5f));
-			Renderer3D::DrawLine3D(camera, corners[1], corners[3], Color(0.66f, 1.0f, 0.66f, 0.5f));
-			Renderer3D::DrawLine3D(camera, corners[2], corners[0], Color(0.66f, 1.0f, 0.66f, 0.5f));
-			Renderer3D::DrawLine3D(camera, corners[3], corners[2], Color(0.66f, 1.0f, 0.66f, 0.5f));
-			
-			if (HandlingMousePick)
-			{
-				(*pickingMap)[*pickingID] = cam;
-				(*pickingID)++;
-			}
-		}
+		
 		Array<DirectionalLightNode*> dlights = world->FindNodesByClass<DirectionalLightNode>();
 		for (DirectionalLightNode* light : dlights)
 		{
 			Node3D tr;
 			tr.SetPosition(light->GetPosition());
 			tr.SetRotation(camera->GetRotation());
-			Material* gizmoMat = GizmoMaterial(HandlingMousePick, pickingID, Vec3(1.0f));
+			Material* gizmoMat = ViewportDebugGizmo::GizmoMaterial(HandlingMousePick, pickingID, Vec3(1.0f));
 			const UniformSlot uniform = gizmoMat->m_UniformSlots[0];
 			gizmoMat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("64738d74-08a9-4383-8659-620808d5269a"));
 			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("75f466f7-baec-4c5a-a23b-a5e3dc3d22bc")), gizmoMat, HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
@@ -164,7 +117,7 @@ namespace Suora
 			tr2.SetPosition(light->GetPosition());
 			tr2.SetRotation(light->GetRotation());
 			tr2.SetScale(Vec3(0.25f));
-			Renderer3D::DrawMesh(camera, tr2.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("0eb4c94e-e88e-436e-a803-12739b755f0c")), GizmoMaterial(HandlingMousePick, pickingID, Vec3(1.0f)), HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
+			Renderer3D::DrawMesh(camera, tr2.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("0eb4c94e-e88e-436e-a803-12739b755f0c")), ViewportDebugGizmo::GizmoMaterial(HandlingMousePick, pickingID, Vec3(1.0f)), HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
 
 			if (HandlingMousePick)
 			{
@@ -178,7 +131,7 @@ namespace Suora
 			Node3D tr;
 			tr.SetPosition(light->GetPosition());
 			tr.SetRotation(camera->GetRotation());
-			Material* gizmoMat = GizmoMaterial(HandlingMousePick, pickingID, Vec3(light->m_Color));
+			Material* gizmoMat = ViewportDebugGizmo::GizmoMaterial(HandlingMousePick, pickingID, Vec3(light->m_Color));
 			const UniformSlot uniform = gizmoMat->m_UniformSlots[0];
 			gizmoMat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("f789d2bf-dcda-4e30-b2d9-3db979b7c6da"));
 			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("75f466f7-baec-4c5a-a23b-a5e3dc3d22bc")), gizmoMat, HandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);

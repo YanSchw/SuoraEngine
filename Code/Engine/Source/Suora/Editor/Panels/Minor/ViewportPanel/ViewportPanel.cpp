@@ -85,6 +85,22 @@ namespace Suora
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
 			m_CameraPreviewBuffer = Framebuffer::Create(spec);
 		}
+
+		Array<Class> implementations = Class::GetSubclassesOf(ViewportDebugGizmo::StaticClass());
+		for (const auto& It : implementations)
+		{
+			auto Impl = Ref<ViewportDebugGizmo>(New(It)->As<ViewportDebugGizmo>());
+			if (Impl)
+			{
+				Impl->SetViewport(this);
+				m_ViewportDebugGizmos.Add(Impl);
+			}
+		}
+
+		m_ViewportDebugGizmos.Sort([](const Ref<ViewportDebugGizmo>& a, const Ref<ViewportDebugGizmo>& b)
+		{
+			return a->GetOrderIndex() < b->GetOrderIndex();
+		});
 	}
 
 	ViewportPanel::~ViewportPanel()
@@ -131,7 +147,7 @@ namespace Suora
 			SuoraError("Cannot handle >World< in ViewportPanel::HandleMousePick()");
 		}
 
-		std::unordered_map<int, Node*> IDs;
+		Map<int, Node*> IDs;
 		int i = 1;
 		for (MeshNode* meshNode : nodes)
 		{
@@ -150,7 +166,7 @@ namespace Suora
 		int32_t id = m_PickingBuffer->ReadPixel_R32I(pos);
 		SuoraWarn("MousePick MeshID: {0}", std::to_string(id));
 
-		Node* selection = IDs.find(id) != IDs.end() ? IDs[id] : nullptr;
+		Node* selection = IDs.ContainsKey(id) ? IDs[id] : nullptr;
 		Node* actor = selection ? selection->GetActorNode() : nullptr;
 
 		Node* currentSelection = GetMajorTab()->IsA<NodeClassEditor>() ? GetMajorTab()->As<NodeClassEditor>()->m_SelectedObject->As<Node>() : nullptr;
