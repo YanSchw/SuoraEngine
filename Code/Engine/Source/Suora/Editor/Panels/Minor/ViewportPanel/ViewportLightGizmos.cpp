@@ -35,6 +35,39 @@ namespace Suora
 		}
 	}
 
+	static void Draw3DArrow(CameraNode* camera, DirectionalLightNode* node)
+	{
+		Array<std::pair<Vec3, Vec3>> lines;
+
+		lines.Add({ Vec3(-0.35f, 0, 0), Vec3(+0.35f, 0, 0) });
+		lines.Add({ Vec3(-0.35f, 0, 0), Vec3(-0.35f, 0, 1) });
+		lines.Add({ Vec3(+0.35f, 0, 0), Vec3(+0.35f, 0, 1) });
+		lines.Add({ Vec3(-0.35f, 0, 1), Vec3(-0.65f, 0, 1) });
+		lines.Add({ Vec3(+0.35f, 0, 1), Vec3(+0.65f, 0, 1) });
+		lines.Add({ Vec3(-0.65f, 0, 1), Vec3(0, 0, 2) });
+		lines.Add({ Vec3(+0.65f, 0, 1), Vec3(0, 0, 2) });
+
+
+		lines.Add({ Vec3(0, -0.35f, 0), Vec3(0, +0.35f, 0) });
+		lines.Add({ Vec3(0, -0.35f, 0), Vec3(0, -0.35f, 1) });
+		lines.Add({ Vec3(0, +0.35f, 0), Vec3(0, +0.35f, 1) });
+		lines.Add({ Vec3(0, -0.35f, 1), Vec3(0, -0.65f, 1) });
+		lines.Add({ Vec3(0, +0.35f, 1), Vec3(0, +0.65f, 1) });
+		lines.Add({ Vec3(0, -0.65f, 1), Vec3(0, 0, 2) });
+		lines.Add({ Vec3(0, +0.65f, 1), Vec3(0, 0, 2) });
+
+		Node3D proxy;
+		proxy.SetPosition(node->GetPosition());
+		proxy.SetRotation(node->GetRotation());
+
+		for (const std::pair<Vec3, Vec3>& line : lines)
+		{
+			const Vec4 a = proxy.GetTransformMatrix() * Vec4(line.first, 1);
+			const Vec4 b = proxy.GetTransformMatrix() * Vec4(line.second, 1);
+			Renderer3D::DrawLine3D(camera, a, b, node->m_Color);
+		}
+	}
+
 	void ViewportDirectionalLightGizmo::DrawDebugGizmos(World* world, CameraNode* camera, int* pickingID, Map<int, Node*>* pickingMap, bool isHandlingMousePick)
 	{
 		Array<DirectionalLightNode*> dlights = world->FindNodesByClass<DirectionalLightNode>();
@@ -52,7 +85,8 @@ namespace Suora
 			tr2.SetPosition(light->GetPosition());
 			tr2.SetRotation(light->GetRotation());
 			tr2.SetScale(Vec3(0.25f));
-			Renderer3D::DrawMesh(camera, tr2.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("0eb4c94e-e88e-436e-a803-12739b755f0c")), ViewportDebugGizmo::GizmoMaterial(isHandlingMousePick, pickingID, Vec3(1.0f)), isHandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
+
+			Draw3DArrow(camera, light);
 
 			if (isHandlingMousePick)
 			{
