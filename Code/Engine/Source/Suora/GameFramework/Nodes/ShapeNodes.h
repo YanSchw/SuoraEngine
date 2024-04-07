@@ -96,8 +96,10 @@ namespace Suora
 	public:
 		SphereShapeNode() : ShapeNode(ShapeType::Sphere) { }
 
+		void SetSphereRadius(float InRadius) { m_Radius = InRadius; }
 		float GetSphereRadius() const;
 
+	private:
 		PROPERTY()
 		float m_Radius = 0.5f;
 	};
@@ -108,6 +110,16 @@ namespace Suora
 	public:
 		CapsuleShapeNode() : ShapeNode(ShapeType::Capsule) { }
 
+		void SetCapsuleRadius(float InRadius) { m_Radius = InRadius; }
+		float GetCapsuleRadius() const { return m_Radius; }
+		void SetHeightRadius(float InHeight) { m_Height = InHeight; }
+		float GetCapsuleHeight() const { return m_Height; }
+
+	private:
+		PROPERTY()
+		float m_Radius = 0.5f;
+		PROPERTY()
+		float m_Height = 2.0f;
 	};
 
 }
