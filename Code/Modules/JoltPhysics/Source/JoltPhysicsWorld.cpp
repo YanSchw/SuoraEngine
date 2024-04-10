@@ -2,6 +2,7 @@
 #include "JoltPhysicsEngine.h"
 #include "JoltCharacterController.h"
 
+#include "Suora/GameFramework/World.h"
 #include "Suora/GameFramework/Nodes/ShapeNodes.h"
 #include "Suora/GameFramework/Nodes/CharacterNode.h"
 
@@ -19,6 +20,8 @@
 #include <Jolt/Physics/Collision/Shape/MutableCompoundShape.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyActivationListener.h>
+#include <Jolt/Physics/Collision/RayCast.h>
+#include <Jolt/Physics/Collision/CastResult.h>
 
 // STL includes
 #include <iostream>
@@ -241,6 +244,30 @@ namespace Suora::Physics
 		Ref<CharacterController> characterController = m_CharacterControllers.at(node);
 		characterController->SetInternalPosition(node->GetPosition());
 		characterController->SetInternalRotation(node->GetRotation());
+	}
+
+	bool JoltPhysicsWorld::Raycast(const Vec3& start, const Vec3& end, HitResult& result, const RaycastParams& params)
+	{
+		JPH::RRayCast ray;
+		JPH::RayCastResult castResult;
+
+		ray.mOrigin = Convert::ToRVec3(start);
+		ray.mDirection = Convert::ToRVec3(end - start) * glm::distance(start, end);
+
+		if (m_PhysicsSystem->GetNarrowPhaseQuery().CastRay(ray, castResult, JPH::BroadPhaseLayerFilter(), JPH::ObjectLayerFilter(), JPH::BodyFilter()))
+		{
+			JPH::Vec3 hitPosition = ray.GetPointOnRay(castResult.mFraction);
+
+			result.Point = Convert::ToVec3(hitPosition);
+			// TODO: Rest of HitResult
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+		return false;
 	}
 
 	void JoltPhysicsWorld::Step(double timeStep)
