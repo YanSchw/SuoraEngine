@@ -367,9 +367,10 @@ namespace Suora
 			if (EditorUI::Button("View", 140.0f, GetHeight() - 35.0f, 100.0f, 25.0f, Params))
 			{
 				mousePickReady = false;
-				EditorUI::CreateContextMenu({ EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmos = !m_DrawDebugGizmos; }, "Show Gizmos", m_DrawDebugGizmos ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmosDuringPlay = !m_DrawDebugGizmosDuringPlay; }, "Show Gizmos during Play", m_DrawDebugGizmosDuringPlay ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DrawWireframe = !m_DrawWireframe; }, "Draw Wireframe", m_DrawWireframe ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr) }, 140.0f, GetHeight() - 35.0f);
+				EditorUI::CreateContextMenu({ EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmos = !m_DrawDebugGizmos; }, "Show Gizmos", m_DrawDebugGizmos ? Icon::Tickmark : Icon::None),
+											  EditorUI::ContextMenuElement({}, [&]() { m_ShowGrid = !m_ShowGrid; }, "Show Grid", m_ShowGrid ? Icon::Tickmark : Icon::None),
+											  EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmosDuringPlay = !m_DrawDebugGizmosDuringPlay; }, "Show Gizmos during Play", m_DrawDebugGizmosDuringPlay ? Icon::Tickmark : Icon::None),
+											  EditorUI::ContextMenuElement({}, [&]() { m_DrawWireframe = !m_DrawWireframe; }, "Draw Wireframe", m_DrawWireframe ? Icon::Tickmark : Icon::None) }, 140.0f, GetHeight() - 35.0f);
 			}
 			if (HoverOverTools) EditorUI::SetCursor(Cursor::Hand);
 

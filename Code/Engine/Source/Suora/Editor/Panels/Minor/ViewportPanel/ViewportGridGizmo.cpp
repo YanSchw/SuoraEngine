@@ -15,6 +15,11 @@ namespace Suora
 
 	void ViewportGridGizmo::DrawDebugGizmos(World* world, CameraNode* camera, int* pickingID, Map<int, Node*>* pickingMap, bool isHandlingMousePick)
 	{
+		if (!GetViewport()->m_ShowGrid)
+		{
+			return;
+		}
+
 		const int32_t x = static_cast<int32_t>(camera->GetPosition().x);
 		const int32_t z = static_cast<int32_t>(camera->GetPosition().z);
 

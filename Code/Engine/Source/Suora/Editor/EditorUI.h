@@ -633,6 +633,8 @@ namespace Suora
 			ContextMenuElement() = default;
 			ContextMenuElement(const std::vector<ContextMenuElement>& subElements, const std::function<void(void)>& lambda, const String& label, Texture2D* image)
 				: SubElements(subElements), Lambda(lambda), Label(label), Image(image) { }
+			ContextMenuElement(const std::vector<ContextMenuElement>& subElements, const std::function<void(void)>& lambda, const String& label, const Icon& icon)
+				: SubElements(subElements), Lambda(lambda), Label(label), Image(icon.GetTexture2D()) { }
 		};
 		static void CreateContextMenu(const std::vector<ContextMenuElement>& elements);
 		static void CreateContextMenu(const std::vector<ContextMenuElement>& elements, float x, float y);
