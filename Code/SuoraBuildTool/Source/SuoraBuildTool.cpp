@@ -27,7 +27,7 @@ public:
 		// Search For EnginePath...
 		std::string enginePath = "";
 		{
-			std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(std::filesystem::path(projectCodePath).parent_path());
+			std::vector<DirectoryEntry> entries = File::GetAllAbsoluteEntriesOfPath(std::filesystem::path(projectCodePath).parent_path() / "Content");
 			for (auto file : entries)
 			{
 				const std::string ext = File::GetFileExtension(file);
@@ -41,6 +41,7 @@ public:
 					if (std::filesystem::exists(std::filesystem::path(possibleEnginePath)))
 					{
 						enginePath = possibleEnginePath;
+						BUILD_INFO("Engine located in {0}", enginePath);
 					}
 					break;
 				}
