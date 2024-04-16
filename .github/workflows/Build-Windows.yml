@@ -1,0 +1,53 @@
+name: Build-Windows
+
+on:
+  push:
+    branches: [ "main", "*-dev" ]
+  pull_request:
+    branches: [ "main", "*-dev" ]
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: "Suora.sln"
+  
+permissions:
+  contents: read
+
+jobs:
+  Build-Windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        build-configuration: [Release, Dist]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: 'YanSchw/SuoraEngine'
+        submodules: recursive
+    - uses: microsoft/setup-msbuild@v1.1
+      with:
+        msbuild-architecture: x64
+    - uses: abel0b/setup-premake@v2.4
+      with:
+        version: "5.0.0-beta2"
+    - name: Setup SuoraBuildTool
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        call "Code\SuoraBuildTool\GenerateSolutionForStandaloneCompilation.bat"
+        mkdir "Binaries\Scripts\"
+        MSBuild "Code\SuoraBuildTool\SuoraBuildTool.vcxproj" /p:configuration=Dist /p:platform=x64
+        copy "Code\SuoraBuildTool\Build\Dist-windows-x86_64\SuoraBuildTool\SuoraBuildTool.exe" "Binaries\Scripts\SuoraBuildTool.exe"
+      shell: cmd
+    - name: Run SuoraBuildTool
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        call "Binaries\Scripts\SuoraBuildTool.exe"
+      shell: cmd
+    - name: Run Premake5
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: premake5 vs2022
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: MSBuild ${{env.SOLUTION_FILE_PATH}} /m /p:Configuration=${{matrix.build-configuration}} -fl -flp:logfile=logs/Build-${{matrix.build-configuration}}.log
