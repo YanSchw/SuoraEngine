@@ -1,9 +1,5 @@
 
-<p align="center">
-  <a href="https://github.com/YanSchw/SuoraEngine">
-    <img src="Content/EngineContent/SuoraLogo.png" width="400" alt="Suora Engine logo">
-  </a>
-</p>
+![Suora Engine](.github/SuoraEngine.png)
 
 SuoraEngine is an open-source C++ Engine for building 3D real-time rendering Applications and interactive Content, especially Video Games.
 
