@@ -26,7 +26,7 @@ jobs:
       with:
         repository: 'YanSchw/SuoraEngine'
         submodules: recursive
-    - uses: microsoft/setup-msbuild@v1.1
+    - uses: microsoft/setup-msbuild@v1.3.2
       with:
         msbuild-architecture: x64
     - uses: abel0b/setup-premake@v2.4
