@@ -28,7 +28,7 @@ namespace Suora
 
 			m_StandaloneWindow = Ref<Window>(CreateAppWindow(WindowProps()));
 
-			GraphicsContext* context = (GraphicsContext*)(m_StandaloneWindow->GetGraphicsContext());
+			auto context = static_cast<GraphicsContext*>(m_StandaloneWindow->GetGraphicsContext());
 			context->MakeCurrent();
 
 			{
@@ -59,7 +59,7 @@ namespace Suora
 			m_StandaloneWindow->SetVSync(false);
 		}
 
-		~Runtime()
+		~Runtime() override
 		{
 		}
 

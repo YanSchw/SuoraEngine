@@ -12,6 +12,7 @@ namespace Suora
 		float singleWidth = width / 2.0f;
 		EditorUI::DragFloat(&vec->x, x + singleWidth * 0.0f, y, singleWidth, height);
 		EditorUI::DragFloat(&vec->y, x + singleWidth * 1.0f, y, singleWidth, height);
+			
 	}
 	static void DragFloat3(Vec3* vec, float x, float y, float width, float height)
 	{
@@ -38,7 +39,7 @@ namespace Suora
 			return;
 		}
 
-		bool NodeEnabled = node->m_Enabled;
+		const bool NodeEnabled = node->m_Enabled;
 
 		y -= 40;
 		EditorUI::Button("", 0.0f, y, 40.0f, 40.0f, ShutterPanelParams());
@@ -77,22 +78,14 @@ namespace Suora
 			{
 				y -= 34;
 				DrawLabel("Position", y, 35.0f);
-				//static Vec3 position;
 				GetDetailsPanel()->DrawVec3Control(&Transform_Pos, GetDetailWidth() * GetSeperator(), y + 4.5f, GetDetailWidth() - GetDetailWidth() * GetSeperator() - 35.0f, 25, 0.0f, disableReadTransform);
 				node3D->SetLocalPosition(Transform_Pos);
 				y -= 34;
 				DrawLabel("Rotation", y, 35.0f);
-				if (!GetMajorTab()->IsA<NodeClassEditor>()
-					|| (GetMajorTab()->IsA<NodeClassEditor>() && GetMajorTab()->As<NodeClassEditor>()->m_CurrentPlayState == PlayState::Editor)
-					|| true)
-				{
-					//static Vec3 rot;
-					GetDetailsPanel()->DrawVec3Control(&Transform_Rot, GetDetailWidth() * GetSeperator(), y + 4.5f, GetDetailWidth() - GetDetailWidth() * GetSeperator() - 35.0f, 25, 0.0f, disableReadTransform);
-					node3D->SetEulerRotation(Transform_Rot);
-				}
+				GetDetailsPanel()->DrawVec3Control(&Transform_Rot, GetDetailWidth() * GetSeperator(), y + 4.5f, GetDetailWidth() - GetDetailWidth() * GetSeperator() - 35.0f, 25, 0.0f, disableReadTransform);
+				node3D->SetEulerRotation(Transform_Rot);
 				y -= 34;
 				DrawLabel("Scale", y, 35.0f);
-				//static Vec3 scale;
 				GetDetailsPanel()->DrawVec3Control(&Transform_Scale, GetDetailWidth() * GetSeperator(), y + 4.5f, GetDetailWidth() - GetDetailWidth() * GetSeperator() - 35.0f, 25, 1.0f, disableReadTransform);
 				node3D->SetLocalScale(Transform_Scale);
 				y -= 15; // Padding Bottom
