@@ -1,5 +1,5 @@
 #pragma once
-#include "inttypes.h"
+#include <cstdint>
 #include "Suora/Common/Array.h"
 #include "Suora/Common/StringUtils.h"
 

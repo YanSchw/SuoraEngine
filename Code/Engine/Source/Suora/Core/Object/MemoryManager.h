@@ -1,5 +1,5 @@
 #pragma once
-#include "inttypes.h"
+#include <cstdint>
 #include <vector>
 #include <stack>
 

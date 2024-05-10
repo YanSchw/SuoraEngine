@@ -3,7 +3,7 @@
 #include <string>
 #include <array>
 #include <glm/glm.hpp>
-#include "inttypes.h"
+#include <cstdint>
 #include "Suora/Serialization/Yaml.h"
 #include <Suora.h>
 

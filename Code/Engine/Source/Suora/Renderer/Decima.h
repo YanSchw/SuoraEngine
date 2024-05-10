@@ -2,7 +2,7 @@
 #include <future>
 #include <unordered_map>
 #include <thread>
-#include "inttypes.h"
+#include <cstdint>
 #include "Suora/Common/VectorUtils.h"
 
 namespace Suora
