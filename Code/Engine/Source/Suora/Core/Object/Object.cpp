@@ -41,24 +41,6 @@ namespace Suora
 			interface->m_RootObject = this;
 			interface->OnImplementation();
 		}
-
-		//ImplementUsingRootObject(cls, this);
-	}
-	void Object::ImplementUsingRootObject(const Class& cls, Object* root)
-	{
-		/*if (!m_Interface)
-		{
-			m_Interface = New(cls);
-			if (Interface* interface = Cast<Interface>(m_Interface))
-			{
-				interface->m_RootObject = root;
-				interface->OnImplementation();
-			}
-		}
-		else
-		{
-			m_Interface->ImplementUsingRootObject(cls, root);
-		}*/
 	}
 	void Object::Unimplement(const Class& cls)
 	{
@@ -68,26 +50,10 @@ namespace Suora
 		{
 			if (m_Interfaces[i]->IsA(cls)) m_Interfaces.erase(m_Interfaces.begin() + i);
 		}
-
-		/*if (Cast(m_Interface, cls))
-		{
-			Object* new_Interface = m_Interface->m_Interface;
-			m_Interface->m_Interface = nullptr;
-			delete m_Interface;
-			m_Interface = new_Interface;
-		}
-		else m_Interface->Unimplement(cls);*/
 	}
 	void Object::UnimplementAllInterfaces()
 	{
 		m_Interfaces.clear();
-		/*if (m_Interface)
-		{
-			m_Interface->UnimplementAllInterfaces();
-			delete m_Interface;
-			m_Interface = nullptr;
-		}
-		m_Interface = nullptr;*/
 	}
 	bool Object::Implements(const Class& cls) const
 	{
@@ -97,8 +63,6 @@ namespace Suora
 		}
 
 		return false;
-		/*if (!m_Interface) return false;
-		return Cast(m_Interface, cls) ? true : m_Interface->Implements(cls);*/
 	}
 
 	Object* Object::GetInterface(const Class& cls)
@@ -109,7 +73,6 @@ namespace Suora
 		}
 
 		return nullptr;
-		//return (m_Interface != nullptr) ? (Cast(m_Interface, cls) ? m_Interface : m_Interface->GetInterface(cls)) : nullptr;
 	}
 
 	bool Object::IsA(const Class& cls) const
