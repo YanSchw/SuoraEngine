@@ -1,6 +1,5 @@
 #include "Precompiled.h"
 #include "Object.h"
-#include "MemoryManager.h"
 #include "Interface.h"
 #include "Suora/NodeScript/NodeScriptObject.h"
 #include "Suora/NodeScript/ScriptStack.h"
@@ -17,11 +16,8 @@ namespace Suora
 
 	Object::~Object()
 	{
-		//MemoryManager::s_MemoryFootprint -= (uint32_t)sizeof(this);
-		MemoryManager::Instance()->NullifyPtrTo((Object*)this);
 		UnimplementAllInterfaces();
 		InternalPtr::Nullify(this);
-
 	}
 
 	Class Object::GetClass()
