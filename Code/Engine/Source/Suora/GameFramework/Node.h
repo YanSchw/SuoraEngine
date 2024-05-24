@@ -304,22 +304,6 @@ namespace Suora
 
 		virtual void InitializeNode(World& world) override;
 
-	private:
-
-		void DecomposeTransformMatrix()
-		{
-			/*
-			Vec3 scale;
-			glm::quat rotation;
-			Vec3 translation;
-			Vec3 skew;
-			Vec4 perspective;
-			glm::decompose(GetTransformMatrix(), scale, rotation, translation, skew, perspective);
-			m_Position = translation;
-			m_Rotation = glm::degrees(glm::eulerAngles(glm::conjugate(rotation)));
-			m_Scale = scale;
-			*/
-		}
 	public:
 		FUNCTION(Callable, Pure)
 		Vec3 GetRightVector() const;
