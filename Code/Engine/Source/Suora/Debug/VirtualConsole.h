@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Suora/Common/StringUtils.h"
-#include "inttypes.h"
+#include <cstdint>
 
 namespace Suora
 {

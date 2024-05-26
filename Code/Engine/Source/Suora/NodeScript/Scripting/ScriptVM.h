@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 #include <stack>
-#include "inttypes.h"
+#include <cstdint>
 #include "Suora/NodeScript/ScriptStack.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 

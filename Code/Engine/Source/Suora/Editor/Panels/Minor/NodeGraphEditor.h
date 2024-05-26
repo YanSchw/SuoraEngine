@@ -1,6 +1,6 @@
 #pragma once
 #include "Suora/Editor/Panels/MinorTab.h"
-#include "inttypes.h"
+#include <cstdint>
 #include "Suora/Serialization/Yaml.h"
 #include "Suora/NodeScript/NodeGraph.h"
 

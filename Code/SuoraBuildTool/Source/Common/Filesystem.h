@@ -4,19 +4,19 @@
 #include <vector>
 #include <algorithm>
 
-using FilePath = std::filesystem::path;
+using Path = std::filesystem::path;
 using DirectoryEntry = std::filesystem::directory_entry;
 
 namespace File
 {
-    static FilePath NormalizedTrimed(const FilePath& p)
+    static Path NormalizedTrimed(const Path& p)
     {
         auto r = p.lexically_normal();
         if (r.has_filename()) return r;
         return r.parent_path();
     }
 
-    static bool IsPathSubpathOf(const FilePath& base, const FilePath& sub)
+    static bool IsPathSubpathOf(const Path& base, const Path& sub)
     {
         auto b = NormalizedTrimed(base);
         auto s = NormalizedTrimed(sub).parent_path();
@@ -25,7 +25,7 @@ namespace File
 
         return m.first == b.end();
     }
-    static inline std::vector<DirectoryEntry> GetAllAbsoluteEntriesOfPath(const FilePath& Path)
+    static inline std::vector<DirectoryEntry> GetAllAbsoluteEntriesOfPath(const Path& Path)
     {
         std::vector<DirectoryEntry> Entries;
         for (auto file : std::filesystem::directory_iterator(Path))

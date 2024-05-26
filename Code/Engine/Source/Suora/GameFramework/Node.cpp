@@ -313,6 +313,16 @@ namespace Suora
 		Node* node = (Node*)New(cls);
 		SUORA_ASSERT(node);
 		SUORA_ASSERT(node->IsA<Node>(), "You can only add Nodes as Children.");
+
+		if (node->IsA<Component>())
+		{
+			if (!GetClass().Inherits(node->As<Component>()->GetRequiredBaseClass()))
+			{
+				SUORA_ERROR(LogCategory::Gameplay, "Cannot create Component, without given BaseClass '" + node->As<Component>()->GetRequiredBaseClass().GetClassName() + "'");
+				delete node;
+				return nullptr;
+			}
+		}
 		
 		node->SetParent(this);
 
@@ -515,13 +525,6 @@ namespace Suora
 		if (Node3D* transform = GetTransform())
 		{
 			transform->RecalculateTransformMatrix();
-			/*transform->TickTransform(keepWorldTransform);
-
-			if (keepWorldTransform)
-			{
-				transform->DecomposeTransformMatrix();
-				transform->TickTransform();
-			}*/
 		}
 	}
 	void Node::SetParent(Node* parent, bool keepWorldTransform)
@@ -586,7 +589,6 @@ namespace Suora
 
 	Quat Node3D::GetRotation() const
 	{
-
 		Vec3 scale;
 		glm::quat rotation;
 		Vec3 translation;
@@ -594,8 +596,6 @@ namespace Suora
 		Vec4 perspective;
 		glm::decompose(m_WorldTransformMatrix, scale, rotation, translation, skew, perspective);
 		return rotation;
-
-		//return glm::quat_cast(GetTransformMatrix());
 	}
 	Quat Node3D::GetLocalRotation() const
 	{
@@ -606,8 +606,6 @@ namespace Suora
 		Vec4 perspective;
 		glm::decompose(m_LocalTransformMatrix, scale, rotation, translation, skew, perspective);
 		return rotation;
-
-		//return glm::quat_cast(GetTransformMatrix());
 	}
 	Vec3 Node3D::GetEulerRotation() const
 	{
@@ -724,28 +722,11 @@ namespace Suora
 	Mat4 Node3D::GetTransformMatrix() const
 	{
 		return m_WorldTransformMatrix;
-
-		/*Mat4 rotation = glm::rotate(Mat4(1.0f), glm::radians(Rotation.x), { 1, 0, 0 })
-						   * glm::rotate(Mat4(1.0f), glm::radians(Rotation.y), { 0, 1, 0 })
-						   * glm::rotate(Mat4(1.0f), glm::radians(Rotation.z), { 0, 0, 1 });
-
-		return glm::translate(Mat4(1.0f), { Position.x, Position.y, Position.z })
-			 * rotation
-			 * glm::scale(Mat4(1.0f), { Scale.x, Scale.y, Scale.z });*/
 	}
 
 	void Node3D::RecalculateTransformMatrix()
 	{
 		bool inverseParentTransform = false;
-		//const auto& scaled = glm::scale(Mat4(1), m_Scale);
-		
-		//const auto& rotated = glm::toMat4(m_Rotation) * scaled;
-		//const auto& translated = glm::translate(Mat4(1), m_Position) * rotated;
-
-
-		/*m_TransformMatrix = GetParentTransform() ?
-			(inverseParentTransform ? glm::inverse(GetParentTransform()->GetTransformMatrix()) : GetParentTransform()->GetTransformMatrix()) * translated :
-			translated;*/
 
 		/// Source: https://stackoverflow.com/questions/11920866/global-transform-to-local-transform
 		m_LocalTransformMatrix = GetParentTransform() ?
@@ -785,9 +766,6 @@ namespace Suora
 
 	void Node3D::TickTransform(bool inWorldSpace)
 	{
-
-		//m_TransformMatrix = CalculateTransformMatrix(m_Position, m_Rotation, m_Scale);
-		//RecalculateTransformMatrix(inverseParentTransform);
 		if (!inWorldSpace)
 		{
 			ReprojectLocalMatrixToWorld();
@@ -798,11 +776,6 @@ namespace Suora
 		}
 
 		Super::TickTransform(inWorldSpace);
-
-		/*for (Node* child : m_Children)
-		{
-			child->TickTransform(inverseParentTransform);
-		}*/
 
 		RecalculateTransformMatrix();
 	}
@@ -919,6 +892,16 @@ namespace Suora
 		{
 			SuoraWarn("A Component may never be reparented!");
 		}
+	}
+
+	void Component::SetRequiredBaseClass(const Class& baseClass)
+	{
+		m_ParentBaseclass = baseClass;
+	}
+
+	Class Component::GetRequiredBaseClass() const
+	{
+		return m_ParentBaseclass;
 	}
 
 }

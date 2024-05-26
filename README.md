@@ -1,9 +1,5 @@
 
-<p align="center">
-  <a href="https://github.com/YanSchw/SuoraEngine">
-    <img src="Content/EngineContent/SuoraLogo.png" width="400" alt="Suora Engine logo">
-  </a>
-</p>
+![Suora Engine](.github/SuoraEngine.png)
 
 SuoraEngine is an open-source C++ Engine for building 3D real-time rendering Applications and interactive Content, especially Video Games.
 
@@ -57,20 +53,16 @@ Create custom Gameplay Logic using Visual Scripting. Easy interoperability with 
 
 ## Build the Engine Yourself
 - Clone the repository: git clone --recursive https://github.com/YanSchw/SuoraEngine
-- Compile SuoraBuildTool (Or use a Precompiled Version from the latest Release)
-  - Navigate to /Code/SuoraBuildTool
-  - Execute GenerateSolutionForStandaloneCompilation.bat
-  - Open the **.sln** using VS2022
-  - Compile SuoraBuildTool in **Release** Mode
-  - Copy and Paste the **SuoraBuildTool.exe** into **/Binaries/Scripts/**
-- Execute the BuildTool in /Binaries/Scripts/{...}
 - Generate the Solution using /GenerateSolution.bat
+  - Make sure, MSBuild Path is valid
+  - This script compiles **SuoraBuildTool.exe** and copies it into **/Binaries/Scripts/**
+  - It executes **SuoraBuildTool.exe** and generates a VS2022 Solution
 - Open the Solution using Visual Studio 2022
 - Build using VS2022
 
 ## Build Requirements
 - C++20 Compiler
-- [Windows] Visual Studio 2022 Toolset (**MSVC**)
+- [Windows] Visual Studio 2022 Toolset (**MSVC**) (**Community Edition**)
 
 ## Supported Platforms
 - Windows (64bit)

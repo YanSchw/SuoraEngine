@@ -5,7 +5,7 @@
 #include "Suora/Common/Array.h"
 #include "Minor/LevelOutliner.h"
 #include "Minor/ContentBrowser.h"
-#include "Minor/ViewportPanel.h"
+#include "Minor/ViewportPanel/ViewportPanel.h"
 #include "Minor/DetailsPanel/DetailsPanel.h"
 #include "Minor/NodeGraphEditor.h"
 #include "Suora/GameFramework/Nodes/MeshNode.h"
@@ -20,6 +20,21 @@ namespace Suora
 	class MajorTab;
 	class DockspacePanel;
 	struct Dockspace;
+
+	class MajorMenuItem : public Object
+	{
+		SUORA_CLASS(57489356432);
+	public:
+		virtual String GetLabel() const = 0;
+		virtual bool Filter() { return true; }
+		virtual int32_t GetOrderIndex() { return 0; }
+
+		virtual bool IsFileItem() const { return false; }
+		virtual bool IsEditItem() const { return false; }
+		virtual bool IsWindowItem() const { return false; }
+
+		std::function<void(void)> m_Lambda = nullptr;
+	};
 
 	class MajorTab : public Object
 	{
@@ -85,6 +100,9 @@ namespace Suora
 		}
 	private:
 		EditorWindow* m_EditorWindow = nullptr;
+
+		void OpenExportProjectTab();
+
 	protected:
 		Class m_AssetClass = Class::None;
 

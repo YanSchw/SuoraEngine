@@ -37,9 +37,6 @@ namespace Suora
 
 		// Interfaces
 		void Implement(const Class& cls);
-	private:
-		void ImplementUsingRootObject(const Class& cls, Object* root);
-	public:
 		void Unimplement(const Class& cls);
 		void UnimplementAllInterfaces();
 		bool Implements(const Class& cls) const;

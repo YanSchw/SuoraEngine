@@ -21,11 +21,16 @@ namespace Suora
 		std::vector<CmdArg> Args;
 	};
 
+	struct ApplicationParams
+	{
+		bool IsEditor = false;
+	};
+
 	/** To be implemented in your Application of choice. E.g. Editor, Runtime, etc. */
 	class Application
 	{
 	public:
-		Application();
+		Application(const ApplicationParams& params);
 		virtual ~Application();
 
 		void OnEvent(Event& e);
@@ -34,12 +39,14 @@ namespace Suora
 		Window& GetWindow() { return *m_Window; }
 
 		virtual void Close();
-		virtual bool IsEditor() const;
+		bool IsEditor() const;
 
 		static Application& Get() { return *s_Instance; }
 		static bool IsApplicationInitialized();
 	private:
+		ApplicationParams m_Params;
 		Ref<Engine> m_Engine = nullptr;
+
 		void Run();
 		virtual void Update(float deltaTime);
 		bool OnWindowClose(WindowCloseEvent& e);

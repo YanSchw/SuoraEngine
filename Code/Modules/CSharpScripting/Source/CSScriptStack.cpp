@@ -2,7 +2,7 @@
 #include "CSharpScriptEngine.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 #include "Suora/NodeScript/ScriptStack.h"
-#include "inttypes.h"
+#include <cstdint>
 
 #include "Assembly.hpp"
 

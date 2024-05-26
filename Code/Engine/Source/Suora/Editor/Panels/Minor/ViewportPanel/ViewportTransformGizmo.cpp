@@ -86,6 +86,16 @@ namespace Suora
 	static Vec3 TransformGizmo_TranslateBegin = Vec3();
 	static Texture2D* TransformGizmo_SelectionTexture = nullptr;
 
+	static void DrawTransformGizmoCenter(CameraNode* camera, const Vec3& pos)
+	{
+		Node3D anchor;
+		anchor.SetPosition(pos);
+		anchor.SetScale(Vec3(0.0035f));
+		Material* gizmoMat = AssetManager::GetAsset<Material>(SuoraID("9bc003a3-7ceb-4433-b39d-81537ecdd5c5"));
+		gizmoMat->m_UniformSlots[0].m_Texture2D = AssetManager::GetAsset<Texture2D>(SuoraID("f867b6a1-6b04-42fe-a4b2-6e2e54c71eab"));
+		Renderer3D::DrawMesh(camera, anchor.GetTransformMatrix(), *Mesh::Sphere, gizmoMat);
+	}
+
 	bool ViewportPanel::TransformGizmo_Translate(Node3D* node)
 	{
 		m_GizmoBuffer->Bind();
@@ -129,6 +139,8 @@ namespace Suora
 		RayRayTime(tr1.GetPosition(), dir1, rayPos, rayDir, tt, u, p1, p2);
 		RayRayTime(tr2.GetPosition(), dir2, rayPos, rayDir, ttt, u, p1, p2);
 		const bool planeZ = !intersect1 && !intersect2 && !intersect3 && tt <= -0.008f && tt >= -0.0175f && ttt <= -0.008f && ttt >= -0.0175f;
+
+		DrawTransformGizmoCenter(m_EditorCamera->GetCameraComponent(), tr1.GetPosition());
 
 		RenderCommand::SetWireframeMode(false);
 		RenderCommand::SetWireframeThickness(1.0f);

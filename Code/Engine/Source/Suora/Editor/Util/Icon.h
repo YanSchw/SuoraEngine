@@ -9,12 +9,16 @@ namespace Suora
 
 	struct Icon
 	{
-		Icon() = delete;
+	private:
 		explicit Icon(const SuoraID& id);
-
+		explicit Icon();
+	public:
 		Texture* GetTexture() const;
+		Texture2D* GetTexture2D() const;
 
 		operator Texture*() const;
+
+		static const Icon None;
 
 		// ICONS
 		static const Icon Actor;

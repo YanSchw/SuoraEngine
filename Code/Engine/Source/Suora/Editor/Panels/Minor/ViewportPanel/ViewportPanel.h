@@ -1,12 +1,35 @@
 #pragma once
 #include "Suora/Editor/Panels/MinorTab.h"
 #include "Suora/Renderer/RenderPipeline.h"
+#include "ViewportPanel.generated.h"
 
 #define _ENUM_BODY_6476475
 
 namespace Suora
 {
 	class EditorCamera;
+	class ViewportPanel;
+	class Material;
+
+	/*
+	 * ViewportPanel functionality has become larger and harder to handle.
+	 * Therefore many Viewport parts such as Gizmos, Picking and Debugviews etc. have been split up.
+	*/
+	class ViewportDebugGizmo : public Object
+	{
+		SUORA_CLASS(5487987495);
+	public:
+		virtual void DrawDebugGizmos(World* world, CameraNode* camera, int* pickingID, Map<int, Node*>* pickingMap, bool isHandlingMousePick) = 0;
+		virtual int32_t GetOrderIndex() const { return 0; }
+
+		void SetViewport(ViewportPanel* InViewportPanel) { m_ViewportPanel = InViewportPanel; }
+		ViewportPanel* GetViewport() const { return m_ViewportPanel; }
+
+		static Material* GizmoMaterial(bool useIdShader, int* i, const Vec3& color, const SuoraID& uuid = SuoraID("72b2a0e4-6541-4907-9527-47aa742ede45"));
+
+	private:
+		ViewportPanel* m_ViewportPanel = nullptr;
+	};
 
 	ENUM(6476475) DebugView : int32_t
 	{
@@ -49,7 +72,7 @@ namespace Suora
 		Ref<Framebuffer> m_SelectionOutlineFramebuffer;
 		Ref<Shader> m_SelectionOutlineShader;
 		void DrawSelectionOutline(Node3D* node, const Color& color);
-		void DrawDebugShapes(World* world, CameraNode* camera, int* pickingID = nullptr, std::unordered_map<int, Node*>* pickingMap = nullptr);
+		void DrawDebugShapes(World* world, CameraNode* camera, int* pickingID = nullptr, Map<int, Node*>* pickingMap = nullptr);
 		void HandleMousePick(const glm::ivec2& pos);
 		void DrawDebugView(Framebuffer& buffer, World& world, CameraNode& camera);
 		
@@ -63,7 +86,10 @@ namespace Suora
 		RenderingParams m_RParams;
 		bool m_DrawDebugGizmos = false;
 		bool m_DrawDebugGizmosDuringPlay = false;
+		bool m_ShowGrid = true;
 		bool m_DrawWireframe = false;
+
+		Array<Ref<ViewportDebugGizmo>> m_ViewportDebugGizmos;
 
 		EditorCamera* GetEditorCamera() const { return m_EditorCamera.get(); }
 

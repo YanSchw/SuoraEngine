@@ -55,6 +55,9 @@ namespace Suora
 			case ShaderGraphDataType::Vec3:
 				m_UniformSlots.Add(UniformSlot(type, label, Vec::FromString<Vec3>(uniform["m_Vec3"].As<String>())));
 				break;
+			case ShaderGraphDataType::Vec4:
+				m_UniformSlots.Add(UniformSlot(type, label, Vec::FromString<Vec4>(uniform["m_Vec4"].As<String>())));
+				break;
 			case ShaderGraphDataType::Texture2D:
 				m_UniformSlots.Add(UniformSlot(type, label, AssetManager::GetAsset<Texture2D>(uniform["m_Texture2D"].As<String>())));
 				break;
@@ -83,10 +86,24 @@ namespace Suora
 			uniform["m_Type"] = std::to_string((int64_t)m_UniformSlots[index].m_Type);
 			uniform["m_Label"] = m_UniformSlots[index].m_Label;
 
-			uniform["m_Float"] = std::to_string(m_UniformSlots[index].m_Float);
-			uniform["m_Vec3"] = Vec::ToString(m_UniformSlots[index].m_Vec3);
-			uniform["m_Texture2D"] = (m_UniformSlots[index].m_Texture2D) ? m_UniformSlots[index].m_Texture2D->m_UUID.GetString() : "0";
-			// TODO: Diffrent Data Types.
+			switch (m_UniformSlots[index].m_Type)
+			{
+			case ShaderGraphDataType::Float:
+				uniform["m_Float"] = std::to_string(m_UniformSlots[index].m_Float);
+				break;
+			case ShaderGraphDataType::Vec3:
+				uniform["m_Vec3"] = Vec::ToString(m_UniformSlots[index].m_Vec3);
+				break;
+			case ShaderGraphDataType::Vec4:
+				uniform["m_Vec4"] = Vec::ToString(m_UniformSlots[index].m_Vec4);
+				break;
+			case ShaderGraphDataType::Texture2D:
+				uniform["m_Texture2D"] = (m_UniformSlots[index].m_Texture2D) ? m_UniformSlots[index].m_Texture2D->m_UUID.GetString() : "0";
+				break;
+			case ShaderGraphDataType::None:
+			default:
+				SuoraVerify(false, "Missing Implementation!");
+			}
 		}
 
 
@@ -151,6 +168,9 @@ namespace Suora
 				break;
 			case ShaderGraphDataType::Vec3:
 				shader->SetFloat3(slot.m_Label, slot.m_Vec3);
+				break;
+			case ShaderGraphDataType::Vec4:
+				shader->SetFloat4(slot.m_Label, slot.m_Vec4);
 				break;
 			case ShaderGraphDataType::Texture2D:
 				if (slot.m_Texture2D) slot.m_Texture2D->GetTexture()->Bind(TextureSlot++);

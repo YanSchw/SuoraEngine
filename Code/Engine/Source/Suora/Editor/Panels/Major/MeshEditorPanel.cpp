@@ -6,7 +6,7 @@
 #include "Suora/GameFramework/Nodes/Light/DirectionalLightNode.h"
 #include "Suora/GameFramework/Nodes/Light/SkyLightNode.h"
 #include "Suora/Editor/Panels/MinorTab.h"
-#include "Suora/Editor/Panels/Minor/ViewportPanel.h"
+#include "Suora/Editor/Panels/Minor/ViewportPanel/ViewportPanel.h"
 #include "Suora/Editor/Util/EditorCamera.h"
 
 namespace Suora

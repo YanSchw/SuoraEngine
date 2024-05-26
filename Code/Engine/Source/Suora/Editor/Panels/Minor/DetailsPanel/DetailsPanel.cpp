@@ -13,6 +13,7 @@
 #include "ProjectDetails.h"
 #include "EditorPreferencesDetails.h"
 #include "InputMappingDetails.h"
+#include "ExportProjectDetails.h"
 
 namespace Suora
 {

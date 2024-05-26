@@ -33,6 +33,3 @@ namespace Suora
     };
 
 }
-
-#define INTERFACE_FUNCTION(FunctionName, ReturnValue, ...)
-#define IMPLEMENT(...)

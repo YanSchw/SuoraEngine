@@ -4,7 +4,7 @@
 #include "Suora/Serialization/Yaml.h"
 #include "Suora/NodeScript/ScriptTypes.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
-#include "Suora/Editor/Panels/Minor/ViewportPanel.h"
+#include "Suora/Editor/Panels/Minor/ViewportPanel/ViewportPanel.h"
 #include "Suora/Editor/Util/EditorCamera.h"
 #include "Suora/Editor/Panels/Minor/NodeGraphEditor.h"
 #include "Suora/Editor/Panels/Minor/LevelOutliner.h"

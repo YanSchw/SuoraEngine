@@ -11,13 +11,13 @@ namespace Suora
     {
         m_FontPath = ttf;
     }
-    Font::Font(FilePath path, FilePath texturePath)
+    Font::Font(Path path, Path texturePath)
     {
 		LoadFontMetaFromFile(path, texturePath);
     }
-	void Font::LoadFontMetaFromFile(FilePath path, FilePath texturePath)
+	void Font::LoadFontMetaFromFile(Path path, Path texturePath)
 	{
-		if (File::GetFileExtension(DirectoryEntry(path)) != ".font") static_assert("Font file needed!");
+		if (FileUtils::GetFileExtension(DirectoryEntry(path)) != ".font") static_assert("Font file needed!");
 		m_FontPath = texturePath.string();
 		//Instance = this;
 

@@ -17,6 +17,9 @@ Binaries/
 **.vcxproj.filters
 **.vcxproj.user
 
+# JetBrains files and folder
+.idea/
+
 # Generated Headers
 **.generated.h
 

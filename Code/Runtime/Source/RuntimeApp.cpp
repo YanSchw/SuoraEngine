@@ -21,13 +21,14 @@ namespace Suora
 		Ref<Framebuffer> m_Framebuffer;
 		Ref<Window> m_StandaloneWindow;
 
-		Runtime()
+		Runtime(const ApplicationParams& params)
+			: Application(params)
 		{
 			Modules_Init();
 
 			m_StandaloneWindow = Ref<Window>(CreateAppWindow(WindowProps()));
 
-			GraphicsContext* context = (GraphicsContext*)(m_StandaloneWindow->GetGraphicsContext());
+			auto context = static_cast<GraphicsContext*>(m_StandaloneWindow->GetGraphicsContext());
 			context->MakeCurrent();
 
 			{
@@ -58,7 +59,7 @@ namespace Suora
 			m_StandaloneWindow->SetVSync(false);
 		}
 
-		~Runtime()
+		~Runtime() override
 		{
 		}
 
@@ -103,5 +104,7 @@ namespace Suora
 
 Suora::Application* Suora::CreateApplication()
 {
-	return new Runtime();
+	ApplicationParams params;
+	params.IsEditor = false;
+	return new Runtime(params);
 }

@@ -28,6 +28,8 @@ namespace Suora::Physics
 		virtual void DestroyCharacterNode(CharacterNode* node) override;
 		virtual void TickCharacterNode(CharacterNode* node) override;
 
+		virtual bool Raycast(const Vec3& start, const Vec3& end, HitResult& result, const RaycastParams& params) override;
+
 		virtual void Step(double timeStep) override;
 
 		void Inititalize();

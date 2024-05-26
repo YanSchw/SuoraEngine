@@ -66,8 +66,6 @@ namespace Suora
 
     bool CSharpScriptEngine::Initialize()
     {
-        s_ScriptEngines.Add(this);
-
         s_CSharpLog = Log::CustomCategory("C#");
         CSHARP_INFO("Initializing C# ScriptEngine");
 
@@ -78,17 +76,31 @@ namespace Suora
             return false;
         }
 
-        // Compile Coral.Managed.dll
-        CSHARP_INFO("Compiling Coral.Managed.dll");
-        CompileCSProj(AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.csproj");
+        if (!IsEditor())
+        {
+            if (!std::filesystem::exists(AssetManager::GetProjectAssetPath() + "/../Binaries/CSharp"))
+            {
+                CSHARP_INFO("No C# Binaries found!");
+                return false;
+            }
+        }
 
-        // Copy over runtimeconfig.json
-        Platform::CopyDirectory(AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.runtimeconfig.json",
-                                AssetManager::GetEngineAssetPath() + "/../Build/CSharp/Release");
+        s_ScriptEngines.Add(this);
+
+        if (IsEditor())
+        {
+            // Compile Coral.Managed.dll
+            CSHARP_INFO("Compiling Coral.Managed.dll");
+            CompileCSProj(AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.csproj");
+
+            // Copy over runtimeconfig.json
+            Platform::CopyDirectory(AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.runtimeconfig.json",
+                                    AssetManager::GetEngineAssetPath() + "/../Build/CSharp/Release");
+        }
 
         // Setup .NET Host
         CSHARP_INFO("Setting up .NET Core Host");
-        auto coralDir = AssetManager::GetEngineAssetPath() + "/../Build/CSharp/Release";
+        auto coralDir = IsEditor() ? AssetManager::GetEngineAssetPath() + "/../Build/CSharp/Release" : AssetManager::GetProjectAssetPath() + "/../Binaries/CSharp";
         Coral::HostSettings settings =
         {
             .CoralDirectory = coralDir,
@@ -97,6 +109,12 @@ namespace Suora
         };
         m_HostInstance = CreateRef<Coral::HostInstance>();
         m_HostInstance->Initialize(settings);
+
+        // Load Assemblies in Runtime
+        if (!IsEditor())
+        {
+            ReloadAssemblies();
+        }
 
         // Done.
         CSHARP_INFO("Initialized C# ScriptEngine");
@@ -122,19 +140,22 @@ namespace Suora
             return;
         }
 
-        static bool s_WasProjectCSCodeCompiledOnce = false;
-        if (!s_WasProjectCSCodeCompiledOnce)
+        if (IsEditor())
         {
-            if (AssetManager::GetProjectAssetPath() != "")
+            static bool s_WasProjectCSCodeCompiledOnce = false;
+            if (!s_WasProjectCSCodeCompiledOnce)
+            {
+                if (AssetManager::GetProjectAssetPath() != "")
+                {
+                    BuildAndReloadAllCSProjects();
+                    s_WasProjectCSCodeCompiledOnce = true;
+                }
+            }
+
+            if (NativeInput::GetKeyDown(Key::F3))
             {
                 BuildAndReloadAllCSProjects();
-                s_WasProjectCSCodeCompiledOnce = true;
             }
-        }
-
-        if (NativeInput::GetKeyDown(Key::F3))
-        {
-            BuildAndReloadAllCSProjects();
         }
     }
 
@@ -225,6 +246,11 @@ namespace Suora
         {
             return;
         }
+        if (!IsEditor())
+        {
+            CSHARP_ERROR("C# Projects should not be compiled during Runtime!");
+            return;
+        }
         CSHARP_INFO("Compiling {0}", csproj.string());
         Platform::CommandLine("dotnet build " + csproj.string() + " -c Release");
     }
@@ -299,7 +325,7 @@ namespace Suora
                 if (file.is_directory())
                     continue;
 
-                std::string filename = file.path().filename().string();
+                String filename = file.path().filename().string();
                 if (filename == "Coral.Managed.dll" || filename == "Suora.Generated.dll")
                     continue;
 

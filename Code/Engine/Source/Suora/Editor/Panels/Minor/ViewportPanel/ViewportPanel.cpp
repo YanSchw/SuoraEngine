@@ -85,6 +85,22 @@ namespace Suora
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::RGBA8);
 			m_CameraPreviewBuffer = Framebuffer::Create(spec);
 		}
+
+		Array<Class> implementations = Class::GetSubclassesOf(ViewportDebugGizmo::StaticClass());
+		for (const auto& It : implementations)
+		{
+			auto Impl = Ref<ViewportDebugGizmo>(New(It)->As<ViewportDebugGizmo>());
+			if (Impl)
+			{
+				Impl->SetViewport(this);
+				m_ViewportDebugGizmos.Add(Impl);
+			}
+		}
+
+		m_ViewportDebugGizmos.Sort([](const Ref<ViewportDebugGizmo>& a, const Ref<ViewportDebugGizmo>& b)
+		{
+			return a->GetOrderIndex() < b->GetOrderIndex();
+		});
 	}
 
 	ViewportPanel::~ViewportPanel()
@@ -131,7 +147,7 @@ namespace Suora
 			SuoraError("Cannot handle >World< in ViewportPanel::HandleMousePick()");
 		}
 
-		std::unordered_map<int, Node*> IDs;
+		Map<int, Node*> IDs;
 		int i = 1;
 		for (MeshNode* meshNode : nodes)
 		{
@@ -150,7 +166,7 @@ namespace Suora
 		int32_t id = m_PickingBuffer->ReadPixel_R32I(pos);
 		SuoraWarn("MousePick MeshID: {0}", std::to_string(id));
 
-		Node* selection = IDs.find(id) != IDs.end() ? IDs[id] : nullptr;
+		Node* selection = IDs.ContainsKey(id) ? IDs[id] : nullptr;
 		Node* actor = selection ? selection->GetActorNode() : nullptr;
 
 		Node* currentSelection = GetMajorTab()->IsA<NodeClassEditor>() ? GetMajorTab()->As<NodeClassEditor>()->m_SelectedObject->As<Node>() : nullptr;
@@ -295,7 +311,7 @@ namespace Suora
 
 			if (CameraNode* camera = node->As<CameraNode>())
 			{
-				m_CameraPreviewRParams.Resolution = iVec2(GetWidth()/10, GetHeight()/10);
+				m_CameraPreviewRParams.Resolution = iVec2(GetWidth()/4, GetHeight()/4);
 				m_CameraPreviewRParams.DrawWireframe = m_DrawWireframe;
 				m_CameraPreviewBuffer->Resize(m_CameraPreviewRParams.Resolution);
 				Engine::Get()->GetRenderPipeline()->Render(*m_CameraPreviewBuffer, *m_World, *camera, m_CameraPreviewRParams);
@@ -351,9 +367,10 @@ namespace Suora
 			if (EditorUI::Button("View", 140.0f, GetHeight() - 35.0f, 100.0f, 25.0f, Params))
 			{
 				mousePickReady = false;
-				EditorUI::CreateContextMenu({ EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmos = !m_DrawDebugGizmos; }, "Show Gizmos", m_DrawDebugGizmos ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmosDuringPlay = !m_DrawDebugGizmosDuringPlay; }, "Show Gizmos during Play", m_DrawDebugGizmosDuringPlay ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr),
-											  EditorUI::ContextMenuElement({}, [&]() { m_DrawWireframe = !m_DrawWireframe; }, "Draw Wireframe", m_DrawWireframe ? AssetManager::GetAsset<Texture2D>(SuoraID("dfdb2091-17b2-41d5-bb5b-cf3a128d201b")) : nullptr) }, 140.0f, GetHeight() - 35.0f);
+				EditorUI::CreateContextMenu({ EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmos = !m_DrawDebugGizmos; }, "Show Gizmos", m_DrawDebugGizmos ? Icon::Tickmark : Icon::None),
+											  EditorUI::ContextMenuElement({}, [&]() { m_ShowGrid = !m_ShowGrid; }, "Show Grid", m_ShowGrid ? Icon::Tickmark : Icon::None),
+											  EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmosDuringPlay = !m_DrawDebugGizmosDuringPlay; }, "Show Gizmos during Play", m_DrawDebugGizmosDuringPlay ? Icon::Tickmark : Icon::None),
+											  EditorUI::ContextMenuElement({}, [&]() { m_DrawWireframe = !m_DrawWireframe; }, "Draw Wireframe", m_DrawWireframe ? Icon::Tickmark : Icon::None) }, 140.0f, GetHeight() - 35.0f);
 			}
 			if (HoverOverTools) EditorUI::SetCursor(Cursor::Hand);
 

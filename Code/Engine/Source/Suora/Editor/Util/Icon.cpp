@@ -5,6 +5,7 @@
 
 namespace Suora
 {
+	const Icon Icon::None                      = Icon();
 
 	const Icon Icon::Actor                     = Icon(SuoraID("ad168979-55cd-408e-afd2-a24cabf26922"));
 	const Icon Icon::ArrowDown                 = Icon(SuoraID("8742cec8-9ee5-4645-b036-577146904b41"));
@@ -55,10 +56,22 @@ namespace Suora
 	{
 		m_Texture = AssetManager::GetAsset<Texture2D>(id);
 	}
+	Icon::Icon()
+	{
+		m_Texture = nullptr;
+	}
 
 	Texture* Icon::GetTexture() const
 	{
+		if (!m_Texture)
+		{
+			return nullptr;
+		}
 		return m_Texture->GetTexture();
+	}
+	Texture2D* Icon::GetTexture2D() const
+	{
+		return m_Texture;
 	}
 
 	Icon::operator Texture*() const

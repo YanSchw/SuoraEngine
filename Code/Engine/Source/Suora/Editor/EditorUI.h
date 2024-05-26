@@ -412,6 +412,7 @@ namespace Suora
 	private:
 		inline static uint32_t s_WasInputConsumed = 0;
 	public:
+		static bool GetKeyDownOrHold(KeyCode key);
 		static void ConsumeInput();
 		static bool WasInputConsumed();
 
@@ -507,20 +508,20 @@ namespace Suora
 					TextFieldCharBuffer.RemoveAt(i);
 				}
 
-				if (NativeInput::GetKeyDown(Key::Backspace) && Str->length() > 0 && Cursor > 0 && offset == 0) Str->erase(--Cursor, 1);
-				else if (NativeInput::GetKeyDown(Key::Backspace) && Str->length() > 0 && offset > 0) { EraseCursorSelection(begin, offset); }
+				if (EditorUI::GetKeyDownOrHold(Key::Backspace) && Str->length() > 0 && Cursor > 0 && offset == 0) Str->erase(--Cursor, 1);
+				else if (EditorUI::GetKeyDownOrHold(Key::Backspace) && Str->length() > 0 && offset > 0) { EraseCursorSelection(begin, offset); }
 
-				if (NativeInput::GetKeyDown(Key::Delete) && Str->length() > 0 && Cursor < Str->length() && offset == 0) Str->erase(Cursor, 1);
-				else if (NativeInput::GetKeyDown(Key::Delete) && Str->length() > 0 && Cursor < Str->length() && offset > 0) { EraseCursorSelection(begin, offset); }
+				if (EditorUI::GetKeyDownOrHold(Key::Delete) && Str->length() > 0 && Cursor < Str->length() && offset == 0) Str->erase(Cursor, 1);
+				else if (EditorUI::GetKeyDownOrHold(Key::Delete) && Str->length() > 0 && Cursor < Str->length() && offset > 0) { EraseCursorSelection(begin, offset); }
 
 				EditorUI::DrawRect(x, y, width, height, 4, EditorPreferences::Get()->UiHighlightColor);
 				EditorUI::DrawRect(x + 1, y + 1, width - 2, height - 2, 4, Color(0.0f, 0.0f, 0.0f, 1.0f));
 				Text(*Str, Font::Instance, x + 5.0f, y, width - 6.0f, height, m_TextSize, Vec2(-1.0f, 0.0f), Color(1));
 
-				if (NativeInput::GetKeyDown(Key::Left) && !NativeInput::GetKey(Key::LeftControl)) { Cursor--; CursorSelectionOffset = 0; if (Cursor < 0) Cursor = 0; }
-				else if (NativeInput::GetKeyDown(Key::Left) && NativeInput::GetKey(Key::LeftControl)) { CursorSelectionOffset--; if (Cursor + CursorSelectionOffset < 0) CursorSelectionOffset++; }
-				if (NativeInput::GetKeyDown(Key::Right) && !NativeInput::GetKey(Key::LeftControl)) { Cursor++; CursorSelectionOffset = 0; if (Cursor > Str->length()) Cursor = Str->length(); }
-				else if (NativeInput::GetKeyDown(Key::Right) && NativeInput::GetKey(Key::LeftControl)) { CursorSelectionOffset++; if (Cursor + CursorSelectionOffset > Str->length()) CursorSelectionOffset--; }
+				if (EditorUI::GetKeyDownOrHold(Key::Left) && !NativeInput::GetKey(Key::LeftControl)) { Cursor--; CursorSelectionOffset = 0; if (Cursor < 0) Cursor = 0; }
+				else if (EditorUI::GetKeyDownOrHold(Key::Left) && NativeInput::GetKey(Key::LeftControl)) { CursorSelectionOffset--; if (Cursor + CursorSelectionOffset < 0) CursorSelectionOffset++; }
+				if (EditorUI::GetKeyDownOrHold(Key::Right) && !NativeInput::GetKey(Key::LeftControl)) { Cursor++; CursorSelectionOffset = 0; if (Cursor > Str->length()) Cursor = Str->length(); }
+				else if (EditorUI::GetKeyDownOrHold(Key::Right) && NativeInput::GetKey(Key::LeftControl)) { CursorSelectionOffset++; if (Cursor + CursorSelectionOffset > Str->length()) CursorSelectionOffset--; }
 
 				{ // Cursor
 					String cursor = *Str; cursor.append(" ");
@@ -633,6 +634,8 @@ namespace Suora
 			ContextMenuElement() = default;
 			ContextMenuElement(const std::vector<ContextMenuElement>& subElements, const std::function<void(void)>& lambda, const String& label, Texture2D* image)
 				: SubElements(subElements), Lambda(lambda), Label(label), Image(image) { }
+			ContextMenuElement(const std::vector<ContextMenuElement>& subElements, const std::function<void(void)>& lambda, const String& label, const Icon& icon)
+				: SubElements(subElements), Lambda(lambda), Label(label), Image(icon.GetTexture2D()) { }
 		};
 		static void CreateContextMenu(const std::vector<ContextMenuElement>& elements);
 		static void CreateContextMenu(const std::vector<ContextMenuElement>& elements, float x, float y);

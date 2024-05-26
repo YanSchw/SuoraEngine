@@ -36,7 +36,7 @@ namespace Suora
 		engine->m_RootPath = engine->m_RootPath.parent_path();
 		SUORA_LOG(LogCategory::Core, LogLevel::Info, "Found Engine/Project RootPath in: {0}", engine->m_RootPath.string());
 
-		AssetManager::Initialize(FilePath(engine->m_RootPath).append("Content"));
+		AssetManager::Initialize(Path(engine->m_RootPath) / "Content");
 
 		// Dark magic.....
 		Class::None.GetClassDefaultObject(true);

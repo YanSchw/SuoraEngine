@@ -15,14 +15,16 @@ namespace Suora
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
+	Application::Application(const ApplicationParams& params)
 	{
-		PrintSuoraEngineAsciiArt();
-
-		m_Engine = Engine::Create();
+		m_Params = params;
 
 		SUORA_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
+
+		PrintSuoraEngineAsciiArt();
+
+		m_Engine = Engine::Create();
 
 		NativeInput::Init();
 
@@ -53,7 +55,7 @@ namespace Suora
 	}
 	bool Application::IsEditor() const
 	{
-		return false;
+		return m_Params.IsEditor;
 	}
 
 	void Application::OnEvent(Event& e)

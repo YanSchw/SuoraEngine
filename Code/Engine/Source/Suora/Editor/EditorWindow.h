@@ -89,6 +89,8 @@ namespace Suora
 		uint32_t m_ConsoleErrors = 0;
 
 		inline static EditorWindow* s_Current = nullptr;
+
+		friend class MajorTab;
 	};
 
 }
