@@ -32,6 +32,8 @@ static Texture2D* ArrowDown = nullptr;
 static Texture2D* ArrowRight = nullptr;
 static Suora::Ref<Shader> ColorCircleShader;
 
+static Suora::Map<KeyCode, int32_t> s_KeyDownOrHoldCounter;
+
 namespace Suora
 {
 
@@ -97,6 +99,19 @@ namespace Suora
 			s_Overlays[i]->BackendRender(deltaTime);
 			s_Overlays[i]->m_Lifetime++;
 		}
+
+		for (auto It : s_KeyDownOrHoldCounter)
+		{
+			if (NativeInput::GetKey(It.first))
+			{
+				s_KeyDownOrHoldCounter[It.first]++;
+			}
+			else
+			{
+				s_KeyDownOrHoldCounter.Remove(It.first);
+				break;
+			}
+		}
 		
 		AssetPreview::Tick(deltaTime);
 	}
@@ -113,6 +128,25 @@ namespace Suora
 	const Vec2& EditorUI::GetInputOffset()
 	{
 		return mouseOffset;
+	}
+
+	bool EditorUI::GetKeyDownOrHold(KeyCode key)
+	{
+		if (NativeInput::GetKeyDown(key))
+		{
+			s_KeyDownOrHoldCounter[key] = 0;
+			return true;
+		}
+		else
+		{
+			if (s_KeyDownOrHoldCounter.ContainsKey(key))
+			{
+				const bool helt = s_KeyDownOrHoldCounter.At(key) >= 128;
+				if (helt) s_KeyDownOrHoldCounter[key] -= 6;
+				return helt;
+			}
+			return false;
+		}
 	}
 
 	void EditorUI::ConsumeInput()
