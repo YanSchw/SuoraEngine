@@ -33,6 +33,10 @@ namespace Suora
 		{
 			return m_Map.at(key);
 		}
+		V GetOrDefault(const K& key, V&& InDefault)
+		{
+			return ContainsKey(key) ? At(key) : InDefault;
+		}
 
 		void Clear()
 		{
