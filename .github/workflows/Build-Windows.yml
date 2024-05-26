@@ -2,9 +2,9 @@ name: Build-Windows
 
 on:
   push:
-    branches: [ "main", "*-dev" ]
+    branches: [ "main", "*dev*" ]
   pull_request:
-    branches: [ "main", "*-dev" ]
+    branches: [ "main", "*dev*" ]
 
 env:
   # Path to the solution file relative to the root of the project.
