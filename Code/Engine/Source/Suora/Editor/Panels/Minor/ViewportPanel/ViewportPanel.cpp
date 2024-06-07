@@ -164,9 +164,9 @@ namespace Suora
 		DrawDebugShapes(GetMajorTab()->IsA<NodeClassEditor>() ? GetMajorTab()->As<NodeClassEditor>()->GetEditorWorld() : nullptr, GetEditorCamera(), &i, &IDs);
 
 		int32_t id = m_PickingBuffer->ReadPixel_R32I(pos);
-		SuoraWarn("MousePick MeshID: {0}", std::to_string(id));
 
 		Node* selection = IDs.ContainsKey(id) ? IDs[id] : nullptr;
+		SuoraLog("Selected Node: {0}", selection ? selection->GetName() : "None");
 		Node* actor = selection ? selection->GetActorNode() : nullptr;
 
 		Node* currentSelection = GetMajorTab()->IsA<NodeClassEditor>() ? GetMajorTab()->As<NodeClassEditor>()->m_SelectedObject->As<Node>() : nullptr;
