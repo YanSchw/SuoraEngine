@@ -369,6 +369,7 @@ namespace Suora
 				mousePickReady = false;
 				EditorUI::CreateContextMenu({ EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmos = !m_DrawDebugGizmos; }, "Show Gizmos", m_DrawDebugGizmos ? Icon::Tickmark : Icon::None),
 											  EditorUI::ContextMenuElement({}, [&]() { m_ShowGrid = !m_ShowGrid; }, "Show Grid", m_ShowGrid ? Icon::Tickmark : Icon::None),
+											  EditorUI::ContextMenuElement({}, [&]() { m_ShowOrigin = !m_ShowOrigin; }, "Show Origin", m_ShowOrigin ? Icon::Tickmark : Icon::None),
 											  EditorUI::ContextMenuElement({}, [&]() { m_DrawDebugGizmosDuringPlay = !m_DrawDebugGizmosDuringPlay; }, "Show Gizmos during Play", m_DrawDebugGizmosDuringPlay ? Icon::Tickmark : Icon::None),
 											  EditorUI::ContextMenuElement({}, [&]() { m_DrawWireframe = !m_DrawWireframe; }, "Draw Wireframe", m_DrawWireframe ? Icon::Tickmark : Icon::None) }, 140.0f, GetHeight() - 35.0f);
 			}

@@ -38,6 +38,13 @@ namespace Suora
 		virtual void DrawDebugGizmos(World* world, CameraNode* camera, int* pickingID, Map<int, Node*>* pickingMap, bool isHandlingMousePick)  override;
 	};
 
+	class ViewportOriginGizmo : public ViewportDebugGizmo
+	{
+		SUORA_CLASS(5473898564395);
+	public:
+		virtual void DrawDebugGizmos(World* world, CameraNode* camera, int* pickingID, Map<int, Node*>* pickingMap, bool isHandlingMousePick)  override;
+	};
+
 	class ViewportShapeGizmos : public ViewportDebugGizmo
 	{
 		SUORA_CLASS(578964325349);
