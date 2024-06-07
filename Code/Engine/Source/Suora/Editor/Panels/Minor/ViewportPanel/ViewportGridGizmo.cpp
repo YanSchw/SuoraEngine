@@ -28,11 +28,13 @@ namespace Suora
 
 		for (int32_t i = x - 50; i <= x + 50; i++)
 		{
-			Renderer3D::DrawLine3D(camera, Vec3(i, 0, z - 50), Vec3(i, 0, z + 50), color);
+			if (!GetViewport()->m_ShowOrigin || i != 0)
+				Renderer3D::DrawLine3D(camera, Vec3(i, 0, z - 50), Vec3(i, 0, z + 50), color);
 		}
 		for (int32_t i = z - 50; i <= z + 50; i++)
 		{
-			Renderer3D::DrawLine3D(camera, Vec3(x - 50, 0, i), Vec3(x + 50, 0, i), color);
+			if (!GetViewport()->m_ShowOrigin || i != 0)
+				Renderer3D::DrawLine3D(camera, Vec3(x - 50, 0, i), Vec3(x + 50, 0, i), color);
 		}
 	}
 

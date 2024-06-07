@@ -87,6 +87,7 @@ namespace Suora
 		bool m_DrawDebugGizmos = false;
 		bool m_DrawDebugGizmosDuringPlay = false;
 		bool m_ShowGrid = true;
+		bool m_ShowOrigin = true;
 		bool m_DrawWireframe = false;
 
 		Array<Ref<ViewportDebugGizmo>> m_ViewportDebugGizmos;
