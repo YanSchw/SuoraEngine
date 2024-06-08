@@ -57,7 +57,7 @@ namespace Suora
 		~ViewportPanel();
 
 	private:
-		Ref<Framebuffer> m_GizmoBuffer, m_GizmoBufferSmooth, m_PickingBuffer, m_TranformGizmoPickingBuffer;
+		Ref<Framebuffer> m_GizmoBuffer, m_PickingBuffer, m_TranformGizmoPickingBuffer;
 
 		int TransformGizmo_Tool = 1;
 		bool TransformGizmo_Local = false;

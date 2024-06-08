@@ -52,7 +52,6 @@ namespace Suora
 			m_ViewportFramebuffer = Framebuffer::Create(spec);
 
 			m_GizmoBuffer = Framebuffer::Create(spec);
-			m_GizmoBufferSmooth = Framebuffer::Create(spec);
 		} 
 		{
 			FramebufferSpecification spec;
@@ -254,7 +253,6 @@ namespace Suora
 
 
 		if (m_GizmoBuffer->GetSize() != m_Framebuffer->GetSize() * 2) m_GizmoBuffer->Resize(m_Framebuffer->GetSize() * 2);
-		if (m_GizmoBufferSmooth->GetSize() != m_Framebuffer->GetSize() * 2) m_GizmoBufferSmooth->Resize(m_Framebuffer->GetSize() * 2);
 		m_GizmoBuffer->Bind();
 		RenderCommand::SetViewport(0, 0, GetWidth(), GetHeight());
 		RenderCommand::SetClearColor(Color(0.0f));
@@ -467,17 +465,9 @@ namespace Suora
 		if (mousePickReady && allowEditorCameraUpdate)
 			m_EditorCamera->UpdateCamera(deltaTime, (IsInputValid() && IsInputMode(EditorInputEvent::None)) || IsInputMode(EditorInputEvent::Viewport_EditorCamera));
 
-		// Gizmo Buffer
-		/*m_GizmoBuffer->Unbind();
-		static Ref<Shader> FXAA = Shader::Create(AssetManager::GetEngineAssetPath() + "/EngineContent/Shaders/PostProccess/FXAA.glsl");
-		FXAA->Bind();
-		FXAA->SetFloat2("u_Resolution", m_GizmoBufferSmooth->GetSize());
-		RenderPipeline::RenderFramebufferIntoFramebuffer(*m_GizmoBuffer, *m_GizmoBufferSmooth, *FXAA, glm::ivec4(0, 0, m_GizmoBufferSmooth->GetSize()));
-		FXAA->Unbind();*/
-
 		m_Framebuffer->Bind();
 		if (Engine::Get()->GetRenderPipeline()->IsA<RenderPipeline>())
-			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_GizmoBuffer/*Smooth*/, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, m_Framebuffer->GetSize()), "u_Texture", 0, false);
+			RenderPipeline::RenderFramebufferIntoFramebuffer(*m_GizmoBuffer, *m_Framebuffer, *RenderPipeline::GetFullscreenPassShaderStatic(), glm::ivec4(0, 0, m_Framebuffer->GetSize()), "u_Texture", 0, false);
 
 
 		RenderCommand::SetDepthTest(false);
