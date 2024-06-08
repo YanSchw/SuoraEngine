@@ -324,7 +324,7 @@ namespace Suora
 			}
 		}
 		
-		node->SetParent(this);
+		node->SetParent(this, false);
 
 		if (IsInitialized())
 		{
@@ -524,6 +524,11 @@ namespace Suora
 
 		if (Node3D* transform = GetTransform())
 		{
+			if (!keepWorldTransform && transform->GetParentTransform())
+			{
+				transform->m_WorldTransformMatrix = transform->GetParentTransform()->m_WorldTransformMatrix * transform->m_WorldTransformMatrix;
+			}
+
 			transform->RecalculateTransformMatrix();
 		}
 	}

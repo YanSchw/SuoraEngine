@@ -239,7 +239,7 @@ namespace Suora
 	};
 
 
-	/** Node3D is a Node with a 3-Dimentional Transform */
+	/** Node3D is a Node with a 3-Dimensional Transform */
 	class Node3D : public Node
 	{
 		SUORA_CLASS(4863437);
