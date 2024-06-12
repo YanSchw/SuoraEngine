@@ -945,7 +945,7 @@ namespace Suora
 	{
 		if (Button("", x, y, width, height, params))
 		{
-			CreateOverlay<ColorPickerOverlay>(x + GetInputOffset().x, y + GetInputOffset().y, 250, 400, color, OnColorChange, OnColorReset);
+			CreateOverlay<ColorPickerOverlay>(x + GetInputOffset().x, y + GetInputOffset().y, 650, 450, color, OnColorChange, OnColorReset);
 		}
 		EditorUI::DrawRect(x + 5, y + 5, width - 10, height - 10, params.ButtonRoundness, *color);
 	}

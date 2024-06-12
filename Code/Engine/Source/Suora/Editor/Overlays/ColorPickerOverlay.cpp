@@ -28,27 +28,31 @@ namespace Suora
 			Dispose();
 			return;
 		}
-		EditorUI::DrawRect(x + 50, y + 180, width - 100, height - 250, 4, *color);
+		EditorUI::DrawRect(x + 25, y + height - 255, 200, 200, 4, *color);
 
-		RenderCommand::SetViewport(x + 50, y + 180, width - 100, height - 250);
+		RenderCommand::SetViewport(x + 25, y + height - 255, 200, 200);
 		RenderPipeline::__GetFullscreenQuad()->Bind();
 		s_ColorCircleShader->Bind();
 		RenderCommand::DrawIndexed(RenderPipeline::__GetFullscreenQuad());
 
 		Color temp = *color;
 
-		EditorUI::Text("Red", Font::Instance, x + 5, y + 140, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-		EditorUI::SliderFloat(&color->r, 0.0f, 1.0f, x + 45, y + 140, width - 130, 20);
-		EditorUI::DragFloat(&color->r, x + 45 + (width - 130), y + 140, width - (width - 130) - 45 - 5, 20);
-		EditorUI::Text("Green", Font::Instance, x + 5, y + 110, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-		EditorUI::SliderFloat(&color->g, 0.0f, 1.0f, x + 45, y + 110, width - 130, 20);
-		EditorUI::DragFloat(&color->g, x + 45 + (width - 130), y + 110, width - (width - 130) - 45 - 5, 20);
-		EditorUI::Text("Blue", Font::Instance, x + 5, y + 80, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-		EditorUI::SliderFloat(&color->b, 0.0f, 1.0f, x + 45, y + 80, width - 130, 20);
-		EditorUI::DragFloat(&color->b, x + 45 + (width - 130), y + 80, width - (width - 130) - 45 - 5, 20);
+		EditorUI::Text("R", Font::Instance, x + 15, y + 140, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
+		EditorUI::SliderFloat(&color->r, 0.0f, 1.0f, x + 45, y + 140, 225.0f, 20);
+		EditorUI::DragFloat(&color->r, x + 45 + 225.0f, y + 140, 125.0f, 20);
+
+		EditorUI::Text("G", Font::Instance, x + 15, y + 110, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
+		EditorUI::SliderFloat(&color->g, 0.0f, 1.0f, x + 45, y + 110, 225.0f, 20);
+		EditorUI::DragFloat(&color->g, x + 45 + 225.0f, y + 110, 125.0f, 20);
+
+		EditorUI::Text("B", Font::Instance, x + 15, y + 80, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
+		EditorUI::SliderFloat(&color->b, 0.0f, 1.0f, x + 45, y + 80, 225.0f, 20);
+		EditorUI::DragFloat(&color->b, x + 45 + 225.0f, y + 80, 125.0f, 20);
+		
+		
 		EditorUI::Text("Alpha", Font::Instance, x + 5, y + 50, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-		EditorUI::SliderFloat(&color->a, 0.0f, 1.0f, x + 45, y + 50, width - 130, 20);
-		EditorUI::DragFloat(&color->a, x + 45 + (width - 130), y + 50, width - (width - 130) - 45 - 5, 20);
+		EditorUI::SliderFloat(&color->a, 0.0f, 1.0f, x + 45, y + 50, 225.0f, 20);
+		EditorUI::DragFloat(&color->a, x + 45 + 225.0f, y + 50, 125.0f, 20);
 
 		// Clamp values
 		color->r = Math::Clamp(color->r, 0.0f, 1.0f);
@@ -56,10 +60,15 @@ namespace Suora
 		color->b = Math::Clamp(color->b, 0.0f, 1.0f);
 		color->a = Math::Clamp(color->a, 0.0f, 1.0f);
 
-		if (EditorUI::Button("Cancel", x + 20, y + 20, width - 100, 25))
+		if (EditorUI::Button("Cancel", x + width - 150, y + 20, 125, 25))
 		{
 			*color = originalColor;
 			OnColorReset();
+			Dispose();
+			return;
+		}
+		if (EditorUI::Button("Okay", x + width - 300, y + 20, 125, 25, EditorUI::ButtonParams::Highlight()))
+		{
 			Dispose();
 			return;
 		}

@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <inttypes.h>
 #include <random>
+#include "VectorUtils.h"
 
 namespace Suora
 {
@@ -80,6 +81,9 @@ namespace Suora
 			std::uniform_real_distribution<float> dt(0.0f, 1.0f);
 			return dt(mt);
 		}
+
+		static Color ConvertRGB2HSV(const Color& InRGB);
+		static Color ConvertHSV2RGB(const Color& InHSV);
 
 	};
 
