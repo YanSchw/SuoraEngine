@@ -22,20 +22,17 @@ namespace Suora
 	void ColorPickerOverlay::Render(float deltaTime)
 	{
 		DragableOverlay::Render(deltaTime);
+		SuoraVerify(color);
 		if (WasMousePressedOutsideOfOverlay())
 		{
 			OnColorChange();
 			Dispose();
 			return;
 		}
-		EditorUI::DrawRect(x + 25, y + height - 255, 200, 200, 4, *color);
-
-		RenderCommand::SetViewport(x + 25, y + height - 255, 200, 200);
-		RenderPipeline::__GetFullscreenQuad()->Bind();
-		s_ColorCircleShader->Bind();
-		RenderCommand::DrawIndexed(RenderPipeline::__GetFullscreenQuad());
 
 		Color temp = *color;
+
+		RenderColorCircle();
 
 		EditorUI::Text("R", Font::Instance, x + 15, y + 140, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
 		EditorUI::SliderFloat(&color->r, 0.0f, 1.0f, x + 45, y + 140, 225.0f, 20);
@@ -76,6 +73,36 @@ namespace Suora
 		if (temp != *color)
 		{
 			OnColorChange();
+		}
+	}
+
+	void ColorPickerOverlay::RenderColorCircle()
+	{
+		// hsv.x:  0.0 - 360.0
+		const Color hsv = Math::ConvertRGB2HSV(*color);
+		float theta = hsv.x * Math::PI / 180.0;
+		float dx = 100.0f * hsv.y * glm::cos(theta);
+		float dy = 100.0f * hsv.y * glm::sin(theta);
+
+		EditorUI::DrawRect(x + 25, y + height - 255, 200, 200, 4, *color);
+
+		RenderCommand::SetViewport(x + 25, y + height - 255, 200, 200);
+		RenderPipeline::__GetFullscreenQuad()->Bind();
+		s_ColorCircleShader->Bind();
+		RenderCommand::DrawIndexed(RenderPipeline::__GetFullscreenQuad());
+
+		const uint32 circleCenterX = x + 25 + 100;
+		const uint32 circleCenterY = y + height - 255 + 100;
+		EditorUI::DrawTexturedRect(Icon::Actor, circleCenterX - dx - 12.5f, circleCenterY - dy - 12.5f, 25.0f, 25.0f, 0.0f, Color(1.0f));
+
+		const float distanceToCenter = glm::distance(Vec2((float)circleCenterX, (float)circleCenterY), EditorUI::GetInput());
+		if (distanceToCenter < 100.0f && NativeInput::GetMouseButton(Mouse::ButtonLeft))
+		{
+			const Vec2 normalizedMousePosInCircle = Vec2(EditorUI::GetInput().x - circleCenterX, EditorUI::GetInput().y - circleCenterY) / 100.0f;
+
+			float ang = glm::atan(normalizedMousePosInCircle.y, normalizedMousePosInCircle.x); // <-pi,+pi>
+			float angDeg = Math::Remap(ang, -Math::PI, +Math::PI, 0.0f, 360.0f);
+			*color = Math::ConvertHSV2RGB(Color(angDeg, distanceToCenter / 100.0f, hsv.z, color->a));
 		}
 	}
 

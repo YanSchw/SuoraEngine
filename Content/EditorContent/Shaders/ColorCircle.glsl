@@ -47,7 +47,7 @@ void main(void)
 	if (distance(vec2(0.0), pos) > 1) discard;
 
 	float ang = atan(pos.y, pos.x); // <-pi,+pi>
-	float angDeg = Remap(ang, -3.1415, +3.1415, 0.0, 1.0);
+	float angPercent = Remap(ang, -3.1415, +3.1415, 0.0, 1.0);
 
-	out_Color = vec4(hsv2rgb(vec3(angDeg, distance(vec2(0.0), pos), 1.0)), 1.0);
+	out_Color = vec4(hsv2rgb(vec3(angPercent, distance(vec2(0.0), pos), 1.0)), 1.0);
 }
