@@ -14,6 +14,7 @@
 #include "Suora/Renderer/RenderPipeline.h"
 #include "Suora/Renderer/RenderCommand.h"
 #include "Panels/Minor/ContentBrowser.h"
+#include "Suora/Editor/Overlays/SelectionOverlay.h"
 #include "Suora/GameFramework/World.h"
 #include "Suora/GameFramework/InputModule.h"
 #include "Suora/GameFramework/Nodes/MeshNode.h"

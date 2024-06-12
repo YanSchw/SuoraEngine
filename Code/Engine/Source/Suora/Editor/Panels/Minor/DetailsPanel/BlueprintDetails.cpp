@@ -1,6 +1,7 @@
 #include "Precompiled.h"
 #include "BlueprintDetails.h"
 
+#include "Suora/Editor/Overlays/SelectionOverlay.h"
 #include "Suora/Editor/Panels/Major/NodeClassEditor.h"
 #include "Suora/Assets/Blueprint.h"
 #include "Suora/NodeScript/Scripting/ScriptVM.h"
@@ -85,12 +86,12 @@ namespace Suora
 					Label = Class::FromString(var.m_VarParams).GetClassName();
 				if (EditorUI::Button(Label, GetDetailWidth() * GetSeperator() + 50.0f, y + 5.0f, 120.0f, 25.0f, typeParams))
 				{
-					EditorUI::SelectionOverlay* overlay = EditorUI::CreateOverlay<EditorUI::SelectionOverlay>(NativeInput::GetMousePosition().x, GetMajorTab()->GetEditorWindow()->GetWindow()->GetHeight() - NativeInput::GetMousePosition().y - 400.0f, 400.0f, 400.0f);
+					SelectionOverlay* overlay = EditorUI::CreateOverlay<SelectionOverlay>(NativeInput::GetMousePosition().x, GetMajorTab()->GetEditorWindow()->GetWindow()->GetHeight() - NativeInput::GetMousePosition().y - 400.0f, 400.0f, 400.0f);
 					for (int64_t type = (int64_t)ScriptDataType::None + 1; type < (int64_t)ScriptDataType::COUNT; type++)
 					{
 						if (type == (int64_t)ScriptDataType::ObjectPtr) continue;
 						ScriptVar* VAR = &var;
-						overlay->m_Entries.Add(EditorUI::SelectionOverlay::SelectionOverlayEntry(ScriptDataTypeToLabel((ScriptDataType)type), {}, [VAR, type]()
+						overlay->m_Entries.Add(SelectionOverlay::SelectionOverlayEntry(ScriptDataTypeToLabel((ScriptDataType)type), {}, [VAR, type]()
 							{
 								VAR->m_Type = (ScriptDataType)type;
 							}));
@@ -99,12 +100,12 @@ namespace Suora
 					for (Class cls : classes)
 					{
 						ScriptVar* VAR = &var;
-						overlay->m_Entries.Add(EditorUI::SelectionOverlay::SelectionOverlayEntry(cls.GetClassName() + " Pointer", {}, [VAR, cls]()
+						overlay->m_Entries.Add(SelectionOverlay::SelectionOverlayEntry(cls.GetClassName() + " Pointer", {}, [VAR, cls]()
 							{
 								VAR->m_Type = ScriptDataType::ObjectPtr;
 								VAR->m_VarParams = cls.ToString();
 							}));
-						overlay->m_Entries.Add(EditorUI::SelectionOverlay::SelectionOverlayEntry(cls.GetClassName() + " Class", {}, [VAR, cls]()
+						overlay->m_Entries.Add(SelectionOverlay::SelectionOverlayEntry(cls.GetClassName() + " Class", {}, [VAR, cls]()
 							{
 								VAR->m_Type = ScriptDataType::Class;
 								VAR->m_VarParams = cls.ToString();
