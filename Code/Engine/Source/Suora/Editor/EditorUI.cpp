@@ -552,8 +552,8 @@ namespace Suora
 
 	void EditorUI::SliderFloat(float* f, float min, float max, float x, float y, float width, float height)
 	{
-		if (max <= min) SUORA_ASSERT(false, "EditorUI Slider -> Assert: MIN has to be lower than MAX!");
-		bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height;
+		SUORA_ASSERT(min < max, "EditorUI::SliderFloat(): MIN has to be lower than MAX!");
+		const bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height;
 		if (Hovering) SetCursor(Cursor::HorizontalResize);
 
 		if (Hovering && NativeInput::GetMouseButton(Mouse::ButtonLeft) && CurrentWindow->m_InputEvent == EditorInputEvent::None)
