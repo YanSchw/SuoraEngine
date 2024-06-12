@@ -76,6 +76,44 @@ namespace Suora
 		}
 	}
 
+	void ColorPickerOverlay::RenderScaleSlider(int32 mode)
+	{
+		RenderCommand::SetViewport(x + 215 + 35 * mode, y + height - 255, 20, 200);
+		RenderPipeline::__GetFullscreenQuad()->Bind();
+		s_ColorCircleShader->Bind();
+		s_ColorCircleShader->SetInt("u_Mode", mode);
+		s_ColorCircleShader->SetFloat3("u_RgbColor", Vec3(*color));
+		RenderCommand::DrawIndexed(RenderPipeline::__GetFullscreenQuad());
+
+		float selectYPosPercent = 0.0f;
+		switch (mode)
+		{
+		case 1: selectYPosPercent = Math::ConvertRGB2HSV(*color).x / 360.0f; break;
+		case 2: selectYPosPercent = Math::ConvertRGB2HSV(*color).y; break;
+		case 3: selectYPosPercent = Math::ConvertRGB2HSV(*color).z; break;
+		default: SuoraVerify(false); break;
+		}
+
+		EditorUI::DrawRect(x + 215 + 35 * mode - 2, y + height - 255 + 200.0f * selectYPosPercent, 24.0f, 2.0f, 0.0f, Color(1.0f));
+
+		EditorUI::ButtonParams Params = EditorUI::ButtonParams::Invisible();
+		Params.OverrideActivationEvent = true;
+		Params.OverrittenActivationEvent = []() { return NativeInput::GetMouseButton(Mouse::ButtonLeft); };
+		if (EditorUI::Button("", x + 215 + 35 * mode, y + height - 255, 20, 200, Params))
+		{
+			float percent = (EditorUI::GetInput().y - (y + height - 255)) / 200.0f;
+			Color hsv = Math::ConvertRGB2HSV(*color);
+			switch (mode)
+			{
+			case 1: hsv.x = percent * 360.0f; break;
+			case 2: hsv.y = percent; break;
+			case 3: hsv.z = percent; break;
+			default: SuoraVerify(false); break;
+			}
+			*color = Math::ConvertHSV2RGB(hsv);
+		}
+	}
+
 	void ColorPickerOverlay::RenderColorCircle()
 	{
 		// hsv.x:  0.0 - 360.0
@@ -84,11 +122,11 @@ namespace Suora
 		float dx = 100.0f * hsv.y * glm::cos(theta);
 		float dy = 100.0f * hsv.y * glm::sin(theta);
 
-		EditorUI::DrawRect(x + 25, y + height - 255, 200, 200, 4, *color);
-
+		// Main Circle
 		RenderCommand::SetViewport(x + 25, y + height - 255, 200, 200);
 		RenderPipeline::__GetFullscreenQuad()->Bind();
 		s_ColorCircleShader->Bind();
+		s_ColorCircleShader->SetInt("u_Mode", 0);
 		RenderCommand::DrawIndexed(RenderPipeline::__GetFullscreenQuad());
 
 		const uint32 circleCenterX = x + 25 + 100;
@@ -104,6 +142,10 @@ namespace Suora
 			float angDeg = Math::Remap(ang, -Math::PI, +Math::PI, 0.0f, 360.0f);
 			*color = Math::ConvertHSV2RGB(Color(angDeg, distanceToCenter / 100.0f, hsv.z, color->a));
 		}
+
+		RenderScaleSlider(1);
+		RenderScaleSlider(2);
+		RenderScaleSlider(3);
 	}
 
 }

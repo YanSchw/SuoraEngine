@@ -17,6 +17,8 @@ void main(void)
 in vec2 UV;
 out vec4 out_Color;
 uniform sampler2D u_Texture;
+uniform int u_Mode;
+uniform vec3 u_RgbColor;
 
 // https://gist.github.com/983/e170a24ae8eba2cd174f
 vec3 rgb2hsv(vec3 c)
@@ -43,11 +45,32 @@ float Remap(float value, float in1, float in2, float out1, float out2)
 
 void main(void)
 {
-	vec2 pos = (UV * 2.0) - vec2(1.0);
-	if (distance(vec2(0.0), pos) > 1) discard;
+    if (u_Mode == 0)
+    {
+	    vec2 pos = (UV * 2.0) - vec2(1.0);
+	    if (distance(vec2(0.0), pos) > 1) discard;
 
-	float ang = atan(pos.y, pos.x); // <-pi,+pi>
-	float angPercent = Remap(ang, -3.1415, +3.1415, 0.0, 1.0);
+	    float ang = atan(pos.y, pos.x); // <-pi,+pi>
+	    float angPercent = Remap(ang, -3.1415, +3.1415, 0.0, 1.0);
 
-	out_Color = vec4(hsv2rgb(vec3(angPercent, distance(vec2(0.0), pos), 1.0)), 1.0);
+	    out_Color = vec4(hsv2rgb(vec3(angPercent, distance(vec2(0.0), pos), 1.0)), 1.0);
+    }
+    else if (u_Mode == 1)
+    {
+        vec3 hsv = rgb2hsv(u_RgbColor);
+        hsv.x = UV.y;
+	    out_Color = vec4(hsv2rgb(hsv), 1.0);
+    }
+    else if (u_Mode == 2)
+    {
+        vec3 hsv = rgb2hsv(u_RgbColor);
+        hsv.y = UV.y;
+	    out_Color = vec4(hsv2rgb(hsv), 1.0);
+    }
+    else if (u_Mode == 3)
+    {
+        vec3 hsv = rgb2hsv(u_RgbColor);
+        hsv.z = UV.y;
+	    out_Color = vec4(hsv2rgb(hsv), 1.0);
+    }
 }

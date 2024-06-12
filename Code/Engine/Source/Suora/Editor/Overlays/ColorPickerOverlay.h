@@ -14,6 +14,7 @@ namespace Suora
 
 		ColorPickerOverlay(Color* color, const std::function<void(void)>& onColorChange, const std::function<void(void)>& onColorReset);
 		void Render(float deltaTime) override;
+		void RenderScaleSlider(int32 mode);
 		void RenderColorCircle();
 	};
 
