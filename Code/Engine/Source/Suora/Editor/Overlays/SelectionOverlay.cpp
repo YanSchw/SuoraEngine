@@ -8,7 +8,6 @@ namespace Suora
 	{
 		s_SearchLabel = "";
 		RefreshEntries();
-		//EditorUI::_SetTextFieldStringPtr(&s_SearchLabel, x + 5.0f, y + height - 30.0f, width - 10.0f, 25.0f);
 	}
 
 	void SelectionOverlay::RefreshEntries()
@@ -54,7 +53,6 @@ namespace Suora
 				{
 					m_SearchCategoryClicked[entry->Label] = !m_SearchCategoryClicked[entry->Label];
 					m_SelectedItem = i;
-					//if (!NativeInput::GetKey(Key::Enter)) NativeInput::ConsumeInput();
 				}
 				{
 					EditorUI::ButtonParams _TxtParam = EditorUI::ButtonParams::Invisible();
@@ -171,19 +169,6 @@ namespace Suora
 		params.TextOrientation = Vec2(-0.95f, 0.0f);
 		float w = y + height - 40.0f;
 		int i = 0;
-		/*for (SelectionOverlayEntry& entry : m_DisplayEntries)
-		{
-			w -= 25.0f;
-			if (w + m_ScrollY <= y || w + m_ScrollY >= y + height - 40.0f) { i++; continue; }
-			params.ButtonColor = (m_SelectedItem == i) ? EditorPreferences::Get()->UiHighlightColor : EditorPreferences::Get()->UiBackgroundColor;
-			if (EditorUI::Button(entry.Label, x + 5.0f, w + m_ScrollY, width - 15.0f, 25.0f, params) || (NativeInput::GetKey(Key::Enter) && m_SelectedItem == i))
-			{
-				entry.Lambda();
-				Dispose();
-				if (!NativeInput::GetKey(Key::Enter)) NativeInput::ConsumeInput();
-			}
-			i++;
-		}*/
 		if (DrawSearchCategories(Categories, w, i, x, width - 15.0f)) return;
 		if (DrawSearchEntries(PlainEntries, w, i, x, width - 15.0f)) return;
 
