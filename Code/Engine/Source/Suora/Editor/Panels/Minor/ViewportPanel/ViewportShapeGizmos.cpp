@@ -120,22 +120,22 @@ namespace Suora
 
 	static void Draw3DCapsule(CameraNode* InCamera, CapsuleShapeNode* InNode)
 	{
+		const float HalfHeight = InNode->GetCapsuleHeight() / 2.0f;
 		Array<std::pair<Vec3, Vec3>> lines = GenerateSphereTop(InNode->GetCapsuleRadius());
 		for (auto& line : lines)
 		{
-			line.first.y  += InNode->GetCapsuleHeight() / 2.0f;
-			line.second.y += InNode->GetCapsuleHeight() / 2.0f;
+			line.first.y  += HalfHeight;
+			line.second.y += HalfHeight;
 		}
 		Array<std::pair<Vec3, Vec3>> lines2 = GenerateSphereTop(InNode->GetCapsuleRadius() * -1.0f);
 		for (auto& line : lines2)
 		{
-			line.first.y  -= InNode->GetCapsuleHeight() / 2.0f;
-			line.second.y -= InNode->GetCapsuleHeight() / 2.0f;
+			line.first.y  -= HalfHeight;
+			line.second.y -= HalfHeight;
 		}
 		lines += lines2;
 
 		// Connecting both half spheres
-		const float HalfHeight = InNode->GetCapsuleHeight() / 2.0f;
 		lines.Add({ Vec3(-InNode->GetCapsuleRadius(), -HalfHeight, 0), Vec3(-InNode->GetCapsuleRadius(), +HalfHeight, 0) });
 		lines.Add({ Vec3(+InNode->GetCapsuleRadius(), -HalfHeight, 0), Vec3(+InNode->GetCapsuleRadius(), +HalfHeight, 0) });
 		lines.Add({ Vec3(0, -HalfHeight, -InNode->GetCapsuleRadius()), Vec3(0, +HalfHeight, -InNode->GetCapsuleRadius()) });
@@ -171,28 +171,6 @@ namespace Suora
 		{
 			Draw3DCapsule(camera, capsule);
 		}
-
-		/*
-		RenderCommand::SetWireframeMode(true);
-		RenderCommand::SetWireframeThickness(3.0f);
-		
-		RenderCommand::SetWireframeMode(false);
-		
-		Array<CapsuleShapeNode*> capsules = world->FindNodesByClass<CapsuleShapeNode>();
-		for (CapsuleShapeNode* capsule : capsules)
-		{
-			Node3D tr;
-			tr.SetPosition(capsule->GetPosition());
-			tr.SetScale(Vec3(capsule->GetCapsuleRadius() * 2.0f, capsule->GetCapsuleHeight() / 2.0f, capsule->GetCapsuleRadius() * 2.0f));
-			Renderer3D::DrawMesh(camera, tr.GetTransformMatrix(), *AssetManager::GetAsset<Mesh>(SuoraID("77d60b2a-790a-42d6-9760-4b3cb3b853d5")), ViewportDebugGizmo::GizmoMaterial(isHandlingMousePick, pickingID, capsule->IsTrigger ? Vec3(0.3f, 1.0f, 0.4f) : Vec3(1.0f)), isHandlingMousePick ? MaterialType::ObjectID : MaterialType::Material);
-			if (isHandlingMousePick)
-			{
-				(*pickingMap)[*pickingID] = capsule;
-				(*pickingID)++;
-			}
-		}
-		RenderCommand::SetWireframeMode(false);
-		RenderCommand::SetWireframeThickness(1.0f);*/
 	}
 
 }
