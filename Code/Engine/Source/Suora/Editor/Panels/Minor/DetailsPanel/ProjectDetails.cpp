@@ -27,7 +27,6 @@ namespace Suora
 		y -= 35.0f;
 		if (EditorUI::CategoryShutter(1, "Game", 0, y, GetDetailWidth() - 100.0f, 35.0f, ShutterPanelParams()))
 		{
-			DrawSubclassOf((TSubclassOf*)&settings->m_GameInstanceClass, "GameInstanceClass", y, false);
 			DrawAsset((Asset**)(&settings->m_DefaultLevel), Level::StaticClass(), "DefaultLevel", y, false);
 			DrawAsset((Asset**)(&settings->m_ProjectIconTexture), Texture2D::StaticClass(), "ProjectIconTexture", y, false);
 		}

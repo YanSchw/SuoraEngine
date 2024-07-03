@@ -38,7 +38,6 @@ namespace Suora
 
 		GameInstance* GetGameInstance() const;
 		void CreateGameInstance();
-		void CreateGameInstance(const Class& cls);
 		void DisposeGameInstance();
 		RenderPipeline* GetRenderPipeline();
 		Physics::PhysicsEngine* GetPhysicsEngine() const;
