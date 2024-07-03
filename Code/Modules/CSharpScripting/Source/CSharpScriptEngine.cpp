@@ -89,9 +89,16 @@ namespace Suora
 
         if (IsEditor())
         {
-            // Compile Coral.Managed.dll
-            CSHARP_INFO("Compiling Coral.Managed.dll");
-            CompileCSProj(AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.csproj");
+            // Compile Coral.Managed.dll if not present
+            if (std::filesystem::exists(AssetManager::GetEngineAssetPath() + "/../Build/CSharp/Release/Coral.Managed.dll"))
+            {
+                CSHARP_INFO("Found Coral.Managed.dll! Recompile not necessary.");
+            }
+            else
+            {
+                CSHARP_INFO("Compiling Coral.Managed.dll");
+                CompileCSProj(AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.csproj");
+            }
 
             // Copy over runtimeconfig.json
             Platform::CopyDirectory(AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.runtimeconfig.json",
