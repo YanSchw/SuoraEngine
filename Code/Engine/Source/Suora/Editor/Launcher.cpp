@@ -131,6 +131,25 @@ namespace Suora
 			return;
 		}
 
+		/*** Display a SplashScreen */
+		{
+			m_IsInSplashScreen = true;
+			Ref<Texture> SplashImage = Texture::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/SplashImage.png");
+			if (GetWindow()->IsMaximized())
+			{
+				GetWindow()->Maximize();
+			}
+			GetWindow()->SetSize(SplashImage->GetWidth(), SplashImage->GetHeight() - 35 * EditorPreferences::Get()->UiScale);
+			GetWindow()->CenterWindow();
+			GetWindow()->SetCursor(Cursor::Default);
+			EditorUI::PushInput(0, 0, 0, 0);
+			RenderCommand::Clear();
+
+			EditorUI::DrawTexturedRect(SplashImage, 0, 0, SplashImage->GetWidth(), SplashImage->GetHeight(), 0, Color(1));
+			GetWindow()->OnUpdate();
+			EditorUI::DrawTexturedRect(SplashImage, 0, 0, SplashImage->GetWidth(), SplashImage->GetHeight(), 0, Color(1));
+		}
+
 		/*** Always Update the EnginePath of the ProjectSettings ***/
 		{
 			const String str = Platform::ReadFromFile(path);
@@ -357,6 +376,7 @@ namespace Suora
 				bool isNative = settings["Engine"]["m_IsNativeProject"].As<String>() == "true";
 
 				OpenProject(It, isNative);
+				return;
 			}
 			
 			EditorUI::Text(projectPath.stem().string(), Font::Instance, x + (GetWindow()->GetWidth() - x) * 0.1f + 20, y, (GetWindow()->GetWidth() - x) * 0.25f - 20, 60.0f * ui - 1, 28, Vec2(-1, 0), Color(1));
