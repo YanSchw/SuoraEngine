@@ -67,16 +67,10 @@ namespace Suora
     <ProjectReference Include=\"" + AssetManager::GetEngineAssetPath() + "/../Code/Modules/CSharpScripting/ThirdParty/Coral/Coral.Managed/Coral.Managed.csproj\">\n\
       <Project>{11178401-7DD7-FF37-4612-49B5B2914414}</Project>\n\
       <Name>Coral.Managed</Name>\n\
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>\n\
     </ProjectReference>\n\
     <ProjectReference Include=\"../../../Build/CSharp/Generated/Suora.Generated.csproj\">\n\
       <Name>Suora.Generated</Name>\n\
     </ProjectReference>\n\
-  </ItemGroup>\n\
-  <ItemGroup>\n\
-    <None Update=\"" + (AssetManager::GetEngineAssetPath() + "/../Build/CSharp/Release/Coral.Managed.dll") + "\">\n\
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>\n\
-    </None>\n\
   </ItemGroup>\n\
 </Project>\
 ";
