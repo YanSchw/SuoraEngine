@@ -174,9 +174,9 @@ namespace Suora
 #ifdef SUORA_PLATFORM_WINDOWS
 				std::filesystem::current_path(projectRootPath);
 				String cmdRunSuoraBuildTool = "call " + projectRootPath.string() + "/Scripts/SuoraBuildTool.exe";
-				system(cmdRunSuoraBuildTool.c_str());
+				Platform::CommandLine(cmdRunSuoraBuildTool.c_str());
 				String cmdGenerateSolution = "call " + projectRootPath.string() + "/Scripts/GenerateSolution.bat";
-				system(cmdGenerateSolution.c_str());
+				Platform::CommandLine(cmdGenerateSolution.c_str());
 
 				// open the Solution in VisualStudio
 				{
