@@ -36,20 +36,19 @@ namespace Suora
 
 		EditorUI::Text("R", Font::Instance, x + 15, y + 140, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
 		EditorUI::SliderFloat(&color->r, 0.0f, 1.0f, x + 45, y + 140, 225.0f, 20);
-		EditorUI::DragFloat(&color->r, x + 45 + 225.0f, y + 140, 125.0f, 20);
+		EditorUI::DragFloat(&color->r, x + 55 + 225.0f, y + 140, 125.0f, 20);
 
 		EditorUI::Text("G", Font::Instance, x + 15, y + 110, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
 		EditorUI::SliderFloat(&color->g, 0.0f, 1.0f, x + 45, y + 110, 225.0f, 20);
-		EditorUI::DragFloat(&color->g, x + 45 + 225.0f, y + 110, 125.0f, 20);
+		EditorUI::DragFloat(&color->g, x + 55 + 225.0f, y + 110, 125.0f, 20);
 
 		EditorUI::Text("B", Font::Instance, x + 15, y + 80, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
 		EditorUI::SliderFloat(&color->b, 0.0f, 1.0f, x + 45, y + 80, 225.0f, 20);
-		EditorUI::DragFloat(&color->b, x + 45 + 225.0f, y + 80, 125.0f, 20);
-		
-		
-		EditorUI::Text("Alpha", Font::Instance, x + 5, y + 50, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
+		EditorUI::DragFloat(&color->b, x + 55 + 225.0f, y + 80, 125.0f, 20);
+				
+		EditorUI::Text("A", Font::Instance, x + 5, y + 50, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
 		EditorUI::SliderFloat(&color->a, 0.0f, 1.0f, x + 45, y + 50, 225.0f, 20);
-		EditorUI::DragFloat(&color->a, x + 45 + 225.0f, y + 50, 125.0f, 20);
+		EditorUI::DragFloat(&color->a, x + 55 + 225.0f, y + 50, 125.0f, 20);
 
 		// Clamp values
 		color->r = Math::Clamp(color->r, 0.0f, 1.0f);
