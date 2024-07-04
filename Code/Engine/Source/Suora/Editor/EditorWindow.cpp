@@ -75,6 +75,12 @@ namespace Suora
 
 		if (!IsLauncher() && !m_WasEditorStartupAssetOpened)
 		{
+			GetWindow()->SetSize(1280, 720);
+			GetWindow()->CenterWindow();
+			GetWindow()->Maximize();
+			GetWindow()->OnUpdate();
+			GetWindow()->OnUpdate();
+
 			m_WasEditorStartupAssetOpened = true;
 			if (ProjectSettings::Get()->m_EditorStartupAsset)
 			{
@@ -126,6 +132,10 @@ namespace Suora
 		{
 			EditorUI::PushInput(NativeInput::GetMouseX(), GetWindow()->GetHeight() - NativeInput::GetMouseY(), 0.0f, 0.0f);
 			m_Launcher->Render(deltaTime);
+			if (m_Launcher->m_IsInSplashScreen)
+			{
+				return;
+			}
 		}
 		else
 		{

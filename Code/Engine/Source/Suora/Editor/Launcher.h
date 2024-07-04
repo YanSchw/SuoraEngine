@@ -54,6 +54,7 @@ namespace Suora
 		Ref<TemplateProject> m_SelectedProject;
 
 		bool m_SelectedContentOnlyTab = false;
+		bool m_IsInSplashScreen = false;
 		String m_ProjectName = "MyProject";
 		std::filesystem::path m_ProjectPath = std::filesystem::current_path();
 
