@@ -29,7 +29,6 @@ namespace Suora
 
 		float m_TargetFramerate = 60.0f;
 		bool m_EnableDeferredRendering = true;
-		SubclassOf<GameInstance> m_GameInstanceClass;
 		Level* m_DefaultLevel = nullptr;
 		Texture2D* m_ProjectIconTexture = nullptr;
 

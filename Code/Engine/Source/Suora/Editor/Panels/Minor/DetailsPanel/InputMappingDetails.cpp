@@ -1,6 +1,7 @@
 #include "Precompiled.h"
 #include "InputMappingDetails.h"
 
+#include "Suora/Editor/Overlays/SelectionOverlay.h"
 #include "Suora/GameFramework/InputModule.h"
 #include "Suora/Assets/Texture2D.h"
 
@@ -162,13 +163,13 @@ namespace Suora
 		params.ButtonColorHover = EditorPreferences::Get()->UiInputColor;
 		if (EditorUI::Button(dispatcher ? dispatcher->m_Label : "None", x, y + 5.0f, width, height - 10.0f, params))
 		{
-			EditorUI::SelectionOverlay* overlay = EditorUI::CreateOverlay<EditorUI::SelectionOverlay>(x + EditorUI::GetInputOffset().x - 300, y + EditorUI::GetInputOffset().y - 300, 400, 400);
+			SelectionOverlay* overlay = EditorUI::CreateOverlay<SelectionOverlay>(x + EditorUI::GetInputOffset().x - 300, y + EditorUI::GetInputOffset().y - 300, 400, 400);
 
 			for (auto& It : PlayerInputNode::s_RegisteredInputDispatchers)
 			{
 				if (It.second->m_ActionSpecifier == type)
 				{
-					overlay->m_Entries.Add(EditorUI::SelectionOverlay::SelectionOverlayEntry(It.first, {}, [&]() { dispatcher = It.second; }));
+					overlay->m_Entries.Add(SelectionOverlay::SelectionOverlayEntry(It.first, {}, [&]() { dispatcher = It.second; }));
 				}
 			}
 			overlay->RefreshEntries();

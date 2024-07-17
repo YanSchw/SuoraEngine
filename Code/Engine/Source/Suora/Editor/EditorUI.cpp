@@ -8,6 +8,8 @@
 #include "Suora/Assets/Asset.h"
 #include "Suora/Assets/AssetManager.h"
 #include "Overlays/DragableOverlay.h"
+#include "Overlays/SelectionOverlay.h"
+#include "Overlays/ColorPickerOverlay.h"
 #include "Suora/Renderer/Renderer3D.h"
 #include "Suora/Renderer/Shader.h"
 #include "Suora/Renderer/Framebuffer.h"
@@ -30,7 +32,6 @@ static Texture2D* CheckerboardTexture = nullptr;
 static Texture2D* DragFloatTexture = nullptr;
 static Texture2D* ArrowDown = nullptr;
 static Texture2D* ArrowRight = nullptr;
-static Suora::Ref<Shader> ColorCircleShader;
 
 static Suora::Map<KeyCode, int32_t> s_KeyDownOrHoldCounter;
 
@@ -49,7 +50,6 @@ namespace Suora
 		DragFloatTexture = AssetManager::GetAssetByName<Texture2D>("DragFloat.texture");
 		ArrowDown = AssetManager::GetAssetByName<Texture2D>("ArrowDown.texture");
 		ArrowRight = AssetManager::GetAssetByName<Texture2D>("ArrowRight.texture");
-		ColorCircleShader = Shader::Create(AssetManager::GetEngineAssetPath() + "/EditorContent/Shaders/ColorCircle.glsl");
 
 		{
 			FramebufferSpecification specs;
@@ -550,10 +550,10 @@ namespace Suora
 		EditorUI::DrawTexturedRect(DragFloatTexture->GetTexture(), x + width - height, y + height * 0.05f, height * 0.9f, height * 0.9f, 0, Color(1.0f, 1.0f, 1.0f, 0.5f));
 	}
 
-	inline void EditorUI::SliderFloat(float* f, float min, float max, float x, float y, float width, float height)
+	void EditorUI::SliderFloat(float* f, float min, float max, float x, float y, float width, float height)
 	{
-		if (max <= min) SUORA_ASSERT(false, "EditorUI Slider -> Assert: MIN has to be lower than MAX!");
-		bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height;
+		SUORA_ASSERT(min < max, "EditorUI::SliderFloat(): MIN has to be lower than MAX!");
+		const bool Hovering = mousePosition.x >= x && mousePosition.x <= x + width && mousePosition.y >= y && mousePosition.y <= y + height;
 		if (Hovering) SetCursor(Cursor::HorizontalResize);
 
 		if (Hovering && NativeInput::GetMouseButton(Mouse::ButtonLeft) && CurrentWindow->m_InputEvent == EditorInputEvent::None)
@@ -943,70 +943,9 @@ namespace Suora
 
 	void EditorUI::ColorPicker(Color* color, float x, float y, float width, float height, ButtonParams params, const std::function<void(void)>& OnColorChange, const std::function<void(void)>& OnColorReset)
 	{
-		struct ColorPickerOverlay : public DragableOverlay
-		{
-			Color* color = nullptr;
-			Color originalColor;
-			std::function<void(void)> OnColorChange; 
-			std::function<void(void)> OnColorReset;
-			ColorPickerOverlay(Color* color, const std::function<void(void)>& onColorChange, const std::function<void(void)>& onColorReset) 
-				: color(color), originalColor(*color), OnColorChange(onColorChange), OnColorReset(onColorReset), DragableOverlay("Color Picker") { }
-
-			void Render(float deltaTime) override
-			{
-				DragableOverlay::Render(deltaTime);
-				if (WasMousePressedOutsideOfOverlay())
-				{
-					OnColorChange();
-					Dispose();
-					return;
-				}
-				EditorUI::DrawRect(x + 50, y + 180, width - 100, height - 250, 4, *color);
-
-				RenderCommand::SetViewport(x + 50, y + 180, width - 100, height - 250);
-				RenderPipeline::__GetFullscreenQuad()->Bind();
-				ColorCircleShader->Bind();
-				RenderCommand::DrawIndexed(RenderPipeline::__GetFullscreenQuad());
-
-				Color temp = *color;
-
-				Text("Red", Font::Instance, x + 5, y + 140, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f)); 
-					SliderFloat(&color->r, 0.0f, 1.0f, x + 45, y + 140, width - 130, 20);
-					DragFloat(&color->r, x + 45 + (width - 130), y + 140, width - (width - 130) - 45 - 5, 20);
-				Text("Green", Font::Instance, x + 5, y + 110, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-					SliderFloat(&color->g, 0.0f, 1.0f, x + 45, y + 110, width - 130, 20);
-					DragFloat(&color->g, x + 45 + (width - 130), y + 110, width - (width - 130) - 45 - 5, 20);
-				Text("Blue", Font::Instance, x + 5, y + 80, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-					SliderFloat(&color->b, 0.0f, 1.0f, x + 45, y + 80, width - 130, 20);
-					DragFloat(&color->b, x + 45 + (width - 130), y + 80, width - (width - 130) - 45 - 5, 20);
-				Text("Alpha", Font::Instance, x + 5, y + 50, 35.0f, 20, 24.0f, Vec2(-1.0f, 0.0f), Color(1.0f));
-					SliderFloat(&color->a, 0.0f, 1.0f, x + 45, y + 50, width - 130, 20);
-					DragFloat(&color->a, x + 45 + (width - 130), y + 50, width - (width - 130) - 45 - 5, 20);
-
-				// Clamp values
-				color->r = Math::Clamp(color->r, 0.0f, 1.0f);
-				color->g = Math::Clamp(color->g, 0.0f, 1.0f);
-				color->b = Math::Clamp(color->b, 0.0f, 1.0f);
-				color->a = Math::Clamp(color->a, 0.0f, 1.0f);
-
-				if (Button("Cancel", x + 20, y + 20, width - 100, 25))
-				{
-					*color = originalColor;
-					OnColorReset();
-					Dispose();
-					return;
-				}
-
-				if (temp != *color)
-				{
-					OnColorChange();
-				}
-			}
-		};
-
 		if (Button("", x, y, width, height, params))
 		{
-			CreateOverlay<ColorPickerOverlay>(x + GetInputOffset().x, y + GetInputOffset().y, 250, 400, color, OnColorChange, OnColorReset);
+			CreateOverlay<ColorPickerOverlay>(x + GetInputOffset().x, y + GetInputOffset().y, 650, 450, color, OnColorChange, OnColorReset);
 		}
 		EditorUI::DrawRect(x + 5, y + 5, width - 10, height - 10, params.ButtonRoundness, *color);
 	}

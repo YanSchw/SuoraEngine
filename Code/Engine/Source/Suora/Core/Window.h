@@ -59,6 +59,7 @@ namespace Suora
 		virtual bool IsCursorLocked() = 0;
 		virtual bool IsVSync() const = 0;
 		virtual void SetTitle(const String& title) = 0;
+		virtual void SetSize(uint32_t width, uint32_t height) = 0;
 
 		virtual void* GetNativeWindow() const = 0;
 		virtual void* GetGraphicsContext() const = 0;

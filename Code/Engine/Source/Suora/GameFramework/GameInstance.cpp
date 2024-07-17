@@ -24,6 +24,21 @@ namespace Suora
 			spec.Attachments.Attachments.push_back(FramebufferTextureFormat::Depth);
 			m_Framebuffer = Framebuffer::Create(spec);
 		}
+
+		Array<Class> implementations = Class::GetSubclassesOf(GameModule::StaticClass());
+		for (const auto& It : implementations)
+		{
+			auto Impl = Ref<GameModule>(New(It)->As<GameModule>());
+			if (Impl)
+			{
+				SUORA_LOG(LogCategory::Gameplay, LogLevel::Trace, "Created GameModule: {0}", It.GetClassName());
+				m_GameModules.Add(Impl);
+			}
+		}
+		for (auto& It : m_GameModules)
+		{
+			It->Initialize();
+		}
 	}
 	GameInstance::~GameInstance()
 	{
@@ -79,7 +94,10 @@ namespace Suora
 
 	void GameInstance::Update(float deltaTime)
 	{
-
+		for (auto& It : m_GameModules)
+		{
+			It->Update(deltaTime);
+		}
 		if (m_CurrentWorld)
 		{
 			m_CurrentWorld->Update(deltaTime);

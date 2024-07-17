@@ -32,6 +32,7 @@ namespace Suora
 		void SetCursorLocked(bool locked) override;
 		bool IsCursorLocked() override;
 		void SetTitle(const String& title) override;
+		void SetSize(uint32_t width, uint32_t height) override;
 		bool IsWindowResizing();
 
 		virtual void* GetNativeWindow() const { return m_Window; }

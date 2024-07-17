@@ -10,6 +10,8 @@ namespace Suora
 	class World;
 	class Engine;
 
+	class GameModule;
+
 	/** GameInstanced is created and managed by the Engine. All GameState and GameFlow happends here. */
 	class GameInstance : public Object
 	{
@@ -37,7 +39,20 @@ namespace Suora
 		Array<World*> m_Worlds;
 		Ptr<World> m_CurrentWorld;
 		Ref<Framebuffer> m_Framebuffer;
+		Array<Ref<GameModule>> m_GameModules;
 
 		friend class Engine;
 	};
+
+	class GameModule : public Object
+	{
+		SUORA_CLASS(574897834);
+	public:
+		GameModule() = default;
+		virtual ~GameModule() { }
+
+		virtual void Initialize() { }
+		virtual void Update(float deltaTime) { }
+	};
+
 }

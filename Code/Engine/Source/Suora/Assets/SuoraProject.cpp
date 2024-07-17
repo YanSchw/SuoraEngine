@@ -46,8 +46,6 @@ namespace Suora
 		m_TargetFramerate = settings["Rendering"]["m_TargetFramerate"].IsNone() ? 60.0f : std::stof(settings["Rendering"]["m_TargetFramerate"].As<String>());
 		m_EnableDeferredRendering = settings["Rendering"]["m_EnableDeferredRendering"].IsNone() ? true : settings["Rendering"]["m_EnableDeferredRendering"].As<String>() == "true";
 
-		const Class gameInstanceClass = Class::FromString(settings["Game"]["m_GameInstanceClass"].As<String>());
-		m_GameInstanceClass = gameInstanceClass != Class::None ? gameInstanceClass : GameInstance::StaticClass();
 		m_DefaultLevel = settings["Game"]["m_DefaultLevel"].IsNone() ? nullptr : AssetManager::GetAsset<Level>(SuoraID(settings["Game"]["m_DefaultLevel"].As<String>()));
 
 		m_ProjectIconTexture = settings["Game"]["m_ProjectIconTexture"].As<String>() != "NULL" ? AssetManager::GetAsset<Texture2D>(SuoraID(settings["Game"]["m_ProjectIconTexture"].As<String>())) : nullptr;
@@ -70,7 +68,6 @@ namespace Suora
 		settings["Rendering"]["m_TargetFramerate"] = std::to_string(m_TargetFramerate);
 		settings["Rendering"]["m_EnableDeferredRendering"] = m_EnableDeferredRendering ? "true" : "false";
 
-		settings["Game"]["m_GameInstanceClass"] = m_GameInstanceClass.GetClass().ToString();
 		settings["Game"]["m_DefaultLevel"] = m_DefaultLevel ? m_DefaultLevel->m_UUID.GetString() : "0";
 
 		settings["Game"]["m_ProjectIconTexture"] = m_ProjectIconTexture ? m_ProjectIconTexture->m_UUID.GetString() : "NULL";

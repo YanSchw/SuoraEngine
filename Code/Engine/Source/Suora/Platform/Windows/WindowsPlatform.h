@@ -15,6 +15,13 @@
 #include <ostream>
 #include <fstream>
 #include <chrono>
+#include <locale>
+#include <codecvt>
+
+std::wstring string_to_wstring(const std::string& str) {
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+	return converter.from_bytes(str);
+}
 
 namespace Suora
 {
@@ -225,9 +232,36 @@ namespace Suora
 
 	void Platform::CommandLine(const String& input)
 	{
-		LONG temp = GetWindowLong(GetConsoleWindow(), GWL_STYLE);
-		system(input.c_str());
-		ShowWindow(GetConsoleWindow(), temp);
-		//WinExec(input.c_str(), SW_HIDE);
+		STARTUPINFO si;
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		si.dwFlags = STARTF_USESHOWWINDOW;
+		si.wShowWindow = SW_HIDE; // Hide the console window
+
+		PROCESS_INFORMATION pi;
+		ZeroMemory(&pi, sizeof(pi));
+
+		wchar_t  cmd[1024];
+		swprintf(cmd, 1024, L"C:\\Windows\\System32\\cmd.exe /c %s", string_to_wstring(input).c_str());
+
+		if (!CreateProcess(NULL,   // No module name (use command line)
+			cmd,    // Command line
+			NULL,   // Process handle not inheritable
+			NULL,   // Thread handle not inheritable
+			FALSE,  // Set handle inheritance to FALSE
+			0,      // No creation flags
+			NULL,   // Use parent's environment block
+			NULL,   // Use parent's starting directory 
+			&si,    // Pointer to STARTUPINFO structure
+			&pi))   // Pointer to PROCESS_INFORMATION structure
+		{
+			SUORA_LOG(LogCategory::Core, LogLevel::Error, "CreateProcess failed ({0}).", GetLastError());
+			return;
+		}
+
+		WaitForSingleObject(pi.hProcess, INFINITE);
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
 	}
 }

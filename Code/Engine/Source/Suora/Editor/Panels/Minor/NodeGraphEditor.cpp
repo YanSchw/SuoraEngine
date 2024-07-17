@@ -3,6 +3,7 @@
 #include "Suora/Editor/Panels/MajorTab.h"
 #include "Suora/Editor/Panels/Major/NodeClassEditor.h"
 #include "Suora/Editor/EditorWindow.h"
+#include "Suora/Editor/Overlays/SelectionOverlay.h"
 #include "Suora/Editor/Util/EditorPreferences.h"
 #include "Suora/Renderer/RenderCommand.h"
 #include "Suora/Renderer/RenderPipeline.h"
@@ -19,7 +20,7 @@ namespace Suora
 	static glm::ivec2 buttonDownMousePos;
 	static Texture2D* NodeLabelTexture = nullptr;
 
-	struct VisualNodeSearchOverlay : public EditorUI::SelectionOverlay
+	struct VisualNodeSearchOverlay : public SelectionOverlay
 	{
 		NodeGraphEditor& m_Editor;
 
@@ -34,7 +35,7 @@ namespace Suora
 			m_Entries.Clear();
 			for (VisualNodeEntry& node : m_Editor.m_Graph->m_SupportedNodes)
 			{
-				m_Entries.Add(EditorUI::SelectionOverlay::SelectionOverlayEntry(node.m_Node->m_Title, node.m_Tags, [&]() { SelectNodeEntry(&node, m_Editor); }));
+				m_Entries.Add(SelectionOverlay::SelectionOverlayEntry(node.m_Node->m_Title, node.m_Tags, [&]() { SelectNodeEntry(&node, m_Editor); }));
 			}
 			RefreshEntries();
 		}

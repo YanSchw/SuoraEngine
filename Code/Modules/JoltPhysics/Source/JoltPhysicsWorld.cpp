@@ -17,6 +17,7 @@
 #include <Jolt/Physics/PhysicsSystem.h>
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
+#include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
 #include <Jolt/Physics/Collision/Shape/MutableCompoundShape.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyActivationListener.h>
@@ -168,6 +169,12 @@ namespace Suora::Physics
 		{
 			JPH::SphereShapeSettings shapeSettings = JPH::SphereShapeSettings(node->As<SphereShapeNode>()->GetSphereRadius());
 			shape = shapeSettings.Create().Get();
+		}
+		else if (node->GetType() == ShapeType::Capsule)
+		{
+			CapsuleShapeNode* shapeNode = node->As<CapsuleShapeNode>();
+			JPH::CapsuleShapeSettings capsuleSettings = JPH::CapsuleShapeSettings(shapeNode->GetCapsuleHeight() / 2.0f, shapeNode->GetCapsuleRadius());
+			shape = capsuleSettings.Create().Get();
 		}
 		else if (node->GetType() == ShapeType::None)
 		{
