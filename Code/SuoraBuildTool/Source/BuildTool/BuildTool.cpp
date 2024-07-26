@@ -99,13 +99,6 @@ namespace Suora::Tools
 			" + collection.links + "\n\
 		}\n\
 \n\
-		group \"EngineModules\"\n\
-			" + collection.includesEngine + "\n\
-		group \"\"\n\
-		group \"ProjectModules\"\n\
-			" + collection.includesProject + "\n\
-		group \"\"\n\
-\n\
 		filter \"system:windows\"\n\
 			systemversion \"latest\"\n\
 \n\
@@ -123,6 +116,13 @@ namespace Suora::Tools
 			defines \"SUORA_DIST\"\n\
 			runtime \"Release\"\n\
 			optimize \"on\"\n\
+\n\
+		group \"EngineModules\"\n\
+			" + collection.includesEngine + "\n\
+		group \"\"\n\
+		group \"ProjectModules\"\n\
+			" + collection.includesProject + "\n\
+		group \"\"\n\
 \n\
 			";
 
