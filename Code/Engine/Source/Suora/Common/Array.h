@@ -2,6 +2,8 @@
 #include <vector>
 #include <iterator>
 
+#include "Suora/Core/Assert.h"
+
 namespace Suora
 {
 

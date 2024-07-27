@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "Array.h"
 
 namespace Suora
 {
@@ -8,7 +9,7 @@ namespace Suora
 
     struct StringUtil
     {
-        static std::vector<String> SplitString(const String& s, char delim);
+        static Array<String> SplitString(const String& InString, char InDelimiter);
         static bool ReplaceSequence(String& str, const String& from, const String& to);
         static String FloatToString(float f, size_t floatingPointDigits = 3);
         static String Int32ToString(int32_t i);

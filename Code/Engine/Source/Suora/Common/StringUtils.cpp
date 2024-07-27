@@ -6,16 +6,15 @@
 namespace Suora
 {
 
-
-    std::vector<String> StringUtil::SplitString(const String& s, char delim)
+    Array<String> StringUtil::SplitString(const String& InString, char InDelimiter)
     {
-        std::vector<String> result;
-        std::stringstream ss(s);
+        Array<String> result;
+        std::stringstream ss(InString);
         String item;
 
-        while (std::getline(ss, item, delim))
+        while (std::getline(ss, item, InDelimiter))
         {
-            result.push_back(item);
+            result.Add(item);
         }
 
         return result;

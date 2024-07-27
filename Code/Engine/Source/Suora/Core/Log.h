@@ -7,10 +7,9 @@
 #include <spdlog/spdlog.h>
 #pragma warning(pop)
 
-#include "Suora/Common/StringUtils.h"
-
 namespace Suora 
 {
+	using String = std::string;
 
 	enum class LogCategory : uint32_t
 	{

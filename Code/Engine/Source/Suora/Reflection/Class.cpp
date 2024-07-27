@@ -27,7 +27,7 @@ namespace Suora
 			return m_BlueprintClass->GetNodeParentClass();
 		case ClassType::ScriptClass:
 		{
-			std::vector<String> split = StringUtil::SplitString(m_ScriptClass, '$');
+			Array<String> split = StringUtil::SplitString(m_ScriptClass, '$');
 			ScriptEngine* scriptEngine = ScriptEngine::GetScriptEngineByDomain(split[0]);
 			return scriptEngine ? scriptEngine->GetScriptParentClass(split[1]) : Class::None;
 		}
@@ -129,7 +129,7 @@ namespace Suora
 			return m_BlueprintClass->GetAssetName();
 		case ClassType::ScriptClass:
 		{
-			std::vector<String> split = StringUtil::SplitString(m_ScriptClass, '$');
+			Array<String> split = StringUtil::SplitString(m_ScriptClass, '$');
 			return split[1];
 		}
 		case ClassType::None:

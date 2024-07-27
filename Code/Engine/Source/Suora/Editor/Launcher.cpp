@@ -201,8 +201,8 @@ namespace Suora
 				{
 					String fullPath = projectRootPath.string();
 					while (fullPath.find("\\") != String::npos) StringUtil::ReplaceSequence(fullPath, "\\", "/");
-					std::vector<String> splitPath = StringUtil::SplitString(fullPath, '/');
-					String projectName = splitPath[splitPath.size() - 1];
+					Array<String> splitPath = StringUtil::SplitString(fullPath, '/');
+					String projectName = splitPath.LastItem();
 					String solutionPath = projectRootPath.string() + "/" + projectName + ".sln";
 					Platform::OpenFileExternally(solutionPath);
 				}
