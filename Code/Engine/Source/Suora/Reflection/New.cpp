@@ -12,7 +12,7 @@ namespace Suora
 
 	static Object* NewScriptClassInstance(const Class& cls, const bool isRootNode)
 	{
-		std::vector<String> split = StringUtil::SplitString(cls.GetScriptClass(), '$');
+		Array<String> split = StringUtil::SplitString(cls.GetScriptClass(), '$');
 		ScriptEngine* scriptEngine = ScriptEngine::GetScriptEngineByDomain(split[0]);
 
 		return scriptEngine ? scriptEngine->CreateScriptClassInstance(split[1], isRootNode) : nullptr;

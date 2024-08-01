@@ -46,8 +46,8 @@ namespace Suora
 			for (VisualNodePin& pin : node->m_InputPins) { pin.m_Node = node.get(); }
 			for (VisualNodePin& pin : node->m_OutputPins) { pin.m_Node = node.get(); }
 			node->m_Position = editor.m_MouseCursorPosInGraph;
-			std::vector<String> strs = StringUtil::SplitString(node->m_Title, '/');
-			node->m_Title = strs[strs.size() - 1];
+			Array<String> strs = StringUtil::SplitString(node->m_Title, '/');
+			node->m_Title = strs.LastItem();
 		}
 	};
 

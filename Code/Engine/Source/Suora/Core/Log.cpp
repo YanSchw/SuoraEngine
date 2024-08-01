@@ -6,6 +6,7 @@
 
 #include "Suora/Debug/VirtualConsole.h"
 #include "Suora/Common/Common.h"
+#include "Suora/Common/StringUtils.h"
 
 namespace Suora 
 {

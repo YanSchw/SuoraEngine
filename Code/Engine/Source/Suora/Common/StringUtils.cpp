@@ -6,56 +6,55 @@
 namespace Suora
 {
 
-
-    std::vector<String> StringUtil::SplitString(const String& s, char delim)
+    Array<String> StringUtil::SplitString(const String& InString, char InDelimiter)
     {
-        std::vector<String> result;
-        std::stringstream ss(s);
+        Array<String> result;
+        std::stringstream ss(InString);
         String item;
 
-        while (std::getline(ss, item, delim))
+        while (std::getline(ss, item, InDelimiter))
         {
-            result.push_back(item);
+            result.Add(item);
         }
 
         return result;
     }
 
-    bool StringUtil::ReplaceSequence(String& str, const String& from, const String& to)
+    bool StringUtil::ReplaceSequence(String& InString, const String& InFrom, const String& InTo)
     {
-        size_t start_pos = str.find(from);
+        size_t start_pos = InString.find(InFrom);
         if (start_pos == String::npos) return false;
-        str.replace(start_pos, from.length(), to);
+        InString.replace(start_pos, InFrom.length(), InTo);
         return true;
     }
 
-    String StringUtil::FloatToString(float f, size_t floatingPointDigits)
+    String StringUtil::FloatToString(float InFloat, size_t InFloatingPointDigits)
     {
-        String str = std::to_string(f);
+        String str = std::to_string(InFloat);
 
         for (int i = 0; str.size(); i++)
         {
             if (str.at(i) == '.')
             {
-                return str.substr(0, (size_t)(i + floatingPointDigits >= str.size() ? str.size() : i + floatingPointDigits));
+                return str.substr(0, (size_t)(i + InFloatingPointDigits >= str.size() ? str.size() : i + InFloatingPointDigits));
             }
         }
 
-        return std::to_string(f);
+        return std::to_string(InFloat);
     }
-    String StringUtil::Int32ToString(int32_t i)
+    String StringUtil::Int32ToString(int32_t InInt32)
     {
-        return FloatToString((float)i);
+        return FloatToString((float)InInt32);
     }
-    float StringUtil::StringToFloat(const String& str)
+    float StringUtil::StringToFloat(const String& InString)
     {
         static Array<char> numericChars = { '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         bool invalidString = false;
-        for (char c : str)
+        for (char c : InString)
         {
             if (!numericChars.Contains(c))
             {
-                String STR = str;
+                String STR = InString;
                 for (int64_t i = STR.size() - 1; i >= 0; i--)
                 {
                     if (!numericChars.Contains(STR[i]))
@@ -67,75 +66,75 @@ namespace Suora
             }
         }
 
-        return str.size() > 0 ? std::stof(str) : 0.0f;
+        return InString.size() > 0 ? std::stof(InString) : 0.0f;
     }
-    int32_t StringUtil::StringToInt32(const String& str)
+    int32_t StringUtil::StringToInt32(const String& InString)
     {
-        return (int32_t)StringToFloat(str);
+        return (int32_t)StringToFloat(InString);
     }
 
-    String StringUtil::ToLower(String str)
+    String StringUtil::ToLower(String InString)
     {
-        for (char& c : str)
+        for (char& c : InString)
         {
             c = tolower(c);
         }
 
-        return str;
+        return InString;
     }
-    String StringUtil::ToUpper(String str)
+    String StringUtil::ToUpper(String InString)
     {
-        for (char& c : str)
+        for (char& c : InString)
         {
             c = toupper(c);
         }
 
-        return str;
+        return InString;
     }
-    String StringUtil::SmartToUpperCase(String str, bool allToUpper)
+    String StringUtil::SmartToUpperCase(String InString, bool InAllToUpper)
     {
-        if (str.size() < 1) return str;
+        if (InString.size() < 1) return InString;
 
-        for (int64_t it = str.size() - 1; it >= 1; it--)
+        for (int64_t it = InString.size() - 1; it >= 1; it--)
         {
-            if (str[it] >= 'A' && str[it] <= 'Z' && str[it - 1] >= 'a' && str[it - 1] <= 'z' && str[it - 1] != ' ')
+            if (InString[it] >= 'A' && InString[it] <= 'Z' && InString[it - 1] >= 'a' && InString[it - 1] <= 'z' && InString[it - 1] != ' ')
             {
-                str.insert(it, " ");
+                InString.insert(it, " ");
             }
         }
 
-        while (str[0] == ' ') str.erase(0, 1);
+        while (InString[0] == ' ') InString.erase(0, 1);
 
         {
-            char& c = str[0];
+            char& c = InString[0];
             if (c >= 'a' && c <= 'z') c += ('A' - 'a');
         }
 
-        if (allToUpper)
+        if (InAllToUpper)
         {
-            for (char& c : str)
+            for (char& c : InString)
             {
                 if (c >= 'a' && c <= 'z') c += ('A' - 'a');
             }
         }
 
-        return str;
+        return InString;
     }
 
-    void StringUtil::RemoveCommentsFromString(String& str)
+    void StringUtil::RemoveCommentsFromString(String& OutString)
     {
-        while (str.find("/*") != String::npos)
+        while (OutString.find("/*") != String::npos)
         {
-            size_t start = str.find("/*");
-            size_t end = str.find("*/", start);
-            str.erase(start, end - start + 2);
+            size_t start = OutString.find("/*");
+            size_t end = OutString.find("*/", start);
+            OutString.erase(start, end - start + 2);
         }
-        while (str.find("//") != String::npos)
+        while (OutString.find("//") != String::npos)
         {
-            size_t pos = str.find("//");
-            while (str[pos] != '\n' && pos < str.size())
+            size_t pos = OutString.find("//");
+            while (OutString[pos] != '\n' && pos < OutString.size())
             {
-                str.erase(pos, 1);
+                OutString.erase(pos, 1);
             }
         }
     }

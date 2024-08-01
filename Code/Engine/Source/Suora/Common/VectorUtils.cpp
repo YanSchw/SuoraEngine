@@ -39,28 +39,28 @@ namespace Suora
     Vec2 Vec::FromString<Vec2>(const String& str)
     {
         if (str == "") return Vec::Zero;
-        const std::vector<String> xyz = StringUtil::SplitString(str, '/');
+        const Array<String> xyz = StringUtil::SplitString(str, '/');
         return Vec2(std::stof(xyz[0]), std::stof(xyz[1]));
     }
     template<>
     Vec3 Vec::FromString<Vec3>(const String& str)
     {
         if (str == "") return Vec::Zero;
-        const std::vector<String> xyz = StringUtil::SplitString(str, '/');
+        const Array<String> xyz = StringUtil::SplitString(str, '/');
         return Vec3(std::stof(xyz[0]), std::stof(xyz[1]), std::stof(xyz[2]));
     }
     template<>
     Vec4 Vec::FromString<Vec4>(const String& str)
     {
         if (str == "") return Vec4();
-        const std::vector<String> xyzw = StringUtil::SplitString(str, '/');
+        const Array<String> xyzw = StringUtil::SplitString(str, '/');
         return Vec4(std::stof(xyzw[0]), std::stof(xyzw[1]), std::stof(xyzw[2]), std::stof(xyzw[3]));
     }
     template<>
     Quat Vec::FromString<Quat>(const String& str)
     {
         if (str == "") return glm::identity<Quat>();
-        const std::vector<String> xyzw = StringUtil::SplitString(str, '/');
+        const Array<String> xyzw = StringUtil::SplitString(str, '/');
         return Quat(std::stof(xyzw[0]), std::stof(xyzw[1]), std::stof(xyzw[2]), std::stof(xyzw[3]));
     }
     template<>
@@ -68,7 +68,7 @@ namespace Suora
     {
         if (str == "") return Mat4();
         Mat4 m = Mat4();
-        std::vector<String> rows = StringUtil::SplitString(str, ';');
+        Array<String> rows = StringUtil::SplitString(str, ';');
 
         m[0] = FromString<Vec4>(rows[0]);
         m[1] = FromString<Vec4>(rows[1]);

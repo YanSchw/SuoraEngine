@@ -109,7 +109,7 @@ namespace Suora
 	void DelegateProperty::FeedSignature(const String& args)
 	{
 		String sub = args.substr(9, args.size() - 10);
-		std::vector<String> arg = StringUtil::SplitString(sub, ',');
+		Array<String> arg = StringUtil::SplitString(sub, ',');
 		for (auto& It : arg)
 		{
 			if (It != "TDelegate::NoParams")

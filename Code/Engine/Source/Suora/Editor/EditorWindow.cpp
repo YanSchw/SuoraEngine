@@ -299,10 +299,10 @@ namespace Suora
 			return;
 		}
 
-		std::vector<String> lines = StringUtil::SplitString(EditorUI::tooltipText, '\n');
+		Array<String> lines = StringUtil::SplitString(EditorUI::tooltipText, '\n');
 
 		float x = NativeInput::GetMousePosition().x + 15 + (1 - EditorUI::tooltipAlpha) * 30.f;
-		float height = 25.0f + 25.0f * lines.size();
+		float height = 25.0f + 25.0f * lines.Size();
 		float y = m_Window->GetHeight() - NativeInput::GetMousePosition().y - (height * 0.5f) - (1 - EditorUI::tooltipAlpha) * 10;
 		float width = 0.f;
 
@@ -324,9 +324,9 @@ namespace Suora
 		Color toolTipOutline = EditorPreferences::Get()->UiForgroundColor; toolTipOutline.a = EditorUI::tooltipAlpha;
 		EditorUI::DrawRect(x, y, width, height, 0, toolTipBackground);
 		EditorUI::DrawRectOutline(x, y, width, height, 2, toolTipOutline);
-		for (int i = 0; i < lines.size(); i++)
+		for (int i = 0; i < lines.Size(); i++)
 		{
-			EditorUI::Text(lines[lines.size() - 1 - i], Font::Instance, x + 5.0f, y + 25.0f * i, width, 50.0f, 22, Vec2(-1, 0), Color(1, 1, 1, EditorUI::tooltipAlpha));
+			EditorUI::Text(lines[lines.Size() - 1 - i], Font::Instance, x + 5.0f, y + 25.0f * i, width, 50.0f, 22, Vec2(-1, 0), Color(1, 1, 1, EditorUI::tooltipAlpha));
 		}
 	}
 
