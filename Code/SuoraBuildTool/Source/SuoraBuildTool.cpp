@@ -88,7 +88,7 @@ int main(int argc, char** argv)
 		}
 		else if (str == "-v" || str == "-version")
 		{
-			BUILD_DEBUG("This compilation of SuoraBuildTool targets SuoraEngine Version 0.8.0");
+			BUILD_DEBUG("This compilation of SuoraBuildTool targets SuoraEngine Version 0.11.0");
 		}
 		else if (str == "-donotcache")
 		{
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			BUILD_ERROR("Could not parse argument {0}!", str);
+			BUILD_ERROR("Could not parse argument '{0}'!", str);
 			return EXIT_FAILURE;
 		}
 	}
