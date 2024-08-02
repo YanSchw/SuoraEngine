@@ -86,7 +86,7 @@ namespace Suora
 		RenderingParams m_RParams;
 		bool m_DrawDebugGizmos = false;
 		bool m_DrawDebugGizmosDuringPlay = false;
-		bool m_ShowGrid = true;
+		bool m_ShowGrid = false;
 		bool m_ShowOrigin = true;
 		bool m_DrawWireframe = false;
 
