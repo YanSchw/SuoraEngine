@@ -25,6 +25,8 @@ namespace Suora
 		FUNCTION(Callable, Pure)
 		bool IsGrounded();
 
+		float GetCapsuleHeight() const;
+		float GetCapsuleRadius() const;
 
 		PROPERTY()
 		float m_CapsuleRadius = 0.5f;

@@ -55,6 +55,16 @@ namespace Suora
 		return GetCharacterController()->IsGrounded();
 	}
 
+	float CharacterNode::GetCapsuleHeight() const
+	{
+		return m_CapsuleHalfHeight * 2.0f;
+	}
+
+	float CharacterNode::GetCapsuleRadius() const
+	{
+		return m_CapsuleRadius;
+	}
+
 	CharacterController* CharacterNode::GetCharacterController() const
 	{
 		return m_Controller.get();
