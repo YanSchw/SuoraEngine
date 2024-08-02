@@ -29,7 +29,7 @@ namespace Suora
 	{
 		Super::Begin();
 
-		if (IsStatic)
+		if (IsStatic())
 		{
 			SetBodyType(BodyType::Static);
 		}
@@ -49,12 +49,7 @@ namespace Suora
 	{
 		Super::TickTransform(inverseParentTransform);
 
-		if (ShouldUpdateInCurrentContext() && !Physics::PhysicsWorld::s_InPhysicsSimulation)
-		{
-			SuoraAssert(GetWorld());
-			SuoraAssert(GetWorld()->GetPhysicsWorld());
-			GetWorld()->GetPhysicsWorld()->TickShapeNode(this);
-		}
+		TickShapeNode();
 	}
 
 	void ShapeNode::SetBodyType(BodyType type)
@@ -65,6 +60,38 @@ namespace Suora
 	ShapeNode::BodyType ShapeNode::GetBodyType() const
 	{
 		return m_BodyType;
+	}
+
+	void ShapeNode::SetIsTrigger(bool InIsTrigger)
+	{
+		m_IsTrigger = InIsTrigger;
+		TickShapeNode();
+	}
+
+	bool ShapeNode::IsTrigger() const
+	{
+		return m_IsTrigger;
+	}
+
+	void ShapeNode::SetIsStatic(bool InIsStatic)
+	{
+		m_IsStatic = InIsStatic;
+		TickShapeNode();
+	}
+
+	bool ShapeNode::IsStatic() const
+	{
+		return m_IsStatic;
+	}
+
+	void ShapeNode::TickShapeNode()
+	{
+		if (ShouldUpdateInCurrentContext() && !Physics::PhysicsWorld::s_InPhysicsSimulation)
+		{
+			SuoraAssert(GetWorld());
+			SuoraAssert(GetWorld()->GetPhysicsWorld());
+			GetWorld()->GetPhysicsWorld()->TickShapeNode(this);
+		}
 	}
 
 	Vec3 BoxShapeNode::GetBoxExtends() const

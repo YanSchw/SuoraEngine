@@ -209,6 +209,8 @@ namespace Suora::Physics
 
 		m_Body_Rigidbody[rigidbody] = node;
 		m_Rigidbody_Body[node] = rigidbody;
+
+		TickShapeNode(node);
 	}
 
 	void JoltPhysicsWorld::DestroyShapeNode(ShapeNode* node)
@@ -231,6 +233,7 @@ namespace Suora::Physics
 	{
 		JPH::BodyInterface& body_interface = m_PhysicsSystem->GetBodyInterface();
 		body_interface.SetPosition(m_Rigidbody_Body[node]->GetID(), Convert::ToRVec3(node->GetPosition()), JPH::EActivation::DontActivate);
+		m_Rigidbody_Body[node]->SetIsSensor(node->IsTrigger());
 	}
 
 	Ref<CharacterController> JoltPhysicsWorld::CreateCharacterNode(CharacterNode* node)
@@ -292,7 +295,7 @@ namespace Suora::Physics
 
 		for (auto It : m_Body_Rigidbody)
 		{
-			if (!It.second->IsStatic && It.second->ShouldUpdateInCurrentContext())
+			if (!It.second->IsStatic() && It.second->ShouldUpdateInCurrentContext())
 			{
 				JPH::BodyInterface& body_interface = m_PhysicsSystem->GetBodyInterface();
 				It.second->SetPosition(Convert::ToVec3(body_interface.GetPosition(It.first->GetID())));
