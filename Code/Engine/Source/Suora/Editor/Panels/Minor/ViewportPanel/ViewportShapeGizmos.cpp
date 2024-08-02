@@ -14,6 +14,9 @@
 
 namespace Suora
 {
+	static Color s_ShapeColor   = Color(1, 0, 0, 1);
+	static Color s_TriggerColor = Color(0, 1, 0, 1);
+
 	static void Draw3DBox(CameraNode* InCamera, BoxShapeNode* InNode)
 	{
 		Array<std::pair<Vec3, Vec3>> lines;
@@ -42,7 +45,7 @@ namespace Suora
 		{
 			const Vec4 a = proxy.GetTransformMatrix() * Vec4(line.first, 1);
 			const Vec4 b = proxy.GetTransformMatrix() * Vec4(line.second, 1);
-			Renderer3D::DrawLine3D(InCamera, a, b, Color(1, 0, 0, 1));
+			Renderer3D::DrawLine3D(InCamera, a, b, InNode->IsTrigger() ? s_TriggerColor : s_ShapeColor);
 		}
 	}
 
@@ -115,7 +118,7 @@ namespace Suora
 		{
 			const Vec4 a = proxy.GetTransformMatrix() * Vec4(line.first, 1);
 			const Vec4 b = proxy.GetTransformMatrix() * Vec4(line.second, 1);
-			Renderer3D::DrawLine3D(InCamera, a, b, Color(1, 0, 0, 1));
+			Renderer3D::DrawLine3D(InCamera, a, b, InNode->IsTrigger() ? s_TriggerColor : s_ShapeColor);
 		}
 	}
 
@@ -151,7 +154,7 @@ namespace Suora
 		{
 			const Vec4 a = proxy.GetTransformMatrix() * Vec4(line.first, 1);
 			const Vec4 b = proxy.GetTransformMatrix() * Vec4(line.second, 1);
-			Renderer3D::DrawLine3D(InCamera, a, b, Color(1, 0, 0, 1));
+			Renderer3D::DrawLine3D(InCamera, a, b, InNode->IsTrigger() ? s_TriggerColor : s_ShapeColor);
 		}
 	}
 
