@@ -7,6 +7,7 @@ namespace JPH
 	class PhysicsSystem;
 	class TempAllocator;
 	class JobSystemThreadPool;
+	class ContactListener;
 
 	class Body;
 }
@@ -42,6 +43,8 @@ namespace Suora::Physics
 
 		Ref<class ObjectVsBroadPhaseLayerFilter> m_ObjectVsBroadPhaseLayerFilter;
 		Ref<class ObjectLayerPairFilter> m_ObjectLayerPairFilter;
+
+		Ref<class JPH::ContactListener> m_ShapeContactListener;
 
 		std::unordered_map<JPH::Body*, Suora::ShapeNode*> m_Body_Rigidbody;
 		std::unordered_map<Suora::ShapeNode*, JPH::Body*> m_Rigidbody_Body;

@@ -146,6 +146,91 @@ namespace Suora::Physics
 		}
 	};
 
+	class ShapeNodeContactListener : public JPH::ContactListener
+	{
+	public:
+		ShapeNodeContactListener(JoltPhysicsWorld* world)
+		{
+			m_World = world;
+		}
+		virtual void OnContactAdded(const JPH::Body& inBody1, const JPH::Body& inBody2, const JPH::ContactManifold& inManifold, JPH::ContactSettings& ioSettings) override
+		{
+			ShapeNode* shapeA = m_World->m_Body_Rigidbody[(JPH::Body*)&inBody1];
+			ShapeNode* shapeB = m_World->m_Body_Rigidbody[(JPH::Body*)&inBody2];
+
+			if (shapeA && shapeB && !(shapeA->IsTrigger() && shapeB->IsTrigger()))
+			{
+				if (shapeA->IsTrigger())
+					shapeA->OnTriggerEnter(shapeB);
+				else
+					shapeA->OnCollisionEnter(shapeB);
+
+				if (shapeB->IsTrigger())
+					shapeB->OnTriggerEnter(shapeA);
+				else
+					shapeB->OnCollisionEnter(shapeA);
+			}
+		}
+
+		virtual void OnContactPersisted(const JPH::Body& inBody1, const JPH::Body& inBody2, const JPH::ContactManifold& inManifold, JPH::ContactSettings& ioSettings) override
+		{
+			ShapeNode* shapeA = m_World->m_Body_Rigidbody[(JPH::Body*)&inBody1];
+			ShapeNode* shapeB = m_World->m_Body_Rigidbody[(JPH::Body*)&inBody2];
+
+			if (shapeA && shapeB && !(shapeA->IsTrigger() && shapeB->IsTrigger()))
+			{
+				if (shapeA->IsTrigger())
+					shapeA->OnTriggerStay(shapeB);
+				else
+					shapeA->OnCollisionStay(shapeB);
+
+				if (shapeB->IsTrigger())
+					shapeB->OnTriggerStay(shapeA);
+				else
+					shapeB->OnCollisionStay(shapeA);
+			}
+		}
+
+		virtual void OnContactRemoved(const JPH::SubShapeIDPair& inSubShapePair) override
+		{
+			ShapeNode* shapeA = nullptr;
+			ShapeNode* shapeB = nullptr;
+			const JPH::BodyLockInterfaceNoLock& lock_interface = m_World->m_PhysicsSystem->GetBodyLockInterfaceNoLock();
+
+			{
+				JPH::BodyLockRead lock(lock_interface, inSubShapePair.GetBody1ID());
+				if (lock.Succeeded())
+				{
+					const JPH::Body& body = lock.GetBody();
+					shapeA = m_World->m_Body_Rigidbody[(JPH::Body*)&body];
+				}
+			}
+			{
+				JPH::BodyLockRead lock(lock_interface, inSubShapePair.GetBody2ID());
+				if (lock.Succeeded())
+				{
+					const JPH::Body& body = lock.GetBody();
+					shapeB = m_World->m_Body_Rigidbody[(JPH::Body*)&body];
+				}
+			}
+
+			if (shapeA && shapeB && !(shapeA->IsTrigger() && shapeB->IsTrigger()))
+			{
+				if (shapeA->IsTrigger())
+					shapeA->OnTriggerExit(shapeB);
+				else
+					shapeA->OnCollisionExit(shapeB);
+
+				if (shapeB->IsTrigger())
+					shapeB->OnTriggerExit(shapeA);
+				else
+					shapeB->OnCollisionExit(shapeA);
+			}
+		}
+
+		JoltPhysicsWorld* m_World;
+	};
+
 	JoltPhysicsWorld::JoltPhysicsWorld()
 	{
 	}
@@ -340,6 +425,9 @@ namespace Suora::Physics
 		m_ObjectVsBroadPhaseLayerFilter = CreateRef<ObjectVsBroadPhaseLayerFilter>();
 
 		m_PhysicsSystem->Init(cMaxBodies, cNumBodyMutexes, cMaxBodyPairs, cMaxContactConstraints, *m_BPLayerInterface, *m_ObjectVsBroadPhaseLayerFilter, *m_ObjectLayerPairFilter);
+	
+		m_ShapeContactListener = Ref<JPH::ContactListener>(new ShapeNodeContactListener(this));
+		m_PhysicsSystem->SetContactListener(m_ShapeContactListener.get());
 	}
 
 }
