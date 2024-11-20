@@ -39,9 +39,30 @@ namespace Suora
 
 		void SetBodyType(BodyType type);
 		BodyType GetBodyType() const;
+		
+		FUNCTION(Callable)
+		void SetIsTrigger(bool InIsTrigger);
+		FUNCTION(Callable, Pure)
+		bool IsTrigger() const;
 
+		FUNCTION(Callable)
+		void SetIsStatic(bool InIsStatic);
+		FUNCTION(Callable, Pure)
+		bool IsStatic() const;
+
+		ShapeType GetType() const { return Type; }
+
+		PROPERTY() Delegate<ShapeNode*> OnTriggerEnter;
+		PROPERTY() Delegate<ShapeNode*> OnTriggerStay;
+		PROPERTY() Delegate<ShapeNode*> OnTriggerExit;
+
+		PROPERTY() Delegate<ShapeNode*> OnCollisionEnter;
+		PROPERTY() Delegate<ShapeNode*> OnCollisionStay;
+		PROPERTY() Delegate<ShapeNode*> OnCollisionExit;
+
+	public:
 		PROPERTY()
-		bool IsTrigger = false;
+		bool m_IsTrigger = false;
 
 		PROPERTY()
 		float m_Mass = 1.0f;
@@ -62,17 +83,10 @@ namespace Suora
 		float m_GravityScale = 1.0f;
 
 		PROPERTY()
-		bool IsStatic = true;
+		bool m_IsStatic = true;
 
-		ShapeType GetType() const { return Type; }
-
-		PROPERTY() Delegate<ShapeNode*> OnTriggerEnter;
-		PROPERTY() Delegate<ShapeNode*> OnTriggerStay;
-		PROPERTY() Delegate<ShapeNode*> OnTriggerExit;
-
-		PROPERTY() Delegate<ShapeNode*> OnCollisionEnter;
-		PROPERTY() Delegate<ShapeNode*> OnCollisionStay;
-		PROPERTY() Delegate<ShapeNode*> OnCollisionExit;
+	private:
+		void TickShapeNode();
 
 		friend class Physics::PhysicsWorld;
 	};
