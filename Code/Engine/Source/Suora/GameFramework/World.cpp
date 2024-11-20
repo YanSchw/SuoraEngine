@@ -1,7 +1,7 @@
 #include "Precompiled.h"
 #include "World.h"
 #include "Suora/GameFramework/Node.h"
-#include "New.h"
+#include "Suora/Reflection/New.h"
 #include "Suora/Core/Engine.h"
 #include "Suora/Physics/PhysicsEngine.h"
 #include "Suora/Physics/PhysicsWorld.h"
