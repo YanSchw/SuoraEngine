@@ -74,6 +74,30 @@ project "GLFW"
 			"_CRT_SECURE_NO_WARNINGS"
 		}
 
+	filter "system:macosx"
+		systemversion "latest"
+		staticruntime "On"
+
+		files
+		{
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/cocoa_init.m",
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/cocoa_monitor.m",
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/cocoa_window.m",
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/cocoa_time.c",
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/posix_module.c",
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/nsgl_context.m",
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/egl_context.c",
+			"%{ENGINE_PATH}/Code/Dependencies/GLFW/src/osmesa_context.c"
+		}
+
+		defines
+		{
+			"_GLFW_COCOA"
+		}
+
+		-- Ensure .m files are compiled as Objective-C
+		buildoptions { "-x objective-c" }
+
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
